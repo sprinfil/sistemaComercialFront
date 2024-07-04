@@ -18,10 +18,11 @@ export default function GiroComercialTable() {
   const getGirosComerciales = async () => {
     setLoadingTable(true);
     try {
-      const response = await axiosClient.get("/GirosComercialesCatalogo");
+      const response = await axiosClient.get("/Giros");
       setLoadingTable(false);
-      setGirosComerciales(response.data.data);
-      console.log(response.data.data);
+      setGirosComerciales(response.data);
+      console.log(response.data);
+      console.log(response);
     } catch (error) {
       setLoadingTable(false);
       console.error("Failed to fetch Giros Comerciales:", error);

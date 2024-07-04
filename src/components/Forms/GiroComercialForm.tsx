@@ -102,7 +102,7 @@ const GiroComercialForm = () => {
         console.log("submit");
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/GirosComercialesCatalogo/create`, values)
+            axiosClient.post(`/Giros/create`, values)
                 .then(() => {
                     successToastCreado();
                     setLoading(false);
@@ -133,7 +133,7 @@ const GiroComercialForm = () => {
                 console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/GirosComercialesCatalogo/update/${girocomercial.id}`, values)
+            axiosClient.put(`/Giros/update/${girocomercial.id}`, values)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
@@ -159,10 +159,9 @@ const GiroComercialForm = () => {
     const getGirosComerciales = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/GirosComercialesCatalogo");
+            const response = await axiosClient.get("/Giros");
             setLoadingTable(false);
-            setGirosComerciales(response.data.data);
-            console.log(response.data.data);
+            setGirosComerciales(response.data);
         } catch (error) {
             setLoadingTable(false);
             errorToast();
@@ -173,7 +172,7 @@ const GiroComercialForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/GirosComercialesCatalogo/log_delete/${girocomercial.id}`);
+            await axiosClient.put(`/Giros/log_delete/${girocomercial.id}`);
             getGirosComerciales();
             setAccion("eliminar");
             successToastEliminado();
