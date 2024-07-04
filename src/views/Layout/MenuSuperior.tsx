@@ -19,7 +19,7 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import axiosClient from '../../axios-client'
 import { ContextProvider, useStateContext } from '../../contexts/ContextProvider';
 import logo from "../../img/logo.png";
-import { ExitIcon } from '@radix-ui/react-icons';
+import { ExitIcon, PersonIcon, GlobeIcon, ClipboardCopyIcon, DesktopIcon, BoxModelIcon, ReaderIcon, GearIcon } from '@radix-ui/react-icons';
 
 
 const MenuSuperior = () => {
@@ -29,11 +29,12 @@ const MenuSuperior = () => {
     const opciones = [
         {
             titulo: "Usuarios",
+            icon: <PersonIcon />,
             opciones: [
                 {
                     titulo: "Consulta Usuario",
                     descripcion: "Mira los detalles de los usuarios, consulta por numero de toma o nombre de usuario",
-                    route: "/proximamente"
+                    route: "/proximamente",
                 },
                 {
                     titulo: "Contratos",
@@ -50,6 +51,7 @@ const MenuSuperior = () => {
         },
         {
             titulo: "Poligonos Geograficos",
+            icon: <GlobeIcon />,
             opciones: [
                 {
                     titulo: "Ver poligonos",
@@ -60,6 +62,7 @@ const MenuSuperior = () => {
         },
         {
             titulo: "Ordenes de Trabajo",
+            icon: <ClipboardCopyIcon />,
             opciones: [
                 {
                     titulo: "Generar Ordenes de Trabajo",
@@ -75,6 +78,7 @@ const MenuSuperior = () => {
         },
         {
             titulo: "Monitores",
+            icon: <DesktopIcon />,
             opciones: [
                 {
                     titulo: "Monitores",
@@ -84,7 +88,45 @@ const MenuSuperior = () => {
             ]
         },
         {
+            titulo: "Cajas",
+            icon: <BoxModelIcon />,
+            opciones: [
+                {
+                    titulo: "Punto de venta",
+                    descripcion: "Registra los pagos de los usuarios.",
+                    route: "/proximamente"
+                },
+            ]
+        },
+        {
+            titulo: "Lectura y Facturación",
+            icon: <ReaderIcon />,
+            opciones: [
+                {
+                    titulo: "Cargas de Trabajo",
+                    descripcion: "Adminsitra las cargas de trabajo para los operadores de campo.",
+                    route: "/proximamente"
+                },
+                {
+                    titulo: "Anomalias",
+                    descripcion: "Gestiona, Monitorea y valida Anomalias",
+                    route: "/proximamente"
+                },
+                {
+                    titulo: "Facturar",
+                    descripcion: "Factura o Refactura",
+                    route: "/proximamente"
+                },
+                {
+                    titulo: "Monitor de Operadores de Campo",
+                    descripcion: "Consulta el recorrido de los operadores de campo",
+                    route: "/proximamente"
+                },
+            ]
+        },
+        {
             titulo: "Configuraciones",
+            icon: <GearIcon />,
             opciones: [
                 {
                     titulo: "Catálogos",
@@ -101,8 +143,14 @@ const MenuSuperior = () => {
                     descripcion: "Gestiona los roles del sistema.",
                     route: "/proximamente"
                 },
+                {
+                    titulo: "Configuraciones Generales",
+                    descripcion: "Opciones Adicionales.",
+                    route: "/proximamente"
+                },
             ]
-        }
+        },
+
     ]
 
     const logout = (e: MouseEvent<SVGSVGElement>): void => {
@@ -135,20 +183,24 @@ const MenuSuperior = () => {
     return (
         <div className=' bg-background h-[9vh] border border-border shadow-sm relative flex items-center select-none'>
             {/*logo*/}
-            <div className='h-full min-w-[60px] max-w-[60px] min-h-[60px] max-h-[60px] p-[10px]'>
+            {/*
+                        <div className='h-full min-w-[60px] max-w-[60px] min-h-[60px] max-h-[60px] p-[10px]'>
                 <img src={Logo} alt="" className='w-full h-full' />
             </div >
+            */}
+                <p className='xl:hidden block text-[10px] text-red-500 px-2'>La resolución no es compatible</p>
             {/*menu de opciones*/}
-            <div className='p-[10px] left-[100px] flex items-center'>
+            <div className='p-[10px] left-[0px] absolute items-center w-[500px] hidden xl:flex'>
+
                 <NavigationMenu>
                     <NavigationMenuList >
                         {opciones.map((opcion, key) => (
                             <NavigationMenuItem key={key}>
-                                <NavigationMenuTrigger key={key}>{opcion.titulo}</NavigationMenuTrigger>
+                                <NavigationMenuTrigger key={key}><div className='flex gap-2 items-center'>{opcion.titulo}{opcion.icon}</div></NavigationMenuTrigger>
                                 <NavigationMenuContent>
                                     <div className='flex'>
 
-                                        <ul className='px-[10px] py-[10px] w-[1000px]' key={key}>
+                                        <ul className='px-[10px] py-[10px] w-[1100px]' key={key}>
                                             {opcion.opciones.map((opcion, index) => (
                                                 <Link to={opcion.route} key={index}>
                                                     <li key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
