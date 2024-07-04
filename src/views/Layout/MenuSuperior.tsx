@@ -43,7 +43,7 @@ const MenuSuperior = () => {
                 },
                 {
                     titulo: "Crear Nuevo Usuario",
-                    descripcion: "Registra un nuevo ususario sin contrato.",
+                    descripcion: "Registra un nuevo usuario.",
                     route: "/CrearUsuario"
                 }
             ]
