@@ -164,82 +164,86 @@ const AnomaliaForm = () => {
     }, [accion]);
 
     return (
-        <div className="overflow-auto">
-
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-                <div className='h-[20px] w-full flex items-center justify-end'>
-                    <div className="mb-[10px] h-full w-full mx-4">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nueva Anomalia</p>}
-                        {anomalia.nombre != "" && <p className="text-muted-foreground text-[20px]">{anomalia.nombre}</p>}
-                    </div>
-                    { (anomalia.nombre != null && anomalia.nombre != "") &&
-                        <>
-                            <Modal
-                                method={onDelete}
-                                button={
-                                    <IconButton>
-                                        <TrashIcon className="w-[20px] h-[20px]" />
-                                    </IconButton>}
-                            />
-                            <div onClick={() => setAccion("editar")}>
-                                <IconButton>
-                                    <Pencil2Icon className="w-[20px] h-[20px]" />
-                                </IconButton>
+        <>
+            {
+                accion &&
+                <div className="overflow-auto">
+                    <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+                        <div className='h-[20px] w-full flex items-center justify-end'>
+                            <div className="mb-[10px] h-full w-full mx-4">
+                                {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nueva Anomalia</p>}
+                                {anomalia.nombre != "" && <p className="text-muted-foreground text-[20px]">{anomalia.nombre}</p>}
                             </div>
-                        </>
-                    }
+                            {(anomalia.nombre != null && anomalia.nombre != "") &&
+                                <>
+                                    <Modal
+                                        method={onDelete}
+                                        button={
+                                            <IconButton>
+                                                <TrashIcon className="w-[20px] h-[20px]" />
+                                            </IconButton>}
+                                    />
+                                    <div onClick={() => setAccion("editar")}>
+                                        <IconButton>
+                                            <Pencil2Icon className="w-[20px] h-[20px]" />
+                                        </IconButton>
+                                    </div>
+                                </>
+                            }
+
+                        </div>
+                    </div>
+                    <div className="py-[20px] px-[10px] ">
+
+                        {errors && <Error errors={errors} />}
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                                <FormField
+                                    control={form.control}
+                                    name="nombre"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Nombre</FormLabel>
+                                            <FormControl>
+                                                <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la anomalia" {...field} />
+                                            </FormControl>
+                                            <FormDescription>
+                                                El nombre de la anomalia.
+                                            </FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="descripcion"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Descripción</FormLabel>
+                                            <FormControl>
+                                                <Textarea
+                                                    readOnly={!abrirInput}
+                                                    placeholder="Descripcion de la anomalia"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormDescription>
+                                                Agrega una pequeña descripción.
+                                            </FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                {loading && <Loader />}
+                                {abrirInput && <Button type="submit">Guardar</Button>}
+
+                            </form>
+                        </Form>
+                    </div>
 
                 </div>
-            </div>
-            <div className="py-[20px] px-[10px] ">
-
-                {errors && <Error errors={errors} />}
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <FormField
-                            control={form.control}
-                            name="nombre"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nombre</FormLabel>
-                                    <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la anomalia" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        El nombre de la anomalia.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="descripcion"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Descripción</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            readOnly={!abrirInput}
-                                            placeholder="Descripcion de la anomalia"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        Agrega una pequeña descripción.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        {loading && <Loader />}
-                        {abrirInput && <Button type="submit">Guardar</Button>}
-
-                    </form>
-                </Form>
-            </div>
-
-        </div>
+            }
+        </>
     )
 }
 
