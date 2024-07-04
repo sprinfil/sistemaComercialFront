@@ -1,4 +1,5 @@
 import { useState } from "react";
+import logo from '../../img/logo.png';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -13,47 +14,32 @@ import {
     FormMessage,
 } from "../../components/ui/form.tsx";
 import { Input } from '../../components/ui/input.tsx';
-import { conveniosSchema } from './validaciones.ts';
+import { bonificacionesSchema } from './validaciones.ts';
 import axiosClient from '../../axios-client.ts';
 import Loader from "../../components/ui/Loader.tsx";
 import Error from "../../components/ui/Error.tsx";
 import { Textarea } from "../ui/textarea.tsx";
-import { useStateContext } from "../../contexts/ContextConvenio.tsx";
+import { useStateContext } from "../../contexts/ContextBonificaciones.tsx";
 import { useEffect } from "react";
-import { TrashIcon, Pencil2Icon } from '@radix-ui/react-icons';
+import { TrashIcon, Pencil2Icon} from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
-import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
+import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 
-
-
-
-
-const ConceptoForm = () => {
+const BonificacionForm = () => {
     const { toast } = useToast()
-    const { convenio, setConvenio, loadingTable, setLoadingTable, setConvenios, setAccion, accion } = useStateContext();
+    const { bonificacion, setBonificacion, loadingTable, setLoadingTable, setBonificaciones, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
-
-
-
-    const form = useForm<z.infer<typeof conveniosSchema>>({
-        resolver: zodResolver(conveniosSchema),
-        defaultValues: {
-            id: convenio.id,
-            nombre: convenio.nombre,
-            descripcion: convenio.descripcion,
-        },
-    })
 
     //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "El convenio se ha creado correctamente",
+            description: "La bonificacion se ha creado correctamente",
             variant: "success",
 
         })
@@ -61,7 +47,7 @@ const ConceptoForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "El convenio se ha editado correctamente",
+            description: "La bonificacion se ha editado correctamente",
             variant: "success",
 
         })
@@ -69,7 +55,15 @@ const ConceptoForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "El convenio se ha eliminado correctamente",
+            description: "La bonificacion se ha eliminado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastRestaurado() {
+        toast({
+            title: "¡Éxito!",
+            description: "La bonificacion se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -90,13 +84,25 @@ const ConceptoForm = () => {
 
     }
 
-    function onSubmit(values: z.infer<typeof conveniosSchema>) {
+    const form = useForm<z.infer<typeof bonificacionesSchema>>({
+        resolver: zodResolver(bonificacionesSchema),
+        defaultValues: {
+            id: bonificacion.id,
+            nombre: bonificacion.nombre,
+            descripcion: bonificacion.descripcion,
+        },
+    })
+
+
+
+    function onSubmit(values: z.infer<typeof bonificacionesSchema>) {
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/Convenio/create`, values)
+            axiosClient.post(`/BonificacionesCatalogo/create`, values)
                 .then(() => {
+                    successToastCreado();
                     setLoading(false);
-                    setConvenio({
+                    setBonificacion({
                         id: 0,
                         nombre: "",
                         descripcion: "ninguna",
@@ -106,9 +112,8 @@ const ConceptoForm = () => {
                         nombre: "",
                         descripcion: "ninguna",
                     });
-                    getConvenios();
+                    getBonificacion();
                     console.log(values);
-                    successToastCreado();
                     //setNotification("usuario creado");
                 })
                 .catch((err) => {
@@ -122,15 +127,15 @@ const ConceptoForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/Convenio/update/${convenio.id}`, values)
+            axiosClient.put(`/BonificacionesCatalogo/update/${bonificacion.id}`, values)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
-                    getConvenios();
-                    setConvenio(data.data);
+                    getBonificacion();
                     successToastEditado();
+                    setBonificacion(data.data);
                     //setNotification("usuario creado");
                 })
                 .catch((err) => {
@@ -144,17 +149,17 @@ const ConceptoForm = () => {
         }
     }
 
-    //con este metodo obtienes las anomalias de la bd
-    const getConvenios = async () => {
+    //con este metodo obtienes las bonificaciones de la bd
+    const getBonificacion = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/Convenio");
+            const response = await axiosClient.get("/BonificacionesCatalogo");
             setLoadingTable(false);
-            setConvenios(response.data.data);
+            setBonificaciones(response.data.data);
             console.log(response.data.data);
         } catch (error) {
-            setLoadingTable(false);
             errorToast();
+            setLoadingTable(false);
             console.error("Failed to fetch anomalias:", error);
         }
     };
@@ -162,11 +167,12 @@ const ConceptoForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/Convenio/log_delete/${convenio.id}`);
-            getConvenios();
+            await axiosClient.put(`/BonificacionesCatalogo/log_delete/${bonificacion.id}`);
+            getBonificacion();
             setAccion("eliminar");
             successToastEliminado();
         } catch (error) {
+            errorToast();
             console.error("Failed to delete anomalia:", error);
         }
     };
@@ -179,7 +185,7 @@ const ConceptoForm = () => {
                 nombre: "",
                 descripcion: "ninguna",
             });
-            setConvenio({});
+            setBonificacion({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
@@ -191,7 +197,7 @@ const ConceptoForm = () => {
                 nombre: "",
                 descripcion: "ninguna",
             });
-            setConvenio({
+            setBonificacion({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
@@ -202,9 +208,9 @@ const ConceptoForm = () => {
             setErrors({});
             setAccion("");
             form.reset({
-                id: convenio.id,
-                nombre: convenio.nombre,
-                descripcion: convenio.descripcion,
+                id: bonificacion.id,
+                nombre: bonificacion.nombre,
+                descripcion: bonificacion.descripcion,
             });
         }
         if (accion == "editar") {
@@ -212,17 +218,17 @@ const ConceptoForm = () => {
             setErrors({});
         }
     }, [accion]);
-    return (
 
+    return (
         <div className="overflow-auto">
 
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nuevo Convenio</p>}
-                        {convenio.nombre != "" && <p className="text-muted-foreground text-[20px]">{convenio.nombre}</p>}
+                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nueva Bonificación</p>}
+                        {bonificacion.nombre != "" && <p className="text-muted-foreground text-[20px]">{bonificacion.nombre}</p>}
                     </div>
-                    {(convenio.nombre != null && convenio.nombre != "") &&
+                    { (bonificacion.nombre != null && bonificacion.nombre != "") &&
                         <>
                             <Modal
                                 method={onDelete}
@@ -253,10 +259,10 @@ const ConceptoForm = () => {
                                 <FormItem>
                                     <FormLabel>Nombre</FormLabel>
                                     <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre del convenio" {...field} />
+                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la bonificación" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El nombre del convenio.
+                                        El nombre de la bonificación.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -271,7 +277,7 @@ const ConceptoForm = () => {
                                     <FormControl>
                                         <Textarea
                                             readOnly={!abrirInput}
-                                            placeholder="Descripción del convenio"
+                                            placeholder="Descripcion de la bonificación"
                                             {...field}
                                         />
                                     </FormControl>
@@ -293,4 +299,4 @@ const ConceptoForm = () => {
     )
 }
 
-export default ConceptoForm
+export default BonificacionForm

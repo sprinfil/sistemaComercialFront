@@ -7,6 +7,7 @@ import Convenios from './Convenios'
 import Ajustes from './Ajustes'
 import Constancias from './Constancias'
 import GiroComercial from './GiroComercial'
+import Bonificaciones from './Bonificaciones'
 
 const Catalogos = () => {
 
@@ -34,6 +35,10 @@ const Catalogos = () => {
     {
         titulo: "Constancias",
         componente: <Constancias />
+      },
+      {
+        titulo: "Bonificaciones",
+        componente: <Bonificaciones />
       },
       {
         titulo: "Giro Comercial",

@@ -26,13 +26,73 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
-
+import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 
 const DescuentoForm = () => {
+    const { toast } = useToast()
     const { descuento, setDescuento, loadingTable, setLoadingTable, setDescuentos, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
+
+
+
+
+     //#region SUCCESSTOAST
+     function successToastCreado() {
+        toast({
+            title: "¡Éxito!",
+            description: "El descuento se ha creado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastEditado() {
+        toast({
+            title: "¡Éxito!",
+            description: "El descuento se ha editado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastEliminado() {
+        toast({
+            title: "¡Éxito!",
+            description: "El descuento se ha eliminado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastRestaurado() {
+        toast({
+            title: "¡Éxito!",
+            description: "El descuento se ha restaurado correctamente",
+            variant: "success",
+
+        })
+    }
+    //#endregion
+
+
+    //Funcion de errores para el Toast
+    function errorToast() {
+
+        toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "Algo salió mal.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+
+
+    }
+
+
+
+
+
 
 
     const form = useForm<z.infer<typeof descuentoSchema>>({
@@ -51,6 +111,7 @@ const DescuentoForm = () => {
         if (accion == "crear") {
             axiosClient.post(`/descuentos/create`, values)
                 .then(() => {
+                    successToastCreado();
                     setLoading(false);
                     setDescuento({
                         id: 0,
@@ -68,6 +129,7 @@ const DescuentoForm = () => {
                 })
                 .catch((err) => {
                     const response = err.response;
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -78,6 +140,7 @@ const DescuentoForm = () => {
         if (accion == "editar") {
             axiosClient.put(`/descuentos/update/${descuento.id}`, values)
                 .then((data) => {
+                    successToastEditado();
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
@@ -88,6 +151,7 @@ const DescuentoForm = () => {
                 })
                 .catch((err) => {
                     const response = err.response;
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -106,6 +170,7 @@ const DescuentoForm = () => {
             console.log(response.data.data);
         } catch (error) {
             setLoadingTable(false);
+            errorToast();
             console.error("Failed to fetch anomalias:", error);
         }
     };
@@ -117,8 +182,10 @@ const DescuentoForm = () => {
                 data: { id: descuento.id }
             });
             getDescuentos();
+            successToastEliminado();
             setAccion("eliminar");
         } catch (error) {
+            errorToast();
             console.error("Failed to delete anomalia:", error);
         }
     };

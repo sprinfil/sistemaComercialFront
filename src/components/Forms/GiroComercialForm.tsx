@@ -26,9 +26,12 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
-
+import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 
 const GiroComercialForm = () => {
+    const { toast } = useToast()
     const { girocomercial, setGiroComercial, loadingTable, setLoadingTable, setGirosComerciales, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
@@ -45,6 +48,54 @@ const GiroComercialForm = () => {
         },
     })
 
+    //#region SUCCESSTOAST
+    function successToastCreado() {
+        toast({
+            title: "¡Éxito!",
+            description: "La constancia se ha creado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastEditado() {
+        toast({
+            title: "¡Éxito!",
+            description: "La constancia se ha editado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastEliminado() {
+        toast({
+            title: "¡Éxito!",
+            description: "La constancia se ha eliminado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastRestaurado() {
+        toast({
+            title: "¡Éxito!",
+            description: "La constancia se ha restaurado correctamente",
+            variant: "success",
+
+        })
+    }
+    //#endregion
+
+
+    //Funcion de errores para el Toast
+    function errorToast() {
+
+        toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "Algo salió mal.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+
+
+    }
 
 
     function onSubmit(values: z.infer<typeof girocomercialSchema>) {
@@ -53,6 +104,7 @@ const GiroComercialForm = () => {
         if (accion == "crear") {
             axiosClient.post(`/GirosComercialesCatalogo/create`, values)
                 .then(() => {
+                    successToastCreado();
                     setLoading(false);
                     setGiroComercial({
                         id: 0,
@@ -72,6 +124,7 @@ const GiroComercialForm = () => {
                 })
                 .catch((err) => {
                     const response = err.response;
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -88,10 +141,12 @@ const GiroComercialForm = () => {
                     setAccion("");
                     getGirosComerciales();
                     setGiroComercial(data.data);
+                    successToastEditado();
                     //setNotification("usuario creado");
                 })
                 .catch((err) => {
                     const response = err.response;
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -110,6 +165,7 @@ const GiroComercialForm = () => {
             console.log(response.data.data);
         } catch (error) {
             setLoadingTable(false);
+            errorToast();
             console.error("Failed to fetch constancias:", error);
         }
     };
@@ -120,7 +176,9 @@ const GiroComercialForm = () => {
             await axiosClient.put(`/GirosComercialesCatalogo/log_delete/${girocomercial.id}`);
             getGirosComerciales();
             setAccion("eliminar");
+            successToastEliminado();
         } catch (error) {
+            errorToast();
             console.error("Failed to delete Giro Comercial:", error);
         }
     };
@@ -207,10 +265,10 @@ const GiroComercialForm = () => {
                                 <FormItem>
                                     <FormLabel>Nombre</FormLabel>
                                     <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre del Giro Comercial" {...field} />
+                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre del giro comercial" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El nombre del Giro Comercial.
+                                        El nombre del giro comercial.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
