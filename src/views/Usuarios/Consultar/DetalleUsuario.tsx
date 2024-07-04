@@ -46,7 +46,7 @@ const DetalleUsuario = () => {
             <div className='w-[300px]'>
               <MenuLateral options={options} />
             </div>
-            <div>
+            <div className='w-full'>
               <PantallaDetalleUsuario/>
             </div>
           </div>

@@ -12,7 +12,7 @@ const PantallaDetalleUsuario = () => {
     },[pantalla])
 
     return (
-        <div>{mostrarPantalla}</div>
+        <div className='w-full'>{mostrarPantalla}</div>
     )
 }
 
