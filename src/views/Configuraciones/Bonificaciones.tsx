@@ -1,6 +1,7 @@
 import BonificacionForm from '../../../components/Forms/BonificacionForm.tsx';
 import BonificacionTable from '../../../components/Tables/Components/BonificacionTable.tsx';
 import { ContextProvider } from '../../../contexts/ContextBonificaciones.tsx';
+import { useStateContext } from "../../../contexts/ContextBonificaciones.tsx";
 
 export default function Bonificaciones() {
 
@@ -21,7 +22,7 @@ return (
 
         {/*Formulario*/}
         <div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
-            <BonificacionForm />
+            <BonificacionFormEdit />
         </div>
 
         </div>
@@ -30,3 +31,20 @@ return (
 
   );
 }
+
+
+const BonificacionFormEdit = () => {
+
+    const { accion } = useStateContext();
+  
+    return (
+      <>
+          {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR*/}
+        {accion == "editar" ? (<div className='w-[65%] rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
+              <BonificacionForm />
+            </div>) : (<div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+              <BonificacionForm />
+            </div>)}
+      </>
+    );
+  };

@@ -166,6 +166,7 @@ const ConceptoForm = () => {
         }
     }
 
+    
 
     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
     const restaurarDato = (concepto_id: any) => {
