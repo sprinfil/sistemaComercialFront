@@ -21,9 +21,7 @@ export default function GiroComercial() {
           </div>
 
           {/*Formulario*/}
-          <div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
-            <GiroComercialForm />
-          </div>
+            <GiroComercialFormEdit />
 
         </div>
       </div>
@@ -31,3 +29,20 @@ export default function GiroComercial() {
 
   );
 }
+
+
+const GiroComercialFormEdit = () => {
+
+  const { accion } = useStateContext();
+
+  return (
+    <>
+        {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR*/}
+      {accion == "editar" ? (<div className='w-[65%] rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
+            <GiroComercialForm />
+          </div>) : (<div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+            <GiroComercialForm />
+          </div>)}
+    </>
+  );
+};
