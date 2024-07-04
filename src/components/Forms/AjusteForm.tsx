@@ -20,22 +20,71 @@ import axiosClient from '../../axios-client.ts';
 import Loader from "../../components/ui/Loader.tsx";
 import Error from "../../components/ui/Error.tsx";
 import { Textarea } from "../ui/textarea.tsx";
-
 import { useEffect } from "react";
 import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
-
 import { useStateContext } from "../../contexts/ContextAjuste.tsx";
-
+import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 
 const AjusteForm = () => {
+    const { toast } = useToast()
     const { ajuste, setAjuste, loadingTable, setLoadingTable, setAjustes, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
 
+    //#region SUCCESSTOAST
+    function successToastCreado() {
+        toast({
+            title: "¡Éxito!",
+            description: "El ajuste se ha creado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastEditado() {
+        toast({
+            title: "¡Éxito!",
+            description: "El ajuste se ha editado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastEliminado() {
+        toast({
+            title: "¡Éxito!",
+            description: "El ajuste se ha eliminado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastRestaurado() {
+        toast({
+            title: "¡Éxito!",
+            description: "El ajuste se ha restaurado correctamente",
+            variant: "success",
+
+        })
+    }
+    //#endregion
+
+
+    //Funcion de errores para el Toast
+    function errorToast() {
+
+        toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "Algo salió mal.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+
+
+    }
 
     const form = useForm<z.infer<typeof ajusteSchema>>({
         resolver: zodResolver(ajusteSchema),
@@ -54,6 +103,7 @@ const AjusteForm = () => {
         if (accion == "crear") {
             axiosClient.post(`/AjustesCatalogo/create`, values)
                 .then(() => {
+                    successToastCreado();
                     setLoading(false);
                     //SIEMPRE CHECAR LOS DATOS COINCIDAN CON EL MODELO
                     setAjuste({
@@ -74,6 +124,7 @@ const AjusteForm = () => {
                 })
                 .catch((err) => {
                     const response = err.response;
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -83,6 +134,7 @@ const AjusteForm = () => {
         if (accion == "editar") {
             axiosClient.put(`/AjustesCatalogo/update/${ajuste.id}`, values)
                 .then((data) => {
+                    successToastEditado();
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
@@ -93,6 +145,7 @@ const AjusteForm = () => {
                 })
                 .catch((err) => {
                     const response = err.response;
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -111,6 +164,7 @@ const AjusteForm = () => {
             console.log(response.data.data);
         } catch (error) {
             setLoadingTable(false);
+            errorToast();
             console.error("Failed to fetch anomalias:", error);
         }
     };
@@ -121,7 +175,9 @@ const AjusteForm = () => {
             await axiosClient.put(`/AjustesCatalogo/log_delete/${ajuste.id}`);
             getAjustes();
             setAccion("eliminar");
+            successToastEliminado();
         } catch (error) {
+            errorToast();
             console.error("Failed to delete ajuste:", error);
         }
     };
@@ -212,10 +268,10 @@ const AjusteForm = () => {
                                 <FormItem>
                                     <FormLabel>Nombre</FormLabel>
                                     <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe del Ajuste" {...field} />
+                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre del ajuste" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El nombre de la anomalia.
+                                        El nombre del ajuste.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -230,7 +286,7 @@ const AjusteForm = () => {
                                     <FormControl>
                                         <Textarea
                                             readOnly={!abrirInput}
-                                            placeholder="Descripcion del Ajuste"
+                                            placeholder="Descripcion del ajuste"
                                             {...field}
                                         />
                                     </FormControl>
