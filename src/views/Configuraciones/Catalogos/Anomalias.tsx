@@ -21,9 +21,7 @@ export default function Anomalias() {
           </div>
 
           {/*Formulario*/}
-          <div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
-            <AnomaliaForm />
-          </div>
+        <AnomaliasFormEdit/>
 
         </div>
       </div>
@@ -31,3 +29,19 @@ export default function Anomalias() {
 
   );
 }
+
+const AnomaliasFormEdit = () => {
+
+  const { accion } = useStateContext();
+
+  return (
+    <>
+        {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR a*/}
+      {accion == "editar" ? (<div className='w-[65%] rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
+            <AnomaliaForm />
+          </div>) : (<div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+            <AnomaliaForm />
+          </div>)}
+    </>
+  );
+};
