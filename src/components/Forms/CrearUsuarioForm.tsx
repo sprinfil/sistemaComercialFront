@@ -87,7 +87,7 @@ const CrearUsuarioForm = () => {
                                         <Input placeholder="Escribe el nombre del usuario" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El nombre de la crear usuario.
+                                        El nombre del usuario.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -130,12 +130,12 @@ const CrearUsuarioForm = () => {
                             name="telefono"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Telefono</FormLabel>
+                                    <FormLabel>Teléfono</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Escribe telefono del usuario" {...field} type='number' />
+                                        <Input type="number" placeholder="Escribe teléfono del usuario" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El telefono del usuario.
+                                        El teléfono del usuario.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -178,12 +178,12 @@ const CrearUsuarioForm = () => {
                             name="correo"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Correo electronico</FormLabel>
+                                    <FormLabel>Correo electrónico</FormLabel>
                                     <FormControl>
-                                        <Input  placeholder="Escribe el correo electronico" {...field} type='email'/>
+                                        <Input  placeholder="Escribe el correo electrónico" {...field} type='email'/>
                                     </FormControl>
                                     <FormDescription>
-                                        El correo electronico del usuario.
+                                        El correo electrónico del usuario.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
