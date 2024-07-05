@@ -4,8 +4,8 @@ import { z } from "zod";
 export const crearusuarionuevoSchema = z.object({
     id: z.number(),
     nombre: z.string().min(1, "El Nombre es requerido"),
-    apellidopaterno: z.string().min(1,"El apellido paterno es requerido" ),
-    apellidomaterno: z.string().min(1,"El apellido materno es requerido" ),
+    apellido_paterno: z.string().min(1,"El apellido paterno es requerido" ),
+    apellido_materno: z.string().min(1,"El apellido materno es requerido" ),
     telefono: z.string().min(1, "telefono del usuario es requerido").max(10, "El telefono no puede tener mas de 10 caracteres"),
     curp: z.string().max(18, "El curp no puede tener mas de 18 caracteres"),
     rfc: z.string().max(13, "El RFC no puede tener mas de 13 caracteres"),

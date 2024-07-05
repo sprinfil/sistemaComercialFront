@@ -36,8 +36,8 @@ const CrearUsuarioForm = () => {
         defaultValues: {
             id: 0,
             nombre: "",
-            apellidopaterno:"",
-            apellidomaterno:"",
+            apellido_paterno:"",
+            apellido_materno:"",
             telefono:"",
             curp: "",
             rfc: "",
@@ -48,15 +48,19 @@ const CrearUsuarioForm = () => {
     async function onSubmit(values: z.infer<typeof crearusuarionuevoSchema>) {
         setLoading(true);
         setErrors({});
-        console.log(values)
+        console.log('Valores enviados:', values);
+    
         try {
-            const response = await axiosClient.post('/ruta/del/api/crear-usuario', values);
+            const response = await axiosClient.post('/usuarios/create', values);
             console.log('Usuario creado:', response.data);
+            form.reset(); // Limpiar el formulario
             // Aquí puedes realizar alguna acción adicional, como redirigir al usuario o mostrar un mensaje de éxito
         } catch (error) {
             if (error.response && error.response.data) {
+                console.error('Errores de validación:', error.response.data);
                 setErrors(error.response.data);
             } else {
+                console.error('Error general:', error);
                 setErrors({ general: 'Ocurrió un error al crear el usuario' });
             }
         } finally {
@@ -95,7 +99,7 @@ const CrearUsuarioForm = () => {
                         />
                         <FormField
                             control={form.control}
-                            name="apellidopaterno"
+                            name="apellido_paterno"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Apellido paterno</FormLabel>
@@ -111,7 +115,7 @@ const CrearUsuarioForm = () => {
                         />
                         <FormField
                             control={form.control}
-                            name="apellidomaterno"
+                            name="apellido_materno"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Apellido materno</FormLabel>
