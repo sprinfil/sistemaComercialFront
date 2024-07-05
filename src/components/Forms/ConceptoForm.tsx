@@ -166,10 +166,11 @@ const ConceptoForm = () => {
         }
     }
 
+    
 
     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
     const restaurarDato = (concepto_id: any) => {
-        axiosClient.put(`/Concepto/restaurar/${concepto_id}`)
+        axiosClient.put(`/Concepto/restaurarDato/${concepto_id}`)
             .then(() => {
                 setLoading(false);
                 setAbrirInput(false);
