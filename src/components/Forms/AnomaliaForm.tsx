@@ -229,7 +229,7 @@ const AnomaliaForm = () => {
                 <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nueva Anomalia</p>}
+                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva anomalia</p>}
                             {anomalia.nombre != "" && <p className="text-muted-foreground text-[20px]">{anomalia.nombre}</p>}
                         </div>
                         {(anomalia.nombre != null && anomalia.nombre != "") &&
