@@ -38,7 +38,7 @@ export default function GiroComercialTable() {
     <div>
       <div onClick={()=>{setAccion("crear")}}>
         <IconButton>
-          <div className='flex gap-2 items-center'> Agregar nuevo Giro Comercial<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
+          <div className='flex gap-2 items-center'> Agregar nuevo giro comercial<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
       </div>
       <DataTable columns={columns} data={giroscomerciales} sorter='nombre' />

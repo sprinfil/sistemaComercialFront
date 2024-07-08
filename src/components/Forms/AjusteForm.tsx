@@ -235,7 +235,7 @@ const AjusteForm = () => {
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nueva Ajuste</p>}
+                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo ajuste</p>}
                         {ajuste.nombre != "" && <p className="text-muted-foreground text-[20px]">{ajuste.nombre}</p>}
                     </div>
                     {(ajuste.nombre != null && ajuste.nombre != "") &&
@@ -243,14 +243,18 @@ const AjusteForm = () => {
                             <Modal
                                 method={onDelete}
                                 button={
+                                    <a title = "Eliminar">
                                     <IconButton>
-                                        <TrashIcon className="w-[20px] h-[20px]" />
-                                    </IconButton>}
+                                <TrashIcon className="w-[20px] h-[20px]"/>
+                                    </IconButton>
+                                    </a>}
                             />
                             <div onClick={() => setAccion("editar")}>
+                            <a title = "Editar">
                                 <IconButton>
                                     <Pencil2Icon className="w-[20px] h-[20px]" />
                                 </IconButton>
+                                </a>
                             </div>
                         </>
                     }

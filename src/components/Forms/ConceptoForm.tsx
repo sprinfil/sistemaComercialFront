@@ -268,7 +268,7 @@ const ConceptoForm = () => {
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                    {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nuevo Concepto</p>}
+                    {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo concepto</p>}
                     {concepto.nombre != "" && <p className="text-muted-foreground text-[20px]">{concepto.nombre}</p>}
                     </div>
                     { (concepto.nombre != null && concepto.nombre != "") &&
@@ -276,14 +276,17 @@ const ConceptoForm = () => {
                             <Modal
                                 method={onDelete}
                                 button={
+                                    <a title = "Eliminar">
                                     <IconButton>
                                         <TrashIcon className="w-[20px] h-[20px]" />
-                                    </IconButton>}
+                                    </IconButton></a>}
                             />
                             <div onClick={() => setAccion("editar")}>
+                            <a title = "Editar">
                                 <IconButton>
                                     <Pencil2Icon className="w-[20px] h-[20px]" />
                                 </IconButton>
+                            </a>
                             </div>
                         </>
                     }

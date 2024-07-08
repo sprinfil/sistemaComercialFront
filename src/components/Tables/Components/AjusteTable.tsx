@@ -37,7 +37,7 @@ export default function AjusteTable() {
     <div>
       <div onClick={()=>{setAccion("crear")}}>
         <IconButton>
-          <div className='flex gap-2 items-center'> Agregar nuevo Ajuste<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
+          <div className='flex gap-2 items-center'> Agregar nuevo ajuste<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
       </div>
       <DataTable columns={columns} data={ajustes} sorter='nombre' />

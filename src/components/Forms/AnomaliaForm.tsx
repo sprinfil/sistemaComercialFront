@@ -179,14 +179,18 @@ const AnomaliaForm = () => {
                                     <Modal
                                         method={onDelete}
                                         button={
+                                            <a title = "Eliminar">
                                             <IconButton>
                                                 <TrashIcon className="w-[20px] h-[20px]" />
-                                            </IconButton>}
+                                            </IconButton>
+                                            </a>}
                                     />
                                     <div onClick={() => setAccion("editar")}>
+                                    <a title = "Editar">
                                         <IconButton>
                                             <Pencil2Icon className="w-[20px] h-[20px]" />
                                         </IconButton>
+                                        </a>
                                     </div>
                                 </>
                             }
@@ -228,7 +232,7 @@ const AnomaliaForm = () => {
                                                 />
                                             </FormControl>
                                             <FormDescription>
-                                                Agrega una pequeña descripción.
+                                                Agrega una breve descripción.
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
