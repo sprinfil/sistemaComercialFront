@@ -295,7 +295,7 @@ const AjusteForm = () => {
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        Agregar una breve descripción.
+                                        Agrega una breve descripción.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
