@@ -20,8 +20,8 @@ export default function DescuentoTable() {
     try {
       const response = await axiosClient.get("/descuentos");
       setLoadingTable(false);
-      setDescuentos(response.data.data);
-      console.log(response.data.data);
+      setDescuentos(response.data);
+      console.log(response.data);
     } catch (error) {
       setLoadingTable(false);
       console.error("Failed to fetch descuento:", error);
