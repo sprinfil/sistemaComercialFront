@@ -18,7 +18,7 @@ export default function DescuentoTable() {
   const getDescuentos = async () => {
     setLoadingTable(true);
     try {
-      const response = await axiosClient.get("/descuentos");
+      const response = await axiosClient.get("/descuentos-catalogos");
       setLoadingTable(false);
       setDescuentos(response.data);
       console.log(response.data);

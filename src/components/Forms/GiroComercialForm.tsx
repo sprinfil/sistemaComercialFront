@@ -52,7 +52,7 @@ const GiroComercialForm = () => {
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La constancia se ha creado correctamente",
+            description: "El giro comercial se ha creado correctamente",
             variant: "success",
 
         })
@@ -60,7 +60,7 @@ const GiroComercialForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La constancia se ha editado correctamente",
+            description: "El giro comercial se ha editado correctamente",
             variant: "success",
 
         })
@@ -68,7 +68,7 @@ const GiroComercialForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La constancia se ha eliminado correctamente",
+            description: "El giro comercial se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -76,7 +76,7 @@ const GiroComercialForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La constancia se ha restaurado correctamente",
+            description: "El giro comercial se ha restaurado correctamente",
             variant: "success",
 
         })

@@ -98,7 +98,7 @@ const BonificacionForm = () => {
     function onSubmit(values: z.infer<typeof bonificacionesSchema>) {
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/BonificacionesCatalogo/create`, values)
+            axiosClient.post(`/bonificacionesCatalogo/create`, values)
                 .then(() => {
                     successToastCreado();
                     setLoading(false);
@@ -153,21 +153,21 @@ const BonificacionForm = () => {
     const getBonificacion = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/BonificacionesCatalogo");
+            const response = await axiosClient.get("/bonificacionesCatalogo");
             setLoadingTable(false);
             setBonificaciones(response.data.data);
             console.log(response.data.data);
         } catch (error) {
             errorToast();
             setLoadingTable(false);
-            console.error("Failed to fetch anomalias:", error);
+            console.error("Failed to fetch bonificaciones:", error);
         }
     };
 
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/BonificacionesCatalogo/log_delete/${bonificacion.id}`);
+            await axiosClient.delete(`/BonificacionesCatalogo/log_delete/${bonificacion.id}`);
             getBonificacion();
             setAccion("eliminar");
             successToastEliminado();
