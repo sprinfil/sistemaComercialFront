@@ -29,7 +29,7 @@ import Modal from "../ui/Modal.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx";
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
-import { Concepto } from "../Tables/Columns/ConceptosColumns.tsx";
+import { TipoDeToma } from "../Tables/Columns/TipoDeTomaColumns.tsx";
 
 
 
@@ -197,8 +197,8 @@ const TipoDeTomaForm = () => {
         try {
             const response = await axiosClient.get("/TipoToma");
             setLoadingTable(false);
-            setTipoDeTomas(response.data);
-            console.log(response.data);
+            setTipoDeTomas(response.data.data);
+            console.log(response.data.data);
         } catch (error) {
             setLoadingTable(false);
             console.error("Fallo la consulta del concepto:", error);

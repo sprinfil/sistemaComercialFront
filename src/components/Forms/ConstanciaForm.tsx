@@ -26,13 +26,65 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
-
+import ModalReactivacion from "../ui/ModalReactivación.tsx";
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 
 const ConstanciaForm = () => {
+    const { toast } = useToast()
     const { constancia, setConstancia, loadingTable, setLoadingTable, setConstancias, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
+
+//#region SUCCESSTOAST
+function successToastCreado() {
+    toast({
+        title: "¡Éxito!",
+        description: "La constancia se ha creado correctamente",
+        variant: "success",
+
+    })
+}
+function successToastEditado() {
+    toast({
+        title: "¡Éxito!",
+        description: "La constancia se ha editado correctamente",
+        variant: "success",
+
+    })
+}
+function successToastEliminado() {
+    toast({
+        title: "¡Éxito!",
+        description: "La constancia se ha eliminado correctamente",
+        variant: "success",
+
+    })
+}
+function successToastRestaurado() {
+    toast({
+        title: "¡Éxito!",
+        description: "La constancia se ha restaurado correctamente",
+        variant: "success",
+
+    })
+}
+//#endregion
+
+
+//Funcion de errores para el Toast
+function errorToast() {
+
+    toast({
+        variant: "destructive",
+        title: "Oh, no. Error",
+        description: "Algo salió mal.",
+        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+    })
+
+
+}
 
 
     const form = useForm<z.infer<typeof constanciaSchema>>({
@@ -50,6 +102,7 @@ const ConstanciaForm = () => {
         if (accion == "crear") {
             axiosClient.post(`/ConstanciasCatalogo/create`, values)
                 .then(() => {
+                    successToastCreado();
                     setLoading(false);
                     setConstancia({
                         id: 0,
@@ -67,6 +120,7 @@ const ConstanciaForm = () => {
                 })
                 .catch((err) => {
                     const response = err.response;
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -83,10 +137,12 @@ const ConstanciaForm = () => {
                     setAccion("");
                     getConstancias();
                     setConstancia(data.data);
+                    successToastEditado();
                     //setNotification("usuario creado");
                 })
                 .catch((err) => {
                     const response = err.response;
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -105,6 +161,7 @@ const ConstanciaForm = () => {
             console.log(response.data.data);
         } catch (error) {
             setLoadingTable(false);
+            errorToast();
             console.error("Failed to fetch constancias:", error);
         }
     };
@@ -115,7 +172,9 @@ const ConstanciaForm = () => {
             await axiosClient.put(`/ConstanciasCatalogo/log_delete/${constancia.id}`);
             getConstancias();
             setAccion("eliminar");
+            successToastEliminado();
         } catch (error) {
+            errorToast();
             console.error("Failed to delete anomalia:", error);
         }
     };

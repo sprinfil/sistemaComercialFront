@@ -23,7 +23,7 @@ const Modal = ({ method, button }) => {
                 <AlertDialogTrigger>{button}</AlertDialogTrigger>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>¿Estas Seguro?</AlertDialogTitle>
+                        <AlertDialogTitle>¿Estas seguro que desea eliminar este registro?</AlertDialogTitle>
                         <AlertDialogDescription>
                             
                         </AlertDialogDescription>

@@ -18,7 +18,7 @@ useEffect(() => {
 const getBonificaciones = async () => {
     setLoadingTable(true);
     try {
-    const response = await axiosClient.get("/AnomaliasCatalogo");
+    const response = await axiosClient.get("/bonificacionesCatalogo");
     setLoadingTable(false);
     setBonificaciones(response.data.data);
     console.log(response.data.data);

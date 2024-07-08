@@ -171,7 +171,7 @@ const AnomaliaForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/AnomaliasCatalogo/log_delete/${anomalia.id}`);
+            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${anomalia.id}`);
             getAnomalias();
             setAccion("eliminar");
             successToastEliminado();
