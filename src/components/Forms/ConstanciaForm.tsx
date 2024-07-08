@@ -169,7 +169,7 @@ const ConstanciaForm = () => {
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nueva Constancia</p>}
+                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva constancia</p>}
                         {constancia.nombre != "" && <p className="text-muted-foreground text-[20px]">{constancia.nombre}</p>}
                     </div>
                     {(constancia.nombre != null && constancia.nombre != "") &&
@@ -177,14 +177,17 @@ const ConstanciaForm = () => {
                             <Modal
                                 method={onDelete}
                                 button={
+                                    <a title = "Eliminar">
                                     <IconButton>
                                         <TrashIcon className="w-[20px] h-[20px]" />
-                                    </IconButton>}
+                                    </IconButton></a>}
                             />
                             <div onClick={() => setAccion("editar")}>
+                            <a title = "Editar">
                                 <IconButton>
                                     <Pencil2Icon className="w-[20px] h-[20px]" />
                                 </IconButton>
+                            </a>
                             </div>
                         </>
                     }
@@ -205,7 +208,7 @@ const ConstanciaForm = () => {
                                         <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la constancia" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El nombre de la anomalia.
+                                        El nombre de la constancia.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -220,12 +223,12 @@ const ConstanciaForm = () => {
                                     <FormControl>
                                         <Textarea
                                             readOnly={!abrirInput}
-                                            placeholder="Descripcion de la constancia"
+                                            placeholder="Descripción de la constancia"
                                             {...field}
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        Agrega una pequeña descripción.
+                                        Agrega una breve descripción.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

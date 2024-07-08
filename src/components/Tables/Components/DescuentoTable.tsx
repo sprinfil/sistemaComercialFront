@@ -20,8 +20,8 @@ export default function DescuentoTable() {
     try {
       const response = await axiosClient.get("/descuentos");
       setLoadingTable(false);
-      setDescuentos(response.data.data);
-      console.log(response.data.data);
+      setDescuentos(response.data);
+      console.log(response.data);
     } catch (error) {
       setLoadingTable(false);
       console.error("Failed to fetch descuento:", error);
@@ -37,7 +37,7 @@ export default function DescuentoTable() {
     <div>
       <div onClick={()=>{setAccion("crear")}}>
         <IconButton>
-          <div className='flex gap-2 items-center'> Agregar Nuevo Descuento<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
+          <div className='flex gap-2 items-center'> Agregar nuevo descuento<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
       </div>
       <DataTable columns={columns} data={descuentos} sorter='nombre' />

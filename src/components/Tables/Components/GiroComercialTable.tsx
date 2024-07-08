@@ -18,10 +18,11 @@ export default function GiroComercialTable() {
   const getGirosComerciales = async () => {
     setLoadingTable(true);
     try {
-      const response = await axiosClient.get("/GirosComercialesCatalogo");
+      const response = await axiosClient.get("/Giros");
       setLoadingTable(false);
-      setGirosComerciales(response.data.data);
-      console.log(response.data.data);
+      setGirosComerciales(response.data);
+      console.log(response.data);
+      console.log(response);
     } catch (error) {
       setLoadingTable(false);
       console.error("Failed to fetch Giros Comerciales:", error);
@@ -37,7 +38,7 @@ export default function GiroComercialTable() {
     <div>
       <div onClick={()=>{setAccion("crear")}}>
         <IconButton>
-          <div className='flex gap-2 items-center'> Agregar nuevo Giro Comercial<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
+          <div className='flex gap-2 items-center'> Agregar nuevo giro comercial<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
       </div>
       <DataTable columns={columns} data={giroscomerciales} sorter='nombre' />

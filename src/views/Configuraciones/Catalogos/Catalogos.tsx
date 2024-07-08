@@ -7,6 +7,9 @@ import Convenios from './Convenios'
 import Ajustes from './Ajustes'
 import Constancias from './Constancias'
 import GiroComercial from './GiroComercial'
+import Bonificaciones from './Bonificaciones'
+import TipoDeToma from './TipoDeToma'
+
 
 const Catalogos = () => {
 
@@ -36,14 +39,22 @@ const Catalogos = () => {
         componente: <Constancias />
       },
       {
+        titulo: "Bonificaciones",
+        componente: <Bonificaciones />
+      },
+      {
         titulo: "Giro Comercial",
         componente: <GiroComercial />
+      },
+      {
+        titulo: "Tipo de toma",
+        componente: <TipoDeToma />
       },
   ]
 
   return (
-    <div>
-      <Tabs defaultValue="account" className="w-full">
+    <div className='w-full '>
+      <Tabs defaultValue="Anomalias" className="">
 
         <TabsList>
           {opciones.map((opcion, index) => (

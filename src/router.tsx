@@ -9,6 +9,7 @@ import Poligonos from './views/PoligonosGeograficos/Poligonos';
 import { Proximamente } from './views/Layout/Proximamente';
 import  DetalleUsuario  from './views/Usuarios/Consultar/DetalleUsuario';
 import CrearUsuarioNuevo from './views/Usuarios/Crear/CrearUsuarioNuevo';
+import Roles from './views/Configuraciones/Roles/Roles';
 
 const router = createBrowserRouter ([
     {
@@ -26,6 +27,10 @@ const router = createBrowserRouter ([
             {
                 path:'/catalogos',
                 element: <Catalogos/>
+            },
+            {
+                path:'/roles',
+                element: <Roles/>
             },
             {
 

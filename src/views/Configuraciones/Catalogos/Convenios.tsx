@@ -2,6 +2,7 @@ import React from 'react'
 import ConvenioTable from '../../../components/Tables/Components/ConvenioTable'
 import ConvenioForm from '../../../components/Forms/ConvenioForm'
 import { ContextProvider } from "../../../contexts/ContextConvenio.tsx";
+import { useStateContext } from "../../../contexts/ContextConvenio.tsx";
 
 
 const Convenios = () => {
@@ -19,9 +20,7 @@ const Convenios = () => {
         </div>
 
         {/*Formulario*/}
-        <div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
-          <ConvenioForm />
-        </div>
+          <ConveniosFormEdit />
 
       </div>
     </div>
@@ -30,3 +29,20 @@ const Convenios = () => {
 }
 
 export default Convenios
+
+
+const ConveniosFormEdit = () => {
+
+  const { accion } = useStateContext();
+
+  return (
+    <>
+        {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
+      {accion == "editar" ? (<div className='w-[65%] rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
+            <ConvenioForm />
+          </div>) : (<div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+            <ConvenioForm />
+          </div>)}
+    </>
+  );
+};

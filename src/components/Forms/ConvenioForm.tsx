@@ -108,10 +108,12 @@ const ConceptoForm = () => {
                     });
                     getConvenios();
                     console.log(values);
+                    successToastCreado();
                     //setNotification("usuario creado");
                 })
                 .catch((err) => {
                     const response = err.response;
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -128,10 +130,12 @@ const ConceptoForm = () => {
                     setAccion("");
                     getConvenios();
                     setConvenio(data.data);
+                    successToastEditado();
                     //setNotification("usuario creado");
                 })
                 .catch((err) => {
                     const response = err.response;
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -150,6 +154,7 @@ const ConceptoForm = () => {
             console.log(response.data.data);
         } catch (error) {
             setLoadingTable(false);
+            errorToast();
             console.error("Failed to fetch anomalias:", error);
         }
     };
@@ -160,6 +165,7 @@ const ConceptoForm = () => {
             await axiosClient.put(`/Convenio/log_delete/${convenio.id}`);
             getConvenios();
             setAccion("eliminar");
+            successToastEliminado();
         } catch (error) {
             console.error("Failed to delete anomalia:", error);
         }
@@ -209,11 +215,10 @@ const ConceptoForm = () => {
     return (
 
         <div className="overflow-auto">
-
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nueva Anomalia</p>}
+                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo convenio</p>}
                         {convenio.nombre != "" && <p className="text-muted-foreground text-[20px]">{convenio.nombre}</p>}
                     </div>
                     {(convenio.nombre != null && convenio.nombre != "") &&
@@ -221,14 +226,17 @@ const ConceptoForm = () => {
                             <Modal
                                 method={onDelete}
                                 button={
+                                    <a title = "Eliminar">
                                     <IconButton>
                                         <TrashIcon className="w-[20px] h-[20px]" />
-                                    </IconButton>}
+                                    </IconButton></a>}
                             />
                             <div onClick={() => setAccion("editar")}>
+                            <a title = "Editar">
                                 <IconButton>
                                     <Pencil2Icon className="w-[20px] h-[20px]" />
                                 </IconButton>
+                            </a>
                             </div>
                         </>
                     }
@@ -250,7 +258,7 @@ const ConceptoForm = () => {
                                         <Input readOnly={!abrirInput} placeholder="Escribe el nombre del convenio" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El nombre de la anomalia.
+                                        El nombre del convenio.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -265,7 +273,7 @@ const ConceptoForm = () => {
                                     <FormControl>
                                         <Textarea
                                             readOnly={!abrirInput}
-                                            placeholder="Descripcion del Conveio"
+                                            placeholder="Descripción del convenio"
                                             {...field}
                                         />
                                     </FormControl>

@@ -43,7 +43,7 @@ const MenuSuperior = () => {
                 },
                 {
                     titulo: "Crear Nuevo Usuario",
-                    descripcion: "Registra un nuevo ususario sin contrato.",
+                    descripcion: "Registra un nuevo usuario.",
                     route: "/CrearUsuario"
                 }
             ]
@@ -141,7 +141,7 @@ const MenuSuperior = () => {
                 {
                     titulo: "Roles",
                     descripcion: "Gestiona los roles del sistema.",
-                    route: "/proximamente"
+                    route: "/roles"
                 },
                 {
                     titulo: "Configuraciones Generales",
@@ -181,7 +181,7 @@ const MenuSuperior = () => {
 
 
     return (
-        <div className=' bg-background h-[9vh] border border-border shadow-sm relative flex items-center select-none'>
+        <div className=' bg-background h-[9vh] border-b border-border shadow-sm relative flex items-center select-none'>
             {/*logo*/}
             {/*
                         <div className='h-full min-w-[60px] max-w-[60px] min-h-[60px] max-h-[60px] p-[10px]'>
