@@ -25,19 +25,21 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   sorter: string;
-  onRowClick?: (row: TData) => void; // Nueva prop
+  onRowClick?: (row: TData) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   sorter,
-  onRowClick, // Nueva prop
+  onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
+
   const table = useReactTable({
     data,
     columns,
@@ -53,6 +55,11 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   });
+
+  const handleRowClick = (rowId: string, rowData: TData) => {
+    setSelectedRow(rowId);
+    onRowClick?.(rowData);
+  };
 
   return (
     <div className="">
@@ -78,9 +85,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   );
                 })}
@@ -93,9 +100,10 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  onClick={() => onRowClick?.(row.original)} // AQUI SE AÑADIO EL ROWCLICK
-                  className="cursor-pointer hover:bg-gray-200" // Para que al pasar el mouse aparezca gris
+                  onClick={() => handleRowClick(row.id, row.original)}
+                  className={`cursor-pointer hover:bg-gray-200 ${
+                    selectedRow === row.id ? "bg-gray-300" : ""
+                  }`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -135,3 +143,4 @@ export function DataTable<TData, TValue>({
     </div>
   );
 }
+
