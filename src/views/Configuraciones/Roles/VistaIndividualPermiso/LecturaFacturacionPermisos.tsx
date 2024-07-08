@@ -15,6 +15,16 @@ import {
   FormMessage,
 } from "../../../../components/ui/form.tsx";
 import { Input } from '../../../../components/ui/input.tsx';
+import { DataTable } from '../../../../components/ui/DataTable.tsx';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 export const LecturaFacturacionPermisos = () => {
   const form = useForm<z.infer<typeof AnomaliaPermissionsSchema>>({
@@ -35,111 +45,43 @@ export const LecturaFacturacionPermisos = () => {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="space-y-2 border border-border p-4 rounded-md mb-[20px]">
-            <p>Permisos del catalogo</p>
-            <FormField
-              control={form.control}
-              name="VerAnomalias"
-              render={({ field }) => (
-                <FormItem>
-                  <div className='w-full  relative  py-[10px] flex items-center rounded-md border border-border px-[10px]'>
-                    <div>
-                      <p>Ver Anomalias</p>
-                      <p className='text-muted-foreground text-[13px]'>Permite ver las anomalais del catalogo</p>
-                    </div>
-                    <FormControl>
-                      <div className='absolute right-3'>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </div>
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="CrearAnomalias"
-              render={({ field }) => (
-                <FormItem>
-                  <div className='w-full  relative  py-[10px] flex items-center rounded-md border border-border px-[10px]'>
-                    <div>
-                      <p>Crear Anomalias</p>
-                      <p className='text-muted-foreground text-[13px]'>Permite Crear las anomalias en el catalogo</p>
-                    </div>
-                    <FormControl>
-                      <div className='absolute right-3'>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </div>
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="EditarAnomalias"
-              render={({ field }) => (
-                <FormItem>
-                  <div className='w-full  relative  py-[10px] flex items-center rounded-md border border-border px-[10px]'>
-                    <div>
-                      <p>Editar Anomalias</p>
-                      <p className='text-muted-foreground text-[13px]'>Permite Editar Anomalias en el catalogo</p>
-                    </div>
-                    <FormControl>
-                      <div className='absolute right-3'>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </div>
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="EliminarAnomalias"
-              render={({ field }) => (
-                <FormItem>
-                  <div className='w-full  relative  py-[10px] flex items-center rounded-md border border-border px-[10px]'>
-                    <div>
-                      <p>Eliminar Anomalias</p>
-                      <p className='text-muted-foreground text-[13px]'>Eliminar</p>
-                    </div>
-                    <FormControl>
-                      <div className='absolute right-3'>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </div>
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-
-              )}
-            />
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Modulo</TableHead>
+                <TableHead>Ver</TableHead>
+                <TableHead>Crear</TableHead>
+                <TableHead>Editar</TableHead>
+                <TableHead>Eliminar</TableHead>
+                <TableHead>Todos</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>Catalogo De Anomalias</TableCell>
+                <TableCell>  <FormField
+                  control={form.control}
+                  name="VerAnomalias"
+                  render={({ field }) => (
+                    <FormItem>
+                        <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                        </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
 
           {/* Other form fields go here */}
-          {/*       <Button type="submit">Guardar</Button> */}
+          {/*     <Button type="submit">Guardar</Button> */}
+
 
         </form>
       </Form>

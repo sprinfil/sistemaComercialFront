@@ -34,7 +34,6 @@ export default function AnomaliaTable() {
   {
     setAnomalia(anomalia);
     setAccion("ver");
-
   };
 
 
