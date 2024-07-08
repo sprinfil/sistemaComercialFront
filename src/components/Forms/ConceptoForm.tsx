@@ -152,7 +152,7 @@ const ConceptoForm = () => {
                     setAbrirInput(false);
                     setAccion("");
                     getConcepto();
-                    setConcepto(data.data);
+                    setConcepto(data);
                     successToastEditado(); //toast editado
                 })
                 .catch((err) => {
@@ -170,7 +170,7 @@ const ConceptoForm = () => {
 
     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
     const restaurarDato = (concepto_id: any) => {
-        axiosClient.put(`/Concepto/restaurar/${concepto_id}`)
+        axiosClient.put(`/Concepto/restaurarDato/${concepto_id}`)
             .then(() => {
                 setLoading(false);
                 setAbrirInput(false);
@@ -197,8 +197,8 @@ const ConceptoForm = () => {
         try {
             const response = await axiosClient.get("/Concepto");
             setLoadingTable(false);
-            setConceptos(response.data.data);
-            console.log(response.data.data);
+            setConceptos(response.data);
+            console.log(response.data);
         } catch (error) {
             setLoadingTable(false);
             console.error("Fallo la consulta del concepto:", error);
