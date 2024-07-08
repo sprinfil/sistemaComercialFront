@@ -26,13 +26,66 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
+import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 
 
 const AnomaliaForm = () => {
+    const { toast } = useToast()
     const { anomalia, setAnomalia, loadingTable, setLoadingTable, setAnomalias, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
+
+     //#region SUCCESSTOAST
+    function successToastCreado() {
+        toast({
+            title: "¡Éxito!",
+            description: "La anomalía se ha creado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastEditado() {
+        toast({
+            title: "¡Éxito!",
+            description: "La anomalía  se ha editado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastEliminado() {
+        toast({
+            title: "¡Éxito!",
+            description: "La anomalía  se ha eliminado correctamente",
+            variant: "success",
+
+        })
+    }
+    function successToastRestaurado() {
+        toast({
+            title: "¡Éxito!",
+            description: "La anomalía  se ha restaurado correctamente",
+            variant: "success",
+
+        })
+    }
+    //#endregion
+
+
+    //Funcion de errores para el Toast
+    function errorToast() {
+
+        toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "Algo salió mal.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+
+
+    }
 
 
     const form = useForm<z.infer<typeof anomaliaSchema>>({
@@ -63,11 +116,13 @@ const AnomaliaForm = () => {
                         descripcion: "ninguna",
                     });
                     getAnomalias();
+                    successToastCreado();
                     console.log(values);
                     //setNotification("usuario creado");
                 })
                 .catch((err) => {
                     const response = err.response;
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -85,9 +140,11 @@ const AnomaliaForm = () => {
                     getAnomalias();
                     setAnomalia(data.data);
                     //setNotification("usuario creado");
+                    successToastEditado();
                 })
                 .catch((err) => {
                     const response = err.response;
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -106,6 +163,7 @@ const AnomaliaForm = () => {
             console.log(response.data.data);
         } catch (error) {
             setLoadingTable(false);
+            errorToast();
             console.error("Failed to fetch anomalias:", error);
         }
     };
@@ -113,10 +171,12 @@ const AnomaliaForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/AnomaliasCatalogo/log_delete/${anomalia.id}`);
+            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${anomalia.id}`);
             getAnomalias();
             setAccion("eliminar");
+            successToastEliminado();
         } catch (error) {
+            errorToast();
             console.error("Failed to delete anomalia:", error);
         }
     };
@@ -169,7 +229,7 @@ const AnomaliaForm = () => {
                 <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nueva Anomalia</p>}
+                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva anomalia</p>}
                             {anomalia.nombre != "" && <p className="text-muted-foreground text-[20px]">{anomalia.nombre}</p>}
                         </div>
                         {(anomalia.nombre != null && anomalia.nombre != "") &&

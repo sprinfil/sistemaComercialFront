@@ -9,7 +9,7 @@ import { PlusCircledIcon } from '@radix-ui/react-icons';
 
 export default function ConstanciaTable() {
 
-  const { constancias, setConstancias, loadingTable, setLoadingTable, setAccion } = useStateContext();
+  const { constancias, setConstancias, loadingTable, setLoadingTable, setAccion, setConstancia} = useStateContext();
 
   useEffect(() => {
     getCosntancias();
@@ -28,6 +28,14 @@ export default function ConstanciaTable() {
     }
   };
 
+  
+  const HandleClickRow = (constancia: Constancia) =>
+    {
+      setConstancia(constancia);
+      setAccion("ver");
+    }
+  
+
   if (loadingTable) {
     return <div><Loader /></div>;
   }
@@ -40,7 +48,7 @@ export default function ConstanciaTable() {
           <div className='flex gap-2 items-center'> Agregar nueva constancia<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
       </div>
-      <DataTable columns={columns} data={constancias} sorter='nombre' />
+      <DataTable columns={columns} data={constancias} sorter='nombre' onRowClick={HandleClickRow}/>
     </div>
   );
 }

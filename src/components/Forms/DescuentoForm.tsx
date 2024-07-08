@@ -109,7 +109,7 @@ const DescuentoForm = () => {
     function onSubmit(values: z.infer<typeof descuentoSchema>) {
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/descuentos/create`, values)
+            axiosClient.post(`/descuentos-catalogos`, values)
                 .then(() => {
                     successToastCreado();
                     setLoading(false);
@@ -138,7 +138,7 @@ const DescuentoForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/descuentos/update/${descuento.id}`, values)
+            axiosClient.put(`/descuentos-catalogos/${descuento.id}`, values)
                 .then((data) => {
                     successToastEditado();
                     setLoading(false);
@@ -164,10 +164,10 @@ const DescuentoForm = () => {
     const getDescuentos = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/descuentos");
+            const response = await axiosClient.get("/descuentos-catalogos");
             setLoadingTable(false);
-            setDescuentos(response.data.data);
-            console.log(response.data.data);
+            setDescuentos(response.data);
+            console.log(response.data);
         } catch (error) {
             setLoadingTable(false);
             errorToast();
@@ -178,7 +178,7 @@ const DescuentoForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/descuentos/log_delete/${descuento.id}`, {
+            await axiosClient.delete(`/descuentos-catalogos/${descuento.id}`, {
                 data: { id: descuento.id }
             });
             getDescuentos();

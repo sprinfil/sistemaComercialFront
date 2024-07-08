@@ -9,7 +9,7 @@ import { PlusCircledIcon } from '@radix-ui/react-icons';
 
 export default function BonificacionTable() {
 
-const { bonificaciones, setBonificaciones, loadingTable, setLoadingTable, setAccion } = useStateContext();
+const { bonificaciones, setBonificaciones, loadingTable, setLoadingTable, setAccion, setBonificacion} = useStateContext();
 
 useEffect(() => {
     getBonificaciones();
@@ -18,7 +18,7 @@ useEffect(() => {
 const getBonificaciones = async () => {
     setLoadingTable(true);
     try {
-    const response = await axiosClient.get("/AnomaliasCatalogo");
+    const response = await axiosClient.get("/bonificacionesCatalogo");
     setLoadingTable(false);
     setBonificaciones(response.data.data);
     console.log(response.data.data);
@@ -27,6 +27,14 @@ const getBonificaciones = async () => {
     console.error("Failed to fetch bonificaciones:", error);
     }
 };
+
+
+const HandleClickRow = (bonificacion: Bonificacion) =>
+    {
+    setBonificacion(bonificacion);
+    setAccion("ver");
+}
+
 
 if (loadingTable) {
     return <div><Loader /></div>;
@@ -40,7 +48,7 @@ return (
         <div className='flex gap-2 items-center'> Agregar nueva bonificación<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
     </div>
-    <DataTable columns={columns} data={bonificaciones} sorter='nombre' />
+    <DataTable columns={columns} data={bonificaciones} sorter='nombre' onRowClick={HandleClickRow} />
     </div>
 );
 }

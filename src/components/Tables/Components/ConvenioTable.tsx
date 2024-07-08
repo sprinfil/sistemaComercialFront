@@ -9,7 +9,7 @@ import { PlusCircledIcon } from '@radix-ui/react-icons';
 
 export default function ConceptoTable() {
 
-  const { convenios, setConvenios, loadingTable, setLoadingTable, setAccion } = useStateContext();
+  const { convenios, setConvenios, loadingTable, setLoadingTable, setAccion, setConvenio} = useStateContext();
 
   useEffect(() => {
     getConcepto();
@@ -28,6 +28,13 @@ export default function ConceptoTable() {
     }
   };
 
+  const HandleClickRow = (convenio: Convenio) =>
+    {
+      setConvenio(convenio);
+      setAccion("ver");
+    }
+  
+
   if (loadingTable) {
     return <div><Loader /></div>;
   }
@@ -40,7 +47,7 @@ export default function ConceptoTable() {
           <div className='flex gap-2 items-center'> Agregar nuevo convenio <PlusCircledIcon className='w-[20px] h-[20px]'/></div>
         </IconButton>
       </div>
-      <DataTable columns={columns} data={convenios} sorter='nombre' />
+      <DataTable columns={columns} data={convenios} sorter='nombre' onRowClick={HandleClickRow}/>
     </div>
   );
 }

@@ -22,17 +22,13 @@ import Error from "../../components/ui/Error.tsx";
 import { Textarea } from "../ui/textarea.tsx";
 import { useStateContext } from "../../contexts/ContextTipoDeToma.tsx";
 import { useEffect } from "react";
-import { TrashIcon, Pencil2Icon, PlusCircledIcon, ColorWheelIcon } from '@radix-ui/react-icons';
+import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
-import ModalReactivacion from "../ui/ModalReactivación.tsx";
+import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
-import { Concepto } from "../Tables/Columns/ConceptosColumns.tsx";
-
-
-
 
 
 const TipoDeTomaForm = () => {
@@ -41,16 +37,12 @@ const TipoDeTomaForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
-    const [conceptoIdParaRestaurar, setConceptoIdParaRestaurar] = useState(null);
-    const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
 
-
-
-    //#region SUCCESSTOAST
+     //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "El tipo de toma se ha creado correctamente",
+            description: "La anomalía se ha creado correctamente",
             variant: "success",
 
         })
@@ -58,7 +50,7 @@ const TipoDeTomaForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "El tipo de toma se ha editado correctamente",
+            description: "La anomalía  se ha editado correctamente",
             variant: "success",
 
         })
@@ -66,7 +58,7 @@ const TipoDeTomaForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "El tipo de toma se ha eliminado correctamente",
+            description: "La anomalía  se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -74,7 +66,7 @@ const TipoDeTomaForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "El tipo de toma se ha restaurado correctamente",
+            description: "La anomalía  se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -96,10 +88,6 @@ const TipoDeTomaForm = () => {
     }
 
 
-
-
-
-
     const form = useForm<z.infer<typeof TipoDeTomaSchema>>({
         resolver: zodResolver(TipoDeTomaSchema),
         defaultValues: {
@@ -114,50 +102,49 @@ const TipoDeTomaForm = () => {
     function onSubmit(values: z.infer<typeof TipoDeTomaSchema>) {
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/Concepto/create`, values)
-                .then((response) => {
-                    const data = response.data;
-                    if (data.restore) {
-                        setConceptoIdParaRestaurar(data.concepto_id);
-                        setModalReactivacionOpen(true);
-                    } else {
-                        setModalReactivacionOpen(false);
-                        setLoading(false);
-                        setAbrirInput(false);
-                        setAccion("crear");
-                        setTipoDeToma({
-                            id: 0,
-                            nombre: "",
-                            descripcion: "ninguna",
-                            estado: "activo"
-                        });
-                        getConcepto();
-                        successToastCreado();
-                    }
+            axiosClient.post(`/AnomaliasCatalogo/create`, values)
+                .then(() => {
+                    setLoading(false);
+                    setTipoDeToma({
+                        id: 0,
+                        nombre: "",
+                        descripcion: "ninguna",
+                    });
+                    form.reset({
+                        id: 0,
+                        nombre: "",
+                        descripcion: "ninguna",
+                    });
+                    getAnomalias();
+                    successToastCreado();
+                    console.log(values);
+                    //setNotification("usuario creado");
                 })
                 .catch((err) => {
                     const response = err.response;
-                    errorToast(); //errorToast
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
                     setLoading(false);
                 })
+            console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/Concepto/update/${TipoDeToma.id}`, values)
+            axiosClient.put(`/AnomaliasCatalogo/update/${TipoDeToma.id}`, values)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
-                    getConcepto();
-                    setTipoDeToma(data);
-                    successToastEditado(); //toast editado
+                    getAnomalias();
+                    setTipoDeToma(data.data);
+                    //setNotification("usuario creado");
+                    successToastEditado();
                 })
                 .catch((err) => {
                     const response = err.response;
-                    errorToast(); //AQUI ESTA EL TOAST DE ERROR
+                    errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -166,60 +153,35 @@ const TipoDeTomaForm = () => {
         }
     }
 
-    
-
-    //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
-    const restaurarDato = (concepto_id: any) => {
-        axiosClient.put(`/Concepto/restaurarDato/${concepto_id}`)
-            .then(() => {
-                setLoading(false);
-                setAbrirInput(false);
-                setAccion("crear");
-                setTipoDeToma({
-                    id: 0,
-                    nombre: "",
-                    descripcion: "ninguna",
-                    estado: "activo"
-                });
-                getConcepto();
-                successToastRestaurado();
-                setModalReactivacionOpen(false);
-            })
-            .catch((err) => {
-                errorToast();
-                setLoading(false);
-            });
-    };
-
-    //obtener conceptos
-    const getConcepto = async () => {
+    //con este metodo obtienes las anomalias de la bd
+    const getAnomalias = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/Concepto");
+            const response = await axiosClient.get("/AnomaliasCatalogo");
             setLoadingTable(false);
-            setTipoDeTomas(response.data);
-            console.log(response.data);
+            setTipoDeTomas(response.data.data);
+            console.log(response.data.data);
         } catch (error) {
             setLoadingTable(false);
-            console.error("Fallo la consulta del concepto:", error);
+            errorToast();
+            console.error("Failed to fetch anomalias:", error);
         }
     };
 
-    //elimianar conceptos
+    //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/Concepto/log_delete/${TipoDeToma.id}`, {
-                data: { id: TipoDeToma.id }
-            });
-            getConcepto();
+            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${TipoDeToma.id}`);
+            getAnomalias();
             setAccion("eliminar");
-            successToastEliminado(); //toast eliminado
+            successToastEliminado();
         } catch (error) {
-            console.error("Fallo la eliminación:", error);
+            errorToast();
+            console.error("Failed to delete anomalia:", error);
         }
     };
 
-    //Actualizar el formulario
+    //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
             form.reset({
@@ -262,100 +224,88 @@ const TipoDeTomaForm = () => {
     }, [accion]);
 
     return (
+        <>
+            <div className="overflow-auto">
+                <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+                    <div className='h-[20px] w-full flex items-center justify-end'>
+                        <div className="mb-[10px] h-full w-full mx-4">
+                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo tipo de toma</p>}
+                            {TipoDeToma.nombre != "" && <p className="text-muted-foreground text-[20px]">{TipoDeToma.nombre}</p>}
+                        </div>
+                        {(TipoDeToma.nombre != null && TipoDeToma.nombre != "") &&
+                            <>
+                                <Modal
+                                    method={onDelete}
+                                    button={
+                                        <a title="Eliminar">
+                                            <IconButton>
+                                                <TrashIcon className="w-[20px] h-[20px]" />
+                                            </IconButton>
+                                        </a>}
+                                />
+                                <div onClick={() => setAccion("editar")}>
+                                    <a title="Editar">
+                                        <IconButton>
+                                            <Pencil2Icon className="w-[20px] h-[20px]" />
+                                        </IconButton>
+                                    </a>
+                                </div>
+                            </>
+                        }
 
-        <div className="overflow-auto">
-
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-                <div className='h-[20px] w-full flex items-center justify-end'>
-                    <div className="mb-[10px] h-full w-full mx-4">
-                    {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo tipo de toma</p>}
-                    {TipoDeToma.nombre != "" && <p className="text-muted-foreground text-[20px]">{TipoDeToma.nombre}</p>}
                     </div>
-                    { (TipoDeToma.nombre != null && TipoDeToma.nombre != "") &&
-                        <>
-                            <Modal
-                                method={onDelete}
-                                button={
-                                    <a title = "Eliminar">
-                                    <IconButton>
-                                        <TrashIcon className="w-[20px] h-[20px]" />
-                                    </IconButton>
-                                    </a>}
-                            />
-                            <div onClick={() => setAccion("editar")}>
-                            <a title = "Editar">
-                                <IconButton>
-                                    <Pencil2Icon className="w-[20px] h-[20px]" />
-                                </IconButton>
-                            </a>
-                            </div>
-                        </>
-                    }
-                    {// ESTE ES EL MODAL DE REACTIVACIÓN
-                    //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
-                    //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
-                    }
-                    {ModalReactivacionOpen &&
-                            <ModalReactivacion
-                            isOpen={ModalReactivacionOpen}
-                            setIsOpen={setModalReactivacionOpen}
-                            method={() => restaurarDato(conceptoIdParaRestaurar)}
-                        />
-                    }
                 </div>
+                <div className="py-[20px] px-[10px] ">
+
+                    {errors && <Error errors={errors} />}
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                            <FormField
+                                control={form.control}
+                                name="nombre"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Nombre</FormLabel>
+                                        <FormControl>
+                                            <Input readOnly={!abrirInput} placeholder="Escribe el nombre del tipo de toma" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+                                            El nombre del tipo de toma.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="descripcion"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Descripción</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                readOnly={!abrirInput}
+                                                placeholder="Descripcion de la tipo de toma"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>
+                                            Agrega una breve descripción.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            {loading && <Loader />}
+                            {abrirInput && <Button type="submit">Guardar</Button>}
+
+                        </form>
+                    </Form>
+                </div>
+
             </div>
-            <div className="py-[20px] px-[10px] ">
-
-                {errors && <Error errors={errors} />}
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <FormField
-                            control={form.control}
-                            name="nombre"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nombre</FormLabel>
-                                    <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre del tipo de toma" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                    El nombre del tipo de toma.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="descripcion"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Descripción</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            readOnly={!abrirInput}
-                                            placeholder="Descripcion del tipo de toma"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        Agrega una breve descripción.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {loading && <Loader />}
-
-                        {abrirInput && <Button type="submit">Guardar</Button>}
-
-
-                    </form>
-                </Form>
-            </div>
-        </div>
+        </>
     )
 }
 
-export default TipoDeTomaForm;
+export default TipoDeTomaForm

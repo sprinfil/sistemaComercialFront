@@ -59,11 +59,11 @@ export const columns: ColumnDef<Concepto>[] = [
       const { setConcepto, setAccion } = useStateContext();
 
       return (
-        <div onClick={()=>{setConcepto(concepto);setAccion("ver")}}>
+        <tr onClick={()=>{setConcepto(concepto);setAccion("ver")}}>
           <IconButton>
             <EyeOpenIcon className="w-[20px] h-[20px]"/>
           </IconButton>
-        </div>
+        </tr>
       )
     },
   },

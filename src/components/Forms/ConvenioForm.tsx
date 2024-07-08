@@ -278,7 +278,7 @@ const ConceptoForm = () => {
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        Agrega una pequeña descripción.
+                                        Agrega una breve descripción.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

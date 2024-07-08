@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DataTable } from '../../../components/ui/DataTable';
-import { columns } from "../../../components/Tables/Columns/AjusteColumns.tsx";
+import { columns, Ajuste} from "../../../components/Tables/Columns/AjusteColumns.tsx";
 import axiosClient from '../../../axios-client.ts';
 import { useStateContext } from "../../../contexts/ContextAjuste.tsx"
 import Loader from '../../ui/Loader.tsx';
@@ -9,7 +9,7 @@ import { PlusCircledIcon } from '@radix-ui/react-icons';
 
 export default function AjusteTable() {
 
-  const { ajustes, setAjustes, loadingTable, setLoadingTable, setAccion } = useStateContext();
+  const { ajustes, setAjustes, loadingTable, setLoadingTable, setAccion, setAjuste} = useStateContext();
 
   useEffect(() => {
     getAnomalias();
@@ -27,6 +27,12 @@ export default function AjusteTable() {
       console.error("Failed to fetch anomalias:", error);
     }
   };
+ //Metodo para seleccionar las filas
+ const handleRowClick = (ajuste: Ajuste) => {
+  setAjuste(ajuste);
+  setAccion("ver");
+};
+
 
   if (loadingTable) {
     return <div><Loader /></div>;
@@ -40,7 +46,7 @@ export default function AjusteTable() {
           <div className='flex gap-2 items-center'> Agregar nuevo ajuste<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
       </div>
-      <DataTable columns={columns} data={ajustes} sorter='nombre' />
+      <DataTable columns={columns} data={ajustes} sorter='nombre' onRowClick={handleRowClick}/>
     </div>
   );
 }
