@@ -172,7 +172,7 @@ const GiroComercialForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/Giros/log_delete/${girocomercial.id}`);
+            await axiosClient.delete(`/Giros/log_delete/${girocomercial.id}`);
             getGirosComerciales();
             setAccion("eliminar");
             successToastEliminado();
@@ -238,21 +238,22 @@ const GiroComercialForm = () => {
                         {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo giro comercial</p>}
                         {girocomercial.nombre != "" && <p className="text-muted-foreground text-[20px]">{girocomercial.nombre}</p>}
                     </div>
-                    <Modal
-                        method={onDelete}
-                        button={
-                            <a title = "Eliminar">
-                            <IconButton>
-                                <TrashIcon className="w-[20px] h-[20px]" />
-                            </IconButton></a>}
-                    />
-                    <div onClick={() => setAccion("editar")}>
-                    <a title = "Editar">
-                        <IconButton>
-                            <Pencil2Icon className="w-[20px] h-[20px]" />
-                        </IconButton>
-                    </a>
-                    </div>
+                    {(girocomercial.nombre != null && girocomercial.nombre != "") &&
+                                <>
+                                    <Modal
+                                        method={onDelete}
+                                        button={
+                                            <IconButton>
+                                                <TrashIcon className="w-[20px] h-[20px]" />
+                                            </IconButton>}
+                                    />
+                                    <div onClick={() => setAccion("editar")}>
+                                        <IconButton>
+                                            <Pencil2Icon className="w-[20px] h-[20px]" />
+                                        </IconButton>
+                                    </div>
+                                </>
+                            }
                 </div>
             </div>
             <div className="py-[20px] px-[10px] ">
