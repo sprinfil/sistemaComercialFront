@@ -14,32 +14,43 @@ import {
     FormMessage,
 } from "../../components/ui/form.tsx";
 import { Input } from '../../components/ui/input.tsx';
-import { bonificacionesSchema } from './validaciones.ts';
+import { TipoDeTomaSchema } from './validaciones.ts';
+import { ModeToggle } from '../../components/ui/mode-toggle.tsx';
 import axiosClient from '../../axios-client.ts';
 import Loader from "../../components/ui/Loader.tsx";
 import Error from "../../components/ui/Error.tsx";
 import { Textarea } from "../ui/textarea.tsx";
-import { useStateContext } from "../../contexts/ContextBonificaciones.tsx";
+import { useStateContext } from "../../contexts/ContextTipoDeToma.tsx";
 import { useEffect } from "react";
-import { TrashIcon, Pencil2Icon} from '@radix-ui/react-icons';
+import { TrashIcon, Pencil2Icon, PlusCircledIcon, ColorWheelIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
+import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
-import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
+import ModalReactivacion from "../ui/ModalReactivación.tsx";
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { Concepto } from "../Tables/Columns/ConceptosColumns.tsx";
 
-const BonificacionForm = () => {
+
+
+
+
+const TipoDeTomaForm = () => {
     const { toast } = useToast()
-    const { bonificacion, setBonificacion, loadingTable, setLoadingTable, setBonificaciones, setAccion, accion } = useStateContext();
+    const { TipoDeToma, setTipoDeToma, loadingTable, setLoadingTable, setTipoDeTomas, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
+    const [conceptoIdParaRestaurar, setConceptoIdParaRestaurar] = useState(null);
+    const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
+
+
 
     //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La bonificacion se ha creado correctamente",
+            description: "El tipo de toma se ha creado correctamente",
             variant: "success",
 
         })
@@ -47,7 +58,7 @@ const BonificacionForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La bonificacion se ha editado correctamente",
+            description: "El tipo de toma se ha editado correctamente",
             variant: "success",
 
         })
@@ -55,7 +66,7 @@ const BonificacionForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La bonificacion se ha eliminado correctamente",
+            description: "El tipo de toma se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -63,7 +74,7 @@ const BonificacionForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La bonificacion se ha restaurado correctamente",
+            description: "El tipo de toma se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -84,63 +95,69 @@ const BonificacionForm = () => {
 
     }
 
-    const form = useForm<z.infer<typeof bonificacionesSchema>>({
-        resolver: zodResolver(bonificacionesSchema),
+
+
+
+
+
+    const form = useForm<z.infer<typeof TipoDeTomaSchema>>({
+        resolver: zodResolver(TipoDeTomaSchema),
         defaultValues: {
-            id: bonificacion.id,
-            nombre: bonificacion.nombre,
-            descripcion: bonificacion.descripcion,
+            id: TipoDeToma.id,
+            nombre: TipoDeToma.nombre,
+            descripcion: TipoDeToma.descripcion,
         },
     })
 
 
 
-    function onSubmit(values: z.infer<typeof bonificacionesSchema>) {
+    function onSubmit(values: z.infer<typeof TipoDeTomaSchema>) {
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/BonificacionesCatalogo/create`, values)
-                .then(() => {
-                    successToastCreado();
-                    setLoading(false);
-                    setBonificacion({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    form.reset({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    getBonificacion();
-                    console.log(values);
-                    //setNotification("usuario creado");
+            axiosClient.post(`/Concepto/create`, values)
+                .then((response) => {
+                    const data = response.data;
+                    if (data.restore) {
+                        setConceptoIdParaRestaurar(data.concepto_id);
+                        setModalReactivacionOpen(true);
+                    } else {
+                        setModalReactivacionOpen(false);
+                        setLoading(false);
+                        setAbrirInput(false);
+                        setAccion("crear");
+                        setTipoDeToma({
+                            id: 0,
+                            nombre: "",
+                            descripcion: "ninguna",
+                            estado: "activo"
+                        });
+                        getConcepto();
+                        successToastCreado();
+                    }
                 })
                 .catch((err) => {
                     const response = err.response;
-                    errorToast();
+                    errorToast(); //errorToast
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
                     setLoading(false);
                 })
-            console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/BonificacionesCatalogo/update/${bonificacion.id}`, values)
+            axiosClient.put(`/Concepto/update/${TipoDeToma.id}`, values)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
-                    getBonificacion();
-                    successToastEditado();
-                    setBonificacion(data.data);
-                    //setNotification("usuario creado");
+                    getConcepto();
+                    setTipoDeToma(data);
+                    successToastEditado(); //toast editado
                 })
                 .catch((err) => {
                     const response = err.response;
-                    errorToast();
+                    errorToast(); //AQUI ESTA EL TOAST DE ERROR
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -149,35 +166,60 @@ const BonificacionForm = () => {
         }
     }
 
-    //con este metodo obtienes las bonificaciones de la bd
-    const getBonificacion = async () => {
+    
+
+    //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
+    const restaurarDato = (concepto_id: any) => {
+        axiosClient.put(`/Concepto/restaurarDato/${concepto_id}`)
+            .then(() => {
+                setLoading(false);
+                setAbrirInput(false);
+                setAccion("crear");
+                setTipoDeToma({
+                    id: 0,
+                    nombre: "",
+                    descripcion: "ninguna",
+                    estado: "activo"
+                });
+                getConcepto();
+                successToastRestaurado();
+                setModalReactivacionOpen(false);
+            })
+            .catch((err) => {
+                errorToast();
+                setLoading(false);
+            });
+    };
+
+    //obtener conceptos
+    const getConcepto = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/BonificacionesCatalogo");
+            const response = await axiosClient.get("/Concepto");
             setLoadingTable(false);
-            setBonificaciones(response.data.data);
-            console.log(response.data.data);
+            setTipoDeTomas(response.data);
+            console.log(response.data);
         } catch (error) {
-            errorToast();
             setLoadingTable(false);
-            console.error("Failed to fetch anomalias:", error);
+            console.error("Fallo la consulta del concepto:", error);
         }
     };
 
-    //elimianar anomalia
+    //elimianar conceptos
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/BonificacionesCatalogo/log_delete/${bonificacion.id}`);
-            getBonificacion();
+            await axiosClient.put(`/Concepto/log_delete/${TipoDeToma.id}`, {
+                data: { id: TipoDeToma.id }
+            });
+            getConcepto();
             setAccion("eliminar");
-            successToastEliminado();
+            successToastEliminado(); //toast eliminado
         } catch (error) {
-            errorToast();
-            console.error("Failed to delete anomalia:", error);
+            console.error("Fallo la eliminación:", error);
         }
     };
 
-    //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
+    //Actualizar el formulario
     useEffect(() => {
         if (accion == "eliminar") {
             form.reset({
@@ -185,7 +227,7 @@ const BonificacionForm = () => {
                 nombre: "",
                 descripcion: "ninguna",
             });
-            setBonificacion({});
+            setTipoDeToma({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
@@ -197,7 +239,7 @@ const BonificacionForm = () => {
                 nombre: "",
                 descripcion: "ninguna",
             });
-            setBonificacion({
+            setTipoDeToma({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
@@ -208,9 +250,9 @@ const BonificacionForm = () => {
             setErrors({});
             setAccion("");
             form.reset({
-                id: bonificacion.id,
-                nombre: bonificacion.nombre,
-                descripcion: bonificacion.descripcion,
+                id: TipoDeToma.id,
+                nombre: TipoDeToma.nombre,
+                descripcion: TipoDeToma.descripcion,
             });
         }
         if (accion == "editar") {
@@ -220,15 +262,16 @@ const BonificacionForm = () => {
     }, [accion]);
 
     return (
+
         <div className="overflow-auto">
 
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva bonificación</p>}
-                        {bonificacion.nombre != "" && <p className="text-muted-foreground text-[20px]">{bonificacion.nombre}</p>}
+                    {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo tipo de toma</p>}
+                    {TipoDeToma.nombre != "" && <p className="text-muted-foreground text-[20px]">{TipoDeToma.nombre}</p>}
                     </div>
-                    { (bonificacion.nombre != null && bonificacion.nombre != "") &&
+                    { (TipoDeToma.nombre != null && TipoDeToma.nombre != "") &&
                         <>
                             <Modal
                                 method={onDelete}
@@ -236,7 +279,8 @@ const BonificacionForm = () => {
                                     <a title = "Eliminar">
                                     <IconButton>
                                         <TrashIcon className="w-[20px] h-[20px]" />
-                                    </IconButton></a>}
+                                    </IconButton>
+                                    </a>}
                             />
                             <div onClick={() => setAccion("editar")}>
                             <a title = "Editar">
@@ -247,7 +291,17 @@ const BonificacionForm = () => {
                             </div>
                         </>
                     }
-
+                    {// ESTE ES EL MODAL DE REACTIVACIÓN
+                    //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
+                    //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
+                    }
+                    {ModalReactivacionOpen &&
+                            <ModalReactivacion
+                            isOpen={ModalReactivacionOpen}
+                            setIsOpen={setModalReactivacionOpen}
+                            method={() => restaurarDato(conceptoIdParaRestaurar)}
+                        />
+                    }
                 </div>
             </div>
             <div className="py-[20px] px-[10px] ">
@@ -262,10 +316,10 @@ const BonificacionForm = () => {
                                 <FormItem>
                                     <FormLabel>Nombre</FormLabel>
                                     <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la bonificación" {...field} />
+                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre del tipo de toma" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El nombre de la bonificación.
+                                    El nombre del tipo de toma.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -280,7 +334,7 @@ const BonificacionForm = () => {
                                     <FormControl>
                                         <Textarea
                                             readOnly={!abrirInput}
-                                            placeholder="Descripcion de la bonificación"
+                                            placeholder="Descripcion del tipo de toma"
                                             {...field}
                                         />
                                     </FormControl>
@@ -291,15 +345,17 @@ const BonificacionForm = () => {
                                 </FormItem>
                             )}
                         />
+
                         {loading && <Loader />}
+
                         {abrirInput && <Button type="submit">Guardar</Button>}
+
 
                     </form>
                 </Form>
             </div>
-
         </div>
     )
 }
 
-export default BonificacionForm
+export default TipoDeTomaForm;
