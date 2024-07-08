@@ -18,7 +18,7 @@ export default function TipoDeTomaTable() {
   const getTipoDeToma = async () => {
     setLoadingTable(true);
     try {
-      const response = await axiosClient.get("/Giros");
+      const response = await axiosClient.get("/TipoToma");
       setLoadingTable(false);
       setTipoDeTomas(response.data);
       console.log(response.data);

@@ -114,7 +114,7 @@ const TipoDeTomaForm = () => {
     function onSubmit(values: z.infer<typeof TipoDeTomaSchema>) {
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/Concepto/create`, values)
+            axiosClient.post(`/TipoToma/create`, values)
                 .then((response) => {
                     const data = response.data;
                     if (data.restore) {
@@ -145,7 +145,7 @@ const TipoDeTomaForm = () => {
                 })
         }
         if (accion == "editar") {
-            axiosClient.put(`/Concepto/update/${TipoDeToma.id}`, values)
+            axiosClient.put(`/TipoToma/update/${TipoDeToma.id}`, values)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
@@ -195,7 +195,7 @@ const TipoDeTomaForm = () => {
     const getConcepto = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/Concepto");
+            const response = await axiosClient.get("/TipoToma");
             setLoadingTable(false);
             setTipoDeTomas(response.data);
             console.log(response.data);
@@ -208,7 +208,7 @@ const TipoDeTomaForm = () => {
     //elimianar conceptos
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/Concepto/log_delete/${TipoDeToma.id}`, {
+            await axiosClient.delete(`/TipoToma/log_delete/${TipoDeToma.id}`, {
                 data: { id: TipoDeToma.id }
             });
             getConcepto();

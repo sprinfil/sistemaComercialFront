@@ -18,7 +18,7 @@ export default function GiroComercialTable() {
   const getGirosComerciales = async () => {
     setLoadingTable(true);
     try {
-      const response = await axiosClient.get("/Giros");
+      const response = await axiosClient.get("/giros-catalogos");
       setLoadingTable(false);
       setGirosComerciales(response.data);
       console.log(response.data);
