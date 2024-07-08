@@ -9,7 +9,7 @@ export default function CrearUsuarioNuevo() {
 
 
   return (
-    <div className='w-[100%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+    <div className='w-[100%] rounded-md border border-border h-[88vh] p-4 mt-2 '>
         {/*Formulario*/}
         <CrearUsuarioForm/>
     </div>
