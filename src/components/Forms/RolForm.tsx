@@ -38,7 +38,7 @@ const RolForm = () => {
     const form = useForm<z.infer<typeof rolSchema>>({
         resolver: zodResolver(rolSchema),
         defaultValues: {
-            name: "",
+            name: rol.name,
          },
     })
 

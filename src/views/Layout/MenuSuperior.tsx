@@ -181,7 +181,7 @@ const MenuSuperior = () => {
 
 
     return (
-        <div className=' bg-background h-[9vh] border-b border-border shadow-sm relative flex items-center select-none'>
+        <div className='z-40 bg-background h-[9vh] border-b border-border shadow-sm relative flex items-center select-none'>
             {/*logo*/}
             {/*
                         <div className='h-full min-w-[60px] max-w-[60px] min-h-[60px] max-h-[60px] p-[10px]'>

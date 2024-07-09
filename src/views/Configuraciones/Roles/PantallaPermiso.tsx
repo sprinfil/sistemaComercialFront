@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { useStateContext } from '../../../contexts/ContextDetalleUsuario';
+import { useStateContextPermisos } from '../../../contexts/ContextDetallePermisos';
 
 export const PantallaPermiso = () => {
-    const { pantalla } = useStateContext();
+    const { pantalla } = useStateContextPermisos();
     const [mostrarPantalla, setMostrarPantalla] = useState();
 
     useEffect(()=>{
