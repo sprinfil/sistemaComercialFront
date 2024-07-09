@@ -8,7 +8,7 @@ import InformaciónGeneral from './VistasDetalleUsuario/InformaciónGeneral'
 
 const DetalleUsuario = () => {
 
-  const { pantalla } = useStateContext();
+  const { pantalla} = useStateContext();
 
   const [mostrarPantalla, setMostrarPantalla] = useState();
 
@@ -44,7 +44,7 @@ const DetalleUsuario = () => {
         <div>
           <div className='flex gap-2 mt-2'>
             <div className='w-[300px]'>
-              <MenuLateral options={options} />
+              <MenuLateral options={options}  context = {useStateContext}/>
             </div>
             <div className='w-full '>
               <PantallaDetalleUsuario/>

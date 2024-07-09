@@ -192,7 +192,7 @@ const MenuSuperior = () => {
             {/*menu de opciones*/}
             <div className='p-[10px] left-[0px] absolute items-center w-[500px] hidden xl:flex'>
 
-                <NavigationMenu>
+                <NavigationMenu >
                     <NavigationMenuList >
                         {opciones.map((opcion, key) => (
                             <NavigationMenuItem key={key}>

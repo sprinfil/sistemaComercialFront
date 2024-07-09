@@ -14,16 +14,17 @@ import { useStateContext } from "../../contexts/ContextDetalleUsuario"
 
 import React from 'react'
 
-const MenuLateral = ({ options }) => {
+const MenuLateral = ({ options, context}) => {
 
-  const {setPantalla} = useStateContext();
+  const {setPantalla} = context();
 
   const changeScreen = (pantalla) => {
     setPantalla(pantalla);
+    console.log(pantalla)
   }
 
   return (
-    <div className="border border-border rounded-md">
+    <div className="border border-border rounded-md h-full">
       <Command>
         <CommandInput placeholder="Type a command or search..." />
         {options.map((option, index) => {

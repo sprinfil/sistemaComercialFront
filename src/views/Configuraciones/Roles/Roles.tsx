@@ -8,7 +8,7 @@ import Permisos from './Permisos'
 const Roles = () => {
     const opciones = [
         {
-            titulo: "Formulario",
+            titulo: "Rol",
             componente: <RolForm />
         },
         {
@@ -29,9 +29,9 @@ const Roles = () => {
                             <RolTable />
                         </div>
 
-                        {/*Formulario*/}
-                        <div className='w-[65%] rounded-md border border-border h-[88vh] p-4 overflow-auto'>
-                            <Tabs defaultValue="Formulario" className="">
+                        {/*VISTAS DEL TAB*/}
+                        <div className='w-[65%] rounded-md border border-border h-[88vh] p-4 overflow-auto '>
+                            <Tabs defaultValue="Permisos" className="">
                                 <TabsList>
                                     {opciones.map((opcion, index) => (
                                         <>
