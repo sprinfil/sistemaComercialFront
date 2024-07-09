@@ -136,7 +136,7 @@ const MenuSuperior = () => {
                 {
                     titulo: "Operadores del Sistema",
                     descripcion: "Gestiona Operadores de sistema, También sus roles y permisos.",
-                    route: "/proximamente"
+                    route: "/operadores"
                 },
                 {
                     titulo: "Roles",
