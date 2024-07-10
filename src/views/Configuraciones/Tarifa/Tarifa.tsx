@@ -11,7 +11,7 @@ import {TarifaConceptos} from '../Tarifa/TarifaConceptos.tsx';
 
 export const Tarifa = () => {
 
-
+  
   const [activeTab, setActiveTab] = useState("Tarifa");
 
   const opciones = [

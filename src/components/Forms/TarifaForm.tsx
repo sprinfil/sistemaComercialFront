@@ -36,6 +36,7 @@ const TarifaForm = ({ setActiveTab} ) => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
+    const [indiceTarifa, setIndiceTarifa] = useState(0);
 
 
     const form = useForm<z.infer<typeof tarifaSchema>>({
@@ -52,9 +53,11 @@ const TarifaForm = ({ setActiveTab} ) => {
     const opcionesTabs = ["Tarifa", "Servicios", "Conceptos"];
     //METODO PARA TENER CONTROL DEL TAP
     const nextTab = () => {
+        
         const currentIndex = opcionesTabs.indexOf("Tarifa");
-        const nextIndex = (currentIndex + 1) % opcionesTabs.length;
-        setActiveTab(opcionesTabs[nextIndex]);
+        const indiceTarifa = (currentIndex + 1) % opcionesTabs.length;
+        setActiveTab(opcionesTabs[indiceTarifa]);
+        
     };
 
     //#region SUCCESSTOAST
@@ -250,6 +253,7 @@ const TarifaForm = ({ setActiveTab} ) => {
                             }
                 </div>
             </div>
+            
             <div className="py-[20px] px-[10px] ">
 
                 {errors && <Error errors={errors} />}

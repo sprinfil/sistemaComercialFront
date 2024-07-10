@@ -8,10 +8,10 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { useStateContext } from "../../../contexts/ContextTarifa.tsx";
 
 
 export const TarifaServicios = () => {
-
 
 
 
