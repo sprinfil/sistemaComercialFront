@@ -91,9 +91,19 @@ const ConceptoForm = () => {
             description: "Algo salió mal.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
-
-
     }
+
+    function errorYaExisteToast() {
+
+        toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "El concepto ya existe.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+    }
+
+
 
 
 
@@ -120,7 +130,12 @@ const ConceptoForm = () => {
                     if (data.restore) {
                         setConceptoIdParaRestaurar(data.concepto_id);
                         setModalReactivacionOpen(true);
-                    } else {
+                    }
+                    else if (data.restore == false) {
+                        errorYaExisteToast();
+                        setLoading(false);
+                    }
+                    else {
                         setModalReactivacionOpen(false);
                         setLoading(false);
                         setAbrirInput(false);
@@ -166,11 +181,11 @@ const ConceptoForm = () => {
         }
     }
 
-    
+
 
     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
     const restaurarDato = (concepto_id: any) => {
-        axiosClient.put(`/Concepto/restaurarDato/${concepto_id}`)
+        axiosClient.put(`/Concepto/restaurar/${concepto_id}`)
             .then(() => {
                 setLoading(false);
                 setAbrirInput(false);
@@ -268,34 +283,34 @@ const ConceptoForm = () => {
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                    {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo concepto</p>}
-                    {concepto.nombre != "" && <p className="text-muted-foreground text-[20px]">{concepto.nombre}</p>}
+                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo concepto</p>}
+                        {concepto.nombre != "" && <p className="text-muted-foreground text-[20px]">{concepto.nombre}</p>}
                     </div>
-                    { (concepto.nombre != null && concepto.nombre != "") &&
+                    {(concepto.nombre != null && concepto.nombre != "") &&
                         <>
                             <Modal
                                 method={onDelete}
                                 button={
-                                    <a title = "Eliminar">
-                                    <IconButton>
-                                        <TrashIcon className="w-[20px] h-[20px]" />
-                                    </IconButton></a>}
+                                    <a title="Eliminar">
+                                        <IconButton>
+                                            <TrashIcon className="w-[20px] h-[20px]" />
+                                        </IconButton></a>}
                             />
                             <div onClick={() => setAccion("editar")}>
-                            <a title = "Editar">
-                                <IconButton>
-                                    <Pencil2Icon className="w-[20px] h-[20px]" />
-                                </IconButton>
-                            </a>
+                                <a title="Editar">
+                                    <IconButton>
+                                        <Pencil2Icon className="w-[20px] h-[20px]" />
+                                    </IconButton>
+                                </a>
                             </div>
                         </>
                     }
                     {// ESTE ES EL MODAL DE REACTIVACIÓN
-                    //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
-                    //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
+                        //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
+                        //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
                     }
                     {ModalReactivacionOpen &&
-                            <ModalReactivacion
+                        <ModalReactivacion
                             isOpen={ModalReactivacionOpen}
                             setIsOpen={setModalReactivacionOpen}
                             method={() => restaurarDato(conceptoIdParaRestaurar)}
@@ -318,7 +333,7 @@ const ConceptoForm = () => {
                                         <Input readOnly={!abrirInput} placeholder="Escribe el nombre del concepto" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                    El nombre del concepto.
+                                        El nombre del concepto.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

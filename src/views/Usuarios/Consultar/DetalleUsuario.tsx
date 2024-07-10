@@ -42,11 +42,11 @@ const DetalleUsuario = () => {
     <>
       <ContextProvider>
         <div>
-          <div className='flex gap-2'>
+          <div className='flex gap-2 mt-2'>
             <div className='w-[300px]'>
               <MenuLateral options={options}  context = {useStateContext}/>
             </div>
-            <div className='w-full'>
+            <div className='w-full '>
               <PantallaDetalleUsuario/>
             </div>
           </div>

@@ -3,7 +3,7 @@ import logo from '../../img/logo.png';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from '../../components/ui/button.tsx';
+import { Button } from '../ui/button.tsx';
 import {
     Form,
     FormControl,
@@ -12,15 +12,15 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "../../components/ui/form.tsx";
-import { Input } from '../../components/ui/input.tsx';
-import { descuentoSchema } from './validaciones.ts';
-import { ModeToggle } from '../../components/ui/mode-toggle.tsx';
+} from "../ui/form.tsx";
+import { Input } from '../ui/input.tsx';
+import { tarifaSchema } from './validaciones.ts';
+import { ModeToggle } from '../ui/mode-toggle.tsx';
 import axiosClient from '../../axios-client.ts';
-import Loader from "../../components/ui/Loader.tsx";
-import Error from "../../components/ui/Error.tsx";
+import Loader from "../ui/Loader.tsx";
+import Error from "../ui/Error.tsx";
 import { Textarea } from "../ui/textarea.tsx";
-import { useStateContext } from "../../contexts/ContextDescuentos.tsx";
+import { useStateContext } from "../../contexts/ContextTarifa.tsx";
 import { useEffect } from "react";
 import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
@@ -30,22 +30,38 @@ import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACT
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 
-const DescuentoForm = () => {
+const TarifaForm = ({ setActiveTab} ) => {
     const { toast } = useToast()
-    const { descuento, setDescuento, loadingTable, setLoadingTable, setDescuentos, setAccion, accion } = useStateContext();
+    const { tarifa, setTarifa, loadingTable, setLoadingTable, setTarifas, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
-    const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
-    const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
 
 
+    const form = useForm<z.infer<typeof tarifaSchema>>({
+        resolver: zodResolver(tarifaSchema),
+        defaultValues: {
+            id: tarifa.id,
+            nombre: tarifa.nombre,
+            descripcion: tarifa.descripcion,
+        },
+    })
 
-     //#region SUCCESSTOAST
-     function successToastCreado() {
+
+    //OPCIONES QUE EXISTEN DEL TAP
+    const opcionesTabs = ["Tarifa", "Servicios", "Conceptos"];
+    //METODO PARA TENER CONTROL DEL TAP
+    const nextTab = () => {
+        const currentIndex = opcionesTabs.indexOf("Tarifa");
+        const nextIndex = (currentIndex + 1) % opcionesTabs.length;
+        setActiveTab(opcionesTabs[nextIndex]);
+    };
+
+    //#region SUCCESSTOAST
+    function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "El descuento se ha creado correctamente",
+            description: "El giro comercial se ha creado correctamente",
             variant: "success",
 
         })
@@ -53,7 +69,7 @@ const DescuentoForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "El descuento se ha editado correctamente",
+            description: "El giro comercial se ha editado correctamente",
             variant: "success",
 
         })
@@ -61,7 +77,7 @@ const DescuentoForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "El descuento se ha eliminado correctamente",
+            description: "El giro comercial se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -69,7 +85,7 @@ const DescuentoForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "El descuento se ha restaurado correctamente",
+            description: "El giro comercial se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -90,65 +106,15 @@ const DescuentoForm = () => {
 
     }
 
-    function errorYaExisteToast() {
 
-        toast({
-            variant: "destructive",
-            title: "Oh, no. Error",
-            description: "El concepto ya existe.",
-            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-        })
-    }
-
-
-
-
-
-
-
-    const form = useForm<z.infer<typeof descuentoSchema>>({
-        resolver: zodResolver(descuentoSchema),
-        defaultValues: {
-            id: descuento.id,
-            nombre: descuento.nombre,
-            descripcion: descuento.descripcion,
-        },
-    })
-
-
-
-    function onSubmit(values: z.infer<typeof descuentoSchema>) {
+    function onSubmit(values: z.infer<typeof tarifaSchema>) {
+        console.log("submit");
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/descuentos-catalogos`, values)
-                .then((response) => {
-                    const data = response.data;
-                    if(data.restore)
-                    {
-                        setIdParaRestaurar(data.descuento_id);
-                        setModalReactivacionOpen(true);
-                    }
-                    else if (data.restore == false) {
-                        errorYaExisteToast();
-                        setLoading(false);
-                    }
-                    else{
-                        successToastCreado();
-                        setLoading(false);
-                        setDescuento({
-                            id: 0,
-                            nombre: "",
-                            descripcion: "ninguna",
-                        });
-                        form.reset({
-                            id: 0,
-                            nombre: "",
-                            descripcion: "ninguna",
-                        });
-                        getDescuentos();
-                        console.log(values);
-                        //setNotification("usuario creado");
-                    }
+            axiosClient.post(`/giros-catalogos`, values)
+                .then(() => {
+                    setLoading(false);
+                    nextTab(); //PARA IR AL SIGUIENTE TAP AL DARLE SIGUIENTE
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -158,18 +124,18 @@ const DescuentoForm = () => {
                     }
                     setLoading(false);
                 })
-            console.log(abrirInput);
+                console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/descuentos-catalogos/${descuento.id}`, values)
+            axiosClient.put(`/giros-catalogos/${tarifa.id}`, values)
                 .then((data) => {
-                    successToastEditado();
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
-                    getDescuentos();
-                    setDescuento(data.data);
+                    getGirosComerciales();
+                    setTarifa(data.data);
+                    successToastEditado();
                     //setNotification("usuario creado");
                 })
                 .catch((err) => {
@@ -184,56 +150,30 @@ const DescuentoForm = () => {
     }
 
     //con este metodo obtienes las anomalias de la bd
-    const getDescuentos = async () => {
+    const getGirosComerciales = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/descuentos-catalogos");
+            const response = await axiosClient.get("/giros-catalogos");
             setLoadingTable(false);
-            setDescuentos(response.data);
-            console.log(response.data);
+            setTarifas(response.data);
         } catch (error) {
             setLoadingTable(false);
             errorToast();
-            console.error("Failed to fetch anomalias:", error);
+            console.error("Failed to fetch constancias:", error);
         }
     };
 
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/descuentos-catalogos/${descuento.id}`, {
-                data: { id: descuento.id }
-            });
-            getDescuentos();
-            successToastEliminado();
+            await axiosClient.delete(`/giros-catalogos/${tarifa.id}`);
+            getGirosComerciales();
             setAccion("eliminar");
+            successToastEliminado();
         } catch (error) {
             errorToast();
-            console.error("Failed to delete anomalia:", error);
+            console.error("Failed to delete Giro Comercial:", error);
         }
-    };
-
-    //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
-    const restaurarDato = (IdParaRestaurar: any) => {
-        axiosClient.put(`/Concepto/restaurar/${IdParaRestaurar}`)
-            .then(() => {
-                setLoading(false);
-                setAbrirInput(false);
-                setAccion("crear");
-                setDescuento({
-                    id: 0,
-                    nombre: "",
-                    descripcion: "ninguna",
-                    estado: "activo"
-                });
-                getDescuentos();
-                successToastRestaurado();
-                setModalReactivacionOpen(false);
-            })
-            .catch((err) => {
-                errorToast();
-                setLoading(false);
-            });
     };
 
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
@@ -243,8 +183,9 @@ const DescuentoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: "activo"
             });
-            setDescuento({});
+            setTarifa({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
@@ -255,11 +196,13 @@ const DescuentoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: "activo"
             });
-            setDescuento({
+            setTarifa({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: "activo"
             })
         }
         if (accion == "ver") {
@@ -267,9 +210,10 @@ const DescuentoForm = () => {
             setErrors({});
             setAccion("");
             form.reset({
-                id: descuento.id,
-                nombre: descuento.nombre,
-                descripcion: descuento.descripcion,
+                id: tarifa.id,
+                nombre: tarifa.nombre,
+                descripcion: tarifa.descripcion,
+                estado: tarifa.estado
             });
         }
         if (accion == "editar") {
@@ -285,39 +229,25 @@ const DescuentoForm = () => {
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo descuento</p>}
-                        {descuento.nombre != "" && <p className="text-muted-foreground text-[20px]">{descuento.nombre}</p>}
+                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva tarifa</p>}
+                        {tarifa.nombre != "" && <p className="text-muted-foreground text-[20px]">{tarifa.nombre}</p>}
                     </div>
-                    {(descuento.nombre != null && descuento.nombre != "") &&
-                        <>
-                            <Modal
-                                method={onDelete}
-                                button={
-                                    <a title = "Eliminar">
-                                    <IconButton>
-                                        <TrashIcon className="w-[20px] h-[20px]" />
-                                    </IconButton></a>}
-                            />
-                            <div onClick={() => setAccion("editar")}>
-                            <a title = "Editar">
-                                <IconButton>
-                                    <Pencil2Icon className="w-[20px] h-[20px]" />
-                                </IconButton>
-                            </a>
-                            </div>
-                        </>
-                    }
-                    {// ESTE ES EL MODAL DE REACTIVACIÓN
-                        //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
-                        //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
-                    }
-                    {ModalReactivacionOpen &&
-                        <ModalReactivacion
-                            isOpen={ModalReactivacionOpen}
-                            setIsOpen={setModalReactivacionOpen}
-                            method={() => restaurarDato(IdParaRestaurar)}
-                        />
-                    }
+                    {(tarifa.nombre != null && tarifa.nombre != "") &&
+                                <>
+                                    <Modal
+                                        method={onDelete}
+                                        button={
+                                            <IconButton>
+                                                <TrashIcon className="w-[20px] h-[20px]" />
+                                            </IconButton>}
+                                    />
+                                    <div onClick={() => setAccion("editar")}>
+                                        <IconButton>
+                                            <Pencil2Icon className="w-[20px] h-[20px]" />
+                                        </IconButton>
+                                    </div>
+                                </>
+                            }
                 </div>
             </div>
             <div className="py-[20px] px-[10px] ">
@@ -332,10 +262,10 @@ const DescuentoForm = () => {
                                 <FormItem>
                                     <FormLabel>Nombre</FormLabel>
                                     <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre del descuento" {...field} />
+                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la tarifa" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El nombre del descuento.
+                                        El nombre de la tarifa.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -350,7 +280,7 @@ const DescuentoForm = () => {
                                     <FormControl>
                                         <Textarea
                                             readOnly={!abrirInput}
-                                            placeholder="Descripcion del descuento"
+                                            placeholder="Descripcion de la tarifa"
                                             {...field}
                                         />
                                     </FormControl>
@@ -362,7 +292,7 @@ const DescuentoForm = () => {
                             )}
                         />
                         {loading && <Loader />}
-                        {abrirInput && <Button type="submit">Guardar</Button>}
+                        {abrirInput && <Button type="submit">Siguiente</Button>}
 
                     </form>
                 </Form>
@@ -372,4 +302,4 @@ const DescuentoForm = () => {
     )
 }
 
-export default DescuentoForm
+export default TarifaForm
