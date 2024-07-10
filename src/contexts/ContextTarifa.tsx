@@ -6,6 +6,8 @@ interface StateContextType {
     tarifa: Tarifa;
     accion: string;
     setTarifa: (tarifa: Tarifa) => void;
+    activeTab: string;
+    setActiveTab: (activeTab: string) => void;
     tarifas: Tarifa[];
     loadingTable: boolean;
     setTarifas: (tarifas: Tarifa[]) => void;
@@ -18,6 +20,8 @@ const StateContext = createContext<StateContextType>({
     tarifa: {} as Tarifa,
     setTarifa: () => {},
     tarifas: [],
+    activeTab: "Tarifa",
+    setActiveTab: () => {},
     loadingTable: false,
     accion: "",
     setAccion: () => {},
@@ -35,6 +39,8 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
     const [tarifas, setTarifas] = useState<Tarifa[]>([]);
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [accion, setAccion] = useState<string>("");
+    const [activeTab, setActiveTab] = useState<string>("");
+
 
     return (
         <StateContext.Provider value={{
@@ -42,6 +48,8 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
             setTarifa,
             tarifas,
             setTarifas,
+            activeTab,
+            setActiveTab,
             loadingTable,
             setLoadingTable,
             accion,
