@@ -15,11 +15,12 @@ import React from 'react'
 
 const MenuLateral = ({ options, context}) => {
 
-  const {setPantalla} = context();
+  const {setPantalla, setClick, click} = context();
 
   const changeScreen = (pantalla) => {
+    setClick(!click);
     setPantalla(pantalla);
-    console.log(pantalla)
+    console.log(pantalla);
   }
 
   return (

@@ -13,6 +13,8 @@ interface StateContextType {
     setLoadingTable: (loading: boolean) => void;
     permissions: string[];
     setPermissions: (permissions: string[]) => void;
+    editando: boolean;
+    setEditando: (loading: boolean) => void;
 }
 
 // Crea el contexto con valores predeterminados adecuados según las interfaces
@@ -21,10 +23,12 @@ const StateContext = createContext<StateContextType>({
     setRol: () => {},
     roles: [],
     loadingTable: false,
+    editando: false,
     accion: "",
     setAccion: () => {},
     setRoles: () => {},
     setLoadingTable: () => {},
+    setEditando: () => {},
     permissions: [],
     setPermissions: () => { },
 });
@@ -40,6 +44,7 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [accion, setAccion] = useState<string>("");
     const [permissions, setPermissions] = useState<string[]>([]);
+    const [editando, setEditando] = useState<boolean>(false);
 
     return (
         <StateContext.Provider value={{
@@ -52,7 +57,9 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
             accion,
             setAccion,
             permissions,
-            setPermissions
+            setPermissions, 
+            editando,
+            setEditando
         }}>
             {children}
         </StateContext.Provider>

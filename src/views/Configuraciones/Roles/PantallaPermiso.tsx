@@ -1,19 +1,42 @@
 import React, { useEffect, useState } from 'react'
 import { useStateContextPermisos } from '../../../contexts/ContextDetallePermisos';
 import ConfiguracionPermisos from './VistaIndividualPermiso/ConfiguracionPermisos';
+import { useStateContext } from '../../../contexts/ContextRol';
+import Modal from '../../../components/ui/Modal';
+import { Alerta } from '../../../components/ui/Alerta';
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+
 
 export const PantallaPermiso = () => {
-    const { pantalla, setPantalla } = useStateContextPermisos();
-    const [mostrarPantalla, setMostrarPantalla] = useState();
+  const { toast } = useToast()
+  const { pantalla, setPantalla, click} = useStateContextPermisos();
+  const { editando, setEditando } = useStateContext();
+  const [mostrarPantalla, setMostrarPantalla] = useState();
 
-    //setPantalla(<ConfiguracionPermisos/>);
+  function successToastCreado() {
+    toast({
+        title: "Cambios sin Guardar",
+        description: "Guarda tus cambios antes de cambiar de pantalla",
+        variant: "destructive",
 
-    useEffect(()=>{
+    })
+}
+  //setPantalla(<ConfiguracionPermisos/>);
+  const [mostrarAlerta, setMostrarAlerta] = useState(false);
+
+  useEffect(() => {
+    if (!editando) {
       setMostrarPantalla(pantalla)
-      console.log(pantalla);
-    },[pantalla])
+    } else {
+      successToastCreado();
+    }
+  }, [click])
 
-    return (
-        <div className='w-full'>{mostrarPantalla}</div>
-    )
+  return (
+    <div className='w-full'>
+
+      {mostrarPantalla}
+    </div>
+  )
 }

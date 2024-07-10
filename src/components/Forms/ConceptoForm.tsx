@@ -144,7 +144,6 @@ const ConceptoForm = () => {
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
-                            estado: "activo"
                         });
                         getConcepto();
                         successToastCreado();

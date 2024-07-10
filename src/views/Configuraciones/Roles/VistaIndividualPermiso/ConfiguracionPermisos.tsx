@@ -64,7 +64,7 @@ const modulos = [
 export const ConfiguracionPermisos = () => {
 
   const [editar, setEditar] = useState(false);
-  const { permissions, setPermissions, rol } = useStateContext();
+  const { permissions, setPermissions, rol, editando, setEditando } = useStateContext();
 
   console.log(permissions.includes("EditarAnomalia"));
 
@@ -112,11 +112,14 @@ export const ConfiguracionPermisos = () => {
 
   const _editar = () => {
     setEditar(!editar);
+    setEditando(!editando);
   }
 
   const handleFormSubmit = () => {
     form.handleSubmit(onSubmit)();
   };
+
+  useEffect(()=>{console.log(editando)},[editando])
 
   return (
     <>
@@ -131,7 +134,7 @@ export const ConfiguracionPermisos = () => {
             editar &&
             <div onClick={() => { _editar(); handleFormSubmit(); }}>
               <IconButton>
-                <CheckCircledIcon />
+                <CheckCircledIcon  className='text-green-500'/>
               </IconButton>
             </div>
           }
