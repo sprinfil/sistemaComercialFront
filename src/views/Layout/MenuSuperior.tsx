@@ -148,6 +148,12 @@ const MenuSuperior = () => {
                     descripcion: "Opciones Adicionales.",
                     route: "/proximamente"
                 },
+                {
+                    titulo: "Tarifa",
+                    descripcion: "Consulta y gestiona las tarifas.",
+                    route: "/Tarifa"
+                },
+
             ]
         },
 

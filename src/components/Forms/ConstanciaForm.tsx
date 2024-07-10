@@ -36,7 +36,8 @@ const ConstanciaForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
-
+    const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
+    const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
 //#region SUCCESSTOAST
 function successToastCreado() {
     toast({
@@ -85,6 +86,16 @@ function errorToast() {
 
 
 }
+function errorYaExisteToast() {
+
+    toast({
+        variant: "destructive",
+        title: "Oh, no. Error",
+        description: "El concepto ya existe.",
+        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+    })
+}
+
 
 
     const form = useForm<z.infer<typeof constanciaSchema>>({
@@ -101,22 +112,35 @@ function errorToast() {
         setLoading(true);
         if (accion == "crear") {
             axiosClient.post(`/ConstanciasCatalogo/create`, values)
-                .then(() => {
-                    successToastCreado();
-                    setLoading(false);
-                    setConstancia({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    form.reset({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    getConstancias();
-                    console.log(values);
-                    //setNotification("usuario creado");
+                .then((response) => {
+                    const data = response.data;
+                    if(data.restore)
+                    {
+                        setIdParaRestaurar(data.constancia_id);
+                        setModalReactivacionOpen(true);
+                    }
+                    else if (data.restore == false) {
+                        errorYaExisteToast();
+                        setLoading(false);
+                    }
+                    else{
+                        successToastCreado();
+                        setLoading(false);
+                        setConstancia({
+                            id: 0,
+                            nombre: "",
+                            descripcion: "ninguna",
+                        });
+                        form.reset({
+                            id: 0,
+                            nombre: "",
+                            descripcion: "ninguna",
+                        });
+                        getConstancias();
+                        console.log(values);
+                        //setNotification("usuario creado");
+                    }
+                    
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -169,7 +193,7 @@ function errorToast() {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/ConstanciasCatalogo/log_delete/${constancia.id}`);
+            await axiosClient.delete(`/ConstanciasCatalogo/log_delete/${constancia.id}`);
             getConstancias();
             setAccion("eliminar");
             successToastEliminado();
@@ -177,6 +201,28 @@ function errorToast() {
             errorToast();
             console.error("Failed to delete anomalia:", error);
         }
+    };
+
+    const restaurarDato = (IdParaRestaurar: any) => {
+        axiosClient.put(`/ConstanciasCatalogo/restaurar/${IdParaRestaurar}`)
+            .then(() => {
+                setLoading(false);
+                setAbrirInput(false);
+                setAccion("crear");
+                setConstancia({
+                    id: 0,
+                    nombre: "",
+                    descripcion: "ninguna",
+                    estado: "activo"
+                });
+                getConstancias();
+                successToastRestaurado();
+                setModalReactivacionOpen(false);
+            })
+            .catch((err) => {
+                errorToast();
+                setLoading(false);
+            });
     };
 
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
@@ -249,6 +295,17 @@ function errorToast() {
                             </a>
                             </div>
                         </>
+                    }
+                    {// ESTE ES EL MODAL DE REACTIVACIÓN
+                        //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
+                        //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
+                    }
+                    {ModalReactivacionOpen &&
+                        <ModalReactivacion
+                            isOpen={ModalReactivacionOpen}
+                            setIsOpen={setModalReactivacionOpen}
+                            method={() => restaurarDato(IdParaRestaurar)}
+                        />
                     }
                 </div>
             </div>
