@@ -11,6 +11,8 @@ interface StateContextType {
     setRoles: (rol: Rol[]) => void;
     setAccion: (accion: string) => void;
     setLoadingTable: (loading: boolean) => void;
+    permissions: string[];
+    setPermissions: (permissions: string[]) => void;
 }
 
 // Crea el contexto con valores predeterminados adecuados según las interfaces
@@ -22,7 +24,9 @@ const StateContext = createContext<StateContextType>({
     accion: "",
     setAccion: () => {},
     setRoles: () => {},
-    setLoadingTable: () => {}
+    setLoadingTable: () => {},
+    permissions: [],
+    setPermissions: () => { },
 });
 
 // Define el componente proveedor que envuelve a los hijos con el proveedor de contexto
@@ -35,6 +39,7 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
     const [roles, setRoles] = useState<Rol[]>([]);
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [accion, setAccion] = useState<string>("");
+    const [permissions, setPermissions] = useState<string[]>([]);
 
     return (
         <StateContext.Provider value={{
@@ -45,7 +50,9 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
             loadingTable,
             setLoadingTable,
             accion,
-            setAccion
+            setAccion,
+            permissions,
+            setPermissions
         }}>
             {children}
         </StateContext.Provider>

@@ -53,7 +53,7 @@ const Catalogos = () => {
   ]
 
   return (
-    <div className='w-full '>
+    <div className='w-full'>
       <Tabs defaultValue="Anomalias" className="">
 
         <TabsList>

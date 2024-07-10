@@ -154,10 +154,10 @@ const RolForm = () => {
 
     return (
         <div className="overflow-auto">
-            <div className='flex h-[40px] items-center mb-[10px] rounded-sm  bg-card'>
+            <div className='flex h-[40px] items-center mb-[10px] rounded-sm  bg-muted'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4 ">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nueva Anomalia</p>}
+                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nuevo Rol</p>}
                         {rol.name != "" && <p className="text-muted-foreground text-[20px]">{rol.name}</p>}
                     </div>
                     { (rol.name != null && rol.name != "") &&

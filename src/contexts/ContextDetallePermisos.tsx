@@ -1,19 +1,18 @@
-import { Descuento } from "../components/Tables/Columns/DescuentoColumns.tsx";
-import React, { createContext, useContext, useState, ReactNode, FC, ReactElement } from "react";
+import React, { createContext, useContext, useState, ReactNode, FC, ReactElement, useEffect } from "react";
 
+// Define the state context type to include the new permissions state and setPermissions function
 interface StateContextType {
     pantalla: ReactElement | null;
     setPantalla: (pantalla: ReactElement | null) => void;
 }
 
-
-// Crea el contexto con valores predeterminados adecuados según las interfaces
+// Create the context with default values
 const StateContext = createContext<StateContextType>({
     pantalla: null,
     setPantalla: () => { },
 });
 
-// Define el componente proveedor que envuelve a los hijos con el proveedor de contexto
+// Define the provider component that wraps children with the context provider
 interface ContextProviderProps {
     children: ReactNode;
 }
@@ -24,12 +23,12 @@ export const ContextProviderPermisos: FC<ContextProviderProps> = ({ children }) 
     return (
         <StateContext.Provider value={{
             pantalla,
-            setPantalla
+            setPantalla,
         }}>
             {children}
         </StateContext.Provider>
     );
 };
 
-// Hook personalizado para utilizar el contexto fácilmente
+// Custom hook to use the context easily
 export const useStateContextPermisos = () => useContext(StateContext);
