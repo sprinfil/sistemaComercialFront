@@ -39,7 +39,7 @@ const Roles = () => {
 
                         {/*VISTAS DEL TAB*/}
                         <div className='w-[65%] rounded-md border border-border h-[88vh] p-4 overflow-auto '>
-                            <Tabs defaultValue="Informacion de usuario" className="">
+                            <Tabs defaultValue="Información de operador" className="">
                                 <TabsList>
                                     {opciones.map((opcion, index) => (
                                         <>
