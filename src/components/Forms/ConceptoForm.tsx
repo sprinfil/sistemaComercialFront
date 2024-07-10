@@ -134,7 +134,6 @@ const ConceptoForm = () => {
                     else if (data.restore == false) {
                         errorYaExisteToast();
                         setLoading(false);
-
                     }
                     else {
                         setModalReactivacionOpen(false);

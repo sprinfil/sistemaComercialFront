@@ -37,12 +37,13 @@ const TipoDeTomaForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
-
+    const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
+    const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
      //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía se ha creado correctamente",
+            description: "El tipo de toma se ha creado correctamente",
             variant: "success",
 
         })
@@ -50,7 +51,7 @@ const TipoDeTomaForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha editado correctamente",
+            description: "El tipo de toma se ha editado correctamente",
             variant: "success",
 
         })
@@ -58,7 +59,7 @@ const TipoDeTomaForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha eliminado correctamente",
+            description: "El tipo de toma se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -66,7 +67,7 @@ const TipoDeTomaForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha restaurado correctamente",
+            description: "El tipo de toma se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -86,6 +87,15 @@ const TipoDeTomaForm = () => {
 
 
     }
+    function errorYaExisteToast() {
+
+        toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "El tipo de toma ya existe.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+    }
 
 
     const form = useForm<z.infer<typeof TipoDeTomaSchema>>({
@@ -102,8 +112,20 @@ const TipoDeTomaForm = () => {
     function onSubmit(values: z.infer<typeof TipoDeTomaSchema>) {
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/AnomaliasCatalogo/create`, values)
-                .then(() => {
+            axiosClient.post(`/TipoToma/create`, values)
+                .then((response) => {
+                    const data = response.data;
+                    if(data.restore)
+                    {
+                        setIdParaRestaurar(data.tipoToma_id);
+                        setModalReactivacionOpen(true);
+                    }
+                    else if (data.restore == false) {
+                        errorYaExisteToast();
+                        setLoading(false);
+                    }
+                    else
+                    {
                     setLoading(false);
                     setTipoDeToma({
                         id: 0,
@@ -119,7 +141,7 @@ const TipoDeTomaForm = () => {
                     successToastCreado();
                     console.log(values);
                     //setNotification("usuario creado");
-                })
+        }})
                 .catch((err) => {
                     const response = err.response;
                     errorToast();
@@ -131,7 +153,7 @@ const TipoDeTomaForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/AnomaliasCatalogo/update/${TipoDeToma.id}`, values)
+            axiosClient.put(`/TipoToma/update/${TipoDeToma.id}`, values)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
@@ -157,7 +179,7 @@ const TipoDeTomaForm = () => {
     const getAnomalias = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/AnomaliasCatalogo");
+            const response = await axiosClient.get("/TipoToma");
             setLoadingTable(false);
             setTipoDeTomas(response.data.data);
             console.log(response.data.data);
@@ -171,7 +193,7 @@ const TipoDeTomaForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${TipoDeToma.id}`);
+            await axiosClient.delete(`/TipoToma/log_delete/${TipoDeToma.id}`);
             getAnomalias();
             setAccion("eliminar");
             successToastEliminado();
@@ -179,6 +201,28 @@ const TipoDeTomaForm = () => {
             errorToast();
             console.error("Failed to delete anomalia:", error);
         }
+    };
+     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
+     const restaurarDato = (IdParaRestaurar: any) => {
+        axiosClient.put(`/TipoToma/restore/${IdParaRestaurar}`)
+            .then(() => {
+                setLoading(false);
+                setAbrirInput(false);
+                setAccion("crear");
+                setTipoDeToma({
+                    id: 0,
+                    nombre: "",
+                    descripcion: "ninguna",
+                    estado: "activo"
+                });
+                getAnomalias();
+                successToastRestaurado();
+                setModalReactivacionOpen(false);
+            })
+            .catch((err) => {
+                errorToast();
+                setLoading(false);
+            });
     };
 
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
@@ -252,6 +296,17 @@ const TipoDeTomaForm = () => {
                                 </div>
                             </>
                         }
+                        {// ESTE ES EL MODAL DE REACTIVACIÓN
+                        //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
+                        //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
+                    }
+                    {ModalReactivacionOpen &&
+                        <ModalReactivacion
+                            isOpen={ModalReactivacionOpen}
+                            setIsOpen={setModalReactivacionOpen}
+                            method={() => restaurarDato(IdParaRestaurar)}
+                        />
+                    }
 
                     </div>
                 </div>
