@@ -5,12 +5,13 @@ import RolForm from '../../../components/Forms/RolForm'
 import Permisos from '../Roles/Permisos'
 import { ContextProvider } from '../../../contexts/ContextOperador'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useStateContext } from "../../../contexts/ContextOperador.tsx";
 
 
 const Roles = () => {
     const opciones = [
         {
-            titulo: "Informacion de usuario",
+            titulo: "Información de operador",
             componente: <OperadorForm />
         },
         {
@@ -38,7 +39,7 @@ const Roles = () => {
 
                         {/*VISTAS DEL TAB*/}
                         <div className='w-[65%] rounded-md border border-border h-[88vh] p-4 overflow-auto '>
-                            <Tabs defaultValue="Permisos" className="">
+                            <Tabs defaultValue="Informacion de usuario" className="">
                                 <TabsList>
                                     {opciones.map((opcion, index) => (
                                         <>
@@ -60,5 +61,21 @@ const Roles = () => {
         </div>
     )
 }
+
+const InformacionDeOperdorForm = () => {
+
+    const { accion } = useStateContext();
+  
+    return (
+      <>
+          {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
+        {accion == "editar" ? (<div className='w-[65%] rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
+              <InformacionDeOperdorForm />
+            </div>) : (<div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+              <InformacionDeOperdorForm />
+            </div>)}
+      </>
+    );
+  };
 
 export default Roles

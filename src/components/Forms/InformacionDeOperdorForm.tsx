@@ -2,7 +2,7 @@ import { useState } from "react";
 import logo from '../../img/logo.png';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { string, z } from "zod";
 import { Button } from '../../components/ui/button.tsx';
 import {
     Form,
@@ -31,6 +31,7 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
+import { strict } from "assert";
 
 
 const OperadorForm = () => {
@@ -58,8 +59,15 @@ const OperadorForm = () => {
 
     function onSubmit(values: z.infer<typeof operadorSchema>) {
         setLoading(true);
-        
+
+        function formatDate(date: Date): string {
+            return date.toISOString().split('T')[0];
+          }
+          
         if (accion == "crear") {
+            if (values.fecha_nacimiento) {
+                values.fecha_nacimiento = formatDate(new Date(values.fecha_nacimiento));
+              }
             axiosClient.post(`/Operador/create`, values)
                 .then(() => {
                     setLoading(false);
@@ -70,7 +78,7 @@ const OperadorForm = () => {
                         apellido_paterno: "",
                         apellido_materno: "",
                         CURP: "",
-                        fecha_nacimiento: new Date("YYYY-MM-DD"),
+                        fecha_nacimiento: new Date().toISOString().split('T')[0],
                     });
                     form.reset({
                         codigo_empleado: "",
@@ -132,7 +140,7 @@ const OperadorForm = () => {
     
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/Operador/log_delete/${operador.id}`);
+            await axiosClient.delete(`/Operador/log_delete/${operador.id}`);
             getOperadores();
             setAccion("eliminar");
         } catch (error) {
@@ -231,12 +239,12 @@ const OperadorForm = () => {
                             name="codigo_empleado"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Codigo de empleado</FormLabel>
+                                    <FormLabel>Código de empleado</FormLabel>
                                     <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escriba el codigo de empleado" {...field} />
+                                        <Input readOnly={!abrirInput} placeholder="Escriba el código de empleado" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El codigo de empleado.
+                                        El código de empleado.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -311,15 +319,15 @@ const OperadorForm = () => {
                             name="fecha_nacimiento"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col">
-                                <FormLabel>Fecha de cumpleaños</FormLabel>
+                                <FormLabel>Fecha de nacimiento</FormLabel>
                                 <Popover>
                                   <PopoverTrigger asChild>
                                     <FormControl>
-                                      <Button
+                                      <Button 
                                         variant={"outline"}
                                         className={cn(
                                           "w-[240px] pl-3 text-left font-normal",
-                                          !field.value && "text-muted-foreground"
+                                          !field.value && "text-muted-foreground "
                                         )}
                                         disabled={!abrirInput}
                                       >
@@ -332,7 +340,7 @@ const OperadorForm = () => {
                                       </Button>
                                     </FormControl>
                                   </PopoverTrigger>
-                                  <PopoverContent className="w-auto p-0" align="start">
+                                  <PopoverContent className="w-auto p-0 bg-gray-50 rounded-sm border" align="start">
                                     <Calendar
                                       mode="single"
                                       selected={field.value}
@@ -345,7 +353,7 @@ const OperadorForm = () => {
                                   </PopoverContent>
                                 </Popover>
                                 <FormDescription>
-                                  Your date of birth is used to calculate your age.
+                                  Selecciona fecha de nacimiento.
                                 </FormDescription>
                                 <FormMessage />
                               </FormItem>

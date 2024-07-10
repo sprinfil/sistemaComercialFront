@@ -24,7 +24,7 @@ export type Operador = {
   apellido_paterno: string
   apellido_materno: string
   CURP: string
-  fecha_nacimiento: Date
+  fecha_nacimiento: Date | string
 }
 
 
