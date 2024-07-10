@@ -55,6 +55,18 @@ const modulos = [
         titulo: "Catalogo de Conceptos",
         Permisos: ["VerConceptos", "CrearConcepto", "EditarConcepto", "EliminarConcepto"],
       },
+      {
+        titulo: "Catalogo de Descuentos",
+        Permisos: ["VerDescuentos", "CrearDescuento", "EditarDescuento", "EliminarDescuento"],
+      },
+      {
+        titulo: "Catalogo de Convenio",
+        Permisos: ["VerConvenios", "CrearConvenio", "EditarConvenio", "EliminarConvenio"],
+      },
+      {
+        titulo: "Catalogo de Ajuste",
+        Permisos: ["VerConvenios", "CrearConvenio", "EditarConvenio", "EliminarConvenio"],
+      },
     ]
   },
 ]
@@ -88,6 +100,24 @@ export const ConfiguracionPermisos = () => {
       CrearConcepto: permissions.includes("CrearConcepto"),
       EditarConcepto: permissions.includes("EditarConcepto"),
       EliminarConcepto: permissions.includes("EliminarConcepto"),
+
+      //CATALOGO DESCUENTOS
+      VerDescuentos: permissions.includes("VerDescuentos"),
+      CrearDescuento: permissions.includes("CrearDescuento"),
+      EditarDescuento: permissions.includes("EditarDescuento"),
+      EliminarDescuento: permissions.includes("EliminarDescuento"),
+
+      //CATALOGO CONVENIOS
+      VerConvenios: permissions.includes("VerConvenios"),
+      CrearConvenio: permissions.includes("CrearConvenio"),
+      EditarConvenio: permissions.includes("EditarConvenio"),
+      EliminarConvenio: permissions.includes("EliminarConvenio"),
+
+      //CATALOGO AJUSTE
+      VerAjustes: permissions.includes("VerAjustes"),
+      CrearAjuste: permissions.includes("CrearAjuste"),
+      EditarAjuste: permissions.includes("EditarAjuste"),
+      EliminarAjuste: permissions.includes("EliminarAjuste"),
     },
   });
 

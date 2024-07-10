@@ -19,4 +19,22 @@ export const AnomaliaPermissionsSchema = z.object({
   CrearConcepto: z.boolean(),
   EditarConcepto: z.boolean(),
   EliminarConcepto: z.boolean(),
+
+  //DESCUENTOS
+  VerDescuentos: z.boolean(),
+  CrearDescuento: z.boolean(),
+  EditarDescuento: z.boolean(),
+  EliminarDescuento: z.boolean(),
+
+  //CONVENIO
+  VerConvenios: z.boolean(),
+  CrearConvenio: z.boolean(),
+  EditarConvenio: z.boolean(),
+  EliminarConvenio: z.boolean(),
+
+  //AJUSTE
+  VerAjustes: z.boolean(),
+  CrearAjuste: z.boolean(),
+  EditarAjuste: z.boolean(),
+  EliminarAjuste: z.boolean(),
 })
