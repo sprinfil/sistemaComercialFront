@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import RolTable from '../../../components/Tables/Components/RolTable'
 import RolForm from '../../../components/Forms/RolForm'
 import { ContextProvider, useStateContext } from '../../../contexts/ContextRol'
@@ -30,8 +30,8 @@ const Roles = () => {
                         </div>
 
                         {/*VISTAS DEL TAB*/}
-                        <div className='w-[65%] rounded-tr-md rounded-tl-md border border-border h-[88vh] p-4 overflow-auto '>
 
+                        <div className='w-[65%] rounded-tr-md rounded-tl-md border border-border h-[88vh] p-4 overflow-auto '>
                             <Tabs defaultValue="Permisos" className="">
                                 <TabsList>
                                     {opciones.map((opcion, index) => (
@@ -46,7 +46,6 @@ const Roles = () => {
                                     </>
                                 ))}
                             </Tabs>
-
                         </div>
 
                     </div>

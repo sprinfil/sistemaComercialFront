@@ -22,8 +22,6 @@ export const PantallaPermiso = () => {
 
     })
 }
-  //setPantalla(<ConfiguracionPermisos/>);
-  const [mostrarAlerta, setMostrarAlerta] = useState(false);
 
   useEffect(() => {
     if (!editando) {
@@ -35,7 +33,6 @@ export const PantallaPermiso = () => {
 
   return (
     <div className='w-full'>
-
       {mostrarPantalla}
     </div>
   )

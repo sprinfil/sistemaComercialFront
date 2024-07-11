@@ -6,10 +6,12 @@ import { useStateContext } from '../../../contexts/ContextRol.tsx';
 import Loader from '../../ui/Loader.tsx';
 import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 
 export default function RolTable() {
-
-  const { roles, setRoles, loadingTable, setLoadingTable, setAccion, setRol } = useStateContext();
+  const { toast } = useToast()
+  const { roles, setRoles, loadingTable, setLoadingTable, setAccion, setRol, editando } = useStateContext();
 
   useEffect(() => {
     getRoles();
@@ -29,11 +31,22 @@ export default function RolTable() {
   };
 
   const handleRowClick = (rol: Rol) => {
-    setRol(rol);
-    setAccion("ver");
+    if (!editando) {
+      setRol(rol);
+      setAccion("ver");
+    }else{
+      successToastCreado();
+    }
+
   };
 
-
+  function successToastCreado() {
+    toast({
+        title: "Cambios sin Guardar",
+        description: "Guarda tus cambios antes de cambiar de pantalla",
+        variant: "destructive",
+    })
+}
 
   if (loadingTable) {
     return <div><Loader /></div>;
@@ -47,7 +60,7 @@ export default function RolTable() {
           <div className='flex gap-2 items-center'> Agregar nuevo Rol<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
       </div>
-      <DataTable columns={columns} data={roles} sorter='name' onRowClick={handleRowClick}/>
+      <DataTable columns={columns} data={roles} sorter='name' onRowClick={handleRowClick} />
     </div>
   );
 }

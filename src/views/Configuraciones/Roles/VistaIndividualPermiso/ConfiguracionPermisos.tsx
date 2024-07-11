@@ -27,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { RadiobuttonIcon, Pencil1Icon, SymbolIcon, CheckCircledIcon } from '@radix-ui/react-icons';
+import { RadiobuttonIcon, Pencil1Icon, SymbolIcon, CheckCircledIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 import { permission } from 'process';
 import { useStateContextPermisos } from '../../../../contexts/ContextDetallePermisos.tsx';
 import { useStateContext } from '../../../../contexts/ContextRol.tsx';
@@ -38,6 +38,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 
 const modulos = [
   {
@@ -62,11 +64,26 @@ const modulos = [
 
 
 export const ConfiguracionPermisos = () => {
-
+  const { toast } = useToast()
   const [editar, setEditar] = useState(false);
   const { permissions, setPermissions, rol, editando, setEditando } = useStateContext();
 
-  console.log(permissions.includes("EditarAnomalia"));
+  function successToastCreado() {
+    toast({
+      title: "¡Éxito!",
+      description: "Cambios Guardados",
+      variant: "success",
+
+    })
+  }
+
+  function ErrorToast() {
+    toast({
+      title: "Error",
+      description: "Ocurrio un error",
+      variant: "destructive",
+    })
+  }
 
   const form = useForm<z.infer<typeof AnomaliaPermissionsSchema>>({
     resolver: zodResolver(AnomaliaPermissionsSchema),
@@ -82,7 +99,7 @@ export const ConfiguracionPermisos = () => {
       CrearGiroComercial: permissions.includes("CrearGiroComercial"),
       EditarGiroComercial: permissions.includes("EditarGiroComercial"),
       EliminarGircoComercial: permissions.includes("EliminarGircoComercial"),
-      
+
       //CATALOGO CONCEPTOS
       VerConceptos: permissions.includes("VerConceptos"),
       CrearConcepto: permissions.includes("CrearConcepto"),
@@ -95,19 +112,26 @@ export const ConfiguracionPermisos = () => {
     console.log(JSON.stringify(values));
     axiosClient.post(`/Rol/give_rol_permissions/${rol.id}`, JSON.stringify(values))
       .then((values) => {
-        //setPermissions(values);
-        //successToastCreado();
+        setPermissions(values.data);
         console.log(values);
-        //setNotification("usuario creado");
+        successToastCreado();
       })
       .catch((err) => {
         const response = err.response;
-        //errorToast();
+        ErrorToast();
       })
   }
 
   const all = (permisos) => {
     permisos.map((permiso) => { form.setValue(permiso, true); })
+  }
+
+  const none = (permisos) => {
+    permisos.map((permiso) => { form.setValue(permiso, false); })
+  }
+
+  const restore = () => {
+
   }
 
   const _editar = () => {
@@ -119,10 +143,14 @@ export const ConfiguracionPermisos = () => {
     form.handleSubmit(onSubmit)();
   };
 
-  useEffect(()=>{console.log(editando)},[editando])
+  useEffect(() => { console.log(editando) }, [editando])
 
   return (
     <>
+      {
+        editando &&
+        <div className='w-[50%] h-[4rem] fixed top-[11vh] left-[45%] z-50 '></div>
+      }
       <div className='w-full h-[40px] bg-muted mb-[20px] rounded-md sticky top-0 z-10 flex items-center'>
 
         <div className='absolute left-3 flex gap-2'>
@@ -134,7 +162,7 @@ export const ConfiguracionPermisos = () => {
             editar &&
             <div onClick={() => { _editar(); handleFormSubmit(); }}>
               <IconButton>
-                <CheckCircledIcon  className='text-green-500'/>
+                <CheckCircledIcon className='text-green-500' />
               </IconButton>
             </div>
           }
@@ -147,79 +175,91 @@ export const ConfiguracionPermisos = () => {
               </IconButton>
             </div>
           }
-          <IconButton>
+          {/*
+          RESTORE BUTTON
+               <IconButton>
             <SymbolIcon />
           </IconButton>
+          */}
+
+
         </div>
       </div>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         {modulos.map((modulo, index) => (
           <>
             <Accordion type="single" collapsible>
-            <AccordionItem value={modulo.titulo}>
-            <AccordionTrigger>{modulo.titulo}</AccordionTrigger>
-            <AccordionContent>
-              <div key={index} className='border border-border rounded-md mb-[20px]'>
-                <Form {...form}>
-                  <div>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>SubModulo</TableHead>
-                          <TableHead>Ver</TableHead>
-                          <TableHead>Crear</TableHead>
-                          <TableHead>Editar</TableHead>
-                          <TableHead>Eliminar</TableHead>
-                          {
-                            editar &&
-                            <TableHead></TableHead>
-                          }
-                        </TableRow>
-                      </TableHeader>
-                      {modulo.subModulos.map((subModulo, index) => (
-                        <>
-                          <TableBody>
+              <AccordionItem value={modulo.titulo}>
+                <AccordionTrigger>{modulo.titulo}</AccordionTrigger>
+                <AccordionContent>
+                  <div key={index} className='border border-border rounded-md mb-[20px]'>
+                    <Form {...form}>
+                      <div>
+                        <Table>
+                          <TableHeader>
                             <TableRow>
-                              <TableCell>{subModulo.titulo}</TableCell>
-                              {subModulo.Permisos.map((permiso, index) => (
-                                <TableCell>
-                                  <FormField
-                                    control={form.control}
-                                    name={permiso}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormControl>
-                                          <Switch
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                            disabled={!editar}
-                                          />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                </TableCell>
-                              ))}
-
+                              <TableHead>SubModulo</TableHead>
+                              <TableHead>Ver</TableHead>
+                              <TableHead>Crear</TableHead>
+                              <TableHead>Editar</TableHead>
+                              <TableHead>Eliminar</TableHead>
                               {
                                 editar &&
-                                <div className='w-full h-[60px] items-center justify-center flex p-4' onClick={() => { all(subModulo.Permisos) }}>
-                                  <IconButton>
-                                    <RadiobuttonIcon />
-                                  </IconButton>
-                                </div>
+                                <TableHead></TableHead>
                               }
-
                             </TableRow>
-                          </TableBody>
-                        </>
-                      ))}
-                    </Table>
+                          </TableHeader>
+                          {modulo.subModulos.map((subModulo, index) => (
+                            <>
+                              <TableBody>
+                                <TableRow>
+                                  <TableCell>{subModulo.titulo}</TableCell>
+                                  {subModulo.Permisos.map((permiso, index) => (
+                                    <TableCell>
+                                      <FormField
+                                        control={form.control}
+                                        name={permiso}
+                                        render={({ field }) => (
+                                          <FormItem>
+                                            <FormControl>
+                                              <Switch
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                                disabled={!editar}
+                                              />
+                                            </FormControl>
+                                            <FormMessage />
+                                          </FormItem>
+                                        )}
+                                      />
+                                    </TableCell>
+                                  ))}
+
+                                  {
+                                    editar &&
+                                    <div className='flex'>
+                                      <div className='w-full h-[60px] items-center justify-center flex p-1' onClick={() => { all(subModulo.Permisos) }}>
+                                        <IconButton>
+                                          <CheckCircledIcon />
+                                        </IconButton>
+                                      </div>
+                                      <div className='w-full h-[60px] items-center justify-center flex p-1' onClick={() => { none(subModulo.Permisos) }}>
+                                        <IconButton>
+                                          <CrossCircledIcon />
+                                        </IconButton>
+                                      </div>
+                                    </div>
+                                  }
+
+                                </TableRow>
+                              </TableBody>
+                            </>
+                          ))}
+                        </Table>
+                      </div>
+                    </Form>
                   </div>
-                </Form>
-              </div>
-              </AccordionContent>
+                </AccordionContent>
               </AccordionItem>
             </Accordion>
           </>
