@@ -41,35 +41,57 @@ import {
 
 const modulos = [
   {
-    titulo: "CATALOGOS",
+    titulo: "Catálogos",
     subModulos: [
       {
-        titulo: "Catalogo de anomalias",
+        titulo: "Catálogo de anomalias",
         Permisos: ["VerAnomalias", "CrearAnomalia", "EditarAnomalia", "EliminarAnomalia"],
       },
       {
-        titulo: "Catalogo de Giros Comerciales",
-        Permisos: ["VerGirosComerciales", "CrearGiroComercial", "EditarGiroComercial", "EliminarGircoComercial"],
-      },
-      {
-        titulo: "Catalogo de Conceptos",
+        titulo: "Catálogo de conceptos",
         Permisos: ["VerConceptos", "CrearConcepto", "EditarConcepto", "EliminarConcepto"],
       },
       {
-        titulo: "Catalogo de Descuentos",
+        titulo: "Catálogo de descuentos",
         Permisos: ["VerDescuentos", "CrearDescuento", "EditarDescuento", "EliminarDescuento"],
       },
       {
-        titulo: "Catalogo de Convenio",
+        titulo: "Catálogo de convenios",
         Permisos: ["VerConvenios", "CrearConvenio", "EditarConvenio", "EliminarConvenio"],
       },
       {
-        titulo: "Catalogo de Ajuste",
+        titulo: "Catálogo de ajustes",
         Permisos: ["VerConvenios", "CrearConvenio", "EditarConvenio", "EliminarConvenio"],
+      },
+      {
+        titulo: "Catálogo de constancias",
+        Permisos: ["VerConstancias", "CrearConstancia", "EditarConstancia", "EliminarConstancia"],
+      },
+      {
+        titulo: "Catálogo de bonificacions",
+        Permisos: ["VerBonificaciones", "CrearBonificacion", "EditarBonificacion", "EliminarBonificacion"],
+      },
+      {
+        titulo: "Catálogo de giros comerciales",
+        Permisos: ["VerGirosComerciales", "CrearGiroComercial", "EditarGiroComercial", "EliminarGircoComercial"],
+      },
+      {
+        titulo: "Catálogo de tipos de toma",
+        Permisos: ["VerTiposDeToma", "CrearTipoDeToma", "EditarTipoDeToma", "EliminarTipoDeTomas"],
+      },
+    ]
+  },
+  {
+    titulo: "Operadores del sistema",
+    subModulos: [
+      {
+        titulo: "Catálogo de anomalias",
+        Permisos: ["VerAnomalias", "CrearAnomalia", "EditarAnomalia", "EliminarAnomalia"],
       },
     ]
   },
 ]
+
 
 
 
@@ -88,12 +110,6 @@ export const ConfiguracionPermisos = () => {
       CrearAnomalia: permissions.includes("CrearAnomalia"),
       EditarAnomalia: permissions.includes("EditarAnomalia"),
       EliminarAnomalia: permissions.includes("EliminarAnomalia"),
-
-      //CATALOGO GIROS COMERCIALES
-      VerGirosComerciales: permissions.includes("VerGirosComerciales"),
-      CrearGiroComercial: permissions.includes("CrearGiroComercial"),
-      EditarGiroComercial: permissions.includes("EditarGiroComercial"),
-      EliminarGircoComercial: permissions.includes("EliminarGircoComercial"),
       
       //CATALOGO CONCEPTOS
       VerConceptos: permissions.includes("VerConceptos"),
@@ -118,6 +134,30 @@ export const ConfiguracionPermisos = () => {
       CrearAjuste: permissions.includes("CrearAjuste"),
       EditarAjuste: permissions.includes("EditarAjuste"),
       EliminarAjuste: permissions.includes("EliminarAjuste"),
+
+      //CATALOGO CONSTANCIA
+      VerConstancias: permissions.includes("VerConstancias"),
+      CrearConstancia: permissions.includes("CrearConstancia"),
+      EditarConstancia: permissions.includes("EditarConstancia"),
+      EliminarConstancia: permissions.includes("EliminarConstancia"),
+
+      //CATALOGO BONIFICACION
+      VerBonificaciones: permissions.includes("VerBonificaciones"),
+      CrearBonificacion: permissions.includes("CrearBonificacion"),
+      EditarBonificacion: permissions.includes("EditarBonificacion"),
+      EliminarBonificacion: permissions.includes("EliminarBonificacion"),
+
+      //CATALOGO GIROS COMERCIALES
+      VerGirosComerciales: permissions.includes("VerGirosComerciales"),
+      CrearGiroComercial: permissions.includes("CrearGiroComercial"),
+      EditarGiroComercial: permissions.includes("EditarGiroComercial"),
+      EliminarGircoComercial: permissions.includes("EliminarGircoComercial"),
+
+      //CATALOGO GIROS COMERCIALES
+      VerTiposDeToma: permissions.includes("VerTiposDeToma"),
+      CrearTipoDeToma: permissions.includes("CrearTipoDeToma"),
+      EditarTipoDeToma: permissions.includes("EditarTipoDeToma"),
+      EliminarTipoDeTomas: permissions.includes("EliminarTipoDeTomas"),
     },
   });
 
