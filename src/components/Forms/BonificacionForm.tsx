@@ -153,7 +153,7 @@ const BonificacionForm = () => {
             console.log("este es mi modal " +  ModalReactivacionOpen);
         }
         if (accion == "editar") {
-            axiosClient.put(`/BonificacionesCatalogo/update/${bonificacion.id}`, values)
+            axiosClient.put(`/bonificacionesCatalogo/update/${bonificacion.id}`, values)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
@@ -193,7 +193,7 @@ const BonificacionForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/BonificacionesCatalogo/log_delete/${bonificacion.id}`);
+            await axiosClient.delete(`/bonificacionesCatalogo/log_delete/${bonificacion.id}`);
             getBonificacion();
             setAccion("eliminar");
             successToastEliminado();
