@@ -9,7 +9,7 @@ export const TarifaConceptos = () => {
       {/*Contenedor principal*/}
 
         {/*Datatable*/}
-        <div className='w-[100%] rounded-md border border-border p-4 overflow-auto h-[75vh]'>
+        <div className=''>
           <TarifaConceptosTable />
         </div>
 

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode, FC } from "react";
-import { Tarifa } from "../components/Tables/Columns/TarifaColumns.tsx";
+import { Tarifa } from "../components/Tables/Columns/Tarifa-Columns/TarifaServicioColumns.tsx";
 
 // Define la interfaz para el estado del usuario y los métodos para actualizar el estado
 interface StateContextType {

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { DataTableConceptos } from '../../ui/DataTableTarifaConceptos.tsx';
-import { columns, Tarifa } from "../Columns/TarifaColumns.tsx";
+import { DataTableTarifaConceptos } from '../../ui/DataTable Tarifas/DataTableTarifaConceptos.tsx';
+import { columns, Tarifa } from "../Columns/Tarifa-Columns/TarifaConceptosColumns.tsx";
 import axiosClient from '../../../axios-client.ts';
 import { useStateContext } from '../../../contexts/ContextTarifa.tsx';
 import Loader from '../../ui/Loader.tsx';
@@ -35,8 +35,8 @@ export default function TarifaServiciosTable() {
 
 
   return (
-    <div className='w-[130vh]'>
-      <DataTableConceptos columns={columns} data={tarifas} sorter='nombre' onRowClick={handleRowClick} />
+    <div className='w-full h-full '>
+      <DataTableTarifaConceptos columns={columns} data={tarifas} sorter='nombre' onRowClick={handleRowClick} />
     </div>
   );
 }

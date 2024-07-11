@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import TarifaServiciosTable from '../../../components/Tables/Components/TarifaServiciosTable'
 import { ContextProvider } from '../../../contexts/ContextProvider'
 import {
@@ -13,32 +13,58 @@ import { useStateContext } from "../../../contexts/ContextTarifa.tsx";
 
 export const TarifaServicios = () => {
 
-
+  //seeder pa comercial
+  const [seedServiciosDomestica, setSeedServiciosDomestica] = useState([
+    {
+        Rango: "17 m3",
+        Agua: "$9",
+        Alcantarillado: "$2.20",
+        Sanamiento: "$2.20"
+    },
+    {
+        Rango: "24 m3",
+        Agua: "$10",
+        Alcantarillado: "$2.20",
+        Sanamiento: "$2.20"
+    },
+    {
+        Rango: "30 m3",
+        Agua: "$20",
+        Alcantarillado: "$2.20",
+        Sanamiento: "$2.20"
+    },
+    {
+        Rango: "40 m3",
+        Agua: "$30",
+        Alcantarillado: "$2.20",
+        Sanamiento: "$2.20"
+    }
+]);
 
   return (
 
-     <ContextProvider>
-      <div className="w-full h-64 flex items-center justify-center mt-10 pt-10">
+    <ContextProvider>
+      <div className="w-full h-[60vh] flex items-center justify-center mt-10 pt-10">
         <Carousel >
-          <CarouselContent className="p-1 flex max-w-[900px] ">
+          <CarouselContent className="p-1 flex max-w-[800px] ">
             {/* Primer item del carousel */}
             <CarouselItem className="w-full">
               <div className="h-full flex items-center justify-center w-full">
-                <TarifaServiciosTable />
+                <TarifaServiciosTable data = {seedServiciosDomestica} />
               </div>
             </CarouselItem>
 
             {/* Segundo item del carousel */}
             <CarouselItem className="w-full">
               <div className="h-full flex items-center justify-center">
-              <TarifaServiciosTable />
+              <TarifaServiciosTable data = {seedServiciosDomestica}/>
               </div>
             </CarouselItem>
 
             {/* Tercer item del carousel */}
             <CarouselItem className="w-full">
               <div className="h-full flex items-center justify-center">
-              <TarifaServiciosTable />
+              <TarifaServiciosTable data = {seedServiciosDomestica} />
               </div>
             </CarouselItem>
           </CarouselContent>

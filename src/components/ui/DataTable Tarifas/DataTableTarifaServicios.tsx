@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { EdicionTarifaServicio } from "../../Tables/Components/EdicionTarifaServicio";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -28,16 +29,14 @@ interface DataTableProps<TData, TValue> {
   onRowClick?: (row: TData) => void;
 }
 
-export function DataTableConceptos<TData, TValue>({
+export function DataTableTarifa<TData, TValue>({
   columns,
   data,
   sorter,
   onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
 
   const table = useReactTable({
@@ -62,24 +61,22 @@ export function DataTableConceptos<TData, TValue>({
   };
 
   return (
-    <div className="">
-      <div className="rounded-md border h-full overflow-auto">
-        <Table>
+    <div className="overflow-auto">
+      <div className="rounded-md border h-full">
+        <Table className="min-w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -87,19 +84,21 @@ export function DataTableConceptos<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
+                <EdicionTarifaServicio
                   key={row.id}
-                  onClick={() => handleRowClick(row.id, row.original)}
-                  className={`cursor-pointer hover:bg-border ${
-                    selectedRow === row.id ? "bg-border" : ""
-                  }`}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                  trigger={
+                    <TableRow
+                      onClick={() => handleRowClick(row.id, row.original)}
+                      className={`cursor-pointer ${selectedRow === row.id ? "bg-border" : ""}`}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  }
+                />
               ))
             ) : (
               <TableRow>
@@ -114,4 +113,3 @@ export function DataTableConceptos<TData, TValue>({
     </div>
   );
 }
-

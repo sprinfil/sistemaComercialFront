@@ -28,7 +28,7 @@ interface DataTableProps<TData, TValue> {
   onRowClick?: (row: TData) => void;
 }
 
-export function DataTableTarifa<TData, TValue>({
+export function DataTableTarifaConceptos<TData, TValue>({
   columns,
   data,
   sorter,
