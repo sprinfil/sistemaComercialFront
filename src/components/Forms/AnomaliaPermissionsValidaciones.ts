@@ -50,7 +50,7 @@ export const AnomaliaPermissionsSchema = z.object({
   EditarGiroComercial: z.boolean(),
   EliminarGircoComercial: z.boolean(),
 
-  //GIROS COMERCIALES
+  //TIPOS DE TOMA
   VerTiposDeToma: z.boolean(),
   CrearTipoDeToma: z.boolean(),
   EditarTipoDeToma: z.boolean(),

@@ -63,7 +63,7 @@ const modulos = [
       },
       {
         titulo: "Catálogo de ajustes",
-        Permisos: ["VerConvenios", "CrearConvenio", "EditarConvenio", "EliminarConvenio"],
+        Permisos: ["VerAjustes", "CrearAjuste", "EditarAjuste", "EliminarAjuste"],
       },
       {
         titulo: "Catálogo de constancias",
@@ -170,12 +170,6 @@ export const ConfiguracionPermisos = () => {
       CrearBonificacion: permissions.includes("CrearBonificacion"),
       EditarBonificacion: permissions.includes("EditarBonificacion"),
       EliminarBonificacion: permissions.includes("EliminarBonificacion"),
-
-      //CATALOGO GIROS COMERCIALES
-      VerGirosComerciales: permissions.includes("VerGirosComerciales"),
-      CrearGiroComercial: permissions.includes("CrearGiroComercial"),
-      EditarGiroComercial: permissions.includes("EditarGiroComercial"),
-      EliminarGircoComercial: permissions.includes("EliminarGircoComercial"),
 
       //CATALOGO GIROS COMERCIALES
       VerTiposDeToma: permissions.includes("VerTiposDeToma"),
