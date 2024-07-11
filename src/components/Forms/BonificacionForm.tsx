@@ -34,6 +34,8 @@ const BonificacionForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
+    const [bonificacionIdParaRestaurar, setBonificacionIdParaRestaurar] = useState(null);
+    const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
 
     //#region SUCCESSTOAST
     function successToastCreado() {
@@ -68,6 +70,16 @@ const BonificacionForm = () => {
 
         })
     }
+
+    function errorYaExisteToast() {
+
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "La bonificación ya existe.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+    }
     //#endregion
 
 
@@ -99,7 +111,18 @@ const BonificacionForm = () => {
         setLoading(true);
         if (accion == "crear") {
             axiosClient.post(`/bonificacionesCatalogo/create`, values)
-                .then(() => {
+                .then((response) => {
+                    const data = response.data;
+                    if (data.restore == true) {
+                        setBonificacionIdParaRestaurar(data.bonificacion_id);
+                        setModalReactivacionOpen(true);
+                    }
+                    else if (data.restore == false) {
+                        errorYaExisteToast();
+                        setLoading(false);
+                    }
+                    else
+                    {
                     successToastCreado();
                     setLoading(false);
                     setBonificacion({
@@ -115,6 +138,8 @@ const BonificacionForm = () => {
                     getBonificacion();
                     console.log(values);
                     //setNotification("usuario creado");
+                    }
+                    
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -125,9 +150,10 @@ const BonificacionForm = () => {
                     setLoading(false);
                 })
             console.log(abrirInput);
+            console.log("este es mi modal " +  ModalReactivacionOpen);
         }
         if (accion == "editar") {
-            axiosClient.put(`/BonificacionesCatalogo/update/${bonificacion.id}`, values)
+            axiosClient.put(`/bonificacionesCatalogo/update/${bonificacion.id}`, values)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
@@ -167,7 +193,7 @@ const BonificacionForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/BonificacionesCatalogo/log_delete/${bonificacion.id}`);
+            await axiosClient.delete(`/bonificacionesCatalogo/log_delete/${bonificacion.id}`);
             getBonificacion();
             setAccion("eliminar");
             successToastEliminado();
@@ -175,6 +201,29 @@ const BonificacionForm = () => {
             errorToast();
             console.error("Failed to delete anomalia:", error);
         }
+    };
+
+    //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
+    const restaurarDato = (bonificacion_id: any) => {
+        axiosClient.put(`/bonificacionesCatalogo/restaurar/${bonificacion_id}`)
+            .then(() => {
+                setLoading(false);
+                setAbrirInput(false);
+                setAccion("crear");
+                setBonificacion({
+                    id: 0,
+                    nombre: "",
+                    descripcion: "ninguna",
+                    estado: "activo"
+                });
+                getBonificacion();
+                successToastRestaurado();
+                setModalReactivacionOpen(false);
+            })
+            .catch((err) => {
+                errorToast();
+                setLoading(false);
+            });
     };
 
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
@@ -246,6 +295,18 @@ const BonificacionForm = () => {
                             </a>
                             </div>
                         </>
+                    }
+
+                    {// ESTE ES EL MODAL DE REACTIVACIÓN
+                        //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
+                        //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
+                    }
+                    {ModalReactivacionOpen &&
+                        <ModalReactivacion
+                            isOpen={ModalReactivacionOpen}
+                            setIsOpen={setModalReactivacionOpen}
+                            method={() => restaurarDato(bonificacionIdParaRestaurar)}
+                        />
                     }
 
                 </div>

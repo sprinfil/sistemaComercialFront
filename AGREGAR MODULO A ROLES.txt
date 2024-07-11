@@ -1,0 +1,15 @@
+AGREGAR MODULO A ROLES
+
+//BACK
+1.- AGREGAR LOS PERMISOS AL SEEDER EN EL BACK en PermissionsSeeder.php
+2.- MIGRAR PERMISOS
+3.- CREAR EL POLICY DEL CATALOGO con php artisan make:policy ConpcetoCatalogoPolicy
+4.- EDITAR POLICY COPIAS LOS METODOS DE AnomaliaCatalogoPolicy
+5.- REGISTRALO EN AuthServiceProvider.php
+6.- MODIFICAR EL CONTROLLER TE PUEDES BASAR DE ANOMALIACONTROLLER
+
+//FRONT
+1.- IR A ConfiguracionPermisos.tsx y Agregar un Catalogo copiando y pegando en el arreglo
+acuérdate de cambiar los permisos en base a los creados en la base de datos
+2.- TE VAS AL SCHEMA Y AGREGAS LOS PERMISOS
+3.- AGREGAS TAMBIEN EN EL FORMULARIO LOS VALORES POR DEFAULT

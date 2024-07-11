@@ -1,36 +1,32 @@
 import { createContext, useContext, useState, ReactNode, FC } from "react";
-import { Rol } from "../components/Tables/Columns/RolColumns";
+import { Tarifa } from "../components/Tables/Columns/TarifaColumns.tsx";
 
 // Define la interfaz para el estado del usuario y los métodos para actualizar el estado
 interface StateContextType {
-    rol: Rol;
+    tarifa: Tarifa;
     accion: string;
-    setRol: (rol: Rol) => void;
-    roles: Rol[];
+    setTarifa: (tarifa: Tarifa) => void;
+    activeTab: string;
+    setActiveTab: (activeTab: string) => void;
+    tarifas: Tarifa[];
     loadingTable: boolean;
-    setRoles: (rol: Rol[]) => void;
+    setTarifas: (tarifas: Tarifa[]) => void;
     setAccion: (accion: string) => void;
     setLoadingTable: (loading: boolean) => void;
-    permissions: string[];
-    setPermissions: (permissions: string[]) => void;
-    editando: boolean;
-    setEditando: (loading: boolean) => void;
 }
 
 // Crea el contexto con valores predeterminados adecuados según las interfaces
 const StateContext = createContext<StateContextType>({
-    rol: {} as Rol,
-    setRol: () => {},
-    roles: [],
+    tarifa: {} as Tarifa,
+    setTarifa: () => {},
+    tarifas: [],
+    activeTab: "Tarifa",
+    setActiveTab: () => {},
     loadingTable: false,
-    editando: false,
     accion: "",
     setAccion: () => {},
-    setRoles: () => {},
-    setLoadingTable: () => {},
-    setEditando: () => {},
-    permissions: [],
-    setPermissions: () => { },
+    setTarifas: () => {},
+    setLoadingTable: () => {}
 });
 
 // Define el componente proveedor que envuelve a los hijos con el proveedor de contexto
@@ -39,27 +35,25 @@ interface ContextProviderProps {
 }
 
 export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
-    const [rol, setRol] = useState<Rol>({} as Rol);
-    const [roles, setRoles] = useState<Rol[]>([]);
+    const [tarifa, setTarifa] = useState<Tarifa>({} as Tarifa);
+    const [tarifas, setTarifas] = useState<Tarifa[]>([]);
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [accion, setAccion] = useState<string>("");
-    const [permissions, setPermissions] = useState<string[]>([]);
-    const [editando, setEditando] = useState<boolean>(false);
+    const [activeTab, setActiveTab] = useState<string>("");
+
 
     return (
         <StateContext.Provider value={{
-            rol,
-            setRol,
-            roles,
-            setRoles,
+            tarifa,
+            setTarifa,
+            tarifas,
+            setTarifas,
+            activeTab,
+            setActiveTab,
             loadingTable,
             setLoadingTable,
             accion,
-            setAccion,
-            permissions,
-            setPermissions, 
-            editando,
-            setEditando
+            setAccion
         }}>
             {children}
         </StateContext.Provider>
