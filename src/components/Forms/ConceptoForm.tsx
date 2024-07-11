@@ -138,9 +138,12 @@ const ConceptoForm = () => {
                     else {
                         setModalReactivacionOpen(false);
                         setLoading(false);
-                        setAbrirInput(false);
-                        setAccion("crear");
                         setConcepto({
+                            id: 0,
+                            nombre: "",
+                            descripcion: "ninguna",
+                        });
+                        form.reset({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",

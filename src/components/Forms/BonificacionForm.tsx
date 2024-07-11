@@ -193,7 +193,7 @@ const BonificacionForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/bonificacionesCatalogo/log_delete/${bonificacion.id}`);
+            await axiosClient.delete(`/BonificacionesCatalogo/log_delete/${bonificacion.id}`);
             getBonificacion();
             setAccion("eliminar");
             successToastEliminado();

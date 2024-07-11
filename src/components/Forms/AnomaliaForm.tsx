@@ -139,8 +139,6 @@ const AnomaliaForm = () => {
                         });
                         getAnomalias();
                         successToastCreado();
-                        console.log(values);
-                        //setNotification("usuario creado");
                     }
                 
                 })

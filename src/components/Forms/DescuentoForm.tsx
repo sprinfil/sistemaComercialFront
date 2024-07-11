@@ -146,8 +146,6 @@ const DescuentoForm = () => {
                             descripcion: "ninguna",
                         });
                         getDescuentos();
-                        console.log(values);
-                        //setNotification("usuario creado");
                     }
                 })
                 .catch((err) => {
