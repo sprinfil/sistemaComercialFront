@@ -39,35 +39,41 @@ const OperadorForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
-    
 
-    
+
+
 
     const form = useForm<z.infer<typeof operadorSchema>>({
         resolver: zodResolver(operadorSchema),
         defaultValues: {
+            name: "",
+            email: "",
+            password: "",
+            password_confirmation: "",
             codigo_empleado: "",
             nombre: "",
             apellido_paterno: "",
             apellido_materno: "",
             CURP: "",
             fecha_nacimiento: undefined,
-         },
+        },
     })
 
 
 
     function onSubmit(values: z.infer<typeof operadorSchema>) {
         setLoading(true);
-
+        console.log(values);
+        return ;
         function formatDate(date: Date): string {
             return date.toISOString().split('T')[0];
-          }
-          
+        }
+
         if (accion == "crear") {
             if (values.fecha_nacimiento) {
                 values.fecha_nacimiento = formatDate(new Date(values.fecha_nacimiento));
-              }
+            }
+          
             axiosClient.post(`/Operador/create`, values)
                 .then(() => {
                     setLoading(false);
@@ -120,11 +126,11 @@ const OperadorForm = () => {
                     setLoading(false);
                 })
         }
-                
+
     }
 
     //con este metodo obtienes las anomalias de la bd
-  
+
     const getOperadores = async () => {
         setLoadingTable(true);
         try {
@@ -137,7 +143,7 @@ const OperadorForm = () => {
             console.error("Failed to fetch Operador:", error);
         }
     };
-    
+
     const onDelete = async () => {
         try {
             await axiosClient.delete(`/Operador/log_delete/${operador.id}`);
@@ -204,13 +210,13 @@ const OperadorForm = () => {
 
     return (
         <div className="overflow-auto">
-            <div className='flex h-[40px] items-center mb-[10px] rounded-sm  bg-card'>
+            <div className='flex h-[40px] items-center mb-[10px] rounded-sm  bg-muted'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4 ">
                         {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo operador</p>}
                         {operador.nombre != "" && <p className="text-muted-foreground text-[20px]">{operador.nombre}</p>}
                     </div>
-                    { (operador.nombre != null && operador.nombre != "") &&
+                    {(operador.nombre != null && operador.nombre != "") &&
                         <>
                             <Modal
                                 method={onDelete}
@@ -234,131 +240,199 @@ const OperadorForm = () => {
                 {errors && <Error errors={errors} />}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                    <FormField
-                            control={form.control}
-                            name="codigo_empleado"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Código de empleado</FormLabel>
-                                    <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escriba el código de empleado" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        El código de empleado.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="nombre"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nombre</FormLabel>
-                                    <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre del operador" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        El nombre del Opeador.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                         <FormField
-                            control={form.control}
-                            name="apellido_paterno"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Apellido paterno</FormLabel>
-                                    <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el Apellido Paterno del operador" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        El Apellido paterno del Opeador.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="apellido_materno"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Apellido materno</FormLabel>
-                                    <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el Apellido Materno del operador" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        El Apellido materno del Opeador.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="CURP"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>CURP</FormLabel>
-                                    <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el CURP operador" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        El CURP Opeador.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="fecha_nacimiento"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-col">
-                                <FormLabel>Fecha de nacimiento</FormLabel>
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <FormControl>
-                                      <Button 
-                                        variant={"outline"}
-                                        className={cn(
-                                          "w-[240px] pl-3 text-left font-normal",
-                                          !field.value && "text-muted-foreground "
-                                        )}
-                                        disabled={!abrirInput}
-                                      >
-                                        {field.value ? (
-                                          format(field.value, "PPP")
-                                        ) : (
-                                          <span>Seleccionar fecha</span>
-                                        )}
-                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                      </Button>
-                                    </FormControl>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-auto p-0 bg-gray-50 rounded-sm border" align="start">
-                                    <Calendar
-                                      mode="single"
-                                      selected={field.value}
-                                      onSelect={field.onChange}
-                                      disabled={(date) =>
-                                        date > new Date() || date < new Date("1900-01-01")
-                                      }
-                                      initialFocus
-                                    />
-                                  </PopoverContent>
-                                </Popover>
-                                <FormDescription>
-                                  Selecciona fecha de nacimiento.
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                        />
+                        <div className="py-[40px] px-[10px] grid grid-cols-1 xl:grid-cols-3 gap-2 w-full mb-5 rounded-md border border-border  relative">
+                            <span className="absolute -top-3 left-2 bg-background px-2 text-gray-500 text-xs">Información de Inicio de Sesión</span>
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Login</FormLabel>
+                                        <FormControl>
+                                            <Input readOnly={!abrirInput} placeholder="Login" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="password"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Contraseña</FormLabel>
+                                        <FormControl>
+                                            <Input type="password" readOnly={!abrirInput} placeholder="Contraseña" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="password_confirmation"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Confirmar Contraseña</FormLabel>
+                                        <FormControl>
+                                            <Input type="password" readOnly={!abrirInput} placeholder="Confirmar Contraseña" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Email (no es requerido)</FormLabel>
+                                        <FormControl>
+                                            <Input type="email" readOnly={!abrirInput} placeholder="Email" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className="py-[40px] px-[10px] grid grid-cols-1 xl:grid-cols-3 gap-2 w-full mb-5 rounded-md border border-border  relative">
+                            <span className="absolute -top-3 left-2 bg-background px-2 text-gray-500 text-xs">Información del Operador</span>
+                            <FormField
+                                control={form.control}
+                                name="nombre"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Nombre</FormLabel>
+                                        <FormControl>
+                                            <Input readOnly={!abrirInput} placeholder="Escribe el nombre del operador" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="apellido_paterno"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Apellido paterno</FormLabel>
+                                        <FormControl>
+                                            <Input readOnly={!abrirInput} placeholder="Escribe el Apellido Paterno del operador" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="apellido_materno"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Apellido materno</FormLabel>
+                                        <FormControl>
+                                            <Input readOnly={!abrirInput} placeholder="Escribe el Apellido Materno del operador" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="CURP"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>CURP</FormLabel>
+                                        <FormControl>
+                                            <Input readOnly={!abrirInput} placeholder="Escribe el CURP operador" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="fecha_nacimiento"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Fecha de nacimiento</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant={"outline"}
+                                                        className={cn(
+                                                            "w-[240px] pl-3 text-left font-normal",
+                                                            !field.value && "text-muted-foreground "
+                                                        )}
+                                                        disabled={!abrirInput}
+                                                    >
+                                                        {field.value ? (
+                                                            format(field.value, "PPP")
+                                                        ) : (
+                                                            <span>Seleccionar fecha</span>
+                                                        )}
+                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0 bg-gray-50 rounded-sm border" align="start">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={field.value}
+                                                    onSelect={field.onChange}
+                                                    disabled={(date) =>
+                                                        date > new Date() || date < new Date("1900-01-01")
+                                                    }
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormDescription>
+
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="codigo_empleado"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Código de empleado</FormLabel>
+                                        <FormControl>
+                                            <Input readOnly={!abrirInput} placeholder="Escriba el código de empleado" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
                         {loading && <Loader />}
                         {abrirInput && <Button type="submit">Guardar</Button>}
                     </form>
