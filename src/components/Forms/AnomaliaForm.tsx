@@ -93,7 +93,7 @@ const AnomaliaForm = () => {
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
-            description: "El concepto ya existe.",
+            description: "La anomalía ya existe.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }
@@ -276,7 +276,7 @@ const AnomaliaForm = () => {
                 <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva anomalia</p>}
+                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva anomalía</p>}
                             {anomalia.nombre != "" && <p className="text-muted-foreground text-[20px]">{anomalia.nombre}</p>}
                         </div>
                         {(anomalia.nombre != null && anomalia.nombre != "") &&
@@ -325,10 +325,10 @@ const AnomaliaForm = () => {
                                     <FormItem>
                                         <FormLabel>Nombre</FormLabel>
                                         <FormControl>
-                                            <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la anomalia" {...field} />
+                                            <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la anomalía" {...field} />
                                         </FormControl>
                                         <FormDescription>
-                                            El nombre de la anomalia.
+                                            El nombre de la anomalía.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -336,14 +336,14 @@ const AnomaliaForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="descripcion"
+                                name="descripción"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Descripción</FormLabel>
                                         <FormControl>
                                             <Textarea
                                                 readOnly={!abrirInput}
-                                                placeholder="Descripcion de la anomalia"
+                                                placeholder="Descripcion de la anomalía"
                                                 {...field}
                                             />
                                         </FormControl>

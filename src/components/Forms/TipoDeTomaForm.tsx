@@ -340,7 +340,7 @@ const TipoDeTomaForm = () => {
                                         <FormControl>
                                             <Textarea
                                                 readOnly={!abrirInput}
-                                                placeholder="Descripcion de la tipo de toma"
+                                                placeholder="Descripción del tipo de toma"
                                                 {...field}
                                             />
                                         </FormControl>

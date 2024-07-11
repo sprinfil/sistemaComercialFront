@@ -95,7 +95,7 @@ const DescuentoForm = () => {
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
-            description: "El concepto ya existe.",
+            description: "El descuento ya existe.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }
@@ -350,7 +350,7 @@ const DescuentoForm = () => {
                                     <FormControl>
                                         <Textarea
                                             readOnly={!abrirInput}
-                                            placeholder="Descripcion del descuento"
+                                            placeholder="Descripción del descuento"
                                             {...field}
                                         />
                                     </FormControl>
