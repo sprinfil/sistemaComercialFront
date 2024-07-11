@@ -10,6 +10,7 @@ import { Proximamente } from './views/Layout/Proximamente';
 import  DetalleUsuario  from './views/Usuarios/Consultar/DetalleUsuario';
 import CrearUsuarioNuevo from './views/Usuarios/Crear/CrearUsuarioNuevo';
 import Roles from './views/Configuraciones/Roles/Roles';
+import Operadores from  './views/Configuraciones/Operadores/Operadores'
 import { Tarifa } from './views/Configuraciones/Tarifa/Tarifa';
 
 const router = createBrowserRouter ([
@@ -28,6 +29,10 @@ const router = createBrowserRouter ([
             {
                 path:'/catalogos',
                 element: <Catalogos/>
+            },
+            {
+                path:'/operadores',
+                element: <Operadores/>
             },
             {
                 path:'/roles',
