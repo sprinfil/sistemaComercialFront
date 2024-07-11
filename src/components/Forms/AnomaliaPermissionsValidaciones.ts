@@ -55,4 +55,10 @@ export const AnomaliaPermissionsSchema = z.object({
   CrearTipoDeToma: z.boolean(),
   EditarTipoDeToma: z.boolean(),
   EliminarTipoDeTomas: z.boolean(),
+
+  //OPERDORES3
+  VerOperadores: z.boolean(),
+  CrearOperador: z.boolean(),
+  EditarOperador: z.boolean(),
+  EliminarOperador: z.boolean(),
 })
