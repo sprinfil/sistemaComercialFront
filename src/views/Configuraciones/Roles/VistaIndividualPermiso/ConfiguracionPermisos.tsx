@@ -87,8 +87,8 @@ const modulos = [
     titulo: "Operadores del sistema",
     subModulos: [
       {
-        titulo: "Catálogo de anomalias",
-        Permisos: ["VerAnomalias", "CrearAnomalia", "EditarAnomalia", "EliminarAnomalia"],
+        titulo: "Operadores del sistema",
+        Permisos: ["VerOperadores", "CrearOperador", "EditarOperador", "EliminarOperador"],
       },
     ]
   },
@@ -176,6 +176,12 @@ export const ConfiguracionPermisos = () => {
       CrearTipoDeToma: permissions.includes("CrearTipoDeToma"),
       EditarTipoDeToma: permissions.includes("EditarTipoDeToma"),
       EliminarTipoDeTomas: permissions.includes("EliminarTipoDeTomas"),
+
+      //CATALOGO OPERADORES
+      VerOperadores: permissions.includes("VerOperadores"),
+      CrearOperador: permissions.includes("CrearOperador"),
+      EditarOperador: permissions.includes("EditarOperador"),
+      EliminarOperador: permissions.includes("EliminarOperador"),
     },
   });
 
