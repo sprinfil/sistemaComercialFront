@@ -33,7 +33,7 @@ const MenuSuperior = () => {
             opciones: [
                 {
                     titulo: "Consulta Usuario",
-                    descripcion: "Mira los detalles de los usuarios, consulta por numero de toma o nombre de usuario",
+                    descripcion: "Mira los detalles de los usuarios, consulta por número de toma o nombre de usuario",
                     route: "/proximamente",
                 },
                 {

@@ -92,7 +92,7 @@ const AjusteForm = () => {
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
-            description: "El concepto ya existe.",
+            description: "El ajuste ya existe.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }
@@ -349,7 +349,7 @@ const AjusteForm = () => {
                                     <FormControl>
                                         <Textarea
                                             readOnly={!abrirInput}
-                                            placeholder="Descripcion del ajuste"
+                                            placeholder="Descripción del ajuste"
                                             {...field}
                                         />
                                     </FormControl>

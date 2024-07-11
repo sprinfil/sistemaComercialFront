@@ -103,7 +103,7 @@ const GiroComercialForm = () => {
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
-            description: "El concepto ya existe.",
+            description: "El giro comercial ya existe.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }
@@ -344,7 +344,7 @@ const GiroComercialForm = () => {
                                     <FormControl>
                                         <Textarea
                                             readOnly={!abrirInput}
-                                            placeholder="Descripcion del giro comercial"
+                                            placeholder="Descripción del giro comercial"
                                             {...field}
                                         />
                                     </FormControl>

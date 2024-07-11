@@ -91,7 +91,7 @@ function errorYaExisteToast() {
     toast({
         variant: "destructive",
         title: "Oh, no. Error",
-        description: "El concepto ya existe.",
+        description: "La constancia ya existe.",
         action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
     })
 }

@@ -41,7 +41,7 @@ const BonificacionForm = () => {
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La bonificacion se ha creado correctamente",
+            description: "La bonificación se ha creado correctamente",
             variant: "success",
 
         })
@@ -49,7 +49,7 @@ const BonificacionForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La bonificacion se ha editado correctamente",
+            description: "La bonificación se ha editado correctamente",
             variant: "success",
 
         })
@@ -57,7 +57,7 @@ const BonificacionForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La bonificacion se ha eliminado correctamente",
+            description: "La bonificación se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -65,7 +65,7 @@ const BonificacionForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La bonificacion se ha restaurado correctamente",
+            description: "La bonificación se ha restaurado correctamente",
             variant: "success",
 
         })

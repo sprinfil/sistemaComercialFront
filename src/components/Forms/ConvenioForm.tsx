@@ -104,7 +104,7 @@ const ConceptoForm = () => {
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
-            description: "El concepto ya existe.",
+            description: "El convenio ya existe.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }

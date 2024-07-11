@@ -15,7 +15,7 @@ const Catalogos = () => {
 
   const opciones = [
     {
-      titulo: "Anomalias",
+      titulo: "Anomalías",
       componente: <Anomalias />
     },
     {
@@ -54,7 +54,7 @@ const Catalogos = () => {
 
   return (
     <div className='w-full'>
-      <Tabs defaultValue="Anomalias" className="">
+      <Tabs defaultValue="Anomalías" className="">
 
         <TabsList>
           {opciones.map((opcion, index) => (
