@@ -44,7 +44,7 @@ const MenuSuperior = () => {
                 {
                     titulo: "Crear Nuevo Usuario",
                     descripcion: "Registra un nuevo usuario.",
-                    route: "/CrearUsuario"
+                    route: "/proximamente"
                 }
             ]
 
@@ -136,12 +136,12 @@ const MenuSuperior = () => {
                 {
                     titulo: "Operadores del Sistema",
                     descripcion: "Gestiona Operadores de sistema, También sus roles y permisos.",
-                    route: "/operadores"
+                    route: "/proximamente"
                 },
                 {
                     titulo: "Roles",
                     descripcion: "Gestiona los roles del sistema.",
-                    route: "/roles"
+                    route: "/proximamente"
                 },
                 {
                     titulo: "Configuraciones Generales",
@@ -151,7 +151,7 @@ const MenuSuperior = () => {
                 {
                     titulo: "Tarifa",
                     descripcion: "Consulta y gestiona las tarifas.",
-                    route: "/Tarifa"
+                    route: "/proximamente"
                 },
 
             ]
