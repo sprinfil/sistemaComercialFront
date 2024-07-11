@@ -6,7 +6,7 @@ const InformaciónFiscal = () => {
     <div>
         <div className=' w-full rounded-md border border-border h-[88vh] p-4 overflow-auto'>
         {/*Formulario*/}
-        <InformacionFiscalForm/>
+        <InformacionFiscalForm userId = {1}/>
     </div>
     </div>
   )

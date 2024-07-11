@@ -4,6 +4,8 @@ import React, { createContext, useContext, useState, ReactNode, FC, ReactElement
 interface StateContextType {
     pantalla: ReactElement | null;
     setPantalla: (pantalla: ReactElement | null) => void;
+    click: boolean;
+    setClick: (click: boolean) => void;
 }
 
 
@@ -11,6 +13,8 @@ interface StateContextType {
 const StateContext = createContext<StateContextType>({
     pantalla: null,
     setPantalla: () => { },
+    click: false,
+    setClick: () => {},
 });
 
 // Define el componente proveedor que envuelve a los hijos con el proveedor de contexto
@@ -20,11 +24,14 @@ interface ContextProviderProps {
 
 export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
     const [pantalla, setPantalla] = useState<ReactElement | null>(null);
+    const [click, setClick] = useState<boolean>(false);
 
     return (
         <StateContext.Provider value={{
             pantalla,
-            setPantalla
+            setPantalla, 
+            click,
+            setClick
         }}>
             {children}
         </StateContext.Provider>
