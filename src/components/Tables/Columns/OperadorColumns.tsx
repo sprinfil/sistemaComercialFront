@@ -19,6 +19,10 @@ import { Checkbox } from "@/components/ui/checkbox"
 // You can use a Zod schema here if you want.
 export type Operador = {
   id: number
+  name: string
+  email: string
+  password: string
+  password_confirmation: string
   codigo_empleado: string
   nombre: string
   apellido_paterno: string
@@ -29,28 +33,6 @@ export type Operador = {
 
 
 export const columns: ColumnDef<Operador>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "nombre",
     header: ({ column }) => {

@@ -64,7 +64,7 @@ const OperadorForm = () => {
     function onSubmit(values: z.infer<typeof operadorSchema>) {
         setLoading(true);
         console.log(values);
-        return ;
+
         function formatDate(date: Date): string {
             return date.toISOString().split('T')[0];
         }
@@ -79,6 +79,10 @@ const OperadorForm = () => {
                     setLoading(false);
                     setOperador({
                         id: 0,
+                        name: "",
+                        email: "",
+                        password: "",
+                        password_confirmation: "",
                         codigo_empleado: "",
                         nombre: "",
                         apellido_paterno: "",
@@ -87,6 +91,10 @@ const OperadorForm = () => {
                         fecha_nacimiento: new Date().toISOString().split('T')[0],
                     });
                     form.reset({
+                        name: "",
+                        email: "",
+                        password: "",
+                        password_confirmation: "",
                         codigo_empleado: "",
                         nombre: "",
                         apellido_paterno: "",
