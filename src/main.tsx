@@ -6,6 +6,7 @@ import { RouterProvider } from 'react-router-dom'
 import router from './router.jsx';
 import { ThemeProvider } from './components/ui/theme-provider.tsx';
 import { Toaster } from "@/components/ui/toaster"
+import "./css/background.css";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

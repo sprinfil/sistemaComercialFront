@@ -202,7 +202,7 @@ const MenuSuperior = () => {
                     <NavigationMenuList >
                         {opciones.map((opcion, key) => (
                             <NavigationMenuItem key={key}>
-                                <NavigationMenuTrigger key={key}><div className='flex gap-2 items-center'>{opcion.titulo}{opcion.icon}</div></NavigationMenuTrigger>
+                                <NavigationMenuTrigger key={key}><div className='flex gap-2 items-center'> <span className='text-primary'> {opcion.icon}</span>{opcion.titulo}</div></NavigationMenuTrigger>
                                 <NavigationMenuContent>
                                     <div className='flex'>
 

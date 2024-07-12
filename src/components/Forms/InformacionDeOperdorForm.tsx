@@ -73,8 +73,8 @@ const OperadorForm = () => {
             if (values.fecha_nacimiento) {
                 values.fecha_nacimiento = formatDate(new Date(values.fecha_nacimiento));
             }
-          
-            axiosClient.post(`/Operador/create`, values)
+
+            axiosClient.post(`/Operador/create2`, values)
                 .then(() => {
                     setLoading(false);
                     setOperador({
@@ -104,6 +104,7 @@ const OperadorForm = () => {
                     });
                     getOperadores();
                     console.log(values);
+                    setErrors({});
                     //setNotification("usuario creado");
                 })
                 .catch((err) => {
@@ -116,12 +117,13 @@ const OperadorForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/Operador/update/${operador.id}`, values)
+            axiosClient.put(`/Operador/update2/${operador.user.id}/${operador.id}`, values)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
+                    setErrors({});
                     getOperadores();
                     setOperador(data.data);
                     //setNotification("usuario creado");
@@ -166,6 +168,10 @@ const OperadorForm = () => {
     useEffect(() => {
         if (accion == "eliminar") {
             form.reset({
+                name: "",
+                email: "",
+                password: "",
+                password_confirmation: "",
                 codigo_empleado: "",
                 nombre: "",
                 apellido_paterno: "",
@@ -180,6 +186,10 @@ const OperadorForm = () => {
             setAbrirInput(true);
             setErrors({});
             form.reset({
+                name: "",
+                email: "",
+                password: "",
+                password_confirmation: "",
                 codigo_empleado: "",
                 nombre: "",
                 apellido_paterno: "",
@@ -189,6 +199,10 @@ const OperadorForm = () => {
             });
             setOperador({
                 id: 0,
+                name: "",
+                email: "",
+                password: "",
+                password_confirmation: "",
                 codigo_empleado: "",
                 nombre: "",
                 apellido_paterno: "",
@@ -202,6 +216,8 @@ const OperadorForm = () => {
             setErrors({});
             setAccion("");
             form.reset({
+                name: operador.user.name,
+                email: operador.user.email,
                 codigo_empleado: operador.codigo_empleado,
                 nombre: operador.nombre,
                 apellido_paterno: operador.apellido_paterno,
@@ -217,22 +233,25 @@ const OperadorForm = () => {
     }, [accion]);
 
     return (
-        <div className="overflow-auto">
-            <div className='flex h-[40px] items-center mb-[10px] rounded-sm  bg-muted'>
+        <div className="no-scrollbar ">
+            <div className='flex h-[40px] items-center mb-[10px] rounded-sm  bg-muted  z-10 no-scrollbar '>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4 ">
                         {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo operador</p>}
-                        {operador.nombre != "" && <p className="text-muted-foreground text-[20px]">{operador.nombre}</p>}
+                        {operador.nombre != "" && <p className=" text-[20px]">{operador.nombre_completo}</p>}
                     </div>
                     {(operador.nombre != null && operador.nombre != "") &&
                         <>
-                            <Modal
+                            {/*
+                          <Modal
                                 method={onDelete}
                                 button={
                                     <IconButton>
                                         <TrashIcon className="w-[20px] h-[20px]" />
                                     </IconButton>}
                             />
+                        */}
+
                             <div onClick={() => setAccion("editar")}>
                                 <IconButton>
                                     <Pencil2Icon className="w-[20px] h-[20px]" />
@@ -245,7 +264,10 @@ const OperadorForm = () => {
             </div>
             <div className="py-[20px] px-[10px] ">
 
-                {errors && <Error errors={errors} />}
+                {errors &&
+                    <div className="mb-[20px]">
+                        <Error errors={errors} />
+                    </div>}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <div className="py-[40px] px-[10px] grid grid-cols-1 xl:grid-cols-3 gap-2 w-full mb-5 rounded-md border border-border  relative">

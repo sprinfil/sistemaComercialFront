@@ -6,17 +6,18 @@ import Permisos from '../Roles/Permisos'
 import { ContextProvider } from '../../../contexts/ContextOperador'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useStateContext } from "../../../contexts/ContextOperador.tsx";
+import { OperadoresRoles } from './OperadoresRoles.tsx'
 
 
 const Roles = () => {
     const opciones = [
         {
             titulo: "Información de operador",
-            componente: <OperadorForm />
+            componente: <InformacionDeOperdorForm />
         },
         {
             titulo: "Roles",
-            componente: ""
+            componente: <OperadoresRoles />
         },
         {
             titulo: "Permisos",
@@ -69,10 +70,10 @@ const InformacionDeOperdorForm = () => {
     return (
       <>
           {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
-        {accion == "editar" ? (<div className='w-[65%] rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
-              <InformacionDeOperdorForm />
-            </div>) : (<div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
-              <InformacionDeOperdorForm />
+        {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[75vh] p-4 overflow-auto no-scrollbar'>
+              <OperadorForm />
+            </div>) : (<div className='w-full rounded-md border border-border h-[75vh] p-4 overflow-auto no-scrollbar'>
+              <OperadorForm />
             </div>)}
       </>
     );
