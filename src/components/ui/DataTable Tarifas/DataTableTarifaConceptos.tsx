@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { EdicionTarifaConcepto } from "../../Tables/Components/EdicionTarifaConcepto";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -87,7 +88,7 @@ export function DataTableTarifaConceptos<TData, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
+                <EdicionTarifaConcepto trigger={<TableRow
                   key={row.id}
                   onClick={() => handleRowClick(row.id, row.original)}
                   className={`cursor-pointer hover:bg-border ${
@@ -99,7 +100,8 @@ export function DataTableTarifaConceptos<TData, TValue>({
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
-                </TableRow>
+                </TableRow>}/>
+                
               ))
             ) : (
               <TableRow>

@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
@@ -15,10 +16,17 @@ import {
 } from "@/components/ui/sheet"
 
 const SHEET_SIDES = ["bottom"] as const
+type EdicionTarifaServicio = (typeof SHEET_SIDES)[number]
 
-export function EdicionTarifaServicio({ trigger }) {
+export function AgregarTarifaServicio({trigger}) {
+
+
+
+  const [guardar, setGuardar] = useState(false);
+
+
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="flex gap-2 justify-center items-center">
       {SHEET_SIDES.map((side) => (
         <Sheet key={side}>
           <SheetTrigger asChild>
@@ -27,9 +35,9 @@ export function EdicionTarifaServicio({ trigger }) {
           </SheetTrigger>
           <SheetContent side={side}>
             <SheetHeader>
-              <SheetTitle>Editar servicios</SheetTitle>
+              <SheetTitle>Agregar nuevo servicio</SheetTitle>
               <SheetDescription>
-                Puedes editar los servicios aquí. Presionar guardar cuando termines.
+                Puedes agregar un servicio aquí. Presionar guardar cuando termines.
               </SheetDescription>
             </SheetHeader>
             <div className="grid gap-4 py-4">

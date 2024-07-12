@@ -6,7 +6,7 @@ import { useStateContext } from '../../../contexts/ContextTarifa.tsx';
 import Loader from '../../ui/Loader.tsx';
 import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
-
+import { AgregarTarifaConcepto } from './AgregarTarifaConcepto.tsx';
 export default function TarifaServiciosTable() {
   const { tarifas, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa } = useStateContext();
 
@@ -36,6 +36,16 @@ export default function TarifaServiciosTable() {
 
   return (
     <div className='w-full h-full '>
+      <div className='mb-[6px]'>
+        <AgregarTarifaConcepto trigger={
+          <div onClick={() => setAccion("CrearConcepto")}>
+          <IconButton>
+        <div className='flex gap-2 items-center'> Agregar nuevo concepto <PlusCircledIcon className='w-[20px] h-[20px]' /></div>
+        </IconButton>
+        </div>}/>
+        
+    
+      </div>
       <DataTableTarifaConceptos columns={columns} data={tarifas} sorter='nombre' onRowClick={handleRowClick} />
     </div>
   );

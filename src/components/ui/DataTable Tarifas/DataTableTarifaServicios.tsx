@@ -38,6 +38,7 @@ export function DataTableTarifa<TData, TValue>({
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
+  const [isSheetOpen, setIsSheetOpen] = React.useState<boolean>(false); // Estado para manejar la visibilidad del Sheet
 
   const table = useReactTable({
     data,
@@ -57,6 +58,7 @@ export function DataTableTarifa<TData, TValue>({
 
   const handleRowClick = (rowId: string, rowData: TData) => {
     setSelectedRow(rowId);
+    setIsSheetOpen(true);
     onRowClick?.(rowData);
   };
 
@@ -81,24 +83,26 @@ export function DataTableTarifa<TData, TValue>({
             ))}
           </TableHeader>
 
-          <TableBody>
+          <TableBody className=" ">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <EdicionTarifaServicio
-                  key={row.id}
-                  trigger={
-                    <TableRow
-                      onClick={() => handleRowClick(row.id, row.original)}
-                      className={`cursor-pointer ${selectedRow === row.id ? "bg-border" : ""}`}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  }
-                />
+          
+                <EdicionTarifaServicio trigger={
+                  <div onClick={() => { ("") }}> 
+                  <TableRow
+                    
+                    onClick={() => handleRowClick(row.id, row.original)}
+                    className={`flex cursor-pointer ${selectedRow === row.id ? "bg-border" : ""}`}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="flex gap-44 justify-center items-center ml-28 w-full h-full">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                  </div>}/>
+                  
+                  
               ))
             ) : (
               <TableRow>
