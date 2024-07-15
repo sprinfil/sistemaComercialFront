@@ -114,20 +114,9 @@ const TarifaForm = ({ setActiveTab} ) => {
         console.log("submit");
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/giros-catalogos`, values)
-                .then(() => {
-                    setLoading(false);
-                    nextTab(); //PARA IR AL SIGUIENTE TAP AL DARLE SIGUIENTE
-                })
-                .catch((err) => {
-                    const response = err.response;
-                    errorToast();
-                    if (response && response.status === 422) {
-                        setErrors(response.data.errors);
-                    }
-                    setLoading(false);
-                })
-                console.log(abrirInput);
+                setLoading(false);
+                nextTab(); //PARA IR AL SIGUIENTE TAP AL DARLE SIGUIENTE
+                getGirosTarifas();
         }
         if (accion == "editar") {
             axiosClient.put(`/giros-catalogos/${tarifa.id}`, values)
@@ -136,7 +125,7 @@ const TarifaForm = ({ setActiveTab} ) => {
                     //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
-                    getGirosComerciales();
+                    getGirosTarifas();
                     setTarifa(data.data);
                     successToastEditado();
                     //setNotification("usuario creado");
@@ -153,10 +142,10 @@ const TarifaForm = ({ setActiveTab} ) => {
     }
 
     //con este metodo obtienes las anomalias de la bd
-    const getGirosComerciales = async () => {
+    const getGirosTarifas = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/giros-catalogos");
+            const response = await axiosClient.get("/Concepto");
             setLoadingTable(false);
             setTarifas(response.data);
         } catch (error) {
@@ -170,7 +159,7 @@ const TarifaForm = ({ setActiveTab} ) => {
     const onDelete = async () => {
         try {
             await axiosClient.delete(`/giros-catalogos/${tarifa.id}`);
-            getGirosComerciales();
+            getGirosTarifas();
             setAccion("eliminar");
             successToastEliminado();
         } catch (error) {

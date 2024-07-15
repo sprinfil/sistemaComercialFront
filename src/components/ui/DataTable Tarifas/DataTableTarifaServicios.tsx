@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { EdicionTarifaServicio } from "../../Tables/Components/EdicionTarifaServicio";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -35,10 +36,9 @@ export function DataTableTarifa<TData, TValue>({
   onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
+  const [isSheetOpen, setIsSheetOpen] = React.useState<boolean>(false); // Estado para manejar la visibilidad del Sheet
 
   const table = useReactTable({
     data,
@@ -58,48 +58,51 @@ export function DataTableTarifa<TData, TValue>({
 
   const handleRowClick = (rowId: string, rowData: TData) => {
     setSelectedRow(rowId);
+    setIsSheetOpen(true);
     onRowClick?.(rowData);
   };
 
   return (
-    <div className="">
-      <div className="rounded-md border h-full overflow-auto">
-        <Table>
+    <div className="overflow-auto">
+      <div className="rounded-md border h-full">
+        <Table className="min-w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
 
-          <TableBody>
+          <TableBody className=" ">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  onClick={() => handleRowClick(row.id, row.original)}
-                  className={`cursor-pointer hover:bg-border ${
-                    selectedRow === row.id ? "bg-border" : ""
-                  }`}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
+          
+                <EdicionTarifaServicio trigger={
+                  <div onClick={() => { ("") }}> 
+                  <TableRow
+                    
+                    onClick={() => handleRowClick(row.id, row.original)}
+                    className={`flex cursor-pointer ${selectedRow === row.id ? "bg-border" : ""}`}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="flex gap-44 justify-center items-center ml-28 w-full h-full">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                  </div>}/>
+                  
+                  
               ))
             ) : (
               <TableRow>
@@ -114,4 +117,3 @@ export function DataTableTarifa<TData, TValue>({
     </div>
   );
 }
-
