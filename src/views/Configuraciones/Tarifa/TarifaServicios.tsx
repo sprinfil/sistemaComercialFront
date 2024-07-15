@@ -10,8 +10,7 @@ import {
 } from "@/components/ui/carousel"
 import { useStateContext } from "../../../contexts/ContextTarifa.tsx";
 import { Button } from '../../../components/ui/button.tsx';
-import { useStateContext } from '../../../contexts/ContextTarifa.tsx';
-import axiosClient from '../../axios-client.ts';
+import axiosClient from '../../../axios-client.ts';
 
 export const TarifaServicios = () => {
 
@@ -96,7 +95,7 @@ const getTarifas = async () => {
           <CarouselNext className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white px-2 py-1 rounded-full cursor-pointer">
             Next
           </CarouselNext>
-        </Carousel>
+        </Carousel> 
       </div>
     </ContextProvider>
   
