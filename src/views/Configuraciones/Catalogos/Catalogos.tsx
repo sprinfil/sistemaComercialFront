@@ -9,6 +9,7 @@ import Constancias from './Constancias'
 import GiroComercial from './GiroComercial'
 import Bonificaciones from './Bonificaciones'
 import TipoDeToma from './TipoDeToma'
+import Calle from './Calle'
 
 
 const Catalogos = () => {
@@ -49,6 +50,10 @@ const Catalogos = () => {
       {
         titulo: "Tipo de toma",
         componente: <TipoDeToma />
+      },
+      {
+        titulo: "Calles",
+        componente: <Calle />
       },
   ]
 
