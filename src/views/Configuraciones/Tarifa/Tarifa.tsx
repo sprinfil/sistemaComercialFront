@@ -31,7 +31,7 @@ export const Tarifa = () => {
 
   return (
     <ContextProvider>
-    <div className='w-full max-h-[75vh] '>
+    <div className='w-full max-h-[75vh] mt-[10px] '>
       {/*Contenedor principal*/}
       <div className='flex gap-2 '>
 
@@ -63,3 +63,4 @@ export const Tarifa = () => {
   </ContextProvider>
   )
 }
+

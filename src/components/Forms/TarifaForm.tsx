@@ -38,6 +38,7 @@ const TarifaForm = ({ setActiveTab} ) => {
     const [abrirInput, setAbrirInput] = useState(false);
     const [indiceTarifa, setIndiceTarifa] = useState(0);
 
+    const getCurrentDate = () => new Date().toISOString().split("T")[0];
 
     const form = useForm<z.infer<typeof tarifaSchema>>({
         resolver: zodResolver(tarifaSchema),
@@ -45,6 +46,8 @@ const TarifaForm = ({ setActiveTab} ) => {
             id: tarifa.id,
             nombre: tarifa.nombre,
             descripcion: tarifa.descripcion,
+            fecha: getCurrentDate(), // Establece la fecha por defecto como la fecha actual
+            estado: "activo",
         },
     })
 
@@ -64,7 +67,7 @@ const TarifaForm = ({ setActiveTab} ) => {
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "El giro comercial se ha creado correctamente",
+            description: "La tarifa se ha creado correctamente",
             variant: "success",
 
         })
@@ -72,7 +75,7 @@ const TarifaForm = ({ setActiveTab} ) => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "El giro comercial se ha editado correctamente",
+            description: "La tarifa  se ha editado correctamente",
             variant: "success",
 
         })
@@ -80,7 +83,7 @@ const TarifaForm = ({ setActiveTab} ) => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "El giro comercial se ha eliminado correctamente",
+            description: "La tarifa se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -88,7 +91,7 @@ const TarifaForm = ({ setActiveTab} ) => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "El giro comercial se ha restaurado correctamente",
+            description: "La tarifa se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -109,23 +112,54 @@ const TarifaForm = ({ setActiveTab} ) => {
 
     }
 
+    
+
 
     function onSubmit(values: z.infer<typeof tarifaSchema>) {
         console.log("submit");
         setLoading(true);
         if (accion == "crear") {
-                setLoading(false);
-                nextTab(); //PARA IR AL SIGUIENTE TAP AL DARLE SIGUIENTE
-                getGirosTarifas();
+            axiosClient.post(`/tarifa/create`, values)
+                .then((response) => {
+                    const data = response.data;
+                        setLoading(false);
+                        setTarifa({
+                            id: 0,
+                            nombre: "",
+                            descripcion: "ninguna",
+                            fecha: getCurrentDate(),
+                            estado: "activo",
+
+                        });
+                        form.reset({
+                            id: 0,
+                            nombre: "",
+                            descripcion: "ninguna",
+                            fecha: getCurrentDate(),
+                            estado: "activo",
+                        });
+                        getTarifas();
+                        successToastCreado();
+                
+                })
+                .catch((err) => {
+                    const response = err.response;
+                    errorToast();
+                    if (response && response.status === 422) {
+                        setErrors(response.data.errors);
+                    }
+                    setLoading(false);
+                })
+            console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/giros-catalogos/${tarifa.id}`, values)
+            axiosClient.put(`/tarifa/update/${tarifa.id}`, values)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
-                    getGirosTarifas();
+                    getTarifas();
                     setTarifa(data.data);
                     successToastEditado();
                     //setNotification("usuario creado");
@@ -142,14 +176,14 @@ const TarifaForm = ({ setActiveTab} ) => {
     }
 
     //con este metodo obtienes las anomalias de la bd
-    const getGirosTarifas = async () => {
+    const getTarifas = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/Concepto");
+            const response = await axiosClient.get("/tarifa");
             setLoadingTable(false);
-            setTarifas(response.data);
+            setTarifas(response.data.data);
         } catch (error) {
-            setLoadingTable(false);
+            setLoading(false);
             errorToast();
             console.error("Failed to fetch constancias:", error);
         }
@@ -158,8 +192,8 @@ const TarifaForm = ({ setActiveTab} ) => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/giros-catalogos/${tarifa.id}`);
-            getGirosTarifas();
+            await axiosClient.delete(`/tarifa/log_delete/${tarifa.id}`);
+            getTarifas();
             setAccion("eliminar");
             successToastEliminado();
         } catch (error) {
@@ -169,51 +203,55 @@ const TarifaForm = ({ setActiveTab} ) => {
     };
 
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
-    useEffect(() => {
-        if (accion == "eliminar") {
-            form.reset({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-                estado: "activo"
-            });
-            setTarifa({});
-            setAbrirInput(false);
-        }
-        if (accion == "crear") {
-            console.log("creando");
-            setAbrirInput(true);
-            setErrors({});
-            form.reset({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-                estado: "activo"
-            });
-            setTarifa({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-                estado: "activo"
-            })
-        }
-        if (accion == "ver") {
-            setAbrirInput(false);
-            setErrors({});
-            setAccion("");
-            form.reset({
-                id: tarifa.id,
-                nombre: tarifa.nombre,
-                descripcion: tarifa.descripcion,
-                estado: tarifa.estado
-            });
-        }
-        if (accion == "editar") {
-            setAbrirInput(true);
-            setErrors({});
-        }
-        console.log(accion);
-    }, [accion]);
+useEffect(() => {
+    if (accion === "eliminar") {
+        form.reset({
+            id: 0,
+            nombre: "",
+            descripcion: "ninguna",
+            fecha: getCurrentDate(),
+            estado: "activo",
+        });
+        setTarifa({});
+        setAbrirInput(false);
+    }
+    if (accion === "crear") {
+        console.log("creando");
+        setAbrirInput(true);
+        setErrors({});
+        form.reset({
+            id: 0,
+            nombre: "",
+            descripcion: "ninguna",
+            fecha: getCurrentDate(),
+            estado: "activo",
+        });
+        setTarifa({
+            id: 0,
+            nombre: "",
+            descripcion: "ninguna",
+            fecha: getCurrentDate(),
+            estado: "activo",
+        });
+    }
+    if (accion === "ver") {
+        setAbrirInput(false);
+        setErrors({});
+        setAccion("");
+        form.reset({
+            id: tarifa.id,
+            nombre: tarifa.nombre,
+            descripcion: tarifa.descripcion,
+            fecha: tarifa.fecha,
+            estado: tarifa.estado,
+        });
+    }
+    if (accion === "editar") {
+        setAbrirInput(true);
+        setErrors({});
+    }
+    console.log(accion);
+}, [accion]);
 
     return (
         <div className="overflow-auto">
