@@ -127,7 +127,8 @@ const AjusteForm = () => {
                     }
                     else
                     {
-                        successToastCreado();
+                    successToastCreado();
+                    setAccion("creado");
                     setLoading(false);
                     //SIEMPRE CHECAR LOS DATOS COINCIDAN CON EL MODELO
                     setAjuste({
@@ -221,6 +222,7 @@ const AjusteForm = () => {
                     estado: "activo"
                 });
                 getAjustes();
+                setAccion("creado");
                 successToastRestaurado();
                 setModalReactivacionOpen(false);
             })
@@ -243,7 +245,6 @@ const AjusteForm = () => {
             setAbrirInput(false);
         }
         if (accion == "crear") {
-            console.log("creando");
             setAbrirInput(true);
             setErrors({});
             form.reset({
@@ -259,6 +260,23 @@ const AjusteForm = () => {
                 estado: "activo"
             })
         }
+        if (accion == "creado") {
+            setAbrirInput(true);
+            setErrors({});
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                estado: "activo"
+            });
+            setAjuste({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                estado: "activo"
+            })
+        }
+        
         if (accion == "ver") {
             setAbrirInput(false);
             setErrors({});

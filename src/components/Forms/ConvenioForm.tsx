@@ -141,6 +141,7 @@ const ConceptoForm = () => {
                         getConvenios();
                         console.log(values);
                         successToastCreado();
+                        setAccion("creado");
                         //setNotification("usuario creado");
                     }
                     
@@ -221,6 +222,7 @@ const ConceptoForm = () => {
                 getConvenios();
                 successToastRestaurado();
                 setModalReactivacionOpen(false);
+                setAccion("creado");
             })
             .catch((err) => {
                 errorToast();
@@ -239,8 +241,16 @@ const ConceptoForm = () => {
             setConvenio({});
             setAbrirInput(false);
         }
+        if (accion == "creado") {
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
+            setConvenio({});
+            setAbrirInput(false);
+        }
         if (accion == "crear") {
-            console.log("creando");
             setAbrirInput(true);
             setErrors({});
             form.reset({
