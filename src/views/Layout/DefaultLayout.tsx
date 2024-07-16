@@ -3,6 +3,7 @@ import { useStateContext } from '../../contexts/ContextProvider';
 import { Navigate, Outlet } from 'react-router-dom';
 import MenuSuperior from './MenuSuperior';
 import logo from "../../img/logo.png"
+import { MenuSuperiosNew } from './MenuSuperiosNew';
 
 const DefaultLayout = () => {
 
@@ -16,7 +17,9 @@ const DefaultLayout = () => {
     <div className='h-[90vh]'>
       <section>
         {/*Menu Superior*/}
-        <MenuSuperior />
+        <MenuSuperiosNew />
+        {/*  */}
+        {/*<MenuSuperior />*/}
       </section>
       <main className=' px-4 overflow-auto h-full '>
         <Outlet />

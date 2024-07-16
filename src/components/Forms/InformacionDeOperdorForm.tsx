@@ -39,23 +39,21 @@ const OperadorForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
-
-
-
+    const [email, setEmail] = useState("");
 
     const form = useForm<z.infer<typeof operadorSchema>>({
         resolver: zodResolver(operadorSchema),
         defaultValues: {
-            name: "",
+            name: operador.user ? operador.user.name : "",
             email: "",
             password: "",
             password_confirmation: "",
-            codigo_empleado: "",
-            nombre: "",
-            apellido_paterno: "",
-            apellido_materno: "",
-            CURP: "",
-            fecha_nacimiento: undefined,
+            codigo_empleado: operador ? operador.codigo_empleado : "",
+            nombre: operador ? operador.nombre : "",
+            apellido_paterno: operador ? operador.apellido_paterno : "",
+            apellido_materno: operador ? operador.apellido_materno : "",
+            CURP: operador ? operador.CURP : "",
+            fecha_nacimiento: "2001-12-30",
         },
     })
 
@@ -400,7 +398,9 @@ const OperadorForm = () => {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
+                            {/*
+                            
+                                               <FormField
                                 control={form.control}
                                 name="fecha_nacimiento"
                                 render={({ field }) => (
@@ -445,6 +445,8 @@ const OperadorForm = () => {
                                     </FormItem>
                                 )}
                             />
+                            */}
+
                             <FormField
                                 control={form.control}
                                 name="codigo_empleado"

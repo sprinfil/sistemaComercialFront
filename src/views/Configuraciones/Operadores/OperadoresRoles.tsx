@@ -26,17 +26,7 @@ export const OperadoresRoles = () => {
 
 
 
-    const getRoles = async () => {
-        setLoading(true);
-        try {
-            const response = await axiosClient.get("/Rol");
-            setLoading(false);
-            setRoles(response.data.data);
-        } catch (error) {
-            setLoading(false);
-            console.error("Failed to fetch anomalias:", error);
-        }
-    };
+
 
     const _editar = () => {
         setEditar(!editar);
@@ -44,9 +34,9 @@ export const OperadoresRoles = () => {
     }
 
     const handleFormSubmit = (e) => {
-
         e.preventDefault();
         if (operador) {
+            setLoading(true);
             const formData = new FormData(e.target);
             const data = {};
             formData.forEach((value, key) => {
@@ -57,8 +47,10 @@ export const OperadoresRoles = () => {
                 .then((response) => {
                     console.log(response);
                     getOperadores();
+                    setLoading(false);
                 }).catch((response) => {
                     //console.log(response);
+                    setLoading(false);
                 })
 
             setEditar(!editar);
@@ -104,10 +96,29 @@ export const OperadoresRoles = () => {
             const response = await axiosClient.get("/Operador");
             setLoading(false);
             setOperadores(response.data);
-            console.log(response.data);
+            //console.log(response.data);
         } catch (error) {
             setLoading(false);
             console.error("Failed to fetch Operadores:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (operador.user) {
+            sync_roles();
+        }
+    }, [roles])
+
+    const getRoles = async () => {
+        setLoading(true);
+        try {
+            const response = await axiosClient.get("/Rol");
+            setLoading(false);
+            setRoles(response.data.data);
+
+        } catch (error) {
+            setLoading(false);
+            console.error("Failed to fetch anomalias:", error);
         }
     };
 
@@ -156,29 +167,29 @@ export const OperadoresRoles = () => {
                     <Loader />
                 }
                 {
-                !Loading &&
-                roles.map((rol, index) => (
-                    <div className='w-full h-[20px] mb-[10px] p-5 flex items-center rounded-md border border-border relative'>
-                        {rol.name}
-                        <div className='absolute right-5'>
-                            <Switch
-                                disabled={!editar}
-                                checked = {switch_values[rol.name]}
-                                onCheckedChange={
-                                    (checked) => {
-                                        let input = document.getElementById(rol.name);
-                                        if (input) {
-                                            input.value = checked ? "true" : "false";
-                                            //console.log(checked);
-                                            handleSwitchChange(rol.name, checked)
+                    !Loading &&
+                    roles.map((rol, index) => (
+                        <div className='w-full h-[20px] mb-[10px] p-5 flex items-center rounded-md border border-border relative'>
+                            {rol.name}
+                            <div className='absolute right-5'>
+                                <Switch
+                                    disabled={!editar}
+                                    checked={switch_values[rol.name]}
+                                    onCheckedChange={
+                                        (checked) => {
+                                            let input = document.getElementById(rol.name);
+                                            if (input) {
+                                                input.value = checked ? "true" : "false";
+                                                //console.log(checked);
+                                                handleSwitchChange(rol.name, checked)
+                                            }
                                         }
                                     }
-                                }
-                            />
-                            <input type="text" hidden id={rol.name} name={rol.name} value={switch_values[rol.name]}/>
+                                />
+                                <input type="text" hidden id={rol.name} name={rol.name} value={switch_values[rol.name]} />
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
             </form>
         </div>
     )
