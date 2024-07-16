@@ -13,9 +13,31 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { z } from "zod";
+import { nuevaTarifaSchema } from '../../Forms/TarifaValidaciones.tsx';
+import { useForm } from "react-hook-form";
+import { useStateContext } from "../../../contexts/ContextTarifa.tsx";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const SHEET_SIDES = ["bottom"] as const
 type EdicionTarifaServicio = (typeof SHEET_SIDES)[number]
+
+
+
+
+const { tarifa} = useStateContext();
+
+
+const form = useForm<z.infer<typeof nuevaTarifaSchema>>({
+  resolver: zodResolver(nuevaTarifaSchema),
+  defaultValues: {
+      id: tarifa.id,
+   
+
+  },
+})
+
+
 
 export function AgregarTarifaConcepto({trigger}) {
   return (

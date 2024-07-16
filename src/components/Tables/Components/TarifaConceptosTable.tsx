@@ -12,7 +12,21 @@ export default function TarifaServiciosTable() {
 
   useEffect(() => {
     getConcepto();
+    getTarifas();
+
   }, []);
+//con este metodo obtienes las tarifas de la bd
+const getTarifas = async () => {
+  setLoadingTable(true);
+  try {
+      const response = await axiosClient.get("/AnomaliasCatalogo");
+      setLoadingTable(false);
+      setTarifas(response.data.data);
+  } catch (error) {
+      setLoadingTable(false);
+      console.error("Failed to fetch tarifas:", error);
+  }
+};
 
   const getConcepto = async () => {
     setLoadingTable(true);

@@ -7,12 +7,13 @@ import TarifaForm from '../../../components/Forms/TarifaForm.tsx';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {TarifaServicios} from '../Tarifa/TarifaServicios.tsx';
 import {TarifaConceptos} from '../Tarifa/TarifaConceptos.tsx';
-import { Button } from '../../../components/ui/button.tsx';
-import { EdicionTarifaServicio } from '../../../components/Tables/Components/EdicionTarifaServicio.tsx';
+
+
 export const Tarifa = () => {
 
   
   const [activeTab, setActiveTab] = useState("Tarifa");
+
   const opciones = [
     {
         titulo: "Tarifa",
@@ -28,10 +29,9 @@ export const Tarifa = () => {
   },
 ]
 
-
   return (
     <ContextProvider>
-    <div className='w-full max-h-[75vh] '>
+    <div className='w-full max-h-[75vh] mt-3'>
       {/*Contenedor principal*/}
       <div className='flex gap-2 '>
 

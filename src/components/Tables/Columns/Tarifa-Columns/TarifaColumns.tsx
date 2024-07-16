@@ -20,8 +20,11 @@ import { EdicionTarifaServicio } from "../Components/EdicionTarifaServicio";
 // You can use a Zod schema here if you want.
 export type Tarifa = {
   id: number
-  nombre: string
-  descripcion: string
+  rango: string
+  agua: number
+  alcantarillado: number
+  sanamiento: number
+
 }
 
 
