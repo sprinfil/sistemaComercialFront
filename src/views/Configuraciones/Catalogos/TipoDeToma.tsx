@@ -3,7 +3,7 @@ import { ContextProvider } from "../../../contexts/ContextTipoDeToma.tsx";
 import TipoDeTomaTable from '../../../components/Tables/Components/TipoDeTomaTable.tsx'
 import TipoDeTomaForm from '../../../components/Forms/TipoDeTomaForm.tsx'
 import { useStateContext } from "../../../contexts/ContextTipoDeToma.tsx";
-
+import { OcultarTable } from '../../../components/Tables/Components/OcultarTable.tsx';
 const TipoDeToma = () => {
   
   const { accion } = useStateContext();
@@ -15,9 +15,7 @@ const TipoDeToma = () => {
         <div className='flex gap-2 '>
 
           {/*Datatable*/}
-          <div className='w-[35%] rounded-md border border-border p-4 overflow-auto h-[75vh]'>
-            <TipoDeTomaTable />
-          </div>
+            <MostrarTable />
 
           {/*Formulario edit, */}
           <TipoDeTomaFormEdit/>
@@ -34,9 +32,9 @@ const TipoDeTomaFormEdit = () => {
   return (
     <>
         {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
-      {accion == "editar" ? (<div className='w-[65%] rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
+      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[75vh] p-4'>
             <TipoDeTomaForm />
-          </div>) : (<div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+          </div>) : (<div className='w-full rounded-md border border-border h-[75vh] p-4'>
             <TipoDeTomaForm />
           </div>)}
     </>
@@ -44,3 +42,21 @@ const TipoDeTomaFormEdit = () => {
 };
 
 export default TipoDeToma
+
+const MostrarTable = () => {
+
+  const { accion } = useStateContext();
+
+  return(
+    <>
+        {/*Datatable*/}
+
+      <OcultarTable accion={accion}>
+      <TipoDeTomaTable />
+      </OcultarTable>
+      
+    </>
+  )
+
+
+};

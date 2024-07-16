@@ -2,7 +2,7 @@ import ConstanciaForm from '../../../components/Forms/ConstanciaForm.tsx';
 import ConstanciaTable from '../../../components/Tables/Components/ConstanciaTable.tsx';
 import { ContextProvider } from '../../../contexts/ContextConstancias.tsx';
 import { useStateContext } from '../../../contexts/ContextConstancias.tsx';
-
+import { OcultarTable } from '../../../components/Tables/Components/OcultarTable.tsx';
 export default function Constancias() {
 
   //ESTA ES LA VISTA PRINCIPAL DEL CATALOGO QUE CONTIENE LOS COMPONENTES DE LA TABLA Y
@@ -16,9 +16,7 @@ export default function Constancias() {
         <div className='flex gap-2 '>
 
           {/*Datatable*/}
-          <div className='w-[35%] rounded-md border border-border p-4 overflow-auto h-[75vh]'>
-            <ConstanciaTable />
-          </div>
+            <MostrarTable />
 
           {/*Formulario*/}
             <ConstanciasFormEdit />
@@ -39,11 +37,29 @@ const ConstanciasFormEdit = () => {
   return (
     <>
         {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
-      {accion == "editar" ? (<div className='w-[65%] rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
+      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[75vh] p-4 '>
             <ConstanciaForm />
-          </div>) : (<div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+          </div>) : (<div className='w-full rounded-md border border-border h-[75vh] p-4'>
             <ConstanciaForm />
           </div>)}
     </>
   );
+};
+
+const MostrarTable = () => {
+
+  const { accion } = useStateContext();
+
+  return(
+    <>
+        {/*Datatable*/}
+
+      <OcultarTable accion={accion}>
+      <ConstanciaTable />
+      </OcultarTable>
+      
+    </>
+  )
+
+
 };
