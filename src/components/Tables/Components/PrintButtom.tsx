@@ -1,27 +1,32 @@
-import React from 'react';
-import axios from 'axios'; // Importamos Axios
-import axiosClient from '../../../axios-client';
+// src/App.js
+import React, { useState } from 'react';
+import axios from 'axios';
 
-class PrintButton extends React.Component {
-    handlePrint = () => {
-        // Realizamos la solicitud POST usando Axios
-        axiosClient.post('/print')
-            .then(response => {
-                if (!response.data) {
-                    throw new Error('Empty response data');
-                }
-                console.log(response.data.message); // Mostramos el mensaje de respuesta
-            })
-            .catch(error => {
-                console.error('Error:', error.message); // Capturamos y mostramos cualquier error
-            });
-    }
+function App() {
+  const [text, setText] = useState('');
+  const [message, setMessage] = useState('');
 
-    render() {
-        return (
-            <button onClick={this.handlePrint}>Imprimir</button> // Botón para invocar handlePrint
-        );
+  const handlePrint = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/print', { text });
+      setMessage(response.data);
+    } catch (error) {
+      setMessage(`Error: ${error.message}`);
     }
+  };
+
+  return (
+    <div className="App">
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Escribe el texto a imprimir"
+      />
+      <button onClick={handlePrint}>Print</button>
+      <p>{message}</p>
+    </div>
+  );
 }
 
-export default PrintButton;
+export default App;
+
