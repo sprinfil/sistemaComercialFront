@@ -16,14 +16,19 @@ import {
 
 const SHEET_SIDES = ["bottom"] as const
 
-export function EdicionTarifaServicio({ trigger }) {
+export function EdicionTarifaServicio({ trigger = null, open, setOpen, tarifaServicio}) {
+
+  console.log(tarifaServicio);
+  const onClick = () => {
+    setOpen(false);
+  }
+
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="">
       {SHEET_SIDES.map((side) => (
-        <Sheet key={side}>
+        <Sheet key={side} open = {open}>
           <SheetTrigger asChild>
             {trigger}
-            {/*<Button variant="outline">{side}</Button>*/}
           </SheetTrigger>
           <SheetContent side={side}>
             <SheetHeader>
@@ -37,30 +42,30 @@ export function EdicionTarifaServicio({ trigger }) {
                 <Label htmlFor="name" className="text-right">
                   Rango(hasta)
                 </Label>
-                <Input id="name" className="col-span-3" />
+                <Input id="name" className="col-span-3" value= {tarifaServicio.Rango}/>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
                   Agua
                 </Label>
-                <Input id="username" className="col-span-3" />
+                <Input id="username" className="col-span-3" value= {tarifaServicio.Agua}/>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
                   Alcantarillado
                 </Label>
-                <Input id="username" className="col-span-3" />
+                <Input id="username" className="col-span-3" value= {tarifaServicio.Alcantarillado}/>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
                   Sanamiento
                 </Label>
-                <Input id="username" className="col-span-3" />
+                <Input id="username" className="col-span-3" value= {tarifaServicio.Saneamiento}/>
               </div>
             </div>
             <SheetFooter>
               <SheetClose asChild>
-                <Button type="submit">Guardar cambios</Button>
+                <Button onClick={onClick} type="submit">Guardar cambios</Button>
               </SheetClose>
             </SheetFooter>
           </SheetContent>
