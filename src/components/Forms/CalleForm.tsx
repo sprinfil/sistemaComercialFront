@@ -332,26 +332,6 @@ const CalleForm = () => {
                                     </FormItem>
                                 )}
                             />
-                            <FormField
-                                control={form.control}
-                                name="descripción"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Descripción</FormLabel>
-                                        <FormControl>
-                                            <Textarea
-                                                readOnly={!abrirInput}
-                                                placeholder="Descripcion de la anomalía"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Agrega una breve descripción.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
                             {loading && <Loader />}
                             {abrirInput && <Button type="submit">Guardar</Button>}
 
