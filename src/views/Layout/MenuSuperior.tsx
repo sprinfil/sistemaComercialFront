@@ -94,7 +94,7 @@ const MenuSuperior = () => {
                 {
                     titulo: "Punto de venta",
                     descripcion: "Registra los pagos de los usuarios.",
-                    route: "/proximamente"
+                    route: "/Cajas"
                 },
             ]
         },
