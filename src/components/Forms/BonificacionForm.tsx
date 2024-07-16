@@ -124,6 +124,7 @@ const BonificacionForm = () => {
                     else
                     {
                     successToastCreado();
+                    setAccion("creado");
                     setLoading(false);
                     setBonificacion({
                         id: 0,
@@ -136,6 +137,7 @@ const BonificacionForm = () => {
                         descripcion: "ninguna",
                     });
                     getBonificacion();
+                    
                     console.log(values);
                     //setNotification("usuario creado");
                     }
@@ -216,6 +218,7 @@ const BonificacionForm = () => {
                     descripcion: "ninguna",
                     estado: "activo"
                 });
+                setAccion("creado");
                 getBonificacion();
                 successToastRestaurado();
                 setModalReactivacionOpen(false);
@@ -239,6 +242,20 @@ const BonificacionForm = () => {
         }
         if (accion == "crear") {
             console.log("creando");
+            setAbrirInput(true);
+            setErrors({});
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
+            setBonificacion({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            })
+        }
+        if (accion == "creado") {
             setAbrirInput(true);
             setErrors({});
             form.reset({

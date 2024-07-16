@@ -127,6 +127,7 @@ const GiroComercialForm = () => {
                     }
                     else
                     {
+                    setAccion("creado");
                     successToastCreado();
                     setLoading(false);
                     setGiroComercial({
@@ -141,6 +142,7 @@ const GiroComercialForm = () => {
                         descripcion: "ninguna",
                         estado: "activo"
                     });
+                    
                     getGirosComerciales();
                     console.log(values);
                     //setNotification("usuario creado");
@@ -219,6 +221,7 @@ const GiroComercialForm = () => {
                     descripcion: "ninguna",
                     estado: "activo"
                 });
+                setAccion("creado");
                 getGirosComerciales();
                 successToastRestaurado();
                 setModalReactivacionOpen(false);
@@ -243,6 +246,22 @@ const GiroComercialForm = () => {
         }
         if (accion == "crear") {
             console.log("creando");
+            setAbrirInput(true);
+            setErrors({});
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                estado: "activo"
+            });
+            setGiroComercial({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                estado: "activo"
+            })
+        }
+        if (accion == "creado") {
             setAbrirInput(true);
             setErrors({});
             form.reset({

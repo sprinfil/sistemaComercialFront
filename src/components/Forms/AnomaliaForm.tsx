@@ -139,6 +139,7 @@ const AnomaliaForm = () => {
                         });
                         getAnomalias();
                         successToastCreado();
+                        setAccion("creado");
                     }
                 
                 })
@@ -218,7 +219,9 @@ const AnomaliaForm = () => {
                 });
                 getAnomalias();
                 successToastRestaurado();
+                setAccion("creado");
                 setModalReactivacionOpen(false);
+
             })
             .catch((err) => {
                 errorToast();
@@ -229,6 +232,15 @@ const AnomaliaForm = () => {
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
+            setAnomalia({});
+            setAbrirInput(false);
+        }
+        if (accion == "creado") {
             form.reset({
                 id: 0,
                 nombre: "",

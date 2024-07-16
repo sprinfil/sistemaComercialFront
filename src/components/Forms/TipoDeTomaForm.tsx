@@ -137,6 +137,7 @@ const TipoDeTomaForm = () => {
                         nombre: "",
                         descripcion: "ninguna",
                     });
+                    setAccion("creado");
                     getAnomalias();
                     successToastCreado();
                     console.log(values);
@@ -216,6 +217,7 @@ const TipoDeTomaForm = () => {
                     estado: "activo"
                 });
                 getAnomalias();
+                setAccion("creado");
                 successToastRestaurado();
                 setModalReactivacionOpen(false);
             })
@@ -237,7 +239,20 @@ const TipoDeTomaForm = () => {
             setAbrirInput(false);
         }
         if (accion == "crear") {
-            console.log("creando");
+            setAbrirInput(true);
+            setErrors({});
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
+            setTipoDeToma({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            })
+        }
+        if (accion == "creado") {
             setAbrirInput(true);
             setErrors({});
             form.reset({

@@ -47,9 +47,8 @@ export default function AnomaliaTable() {
       <div onClick={()=>{setAccion("crear")}}>
 
 
-      <div className='flex gap-2 items-center'>
         <IconButton>
-          <div className='flex gap-5 w-full'> 
+          <div className='flex gap-2 items-center'> 
             Agregar nueva anomalía
             
             <PlusCircledIcon className='w-[20px] h-[20px]'/>
@@ -57,8 +56,6 @@ export default function AnomaliaTable() {
           </div>
         </IconButton>
         </div>
-      
-      </div>
       
       <DataTable columns={columns} data={anomalias} sorter='nombre' onRowClick={handleRowClick}/>
     </div>

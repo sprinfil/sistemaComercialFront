@@ -15,11 +15,15 @@ export const OcultarTable = ({ children, abierto = false, width = '460px', accio
     if (accion === 'crear') {
       setOpen(true); 
     }
+    if (accion === 'creado') {
+      setOpen(false); 
+    }
   }, [accion]);
 
 
   return (
     <div className='flex items-center'>
+      
       <div
         className={open ? `hidden transition-all duration-500 rounded-md border border-border p-4 overflow-auto h-[75vh]` : `transition-all duration-500 rounded-md border border-border p-4 overflow-auto h-[75vh]`}
         style={{width: open ? '0' : width }}
@@ -29,17 +33,16 @@ export const OcultarTable = ({ children, abierto = false, width = '460px', accio
 
 
 
-      <div className='px-1 py-1 rounded-md cursor-pointer' onClick={handleAbierto}>
-        {open ?(
-          <ChevronLeftIcon className='w-[20px] h-[20px]' />
+      <div className='flex items-center h-full px-1 py-1' onClick={handleAbierto}>
+        {open ? (
+          <ChevronLeftIcon className='w-[20px] h-[20px] rounded-xl hover:bg-primary cursor-pointer' />
         ) : (
-          <ChevronRightIcon className='w-[20px] h-[20px]' />
+          <ChevronRightIcon className='w-[20px] h-[20px] rounded-xl hover:bg-primary cursor-pointer' />
         )
         }
-
-
-        
       </div>
+
+
     </div>
   );
 };

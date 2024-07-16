@@ -12,6 +12,7 @@ export type Concepto = {
   id: number
   nombre: string
   descripcion: string
+  prioridad_abono: number
 }
 
 
