@@ -40,11 +40,9 @@ export default function ConceptoTable() {
   return (
     <div>
       <div onClick={() => { setAccion("crear") }}>
-      <div className='flex gap-2 items-center'>
         <IconButton>
-          <div className='flex gap-2 w-full'> Agregar nuevo concepto <PlusCircledIcon className='w-[20px] h-[20px]' /></div>
+          <div className='flex gap-2 items-center'> Agregar nuevo concepto <PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
-      </div>
       </div>
       <DataTable columns={columns} data={conceptos} sorter='nombre' onRowClick={handleRowClick} />
     </div>

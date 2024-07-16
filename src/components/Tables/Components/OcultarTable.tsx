@@ -35,9 +35,9 @@ export const OcultarTable = ({ children, abierto = false, width = '460px', accio
 
       <div className='flex items-center h-full px-1 py-1' onClick={handleAbierto}>
         {open ? (
-          <ChevronLeftIcon className='w-[20px] h-[20px] rounded-2xl hover:bg-primary cursor-pointer' />
+          <ChevronLeftIcon className='w-[20px] h-[20px] rounded-xl hover:bg-primary cursor-pointer' />
         ) : (
-          <ChevronRightIcon className='w-[20px] h-[20px] rounded-2xl hover:bg-primary cursor-pointer' />
+          <ChevronRightIcon className='w-[20px] h-[20px] rounded-xl hover:bg-primary cursor-pointer' />
         )
         }
       </div>

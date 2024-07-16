@@ -42,7 +42,7 @@ const DescuentoForm = () => {
 
 
      //#region SUCCESSTOAST
-     function successToastCreado() {
+    function successToastCreado() {
         toast({
             title: "¡Éxito!",
             description: "El descuento se ha creado correctamente",
