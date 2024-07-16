@@ -17,7 +17,13 @@ import {
 const SHEET_SIDES = ["bottom"] as const
 type EdicionTarifaServicio = (typeof SHEET_SIDES)[number]
 
-export function AgregarTarifaConcepto({trigger}) {
+export function AgregarTarifaConcepto({trigger, open, setOpen, tarifaServicio}) {
+  
+  console.log(tarifaServicio);
+  const handleCerrar = () => {
+    setOpen(false);
+  }
+
   return (
     <div className="flex gap-2 justify-center items-center">
       {SHEET_SIDES.map((side) => (
@@ -66,8 +72,10 @@ export function AgregarTarifaConcepto({trigger}) {
               </div>
             </div>
             <SheetFooter>
-              <SheetClose asChild>
-                <Button type="submit">Guardar cambios</Button>
+              <SheetClose>
+                <Button onClick={handleCerrar} type="submit">Guardar cambios</Button>
+                <Button onClick={handleCerrar} type="submit" className="ml-3 bg-green-900">Cancelar</Button>
+
               </SheetClose>
             </SheetFooter>
           </SheetContent>

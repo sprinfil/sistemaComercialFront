@@ -6,7 +6,7 @@ import { useStateContext } from '../../../contexts/ContextAnomalias.tsx';
 import Loader from '../../ui/Loader.tsx';
 import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
-
+import { AgregarTarifaServicio } from './AgregarTarifaServicio.tsx';
 export default function TarifaServicioNewTable() {
 
   const { anomalias, setAnomalias, loadingTable, setLoadingTable, setAccion, setAnomalia} = useStateContext();
@@ -36,69 +36,6 @@ export default function TarifaServicioNewTable() {
       id: 1,
       Rango: "30 m3",
       Agua: "$20",
-      Alcantarillado: "$2.20",
-      Saneamiento: "$2.20"
-    },
-    {
-      id: 1,
-      Rango: "40 m3",
-      Agua: "$30",
-      Alcantarillado: "$2.20",
-      Saneamiento: "$2.20"
-    },
-    {
-      id: 1,
-      Rango: "40 m3",
-      Agua: "$30",
-      Alcantarillado: "$2.20",
-      Saneamiento: "$2.20"
-    },
-    {
-      id: 1,
-      Rango: "40 m3",
-      Agua: "$30",
-      Alcantarillado: "$2.20",
-      Saneamiento: "$2.20"
-    },
-    {
-      id: 1,
-      Rango: "40 m3",
-      Agua: "$30",
-      Alcantarillado: "$2.20",
-      Saneamiento: "$2.20"
-    },
-    {
-      id: 1,
-      Rango: "40 m3",
-      Agua: "$30",
-      Alcantarillado: "$2.20",
-      Saneamiento: "$2.20"
-    },
-    {
-      id: 1,
-      Rango: "40 m3",
-      Agua: "$30",
-      Alcantarillado: "$2.20",
-      Saneamiento: "$2.20"
-    },
-    {
-      id: 1,
-      Rango: "40 m3",
-      Agua: "$30",
-      Alcantarillado: "$2.20",
-      Saneamiento: "$2.20"
-    },
-    {
-      id: 1,
-      Rango: "40 m3",
-      Agua: "$30",
-      Alcantarillado: "$2.20",
-      Saneamiento: "$2.20"
-    },
-    {
-      id: 1,
-      Rango: "40 m3",
-      Agua: "$30",
       Alcantarillado: "$2.20",
       Saneamiento: "$2.20"
     },
@@ -137,12 +74,20 @@ export default function TarifaServicioNewTable() {
       <div onClick={()=>{setAccion("crear")}}>
 
       <div className='flex gap-2 items-center w-full'>
-        <IconButton>
-          <div className='flex gap-5 '> 
-            Agregar Tarifa
+
+        <AgregarTarifaServicio trigger={
+          <div onClick={()=>{setAccion("")}}>
+      <IconButton>
+          <div className='flex gap-5 items-center'> 
+            <div className='text-lg'>Agregar nueva tarifa</div>
             <PlusCircledIcon className='w-[20px] h-[20px]'/>
           </div>
         </IconButton>
+
+      </div>
+        }/>
+      
+        
         </div>
       </div>
       

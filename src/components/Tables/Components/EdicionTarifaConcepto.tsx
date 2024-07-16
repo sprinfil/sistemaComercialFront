@@ -17,7 +17,15 @@ import {
 const SHEET_SIDES = ["bottom"] as const
 type EdicionTarifaServicio = (typeof SHEET_SIDES)[number]
 
-export function EdicionTarifaConcepto({trigger}) {
+
+
+export function EdicionTarifaConcepto({trigger, open, setOpen, tarifaServicio}) {
+
+  console.log(tarifaServicio);
+  const handleCerrar = () => {
+    setOpen(false);
+  }
+
   return (
     <div className="grid grid-cols-2 gap-2">
       {SHEET_SIDES.map((side) => (
@@ -66,8 +74,9 @@ export function EdicionTarifaConcepto({trigger}) {
               </div>
             </div>
             <SheetFooter>
-              <SheetClose asChild>
-                <Button type="submit">Guardar cambios</Button>
+              <SheetClose>
+                <Button onClick={handleCerrar} type="submit">Guardar cambios</Button>
+                <Button onClick={handleCerrar} type="submit" className="ml-3 bg-green-900">Cancelar</Button>
               </SheetClose>
             </SheetFooter>
           </SheetContent>

@@ -42,30 +42,31 @@ export function EdicionTarifaServicio({ trigger = null, open, setOpen, tarifaSer
                 <Label htmlFor="name" className="text-right">
                   Rango(hasta)
                 </Label>
-                <Input id="name" className="col-span-3" value= {tarifaServicio.Rango}/>
+                <Input id="name" className="col-span-3" defaultValue = {tarifaServicio.Rango} />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
                   Agua
                 </Label>
-                <Input id="username" className="col-span-3" value= {tarifaServicio.Agua}/>
+                <Input id="username" className="col-span-3" defaultValue = {tarifaServicio.Agua}/>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
                   Alcantarillado
                 </Label>
-                <Input id="username" className="col-span-3" value= {tarifaServicio.Alcantarillado}/>
+                <Input id="username" className="col-span-3" defaultValue = {tarifaServicio.Alcantarillado}/>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="username" className="text-right">
                   Sanamiento
                 </Label>
-                <Input id="username" className="col-span-3" value= {tarifaServicio.Saneamiento}/>
+                <Input id="username" className="col-span-3" defaultValue = {tarifaServicio.Saneamiento}/>
               </div>
             </div>
             <SheetFooter>
-              <SheetClose asChild>
-                <Button onClick={onClick} type="submit">Guardar cambios</Button>
+              <SheetClose >
+              <Button onClick={onClick} type="submit">Guardar cambios</Button>
+              <Button onClick={onClick} type="submit" className="ml-3 bg-green-900">Cancelar</Button>
               </SheetClose>
             </SheetFooter>
           </SheetContent>

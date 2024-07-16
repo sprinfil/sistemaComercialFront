@@ -140,7 +140,8 @@ const TarifaForm = ({ setActiveTab} ) => {
                         });
                         getTarifas();
                         successToastCreado();
-                
+                        setAccion("creado");
+
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -205,6 +206,17 @@ const TarifaForm = ({ setActiveTab} ) => {
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
 useEffect(() => {
     if (accion === "eliminar") {
+        form.reset({
+            id: 0,
+            nombre: "",
+            descripcion: "ninguna",
+            fecha: getCurrentDate(),
+            estado: "activo",
+        });
+        setTarifa({});
+        setAbrirInput(false);
+    }
+    if (accion === "creado") {
         form.reset({
             id: 0,
             nombre: "",

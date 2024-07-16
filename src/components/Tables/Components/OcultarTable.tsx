@@ -25,7 +25,7 @@ export const OcultarTable = ({ children, abierto = false, width = '460px', accio
     <div className='flex items-center'>
       
       <div
-        className={open ? `hidden transition-all duration-500 rounded-md border border-border p-4 overflow-auto h-[75vh]` : `transition-all duration-500 rounded-md border border-border p-4 overflow-auto h-[75vh]`}
+        className={open ? `hidden transition-all duration-500 rounded-md border border-border p-4 overflow-auto h-[75vh] ` : `transition-all duration-500 rounded-md border border-border mb-[78px] overflow-auto h-[75vh]`}
         style={{width: open ? '0' : width }}
       >
         {children}

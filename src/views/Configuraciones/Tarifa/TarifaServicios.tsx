@@ -46,20 +46,21 @@ export const TarifaServicios = () => {
           <AccordionItem value="item-2">
             <AccordionTrigger>Industrial</AccordionTrigger>
             <AccordionContent>
-              Yes. It comes with default styles that matches the other
-              components&apos; aesthetic.
+            <TarifaServicioNewTable/>
+
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
             <AccordionTrigger>Domestica</AccordionTrigger>
             <AccordionContent>
-              Yes. It's animated by default, but you can disable it if you prefer.
+            <TarifaServicioNewTable/>
+
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-4">
             <AccordionTrigger>Especial</AccordionTrigger>
             <AccordionContent>
-              Yes. It's animated by default, but you can disable it if you prefer.
+            <TarifaServicioNewTable/>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

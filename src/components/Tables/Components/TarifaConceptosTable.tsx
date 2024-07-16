@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { DataTableTarifaConceptos } from '../../ui/DataTable Tarifas/DataTableTarifaConceptos.tsx';
-import { columns, Tarifa } from "../Columns/Tarifa-Columns/TarifaConceptosColumns.tsx";
+import { columns, Tarifa } from "../Columns/TarifaConceptoDetalleColumns.tsx";
 import axiosClient from '../../../axios-client.ts';
 import { useStateContext } from '../../../contexts/ContextTarifa.tsx';
 import Loader from '../../ui/Loader.tsx';

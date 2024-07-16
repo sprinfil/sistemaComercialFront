@@ -18,9 +18,13 @@ import {
 const SHEET_SIDES = ["bottom"] as const
 type EdicionTarifaServicio = (typeof SHEET_SIDES)[number]
 
-export function AgregarTarifaServicio({trigger}) {
+export function AgregarTarifaServicio({trigger, open, setOpen, tarifaServicio}) {
 
 
+  console.log(tarifaServicio);
+  const handleCerrar = () => {
+    setOpen(false);
+  }
 
   const [guardar, setGuardar] = useState(false);
 
@@ -67,9 +71,10 @@ export function AgregarTarifaServicio({trigger}) {
               </div>
             </div>
             <SheetFooter>
-              <SheetClose asChild>
-                <Button type="submit">Guardar cambios</Button>
-              </SheetClose>
+              <SheetClose>
+                <Button onClick={handleCerrar} type="submit">Guardar cambios</Button>
+                <Button onClick={handleCerrar} type="submit" className="ml-3 bg-green-900">Cancelar</Button>
+                </SheetClose>
             </SheetFooter>
           </SheetContent>
         </Sheet>
