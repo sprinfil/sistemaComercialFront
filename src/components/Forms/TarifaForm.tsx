@@ -14,7 +14,7 @@ import {
     FormMessage,
 } from "../ui/form.tsx";
 import { Input } from '../ui/input.tsx';
-import { nuevaTarifaSchema } from './TarifaValidaciones.ts';
+import { tarifaSchema } from './validaciones.ts';
 import { ModeToggle } from '../ui/mode-toggle.tsx';
 import axiosClient from '../../axios-client.ts';
 import Loader from "../ui/Loader.tsx";
@@ -39,8 +39,8 @@ const TarifaForm = ({ setActiveTab} ) => {
     const [indiceTarifa, setIndiceTarifa] = useState(0);
 
 
-    const form = useForm<z.infer<typeof nuevaTarifaSchema>>({
-        resolver: zodResolver(nuevaTarifaSchema),
+    const form = useForm<z.infer<typeof tarifaSchema>>({
+        resolver: zodResolver(tarifaSchema),
         defaultValues: {
             id: tarifa.id,
             nombre: tarifa.nombre,
@@ -64,7 +64,7 @@ const TarifaForm = ({ setActiveTab} ) => {
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La tarifa se ha creado correctamente",
+            description: "El giro comercial se ha creado correctamente",
             variant: "success",
 
         })
@@ -110,25 +110,13 @@ const TarifaForm = ({ setActiveTab} ) => {
     }
 
 
-    function onSubmit(values: z.infer<typeof nuevaTarifaSchema>) {
+    function onSubmit(values: z.infer<typeof tarifaSchema>) {
         console.log("submit");
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/tarifa/create`, values)
-                .then(() => {
-                    setLoading(false);
-                    successToastCreado();
-                    nextTab(); //PARA IR AL SIGUIENTE TAP AL DARLE SIGUIENTE
-                })
-                .catch((err) => {
-                    const response = err.response;
-                    errorToast();
-                    if (response && response.status === 422) {
-                        setErrors(response.data.errors);
-                    }
-                    setLoading(false);
-                })
-                console.log(abrirInput);
+                setLoading(false);
+                nextTab(); //PARA IR AL SIGUIENTE TAP AL DARLE SIGUIENTE
+                getGirosTarifas();
         }
         if (accion == "editar") {
             axiosClient.put(`/giros-catalogos/${tarifa.id}`, values)
@@ -137,7 +125,7 @@ const TarifaForm = ({ setActiveTab} ) => {
                     //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
-                    getTarifa();
+                    getGirosTarifas();
                     setTarifa(data.data);
                     successToastEditado();
                     //setNotification("usuario creado");
@@ -153,13 +141,13 @@ const TarifaForm = ({ setActiveTab} ) => {
         }
     }
 
-    //con este metodo obtienes las tarifas de la bd
-    const getTarifa = async () => {
+    //con este metodo obtienes las anomalias de la bd
+    const getGirosTarifas = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/AnomaliasCatalogo");
+            const response = await axiosClient.get("/Concepto");
             setLoadingTable(false);
-            setTarifas(response.data.data);
+            setTarifas(response.data);
         } catch (error) {
             setLoadingTable(false);
             errorToast();
@@ -171,7 +159,7 @@ const TarifaForm = ({ setActiveTab} ) => {
     const onDelete = async () => {
         try {
             await axiosClient.delete(`/giros-catalogos/${tarifa.id}`);
-            getTarifa();
+            getGirosTarifas();
             setAccion("eliminar");
             successToastEliminado();
         } catch (error) {
@@ -224,7 +212,6 @@ const TarifaForm = ({ setActiveTab} ) => {
             setAbrirInput(true);
             setErrors({});
         }
-        
         console.log(accion);
     }, [accion]);
 

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect} from 'react'
+import React, { useContext, useState } from 'react'
 import TarifaServiciosTable from '../../../components/Tables/Components/TarifaServiciosTable'
 import { ContextProvider } from '../../../contexts/ContextProvider'
 import {
@@ -49,16 +49,14 @@ export const TarifaServicios = () => {
 const getTarifas = async () => {
   setLoadingTable(true);
   try {
-      const response = await axiosClient.get("/AnomaliasCatalogo");
+      const response = await axiosClient.get("/Concepto");
       setLoadingTable(false);
       setTarifas(response.data);
   } catch (error) {
       setLoadingTable(false);
-      console.error("Failed to fetch tarifas:", error);
+      console.error("Failed to fetch constancias:", error);
   }
 };
-
-
 
 
   return (

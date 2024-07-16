@@ -77,3 +77,10 @@ export const TipoDeTomaSchema = z.object({
 
 
 
+
+//VALIDACIONES TipoDeToma
+export const tarifaSchema = z.object({
+  id: z.number(),
+  nombre: z.string().min(1, "El Nombre es requerido"),
+  descripcion: z.string(),
+})

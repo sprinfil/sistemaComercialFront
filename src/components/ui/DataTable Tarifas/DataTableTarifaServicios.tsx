@@ -87,20 +87,20 @@ export function DataTableTarifa<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
           
-
-                  <EdicionTarifaServicio trigger={ <div onClick={() => { ("") }}> 
-                  <TableRow    
+                <EdicionTarifaServicio trigger={
+                  <div onClick={() => { ("") }}> 
+                  <TableRow
+                    
                     onClick={() => handleRowClick(row.id, row.original)}
-                    className={`cursor-pointer ${selectedRow === row.id ? "bg-border" : ""}`}
+                    className={`flex cursor-pointer ${selectedRow === row.id ? "bg-border" : ""}`}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="">
+                      <TableCell key={cell.id} className="flex gap-44 justify-center items-center ml-28 w-full h-full">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
                   </TableRow>
                   </div>}/>
-        
                   
                   
               ))

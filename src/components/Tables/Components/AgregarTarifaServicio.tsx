@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect} from "react";
+import { useState } from "react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
@@ -14,20 +14,16 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { nuevoServicioSchema } from "../../Forms/TarifaValidaciones";
-import { useStateContext } from "../../../contexts/ContextTarifa";
-import axiosClient from "../../../axios-client";
-import {z} from "Zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 const SHEET_SIDES = ["bottom"] as const
 type EdicionTarifaServicio = (typeof SHEET_SIDES)[number]
 
-
-
-
 export function AgregarTarifaServicio({trigger}) {
+
+
+
+  const [guardar, setGuardar] = useState(false);
+
 
   return (
     <div className="flex gap-2 justify-center items-center">
@@ -80,6 +76,4 @@ export function AgregarTarifaServicio({trigger}) {
       ))}
     </div>
   )
-
 }
-
