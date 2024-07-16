@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect} from 'react'
 import TarifaServiciosTable from '../../../components/Tables/Components/TarifaServiciosTable'
 import { ContextProvider } from '../../../contexts/ContextProvider'
 import {
@@ -44,58 +44,48 @@ export const TarifaServicios = () => {
         Sanamiento: "$2.20"
     }
 ]);
+{/* useEffect(() => {
+  getTarifa();
+}, []);
 
-//con este metodo obtienes las anomalias de la bd
-const getTarifas = async () => {
+const getTarifa = async () => {
   setLoadingTable(true);
   try {
-      const response = await axiosClient.get("/Concepto");
-      setLoadingTable(false);
-      setTarifas(response.data);
+    const response = await axiosClient.get("/tarifa");
+    setLoadingTable(false);
+    setTarifas(response.data.data);
+    console.log(response.data.data);
   } catch (error) {
-      setLoadingTable(false);
-      console.error("Failed to fetch constancias:", error);
+    setLoadingTable(false);
+    console.error("Failed to fetch concepto:", error);
   }
 };
+*/}
+
+
 
 
   return (
 
     <ContextProvider>
-      <div className="w-full h-[60vh] flex items-center justify-center mt-10 pt-10 ">
-        <Carousel >
-          <CarouselContent className="p-1 flex max-w-[800px] ">
-            {/* Primer item del carousel */}
-            <CarouselItem className="w-full">
+      <div>
+
             <div className="h-full flex items-center justify-center w-full ">
                 <TarifaServiciosTable data = {seedServiciosDomestica} />
                 
               </div>
-            </CarouselItem>
-
+      
             {/* Segundo item del carousel */}
-            <CarouselItem className="w-full">
               <div className="h-full flex items-center justify-center">
               <TarifaServiciosTable data = {seedServiciosDomestica}/>
               </div>
-            </CarouselItem>
 
             {/* Tercer item del carousel */}
-            <CarouselItem className="w-full">
               <div className="h-full flex items-center justify-center">
               <TarifaServiciosTable data = {seedServiciosDomestica} />
               </div>
-            </CarouselItem>
-          </CarouselContent>
 
-          {/* Navegación del carousel */}
-          <CarouselPrevious className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white px-2 py-1 rounded-full cursor-pointer">
-            Previous
-          </CarouselPrevious>
-          <CarouselNext className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white px-2 py-1 rounded-full cursor-pointer">
-            Next
-          </CarouselNext>
-        </Carousel> 
+
       </div>
     </ContextProvider>
   
