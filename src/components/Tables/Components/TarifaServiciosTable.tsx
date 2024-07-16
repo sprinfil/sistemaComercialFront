@@ -53,19 +53,18 @@ export default function TarifaServiciosTable({ data }) {
     <div className="w-full h-full">
       <div className='mb-[6px]'>
 
-      <AgregarTarifaServicio trigger=
-      {<div onClick={() => { setAccion("") }}>
-      <IconButton>
-        <div className='flex gap-2 items-center'> Agregar nuevo servicio <PlusCircledIcon className='w-[20px] h-[20px]' /></div>
-      </IconButton>
-    </div>
-      }/>
+        <AgregarTarifaServicio trigger=
+          {<div onClick={() => { setAccion("") }}>
+            <IconButton>
+              <div className='flex gap-2 items-center'> Agregar nuevo servicio <PlusCircledIcon className='w-[20px] h-[20px]' /></div>
+            </IconButton>
+          </div>
+          } />
+
+      </div>
       
-    </div>
-    
-    <DataTableTarifa columns={columns} data={tarifas} sorter="nombre" onRowClick={handleRowClick} />
-    
-    
+      <DataTableTarifa columns={columns} data={tarifas} sorter="nombre" onRowClick={handleRowClick} />
+
     </div>
   );
 }
