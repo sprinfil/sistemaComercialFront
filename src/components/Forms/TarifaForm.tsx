@@ -30,7 +30,7 @@ import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACT
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 
-const TarifaForm = ({ setActiveTab} ) => {
+const TarifaForm = ({ setActiveTab }) => {
     const { toast } = useToast()
     const { tarifa, setTarifa, loadingTable, setLoadingTable, setTarifas, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
@@ -56,11 +56,11 @@ const TarifaForm = ({ setActiveTab} ) => {
     const opcionesTabs = ["Tarifa", "Servicios", "Conceptos"];
     //METODO PARA TENER CONTROL DEL TAP
     const nextTab = () => {
-        
+
         const currentIndex = opcionesTabs.indexOf("Tarifa");
         const indiceTarifa = (currentIndex + 1) % opcionesTabs.length;
         setActiveTab(opcionesTabs[indiceTarifa]);
-        
+
     };
 
     //#region SUCCESSTOAST
@@ -112,7 +112,7 @@ const TarifaForm = ({ setActiveTab} ) => {
 
     }
 
-    
+
 
 
     function onSubmit(values: z.infer<typeof tarifaSchema>) {
@@ -122,25 +122,25 @@ const TarifaForm = ({ setActiveTab} ) => {
             axiosClient.post(`/tarifa/create`, values)
                 .then((response) => {
                     const data = response.data;
-                        setLoading(false);
-                        setTarifa({
-                            id: 0,
-                            nombre: "",
-                            descripcion: "ninguna",
-                            fecha: getCurrentDate(),
-                            estado: "activo",
+                    setLoading(false);
+                    setTarifa({
+                        id: 0,
+                        nombre: "",
+                        descripcion: "ninguna",
+                        fecha: getCurrentDate(),
+                        estado: "activo",
 
-                        });
-                        form.reset({
-                            id: 0,
-                            nombre: "",
-                            descripcion: "ninguna",
-                            fecha: getCurrentDate(),
-                            estado: "activo",
-                        });
-                        getTarifas();
-                        successToastCreado();
-                        setAccion("creado");
+                    });
+                    form.reset({
+                        id: 0,
+                        nombre: "",
+                        descripcion: "ninguna",
+                        fecha: getCurrentDate(),
+                        estado: "activo",
+                    });
+                    getTarifas();
+                    successToastCreado();
+                    setAccion("creado");
 
                 })
                 .catch((err) => {
@@ -204,70 +204,69 @@ const TarifaForm = ({ setActiveTab} ) => {
     };
 
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
-useEffect(() => {
-    if (accion === "eliminar") {
-        form.reset({
-            id: 0,
-            nombre: "",
-            descripcion: "ninguna",
-            fecha: getCurrentDate(),
-            estado: "activo",
-        });
-        setTarifa({});
-        setAbrirInput(false);
-    }
-    if (accion === "creado") {
-        form.reset({
-            id: 0,
-            nombre: "",
-            descripcion: "ninguna",
-            fecha: getCurrentDate(),
-            estado: "activo",
-        });
-        setTarifa({});
-        setAbrirInput(false);
-    }
-    if (accion === "crear") {
-        console.log("creando");
-        setAbrirInput(true);
-        setErrors({});
-        form.reset({
-            id: 0,
-            nombre: "",
-            descripcion: "ninguna",
-            fecha: getCurrentDate(),
-            estado: "activo",
-        });
-        setTarifa({
-            id: 0,
-            nombre: "",
-            descripcion: "ninguna",
-            fecha: getCurrentDate(),
-            estado: "activo",
-        });
-    }
-    if (accion === "ver") {
-        setAbrirInput(false);
-        setErrors({});
-        setAccion("");
-        form.reset({
-            id: tarifa.id,
-            nombre: tarifa.nombre,
-            descripcion: tarifa.descripcion,
-            fecha: tarifa.fecha,
-            estado: tarifa.estado,
-        });
-    }
-    if (accion === "editar") {
-        setAbrirInput(true);
-        setErrors({});
-    }
-    console.log(accion);
-}, [accion]);
+    useEffect(() => {
+        if (accion === "eliminar") {
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                fecha: getCurrentDate(),
+                estado: "activo",
+            });
+            setTarifa({});
+            setAbrirInput(false);
+        }
+        if (accion === "creado") {
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                fecha: getCurrentDate(),
+                estado: "activo",
+            });
+            setTarifa({});
+            setAbrirInput(false);
+        }
+        if (accion === "crear") {
+            console.log("creando");
+            setAbrirInput(true);
+            setErrors({});
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                fecha: getCurrentDate(),
+                estado: "activo",
+            });
+            setTarifa({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                fecha: getCurrentDate(),
+                estado: "activo",
+            });
+        }
+        if (accion === "ver") {
+            setAbrirInput(false);
+            setErrors({});
+            setAccion("");
+            form.reset({
+                id: tarifa.id,
+                nombre: tarifa.nombre,
+                descripcion: tarifa.descripcion,
+                fecha: tarifa.fecha,
+                estado: tarifa.estado,
+            });
+        }
+        if (accion === "editar") {
+            setAbrirInput(true);
+            setErrors({});
+        }
+        console.log(accion);
+    }, [accion]);
 
     return (
         <div className="overflow-auto">
-
             <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
@@ -275,24 +274,24 @@ useEffect(() => {
                         {tarifa.nombre != "" && <p className="text-muted-foreground text-[20px]">{tarifa.nombre}</p>}
                     </div>
                     {(tarifa.nombre != null && tarifa.nombre != "") &&
-                                <>
-                                    <Modal
-                                        method={onDelete}
-                                        button={
-                                            <IconButton>
-                                                <TrashIcon className="w-[20px] h-[20px]" />
-                                            </IconButton>}
-                                    />
-                                    <div onClick={() => setAccion("editar")}>
-                                        <IconButton>
-                                            <Pencil2Icon className="w-[20px] h-[20px]" />
-                                        </IconButton>
-                                    </div>
-                                </>
-                            }
+                        <>
+                            <Modal
+                                method={onDelete}
+                                button={
+                                    <IconButton>
+                                        <TrashIcon className="w-[20px] h-[20px]" />
+                                    </IconButton>}
+                            />
+                            <div onClick={() => setAccion("editar")}>
+                                <IconButton>
+                                    <Pencil2Icon className="w-[20px] h-[20px]" />
+                                </IconButton>
+                            </div>
+                        </>
+                    }
                 </div>
             </div>
-            
+
             <div className="py-[20px] px-[10px] ">
 
                 {errors && <Error errors={errors} />}

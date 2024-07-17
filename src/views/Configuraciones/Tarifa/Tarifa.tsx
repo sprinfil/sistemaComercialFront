@@ -14,8 +14,8 @@ import { OcultarTable } from '../../../components/Tables/Components/OcultarTable
 export const Tarifa = () => {
 
 
-  const [activeTab, setActiveTab] = useState("Tarifa");
-  
+  const [activeTab, setActiveTab] = useState("Detalles");
+
   const opciones = [
     {
       titulo: "Detalles",
@@ -34,15 +34,17 @@ export const Tarifa = () => {
 
   return (
     <ContextProvider>
-      <div className='w-full max-h-[75vh] mt-[15px]'>
+      <div className='w-full max-h-[50vh] mt-[15px]'>
         {/*Contenedor principal*/}
         <div className='flex gap-2 '>
 
+          <div className='w-[40%] border boder-border rounded-md p-4'>
+            <TarifaTable />
+          </div>
           {/*Datatable*/}
-            <MostrarTable />
 
           {/*Formulario*/}
-          <div className='w-full rounded-md border border-border h-[88vh] p-4 overflow-auto '>
+          <div className='w-full rounded-md border border-border h-[84vh] p-4 overflow-auto'>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList>
                 {opciones.map((opcion, index) => (
@@ -57,7 +59,7 @@ export const Tarifa = () => {
                 </>
               ))}
             </Tabs>
-            </div>
+          </div>
 
         </div>
       </div>
@@ -69,11 +71,11 @@ const MostrarTable = (className) => {
 
   const { accion } = useStateContext();
 
-  return(
+  return (
     <>
-        {/*Datatable*/}
+      {/*Datatable*/}
       <OcultarTable accion={accion}>
-      <TarifaTable />
+        <TarifaTable />
       </OcultarTable>
 
     </>

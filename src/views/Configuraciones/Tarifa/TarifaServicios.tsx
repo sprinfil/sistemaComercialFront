@@ -18,14 +18,18 @@ export const TarifaServicios = () => {
   const { tarifas, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa } = useStateContext();
 
 
+  useEffect(()=>{
+    getTipoTomas();
+  },[])
 
   //con este metodo obtienes las anomalias de la bd
-  const getTarifas = async () => {
+  const getTipoTomas = async () => {
     setLoadingTable(true);
     try {
-      const response = await axiosClient.get("/Concepto");
+      const response = await axiosClient.get("/TipoToma");
       setLoadingTable(false);
-      setTarifas(response.data);
+      //setTarifas(response.data);
+      console.log(response.data.data);
     } catch (error) {
       setLoadingTable(false);
       console.error("Failed to fetch constancias:", error);

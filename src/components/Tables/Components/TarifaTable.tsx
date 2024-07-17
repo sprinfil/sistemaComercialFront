@@ -42,7 +42,7 @@ export default function TarifaTable() {
     <div>
       <div onClick={() => { setAccion("crear") }}>
         <IconButton>
-          <div className='flex gap-2 items-center mt-16'> Agregar nueva tarifa <PlusCircledIcon className='w-[20px] h-[20px]' /></div>
+          <div className='flex gap-2 items-center'> Agregar nueva tarifa <PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
       </div>
       <DataTable columns={columns} data={tarifas} sorter='nombre' onRowClick={handleRowClick} />
