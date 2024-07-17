@@ -1,13 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import PrintButton from '../../components/Tables/Components/PrintButtom';
+import logo from "./logo.svg";
+import ThermalPrinter from "../../components/Tables/Components/ThermalPrinter";
 
 function App() {
-    return (
-        <div className="App">
-            <PrintButton />
-        </div>
-    );
+  return (
+    <div className="App">
+      <header className="App-header">
+        <ThermalPrinter />
+      </header>
+    </div>
+  );
 }
 
 export default App;
