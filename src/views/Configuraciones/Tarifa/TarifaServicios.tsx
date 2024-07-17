@@ -1,58 +1,72 @@
-import React from 'react'
+import React, { useContext, useState, useEffect} from 'react'
 import TarifaServiciosTable from '../../../components/Tables/Components/TarifaServiciosTable'
 import { ContextProvider } from '../../../contexts/ContextProvider'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
 import { useStateContext } from "../../../contexts/ContextTarifa.tsx";
-
+import { Button } from '../../../components/ui/button.tsx';
+import axiosClient from '../../../axios-client.ts';
+import TarifaServicioNewTable from '../../../components/Tables/Components/TarifaServicioNewTable.tsx';
+import { Card, CardContent } from "@/components/ui/card"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 export const TarifaServicios = () => {
 
+  const { tarifas, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa } = useStateContext();
+
+
+
+  //con este metodo obtienes las anomalias de la bd
+  const getTarifas = async () => {
+    setLoadingTable(true);
+    try {
+      const response = await axiosClient.get("/Concepto");
+      setLoadingTable(false);
+      setTarifas(response.data);
+    } catch (error) {
+      setLoadingTable(false);
+      console.error("Failed to fetch constancias:", error);
+    }
+  };
 
 
   return (
+    <div className=' w-full  flex justify-center'>
+      <ContextProvider>
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="item-1">
+            <AccordionTrigger>Comercial</AccordionTrigger>
+            <AccordionContent>
+              <TarifaServicioNewTable/>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger>Industrial</AccordionTrigger>
+            <AccordionContent>
+            <TarifaServicioNewTable/>
 
-     <ContextProvider>
-      <div className="w-full h-64 flex items-center justify-center mt-10 pt-10">
-        <Carousel >
-          <CarouselContent className="p-1 flex max-w-[900px] ">
-            {/* Primer item del carousel */}
-            <CarouselItem className="w-full">
-              <div className="h-full flex items-center justify-center w-full">
-                <TarifaServiciosTable />
-              </div>
-            </CarouselItem>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-3">
+            <AccordionTrigger>Domestica</AccordionTrigger>
+            <AccordionContent>
+            <TarifaServicioNewTable/>
 
-            {/* Segundo item del carousel */}
-            <CarouselItem className="w-full">
-              <div className="h-full flex items-center justify-center">
-              <TarifaServiciosTable />
-              </div>
-            </CarouselItem>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-4">
+            <AccordionTrigger>Especial</AccordionTrigger>
+            <AccordionContent>
+            <TarifaServicioNewTable/>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </ContextProvider>
+    </div>
 
-            {/* Tercer item del carousel */}
-            <CarouselItem className="w-full">
-              <div className="h-full flex items-center justify-center">
-              <TarifaServiciosTable />
-              </div>
-            </CarouselItem>
-          </CarouselContent>
 
-          {/* Navegación del carousel */}
-          <CarouselPrevious className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white px-2 py-1 rounded-full cursor-pointer">
-            Previous
-          </CarouselPrevious>
-          <CarouselNext className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-500 text-white px-2 py-1 rounded-full cursor-pointer">
-            Next
-          </CarouselNext>
-        </Carousel>
-      </div>
-    </ContextProvider>
-  
-)
+  )
 }

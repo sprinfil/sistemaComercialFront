@@ -125,6 +125,7 @@ function errorYaExisteToast() {
                     }
                     else{
                         successToastCreado();
+                        setAccion("creado");
                         setLoading(false);
                         setConstancia({
                             id: 0,
@@ -216,6 +217,7 @@ function errorYaExisteToast() {
                     estado: "activo"
                 });
                 getConstancias();
+                setAccion("creado");
                 successToastRestaurado();
                 setModalReactivacionOpen(false);
             })
@@ -237,7 +239,20 @@ function errorYaExisteToast() {
             setAbrirInput(false);
         }
         if (accion == "crear") {
-            console.log("creando");
+            setAbrirInput(true);
+            setErrors({});
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
+            setConstancia({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            })
+        }
+        if (accion == "creado") {
             setAbrirInput(true);
             setErrors({});
             form.reset({

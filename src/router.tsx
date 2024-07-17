@@ -12,6 +12,7 @@ import CrearUsuarioNuevo from './views/Usuarios/Crear/CrearUsuarioNuevo';
 import Roles from './views/Configuraciones/Roles/Roles';
 import Operadores from  './views/Configuraciones/Operadores/Operadores'
 import { Tarifa } from './views/Configuraciones/Tarifa/Tarifa';
+import App from './views/Cajas/Cajas';
 
 const router = createBrowserRouter ([
     {
@@ -58,6 +59,10 @@ const router = createBrowserRouter ([
             {
                 path:'/Tarifa',
                 element: <Tarifa/>
+            },
+            {
+                path:'/Cajas',
+                element: <App/>
             },
         ]
     },

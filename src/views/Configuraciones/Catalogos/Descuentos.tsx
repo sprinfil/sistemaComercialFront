@@ -2,7 +2,7 @@ import DescuentoForm from '../../../components/Forms/DescuentoForm.tsx';
 import DescuentoTable from '../../../components/Tables/Components/DescuentoTable.tsx';
 import { ContextProvider } from '../../../contexts/ContextDescuentos.tsx';
 import { useStateContext } from '../../../contexts/ContextDescuentos.tsx';
-
+import { OcultarTable } from '../../../components/Tables/Components/OcultarTable.tsx';
 export default function Descuentos() {
 
   //ESTA ES LA VISTA PRINCIPAL DEL CATALOGO QUE CONTIENE LOS COMPONENTES DE LA TABLA Y
@@ -16,10 +16,8 @@ export default function Descuentos() {
         <div className='flex gap-2 '>
 
           {/*Datatable*/}
-          <div className='w-[35%] rounded-md border border-border p-4 overflow-auto h-[75vh]'>
-            <DescuentoTable />
-          </div>
-
+         
+         <MostrarTable/>
           {/*Formulario*/}
             <DescuentoFormEdit />
           
@@ -39,11 +37,29 @@ const DescuentoFormEdit = () => {
   return (
     <>
         {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR G*/}
-      {accion == "editar" ? (<div className='w-[65%] rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
+      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
             <DescuentoForm />
-          </div>) : (<div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+          </div>) : (<div className='w-full rounded-md border border-border h-[75vh] p-4 overflow-auto'>
             <DescuentoForm />
           </div>)}
     </>
   );
+};
+
+const MostrarTable = () => {
+
+  const { accion } = useStateContext();
+
+  return(
+    <>
+        {/*Datatable*/}
+
+      <OcultarTable accion={accion}>
+      <DescuentoTable />
+      </OcultarTable>
+      
+    </>
+  )
+
+
 };

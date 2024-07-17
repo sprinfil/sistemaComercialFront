@@ -2,7 +2,7 @@ import BonificacionForm from '../../../components/Forms/BonificacionForm.tsx';
 import BonificacionTable from '../../../components/Tables/Components/BonificacionTable.tsx';
 import { ContextProvider } from '../../../contexts/ContextBonificaciones.tsx';
 import { useStateContext } from "../../../contexts/ContextBonificaciones.tsx";
-
+import { OcultarTable } from '../../../components/Tables/Components/OcultarTable.tsx';
 export default function Bonificaciones() {
 
   //ESTA ES LA VISTA PRINCIPAL DEL CATALOGO QUE CONTIENE LOS COMPONENTES DE LA TABLA Y
@@ -16,9 +16,7 @@ return (
     <div className='flex gap-2 '>
 
         {/*Datatable*/}
-        <div className='w-[35%] rounded-md border border-border p-4 overflow-auto h-[75vh]'>
-            <BonificacionTable />
-        </div>
+            <MostrarTable />
 
         {/*Formulario*/}
             <BonificacionesFormEdit />
@@ -38,11 +36,30 @@ const BonificacionesFormEdit = () => {
     return (
       <>
           {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLORa GG*/}
-        {accion == "editar" ? (<div className='w-[65%] rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
+        {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[75vh] p-4'>
               <BonificacionForm />
-            </div>) : (<div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+            </div>) : (<div className='w-full rounded-md border border-border h-[75vh] p-4'>
               <BonificacionForm />
             </div>)}
       </>
     );
+  };
+
+
+  const MostrarTable = () => {
+
+    const { accion } = useStateContext();
+  
+    return(
+      <>
+          {/*Datatable*/}
+  
+        <OcultarTable accion={accion}>
+        <BonificacionTable />
+        </OcultarTable>
+        
+      </>
+    )
+  
+  
   };

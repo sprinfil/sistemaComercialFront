@@ -3,7 +3,7 @@ import { ContextProvider } from "../../../contexts/ContextAjuste.tsx";
 import AjusteTable from '../../../components/Tables/Components/AjusteTable.tsx';
 import AjusteForm from '../../../components/Forms/AjusteForm.tsx';
 import { useStateContext } from "../../../contexts/ContextAjuste.tsx";
-
+import { OcultarTable } from '../../../components/Tables/Components/OcultarTable.tsx';
 const Ajustes = () => {
   return (
     <ContextProvider>
@@ -12,9 +12,7 @@ const Ajustes = () => {
         <div className='flex gap-2 '>
 
           {/*Datatable*/}
-          <div className='w-[35%] rounded-md border border-border p-4 overflow-auto h-[75vh]'>
-            <AjusteTable />
-          </div>
+            <MostrarTable />
 
           {/*Formulario*/}
           <AjusteFormEdit />
@@ -33,9 +31,9 @@ const AjusteFormEdit = () => {
   return (
     <>
         {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
-      {accion == "editar" ? (<div className='w-[65%] rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
+      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[75vh] p-4'>
             <AjusteForm />
-          </div>) : (<div className='w-[65%] rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+          </div>) : (<div className='w-full rounded-md border border-border h-[75vh] p-4'>
             <AjusteForm />
           </div>)}
     </>
@@ -43,3 +41,21 @@ const AjusteFormEdit = () => {
 };
 
 export default Ajustes
+
+const MostrarTable = () => {
+
+  const { accion } = useStateContext();
+
+  return(
+    <>
+        {/*Datatable*/}
+
+      <OcultarTable accion={accion}>
+      <AjusteTable />
+      </OcultarTable>
+      
+    </>
+  )
+
+
+};

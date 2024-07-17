@@ -1,22 +1,23 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import IconButton from "../../ui/IconButton"
+import IconButton from "../../../ui/IconButton"
 import {EyeOpenIcon } from '@radix-ui/react-icons';
-import { useStateContext } from "../../../contexts/ContextConcepto"
+import { useStateContext } from "../../../../contexts/ContextTarifa"
 import { Checkbox } from "@/components/ui/checkbox"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Concepto = {
+export type Tarifa = {
   id: number
   nombre: string
   descripcion: string
-  prioridad_abono: number
+  fecha: string
+  estado: string
 }
 
 
-export const columns: ColumnDef<Concepto>[] = [
+export const columns: ColumnDef<Tarifa>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -56,15 +57,15 @@ export const columns: ColumnDef<Concepto>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const concepto = row.original
-      const { setConcepto, setAccion } = useStateContext();
+      const tarifa = row.original
+      const { setTarifa, setAccion } = useStateContext();
 
       return (
-        <tr onClick={()=>{setConcepto(concepto);setAccion("ver")}}>
+        <div onClick={()=>{setTarifa(tarifa);setAccion("ver")}}>
           <IconButton>
             <EyeOpenIcon className="w-[20px] h-[20px]"/>
           </IconButton>
-        </tr>
+        </div>
       )
     },
   },
