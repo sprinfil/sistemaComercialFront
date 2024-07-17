@@ -26,15 +26,23 @@ export const TarifaServicios = () => {
 
   //con este metodo obtienes las tipo de tomas de la bd
   const getTipoTomas = async () => {
+<<<<<<< HEAD
     setLoading(true);
     try {
       const response = await axiosClient.get("/TipoToma")
       setLoading(false);
       setLoadingTable(false);
       setTipoTomas(response.data.data);
+=======
+  
+    try {
+      const response = await axiosClient.get("/TipoToma");
+    
+      //setTarifas(response.data);
+>>>>>>> Develop
       console.log(response.data.data);
     } catch (error) {
-      setLoadingTable(false);
+    
       console.error("Failed to fetch constancias:", error);
     }
   };

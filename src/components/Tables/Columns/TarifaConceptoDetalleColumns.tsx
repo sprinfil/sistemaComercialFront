@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 export type TarifaConceptoDetalle = {
     id: number
     id_concepto: BigInteger
+    nombre_concepto: string
     id_tipo_toma: number
     monto: number
     id_tarifa: number
@@ -19,21 +20,11 @@ export type TarifaConceptoDetalle = {
 
 export const columns: ColumnDef<TarifaConceptoDetalle>[] = [
     {
-        accessorKey: "id_concepto",
-        header: "Nombre",
-    },
-    {
-        accessorKey: "id_tipo_toma",
-        header: "Comercial",
+        accessorKey: "nombre_concepto",
+        header: "Concepto",
     },
     {
         accessorKey: "monto",
-        header: "Alcantarillado",
+        header: "Monto",
     },
-    {
-        accessorKey: "id_tarifa",
-        header: "Saneamiento",
-    },
-
-
 ]
