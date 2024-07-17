@@ -26,7 +26,7 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
-
+import { Switch } from "@radix-ui/react-switch";
 
 const RolForm = () => {
     const { rol, setRol, loadingTable, setLoadingTable, setRoles, setAccion, accion } = useStateContext();

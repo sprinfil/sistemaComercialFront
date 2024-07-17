@@ -13,7 +13,7 @@ export type Tarifa = {
   nombre: string
   descripcion: string
   fecha: string
-  estado: string
+  estado: boolean
 }
 
 
