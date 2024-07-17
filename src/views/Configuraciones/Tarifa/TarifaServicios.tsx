@@ -24,14 +24,14 @@ export const TarifaServicios = () => {
 
   //con este metodo obtienes las anomalias de la bd
   const getTipoTomas = async () => {
-    setLoadingTable(true);
+  
     try {
       const response = await axiosClient.get("/TipoToma");
-      setLoadingTable(false);
+    
       //setTarifas(response.data);
       console.log(response.data.data);
     } catch (error) {
-      setLoadingTable(false);
+    
       console.error("Failed to fetch constancias:", error);
     }
   };
