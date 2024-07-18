@@ -81,7 +81,7 @@ export default function TarifaConceptosNewTable({ tipoToma, tarifa }) {
 
                 </>
             }
-            <DataTableTarifaServicioNew columns={columns} data={newData} sorter='nombre' onRowClick={handleRowClick} />
+            <DataTableTarifaServicioNew columns={columns} data={newData} sorter='nombre' onRowClick={handleRowClick} updateData={getDetalleConceptos}/>
         </div>
     );
 }

@@ -13,75 +13,125 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../../../components/ui/form.tsx";
+import { ConceptosComboBoxNew } from "../../ui/ConceptosComboBoxNew.tsx";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { useForm } from "react-hook-form";
+import { TarifaConceptoDetalleSchema } from "../../Forms/TarifaConceptoDetalleValidaciones.ts";
+import { useEffect, useState } from "react";
+import axiosClient from "../../../axios-client.ts";
 
 const SHEET_SIDES = ["bottom"] as const
-type EdicionTarifaServicio = (typeof SHEET_SIDES)[number]
 
+export function EdicionTarifaConcepto({ trigger = null, open, setOpen, tarifaServicio, updateData }) {
 
+  const [objeto, setObjeto] = useState({});
 
-export function EdicionTarifaConcepto({trigger, open, setOpen, tarifaServicio}) {
+  const form = useForm<z.infer<typeof TarifaConceptoDetalleSchema>>({
+    resolver: zodResolver(TarifaConceptoDetalleSchema),
+    defaultValues: {
+      id_tarifa: objeto.id_tarifa,
+      id_tipo_toma: objeto.id_tipo_toma,
+      id_concepto: objeto.id_concepto,
+      monto: objeto.monto,
+    },
+  })
 
-  console.log(tarifaServicio);
-  const handleCerrar = () => {
+  const { reset } = form;
+
+  useEffect(() => {
+
+    setObjeto(tarifaServicio);
+    reset({
+      id_tarifa: tarifaServicio.id_tarifa,
+      id_tipo_toma: tarifaServicio.id_tipo_toma,
+      id_concepto: tarifaServicio.id_concepto,
+      monto: tarifaServicio.monto,
+    });
+  }, [tarifaServicio, reset]);
+
+  const onClick = () => {
     setOpen(false);
   }
 
+  const handleFormSubmit = () => {
+    form.handleSubmit(onSubmit)();
+  };
+
+  function onSubmit(values: z.infer<typeof TarifaConceptoDetalleSchema>) {
+    console.log(values);
+
+    axiosClient.put(`/tarifaConceptoDetalle/update/${tarifaServicio.id}`, values)
+      .then((response) => {
+        console.log(response);
+        updateData();
+        setOpen(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }
+
   return (
-    <div className="grid grid-cols-2 gap-2">
-      {SHEET_SIDES.map((side) => (
-        <Sheet key={side}>
-          <SheetTrigger asChild>
-            {trigger}
-            {/*<Button variant="outline">{side}</Button>*/}
-          </SheetTrigger>
-          <SheetContent side={side}>
-            <SheetHeader>
-              <SheetTitle>Editar conceptos</SheetTitle>
-              <SheetDescription>
-                Puedes editar los conceptos aquí. Presionar guardar cuando termines.
-              </SheetDescription>
-            </SheetHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Nombre
-                </Label>
-                <Input id="name" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Comercial
-                </Label>
-                <Input id="username" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Industrial
-                </Label>
-                <Input id="username" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Domestica
-                </Label>
-                <Input id="username" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Especial
-                </Label>
-                <Input id="username" className="col-span-3" />
-              </div>
-            </div>
-            <SheetFooter>
-              <SheetClose>
-                <Button onClick={handleCerrar} type="submit">Guardar cambios</Button>
-                <Button onClick={handleCerrar} type="submit" className="ml-3 bg-green-900">Cancelar</Button>
-              </SheetClose>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
-      ))}
-    </div>
+    <>
+      <Sheet open={open}>
+        <SheetContent side={"bottom"}>
+          <SheetHeader>
+            <SheetTitle>Editar <span className="text-primary">{tarifaServicio.nombre_concepto}</span></SheetTitle>
+            <SheetDescription>
+              Agrega una nueva tarifa para un concepto
+            </SheetDescription>
+          </SheetHeader>
+          <div className="flex items-center justify-center">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <FormField
+                  control={form.control}
+                  name="monto"
+                  render={({ field }) => (
+                    <FormItem className="w-[400px]">
+                      <FormLabel>Monto</FormLabel>
+                      <FormControl>
+                        <Input type="number" className="col-span-3" {...field} />
+                      </FormControl>
+                      <FormDescription>
+
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <SheetFooter>
+                  <SheetClose asChild>
+                    <>
+
+
+                    </>
+
+                  </SheetClose>
+                </SheetFooter>
+              </form>
+            </Form>
+
+          </div>
+          <div className="w-full justify-center flex gap-5">
+            <Button onClick={handleFormSubmit} type="submit">Aceptar</Button>
+            <Button onClick={onClick} variant={"destructive"}>Cancelar</Button>
+          </div>
+        </SheetContent>
+
+      </Sheet>
+
+    </>
+
   )
 }

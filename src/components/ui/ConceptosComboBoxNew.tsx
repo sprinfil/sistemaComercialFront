@@ -33,7 +33,7 @@ type Status = {
 
 }
 
-export const ConceptosComboBoxNew = ({ field, form, setNombreConcepto }) => {
+export const ConceptosComboBoxNew = ({ field, form}) => {
 
 
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -103,7 +103,6 @@ export const ConceptosComboBoxNew = ({ field, form, setNombreConcepto }) => {
                                                 key={language.value}
                                                 onSelect={() => {
                                                     form.setValue("id_concepto", language.value)
-                                                    setNombreConcepto(language.label);
                                                 }}
                                             >
                                                 <Check

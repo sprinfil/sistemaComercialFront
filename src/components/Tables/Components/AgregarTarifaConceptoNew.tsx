@@ -35,9 +35,8 @@ import { ContextProvider, useStateContext } from "../../../contexts/ContextTarif
 
 export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma, updateData }) {
 
-    const [nombreConcepto, setNombreConcepto] = useState("");
     const [idConcepto, setIdoConcepto] = useState("");
-    const {tarifas, setTarifas, setLoadingTable } = useStateContext();
+    const { tarifas, setTarifas, setLoadingTable } = useStateContext();
 
     const form = useForm<z.infer<typeof TarifaConceptoDetalleSchema>>({
         resolver: zodResolver(TarifaConceptoDetalleSchema),
@@ -49,10 +48,7 @@ export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma, update
         },
     })
 
-
-
     function onSubmit(values: z.infer<typeof TarifaConceptoDetalleSchema>) {
-
         axiosClient.post(`/tarifaConceptoDetalle/create`, values)
             .then((response) => {
                 console.log(response);
@@ -84,10 +80,10 @@ export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma, update
                                 name="id_concepto"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>Language</FormLabel>
-                                        <ConceptosComboBoxNew form={form} field={field} setNombreConcepto={setNombreConcepto} />
+                                        <FormLabel>Concepto</FormLabel>
+                                        <ConceptosComboBoxNew form={form} field={field} />
                                         <FormDescription>
-                                            This is the language that will be used in the dashboard.
+
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>

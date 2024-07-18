@@ -20,7 +20,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { EdicionTarifaConcepto } from "../../Tables/Components/EdicionTarifaConcepto";
 
 import {
   Sheet,
@@ -30,7 +29,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { EdicionTarifaServicio } from "../../Tables/Components/EdicionTarifaServicio";
+import { EdicionTarifaConcepto } from "../../Tables/Components/EdicionTarifaConcepto";
 
 
 interface DataTableProps<TData, TValue> {
@@ -45,6 +44,7 @@ export function DataTableTarifaServicioNew<TData, TValue>({
   data,
   sorter,
   onRowClick,
+  updateData
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -81,7 +81,7 @@ export function DataTableTarifaServicioNew<TData, TValue>({
 
   return (
     <>
-      <EdicionTarifaServicio open = {openModal} setOpen = {setOpenModal} tarifaServicio = {tarifaServicio}/>
+      <EdicionTarifaConcepto updateData={updateData} open = {openModal} setOpen = {setOpenModal} tarifaServicio = {tarifaServicio}/>
       <div className="">
         <div className="flex items-center py-4">
         </div>
@@ -109,7 +109,6 @@ export function DataTableTarifaServicioNew<TData, TValue>({
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <>
-             
                       <TableRow
                         key={row.id}
                         onClick={() => handleRowClick(row.id, row.original)}
