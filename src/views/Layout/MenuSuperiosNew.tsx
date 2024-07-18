@@ -185,47 +185,51 @@ export const MenuSuperiosNew = () => {
     ]
 
     return (
-        <div className='relative'>
-            <Menubar>
-                {opciones.map((opcion, index) => (
-                    <MenubarMenu>
-                        <MenubarTrigger><div className='flex gap-2 items-center'> <span className='text-primary'> {opcion.icon}</span>{opcion.titulo}</div></MenubarTrigger>
-                        <MenubarContent>
-                            {opcion.opciones.map((opcion, key) => (
-                                <>
-                                    <Link to={opcion.route} key={index}>
-                                        <MenubarItem>
-                                            <div key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
-                                                <div key={key} className="mb-1 text-[12px] font-medium">
-                                                    {opcion.titulo}
+        <>
+        <p className='relative block xl:hidden text-sm text-red-500 p-1'>La resolucion no es compatible</p>
+            <div className='relative hidden xl:block'>
+                <Menubar>
+                    {opciones.map((opcion, index) => (
+                        <MenubarMenu>
+                            <MenubarTrigger><div className='flex gap-2 items-center'> <span className='text-primary'> {opcion.icon}</span>{opcion.titulo}</div></MenubarTrigger>
+                            <MenubarContent>
+                                {opcion.opciones.map((opcion, key) => (
+                                    <>
+                                        <Link to={opcion.route} key={index}>
+                                            <MenubarItem>
+                                                <div key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
+                                                    <div key={key} className="mb-1 text-[12px] font-medium">
+                                                        {opcion.titulo}
+                                                    </div>
+                                                    <p key={key} className="text-[12px] leading-tight text-muted-foreground">
+                                                        {opcion.descripcion}
+                                                    </p>
                                                 </div>
-                                                <p key={key} className="text-[12px] leading-tight text-muted-foreground">
-                                                    {opcion.descripcion}
-                                                </p>
-                                            </div>
 
-                                            {/*<MenubarShortcut>⌘T</MenubarShortcut>*/}
-                                        </MenubarItem>
-                                    </Link>
+                                                {/*<MenubarShortcut>⌘T</MenubarShortcut>*/}
+                                            </MenubarItem>
+                                        </Link>
 
-                                </>
-                            ))}
-                        </MenubarContent>
-                    </MenubarMenu>
-                ))}
+                                    </>
+                                ))}
+                            </MenubarContent>
+                        </MenubarMenu>
+                    ))}
 
-            </Menubar>
-            <div className=' h-full w-[200px] absolute right-5 flex items-center top-0  justify-center gap-3'>
-                <div className=' px-2 py-1 rounded-md hover:bg-accent cursor-pointer ease-in duration-100' onClick={logout} >
-                    <ExitIcon className="w-[20px] h-[20px] rotate-180 text-red-500" />
+                </Menubar>
+                <div className=' h-full w-[200px] absolute right-5 flex items-center top-0  justify-center gap-3'>
+                    <div className=' px-2 py-1 rounded-md hover:bg-accent cursor-pointer ease-in duration-100' onClick={logout} >
+                        <ExitIcon className="w-[20px] h-[20px] rotate-180 text-red-500" />
+                    </div>
+                    <p className='text-[12px]'>{user.name}</p>
+                    <Avatar>
+                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <ModeToggle />
                 </div>
-                <p className='text-[12px]'>{user.name}</p>
-                <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <ModeToggle />
             </div>
-        </div>
+        </>
+
     )
 }
