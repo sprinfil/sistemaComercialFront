@@ -33,14 +33,14 @@ import { Switch } from "../ui/switch.tsx";
 
 
 
-const TarifaForm = ({ setActiveTab }) => {
+const TarifaForm = () => {
     const { toast } = useToast()
     const { tarifa, setTarifa, loadingTable, setLoadingTable, setTarifas, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
     const [indiceTarifa, setIndiceTarifa] = useState(0);
-
+    const [bloquear, setBloquear] = useState(false);
     const getCurrentDate = () => new Date().toISOString().split("T")[0];
 
     const form = useForm<z.infer<typeof tarifaSchema>>({
@@ -50,7 +50,7 @@ const TarifaForm = ({ setActiveTab }) => {
             nombre: tarifa.nombre,
             descripcion: tarifa.descripcion,
             fecha: getCurrentDate(), // Establece la fecha por defecto como la fecha actual
-
+            estado: false,
         },
     })
 
@@ -120,9 +120,17 @@ const TarifaForm = ({ setActiveTab }) => {
 
     function onSubmit(values: z.infer<typeof tarifaSchema>) {
         console.log("submit");
+        const estadoConvertido = values.estado ? 'activo' : 'inactivo';
+
+            const datosAEnviar = {
+                ...values,
+                estado: estadoConvertido,
+            };
+
+
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/tarifa/create`, values)
+            axiosClient.post(`/tarifa/create`, datosAEnviar)
                 .then((response) => {
                     const data = response.data;
                     setLoading(false);
@@ -157,7 +165,7 @@ const TarifaForm = ({ setActiveTab }) => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/tarifa/update/${tarifa.id}`, values)
+            axiosClient.put(`/tarifa/update/${tarifa.id}`, datosAEnviar)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
@@ -209,6 +217,7 @@ const TarifaForm = ({ setActiveTab }) => {
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion === "eliminar") {
+            setBloquear(false);
             form.reset({
                 id: 0,
                 nombre: "",
@@ -220,6 +229,7 @@ const TarifaForm = ({ setActiveTab }) => {
             setAbrirInput(false);
         }
         if (accion === "creado") {
+            setBloquear(false);
             form.reset({
                 id: 0,
                 nombre: "",
@@ -233,6 +243,7 @@ const TarifaForm = ({ setActiveTab }) => {
         if (accion === "crear") {
             console.log("creando");
             setAbrirInput(true);
+            setBloquear(false);
             setErrors({});
             form.reset({
                 id: 0,
@@ -253,20 +264,25 @@ const TarifaForm = ({ setActiveTab }) => {
             setAbrirInput(false);
             setErrors({});
             setAccion("");
+            setBloquear(true);
             form.reset({
                 id: tarifa.id,
                 nombre: tarifa.nombre,
                 descripcion: tarifa.descripcion,
                 fecha: tarifa.fecha,
-                estado: tarifa.estado,
+                estado: tarifa.estado === "activo" // Convertir "activo" a true y "inactivo" a false
             });
         }
         if (accion === "editar") {
             setAbrirInput(true);
+            setBloquear(false);
             setErrors({});
         }
         console.log(accion);
     }, [accion]);
+
+    
+    
 
     return (
         <div className="overflow-auto">
@@ -336,7 +352,39 @@ const TarifaForm = ({ setActiveTab }) => {
                                 </FormItem>
                             )}
                         />
-
+                        
+                    <FormField
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="items-center">Activo</FormLabel>
+                                    <FormControl className="ml-4">
+                                        {
+                                            bloquear ? <Switch
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            
+                                            }
+                                            disabled
+                                            /> :
+                                            <Switch
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            
+                                            }
+                                            
+                                            />
+                                        }
+                                    
+                                    </FormControl>
+                                    <FormDescription>
+                                        Aquí puedes activar la tarifa.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                         {loading && <Loader />}
                         {abrirInput && <Button type="submit">Siguiente</Button>}
 
