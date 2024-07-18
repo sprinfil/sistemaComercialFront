@@ -10,8 +10,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 // You can use a Zod schema here if you want.
 export type TarifaServicioDetalle = {
     id: number
-    id_tarifa: number
-    id_tipo_toma: number
+    id_tarifa: string
+    id_tipo_toma: string
     rango: number
     agua: number
     alcantarillado: number
@@ -28,19 +28,19 @@ export type tipoTomaId = {
 
 export const columns: ColumnDef<TarifaServicioDetalle>[] = [
     {
-        accessorKey: "Rango",
+        accessorKey: "rango",
         header: "Rango",
     },
     {
-        accessorKey: "Agua",
+        accessorKey: "agua",
         header: "Agua",
     },
     {
-        accessorKey: "Alcantarillado",
+        accessorKey: "alcantarillado",
         header: "Alcantarillado",
     },
     {
-        accessorKey: "Saneamiento",
+        accessorKey: "saneamiento",
         header: "Saneamiento",
     },
 

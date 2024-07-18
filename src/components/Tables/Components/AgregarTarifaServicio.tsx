@@ -1,132 +1,164 @@
-"use client";
+"use client"
 
-import { useState } from "react";
 import { Button } from "../../ui/button";
+import { ConceptosComboBox } from "../../ui/ConceptosComboBox";
 import { Input } from "../../ui/input";
-import { useForm } from "react-hook-form";
 import { Label } from "../../ui/label";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { useForm } from "react-hook-form";
+import { nuevoServicioSchema } from "../../Forms/TarifaValidaciones.ts";
 import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { nuevoServicioSchema } from "../../Forms/TarifaValidaciones";
-import { useToast } from "@/components/ui/use-toast";
-import { useStateContext } from "../../../contexts/ContextTarifa";
-import axiosClient from "../../../axios-client";
+    Sheet,
+    SheetClose,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
+import {
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "../../../components/ui/form.tsx";
+import { useState } from "react";
+import { ConceptosComboBoxNew } from "../../ui/ConceptosComboBoxNew.tsx";
+import axiosClient from "../../../axios-client.ts";
+import { ContextProvider, useStateContext } from "../../../contexts/ContextTarifa.tsx";
 
-const SHEET_SIDES = ["bottom"] as const;
 
-export function AgregarTarifaServicio({ trigger, open, setOpen }) {
-  const { toast } = useToast();
-  const { tarifa, setTarifa, servicios, setAccion } = useStateContext();
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState();
+export function AgregarTarifaServicio({ trigger, id_tipo_toma, updateData }) {
 
-  console.log("Servicios: ", servicios);
+    const [nombreConcepto, setNombreConcepto] = useState("");
+    const [idConcepto, setIdoConcepto] = useState("");
+    const {tarifas, setTarifas, setLoadingTable, tarifa, servicios, setAccion} = useStateContext();
 
-  const handleCerrar = () => {
-    setOpen(false);
-  };
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState();
 
-  function successToastCreado() {
-    toast({
-      title: "¡Éxito!",
-      description: "El servicio se ha creado correctamente",
-      variant: "success",
-    });
-  }
+    const form = useForm<z.infer<typeof nuevoServicioSchema>>({
+        resolver: zodResolver(nuevoServicioSchema),
+        defaultValues: {
+            id: 23,
+            id_tarifa: 1,
+            id_tipo_toma: 1,
+            rango: 0,
+            agua:  0,
+            alcantarillado: 0,
+            saneamiento:  0,
+            
+        },
+    })
 
-  const form = useForm<z.infer<typeof nuevoServicioSchema>>({
-    resolver: zodResolver(nuevoServicioSchema),
-    defaultValues: {
-      id: servicios?.id,
-      id_tarifa: tarifa?.id,
-      id_tipo_toma: servicios?.id_tipo_toma,
-      rango: servicios?.rango,
-      alcantarillado: servicios?.alcantarillado,
-      saneamiento: servicios?.saneamiento,
-    },
-  });
 
-  async function onSubmit(values: z.infer<typeof nuevoServicioSchema>) {
-    setLoading(true);
-    console.log("Submitting form with values: ", values);
-    try {
-      const response = await axiosClient.post(`/tarifaServicioDetalle/create`, values);
-      console.log("Response: ", response.data);
-      setTarifa({});
-      setAccion("creado");
-      successToastCreado();
-      form.reset();
-      setOpen(false);
-    } catch (error) {
-      setErrors(error.response?.data?.errors || {});
-      console.log("Error: ", error);
-    } finally {
-      setLoading(false);
+
+    function onSubmit(values: z.infer<typeof nuevoServicioSchema>) {
+        console.log("Valores enviados:", values);
+        axiosClient.post(`/tarifaServicioDetalle/create`, values)
+            .then((response) => {
+                console.log(response.data);
+                updateData();
+            })
+            .catch((err) => {
+                console.log(err.response);
+            })
     }
-  }
 
-  return (
-    <div className="flex gap-2 justify-center items-center">
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger asChild>{trigger}</SheetTrigger>
-        <SheetContent side="bottom">
-          <SheetHeader>
-            <SheetTitle>Agregar nuevo servicio</SheetTitle>
-            <SheetDescription>
-              Puedes agregar un servicio aquí. Presiona guardar cuando termines.
-            </SheetDescription>
-          </SheetHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="rango" className="text-right">
-                  Rango(hasta)
-                </Label>
-                <Input id="rango" {...form.register("rango")} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="agua" className="text-right">
-                  Agua
-                </Label>
-                <Input id="agua" {...form.register("agua")} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="alcantarillado" className="text-right">
-                  Alcantarillado
-                </Label>
-                <Input id="alcantarillado" {...form.register("alcantarillado")} className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="saneamiento" className="text-right">
-                  Saneamiento
-                </Label>
-                <Input id="saneamiento" {...form.register("saneamiento")} className="col-span-3" />
-              </div>
-            </div>
-            <SheetFooter>
-              <Button type="submit" disabled={loading}>
-                {loading ? "Guardando..." : "Guardar cambios"}
-              </Button>
-              <SheetClose>
-                <Button onClick={handleCerrar} className="ml-3 bg-green-900">
-                  Cancelar
-                </Button>
-              </SheetClose>
-            </SheetFooter>
-          </form>
-        </SheetContent>
-      </Sheet>
-    </div>
-  );
+
+    return (
+        <Sheet>
+            <SheetTrigger asChild>
+                <Button variant="outline">{trigger}</Button>
+            </SheetTrigger>
+            <SheetContent side={"bottom"}>
+                <SheetHeader>
+                    <SheetTitle>Agregar Concepto</SheetTitle>
+                    <SheetDescription>
+                        Agrega una nueva tarifa para un concepto
+                    </SheetDescription>
+                </SheetHeader>
+                <div className="flex items-center justify-center">
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                            <FormField
+                                control={form.control}
+                                name="rango"
+                                render={({ field }) => (
+                                    <FormItem className="w-[400px]">
+                                        <FormLabel>rango</FormLabel>
+                                        <FormControl>
+                                            <Input  className="col-span-3" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="agua"
+                                render={({ field }) => (
+                                    <FormItem className="w-[400px]">
+                                        <FormLabel>agua</FormLabel>
+                                        <FormControl>
+                                            <Input  className="col-span-3" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="alcantarillado"
+                                render={({ field }) => (
+                                    <FormItem className="w-[400px]">
+                                        <FormLabel>alcantarillado</FormLabel>
+                                        <FormControl>
+                                            <Input  className="col-span-3" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="saneamiento"
+                                render={({ field }) => (
+                                    <FormItem className="w-[400px]">
+                                        <FormLabel>saneamiento</FormLabel>
+                                        <FormControl>
+                                            <Input  className="col-span-3" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <SheetFooter>
+                                <SheetClose asChild>
+                                    <Button type="submit">Save changes</Button>
+                                </SheetClose>
+                            </SheetFooter>
+                        </form>
+                    </Form>
+                </div>
+            </SheetContent>
+        </Sheet>
+    )
 }
