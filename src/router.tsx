@@ -14,6 +14,7 @@ import Operadores from  './views/Configuraciones/Operadores/Operadores'
 import { Tarifa } from './views/Configuraciones/Tarifa/Tarifa';
 import App from './views/Cajas/Cajas';
 
+
 const router = createBrowserRouter ([
     {
         path:'/',

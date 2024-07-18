@@ -1,11 +1,11 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import "./globals.css";
-import { ContextProvider } from './contexts/ContextProvider.tsx';
-import { RouterProvider } from 'react-router-dom'
-import router from './router.jsx';
-import { ThemeProvider } from './components/ui/theme-provider.tsx';
-import { Toaster } from "@/components/ui/toaster"
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './globals.css';
+import { RouterProvider } from 'react-router-dom';
+import router from './router.tsx'; // Asegúrate de que esta ruta sea correcta
+import { ContextProvider } from './contexts/ContextProvider';
+import { ThemeProvider } from './components/ui/theme-provider';
+import { Toaster } from './components/ui/toaster';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -15,5 +15,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       </ContextProvider>
       <Toaster />
     </ThemeProvider>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
