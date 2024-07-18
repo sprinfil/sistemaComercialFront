@@ -29,6 +29,9 @@ import Modal from "../ui/Modal.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { Switch } from "../ui/switch.tsx";
+
+
 
 const TarifaForm = ({ setActiveTab }) => {
     const { toast } = useToast()
@@ -47,7 +50,7 @@ const TarifaForm = ({ setActiveTab }) => {
             nombre: tarifa.nombre,
             descripcion: tarifa.descripcion,
             fecha: getCurrentDate(), // Establece la fecha por defecto como la fecha actual
-            estado: "activo",
+            estado: false,
         },
     })
 
@@ -128,7 +131,7 @@ const TarifaForm = ({ setActiveTab }) => {
                         nombre: "",
                         descripcion: "ninguna",
                         fecha: getCurrentDate(),
-                        estado: "activo",
+                        estado: false,
 
                     });
                     form.reset({
@@ -136,7 +139,7 @@ const TarifaForm = ({ setActiveTab }) => {
                         nombre: "",
                         descripcion: "ninguna",
                         fecha: getCurrentDate(),
-                        estado: "activo",
+                        estado: false,
                     });
                     getTarifas();
                     successToastCreado();
@@ -211,7 +214,7 @@ const TarifaForm = ({ setActiveTab }) => {
                 nombre: "",
                 descripcion: "ninguna",
                 fecha: getCurrentDate(),
-                estado: "activo",
+                estado: false,
             });
             setTarifa({});
             setAbrirInput(false);
@@ -222,7 +225,7 @@ const TarifaForm = ({ setActiveTab }) => {
                 nombre: "",
                 descripcion: "ninguna",
                 fecha: getCurrentDate(),
-                estado: "activo",
+                estado: false,
             });
             setTarifa({});
             setAbrirInput(false);
@@ -236,14 +239,14 @@ const TarifaForm = ({ setActiveTab }) => {
                 nombre: "",
                 descripcion: "ninguna",
                 fecha: getCurrentDate(),
-                estado: "activo",
+                estado: false,
             });
             setTarifa({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
                 fecha: getCurrentDate(),
-                estado: "activo",
+                estado: false,
             });
         }
         if (accion === "ver") {
@@ -328,6 +331,26 @@ const TarifaForm = ({ setActiveTab }) => {
                                     </FormControl>
                                     <FormDescription>
                                         Agrega una breve descripción.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    <FormField
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Activo</FormLabel>
+                                    <FormControl>
+                                    <Switch
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                    
+                                    />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Aquí puedes activar la tarifa.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
