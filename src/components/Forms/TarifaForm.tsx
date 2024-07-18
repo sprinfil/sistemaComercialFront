@@ -50,7 +50,7 @@ const TarifaForm = ({ setActiveTab }) => {
             nombre: tarifa.nombre,
             descripcion: tarifa.descripcion,
             fecha: getCurrentDate(), // Establece la fecha por defecto como la fecha actual
-            estado: false,
+
         },
     })
 
@@ -336,26 +336,7 @@ const TarifaForm = ({ setActiveTab }) => {
                                 </FormItem>
                             )}
                         />
-                    <FormField
-                            control={form.control}
-                            name="estado"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Activo</FormLabel>
-                                    <FormControl>
-                                    <Switch
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                    
-                                    />
-                                    </FormControl>
-                                    <FormDescription>
-                                        Aquí puedes activar la tarifa.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+
                         {loading && <Loader />}
                         {abrirInput && <Button type="submit">Siguiente</Button>}
 

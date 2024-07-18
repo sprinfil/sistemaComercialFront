@@ -29,8 +29,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { EdicionTarifaConcepto } from "../../Tables/Components/EdicionTarifaConcepto";
+import { EdicionTarifaServicioNew } from "../../Tables/Components/EdicionTarifaServicioNew";
 
+import { EdicionTarifaConcepto } from "../../Tables/Components/EdicionTarifaConcepto";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -81,7 +82,7 @@ export function DataTableTarifaServicioNew<TData, TValue>({
 
   return (
     <>
-      <EdicionTarifaConcepto updateData={updateData} open = {openModal} setOpen = {setOpenModal} tarifaServicio = {tarifaServicio}/>
+      <EdicionTarifaServicioNew updateData={updateData} open = {openModal} setOpen = {setOpenModal} tarifaServicio = {tarifaServicio}/>
       <div className="">
         <div className="flex items-center py-4">
         </div>

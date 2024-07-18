@@ -12,10 +12,10 @@ export type TarifaServicioDetalle = {
     id: number
     id_tarifa: string
     id_tipo_toma: string
-    rango: number
-    agua: number
-    alcantarillado: number
-    saneamiento: number
+    rango: string
+    agua: string
+    alcantarillado: string
+    saneamiento: string
 }
 
 export type tipoTomaId = {
@@ -43,6 +43,4 @@ export const columns: ColumnDef<TarifaServicioDetalle>[] = [
         accessorKey: "saneamiento",
         header: "Saneamiento",
     },
-
-
 ]

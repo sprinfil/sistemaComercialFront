@@ -45,6 +45,7 @@ export function DataTableTarifaConceptosNew<TData, TValue>({
   data,
   sorter,
   onRowClick,
+  updateData
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -81,7 +82,7 @@ export function DataTableTarifaConceptosNew<TData, TValue>({
 
   return (
     <>
-      <EdicionTarifaServicio open = {openModal} setOpen = {setOpenModal} tarifaServicio = {tarifaServicio}/>
+      <EdicionTarifaConcepto open = {openModal} setOpen = {setOpenModal} tarifaServicio = {tarifaServicio} updateData={updateData}/>
       <div className="">
         <div className="flex items-center py-4">
         </div>
