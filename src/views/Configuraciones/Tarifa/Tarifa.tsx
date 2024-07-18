@@ -19,7 +19,7 @@ export const Tarifa = () => {
   const opciones = [
     {
       titulo: "Detalles",
-      componente: <TarifaForm setActiveTab={setActiveTab} />
+      componente: <TarifaFormEdit/>
     },
     {
       titulo: "Servicios",
@@ -38,9 +38,8 @@ export const Tarifa = () => {
         {/*Contenedor principal*/}
         <div className='flex gap-2 '>
 
-          <div className='w-[40%] border boder-border rounded-md p-4'>
-            <TarifaTable />
-          </div>
+
+            <MostrarTable />
           {/*Datatable*/}
 
           {/*Formulario*/}
@@ -83,4 +82,22 @@ const MostrarTable = (className) => {
 
 
 };
+
+
+const TarifaFormEdit = () => {
+
+  const { accion } = useStateContext();
+
+  return (
+    <>
+        {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
+      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
+            <TarifaForm /> 
+          </div>) : (<div className='w-full rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+            <TarifaForm />
+          </div>)}
+    </>
+  );
+};
+
 
