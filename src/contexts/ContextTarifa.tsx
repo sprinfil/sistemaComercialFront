@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode, FC } from "react";
 import { Tarifa } from "../components/Tables/Columns/Tarifa-Columns/TarifaColumns.tsx";
 import { TarifaServicioDetalle } from "../components/Tables/Columns/TarifaServicioDetalleColumns.tsx";
-
+import { tipoTomaId } from "../components/Tables/Columns/TarifaServicioDetalleColumns.tsx";
 // Define la interfaz para el estado del usuario y los métodos para actualizar el estado
 interface StateContextType {
     tarifa: Tarifa;
@@ -16,6 +16,8 @@ interface StateContextType {
     setTarifas: (tarifas: Tarifa[]) => void;
     setAccion: (accion: string) => void;
     setLoadingTable: (loading: boolean) => void;
+    tipoTomas: tipoTomaId;
+    setTipoTomas: (tipoTomas: tipoTomaId[]) => void;
 }
 
 // Crea el contexto con valores predeterminados adecuados según las interfaces
@@ -31,7 +33,9 @@ const StateContext = createContext<StateContextType>({
     accion: "",
     setAccion: () => {},
     setTarifas: () => {},
-    setLoadingTable: () => {}
+    setLoadingTable: () => {},
+    tipoTomas: [],
+    setTipoTomas: () => {}
 });
 
 // Define el componente proveedor que envuelve a los hijos con el proveedor de contexto
@@ -46,6 +50,7 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [accion, setAccion] = useState<string>("");
     const [activeTab, setActiveTab] = useState<string>("");
+    const [tipoTomas, setTipoTomas] = useState<tipoTomaId[]>([]);
 
 
     return (
@@ -61,7 +66,9 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
             loadingTable,
             setLoadingTable,
             accion,
-            setAccion
+            setAccion,
+            tipoTomas,
+            setTipoTomas,
         }}>
             {children}
         </StateContext.Provider>

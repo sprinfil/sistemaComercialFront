@@ -18,6 +18,13 @@ export type TarifaServicioDetalle = {
     saneamiento: number
 }
 
+export type tipoTomaId = {
+    id: number
+    nombre: string
+    descripcion: string
+
+}
+
 
 export const columns: ColumnDef<TarifaServicioDetalle>[] = [
     {

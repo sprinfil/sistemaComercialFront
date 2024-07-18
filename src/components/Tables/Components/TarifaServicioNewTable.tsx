@@ -9,7 +9,7 @@ import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { AgregarTarifaServicio } from './AgregarTarifaServicio.tsx';
 export default function TarifaServicioNewTable() {
 
-  const { tarifa, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa} = useStateContext();
+  const { tarifa, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa, tipoTomas, setTipoTomas} = useStateContext();
 
   useEffect(() => {
     getAnomalias();
@@ -70,14 +70,14 @@ export default function TarifaServicioNewTable() {
   return (
 
     <div className='w-full'>
+      <p>asd {tipoTomas.id}</p>
       <div onClick={()=>{setAccion("crear")}}>
-
       <div className='flex gap-2 items-center w-full'>
         <AgregarTarifaServicio trigger={
           <div onClick={()=>{setAccion("")}}>
       <IconButton>
           <div className='flex gap-5 items-center'> 
-            <div className='text-lg'>Agregar nuevo servicio</div>
+            <div className='text-lg'>Agregar nuevo servicio </div>
             <PlusCircledIcon className='w-[20px] h-[20px]'/>
           </div>
         </IconButton>
