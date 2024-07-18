@@ -20,7 +20,7 @@ export default function TarifaTable() {
       const response = await axiosClient.get("/tarifa");
       setLoadingTable(false);
       setTarifas(response.data.data);
-      console.log(response.data.data);
+      //console.log(response.data.data);
     } catch (error) {
       setLoadingTable(false);
       console.error("Failed to fetch concepto:", error);

@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 // You can use a Zod schema here if you want.
 export type TarifaConceptoDetalle = {
     id: number
-    id_concepto: BigInteger
+    id_concepto: string
     nombre_concepto: string
     id_tipo_toma: number
     monto: number
