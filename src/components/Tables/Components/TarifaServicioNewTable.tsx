@@ -7,40 +7,39 @@ import Loader from '../../ui/Loader.tsx';
 import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { AgregarTarifaServicio } from './AgregarTarifaServicio.tsx';
-export default function TarifaServicioNewTable() {
+export default function TarifaServicioNewTable({tipoToma, tarifa}) {
 
-  const { tarifa, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa, tipoTomas, setTipoTomas} = useStateContext();
+  const {setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa, tipoTomas, setTipoTomas} = useStateContext();
+  const [newData, setNewData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
-    getAnomalias();
+    getDetalleServicios();
   }, []);
 
-  
-  //seeder pa comercial
-  const [seedServiciosDomestica, setSeedServiciosDomestica] = useState([
-    {
-      id: 1,
-      Rango: "17 m3",
-      Agua: "$9",
-      Alcantarillado: "$2.20",
-      Saneamiento: "$2.20"
-    },
-    {
-      id: 1,
-      Rango: "24 m3",
-      Agua: "$10",
-      Alcantarillado: "$2.20",
-      Saneamiento: "$2.20"
-    },
-    {
-      id: 1,
-      Rango: "30 m3",
-      Agua: "$20",
-      Alcantarillado: "$2.20",
-      Saneamiento: "$2.20"
-    },
-    
-  ]);
+  const getDetalleServicios = async () => {
+    setLoading(true);
+    try {
+        const response = await axiosClient.get(`/tarifaServicioDetalle/${tarifa.id}`);
+        //setLoadingTable(false)
+        console.log(response);
+        let temp = [];
+        let ctr = 0;
+        response.data.forEach(servicios => {
+            if (servicios.id_tipo_toma == tipoToma) {
+                temp[ctr] = servicios;
+                ctr = ctr + 1;
+            }
+        });
+        setNewData(temp);
+        setLoading(false);
+    } catch (error) {
+        setLoading(false);
+        console.error("Failed to fetch concepto:", error);
+    }
+}
+
 
   const getAnomalias = async () => {
     try {
@@ -83,13 +82,13 @@ export default function TarifaServicioNewTable() {
         </IconButton>
 
       </div>
-        }/>
+        } id_tipo_toma={tipoTomas.id}/>
       
         
         </div>
       </div>
       
-      <DataTableTarifaServicioNew columns={columns} data={seedServiciosDomestica} sorter='nombre' onRowClick={handleRowClick}/>
+      <DataTableTarifaServicioNew columns={columns} data={newData} sorter='nombre' onRowClick={handleRowClick}/>
     </div>
   );
 }

@@ -19,9 +19,8 @@ export const TarifaServicios = () => {
   const { tarifa, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa, tipoTomas, setTipoTomas} = useStateContext();
   const [loading, setLoading] = useState(false);
 
-  useEffect(()=>{
-    getTipoTomas();
-  },[])
+  useEffect(() => { getTipoTomas(); }, [])
+  useEffect(() => { getTipoTomas(); }, [tarifa])
 
   //con este metodo obtienes las tipo de tomas de la bd
   const getTipoTomas = async () => {
@@ -53,7 +52,7 @@ export const TarifaServicios = () => {
           <AccordionItem key={index} value={`item-${index}`}>
           <AccordionTrigger>{tipoToma.nombre}</AccordionTrigger> 
           <AccordionContent>
-              <TarifaServicioNewTable/>  {/* FALTA TRAER LA DATA*/}
+              <TarifaServicioNewTable tipoToma = {tipoToma.id} tarifa = {tarifa}/>
             </AccordionContent>
             </AccordionItem>
           )}
