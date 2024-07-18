@@ -7,6 +7,7 @@ import Loader from '../../ui/Loader.tsx';
 import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { AgregarTarifaServicio } from './AgregarTarifaServicio.tsx';
+import { AgregarTarifaConceptoNew } from './AgregarTarifaConceptoNew.tsx';
 
 export default function TarifaConceptosNewTable({ tipoToma, tarifa }) {
 
@@ -18,7 +19,7 @@ export default function TarifaConceptosNewTable({ tipoToma, tarifa }) {
         let temp = [];
         let ctr = 0;
         tarifa.conceptos.forEach(concepto => {
-            if(concepto.id_tipo_toma == tipoToma){
+            if (concepto.id_tipo_toma == tipoToma) {
                 newData[ctr] = concepto;
                 ctr = ctr + 1;
             }
@@ -33,19 +34,18 @@ export default function TarifaConceptosNewTable({ tipoToma, tarifa }) {
 
     return (
         <div className='w-full'>
-            <div onClick={() => { setAccion("crear") }}>
+            <div>
                 <div className='flex gap-2 items-center w-full'>
-                    <AgregarTarifaServicio trigger={
-                        <div onClick={() => { setAccion("") }}>
-                            <IconButton>
-                                <div className='flex gap-5 items-center'>
-                                    <div className='text-lg'>Agregar nueva tarifa</div>
-                                    <PlusCircledIcon className='w-[20px] h-[20px]' />
-                                </div>
-                            </IconButton>
-
-                        </div>
-                    } />
+                    <AgregarTarifaConceptoNew trigger={
+                        <IconButton>
+                            <div className='flex gap-5 items-center '>
+                                <div className=''>Agregar Concepto</div>
+                                <PlusCircledIcon className='w-[20px] h-[20px]' />
+                            </div>
+                        </IconButton>
+                    } 
+                    id_tipo_toma={ tipoToma} tarifa = {tarifa} 
+                    />
                 </div>
             </div>
 
