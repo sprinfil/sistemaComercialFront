@@ -27,9 +27,17 @@ import {
     FormLabel,
     FormMessage,
 } from "../../../components/ui/form.tsx";
+import { useState } from "react";
+import { ConceptosComboBoxNew } from "../../ui/ConceptosComboBoxNew.tsx";
+import axiosClient from "../../../axios-client.ts";
+import { ContextProvider, useStateContext } from "../../../contexts/ContextTarifa.tsx";
 
 
-export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma }) {
+export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma, updateData }) {
+
+    const [nombreConcepto, setNombreConcepto] = useState("");
+    const [idConcepto, setIdoConcepto] = useState("");
+    const {tarifas, setTarifas, setLoadingTable } = useStateContext();
 
     const form = useForm<z.infer<typeof TarifaConceptoDetalleSchema>>({
         resolver: zodResolver(TarifaConceptoDetalleSchema),
@@ -37,7 +45,7 @@ export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma }) {
             id_tarifa: tarifa.id,
             id_tipo_toma: id_tipo_toma,
             id_concepto: 1,
-            monto: 23,
+            monto: "100",
         },
     })
 
@@ -45,8 +53,16 @@ export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma }) {
 
     function onSubmit(values: z.infer<typeof TarifaConceptoDetalleSchema>) {
 
-        console.log(values);
+        axiosClient.post(`/tarifaConceptoDetalle/create`, values)
+            .then((response) => {
+                console.log(response);
+                updateData();
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     }
+
 
     return (
         <Sheet>
@@ -67,15 +83,11 @@ export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma }) {
                                 control={form.control}
                                 name="id_concepto"
                                 render={({ field }) => (
-                                    <FormItem className="w-[400px]">
-                                        <FormLabel>Concepto</FormLabel>
-                                        <FormControl>
-                                       
-                                            {/*     <ConceptosComboBox />*/}
-                                            <Input type="number" className="col-span-3" {...field}/>
-                                        </FormControl>
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Language</FormLabel>
+                                        <ConceptosComboBoxNew form={form} field={field} setNombreConcepto={setNombreConcepto} />
                                         <FormDescription>
-
+                                            This is the language that will be used in the dashboard.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -88,7 +100,7 @@ export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma }) {
                                     <FormItem className="w-[400px]">
                                         <FormLabel>Monto</FormLabel>
                                         <FormControl>
-                                            <Input type="number" className="col-span-3" {...field}/>
+                                            <Input type="number" className="col-span-3" {...field} />
                                         </FormControl>
                                         <FormDescription>
 
@@ -97,8 +109,6 @@ export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma }) {
                                     </FormItem>
                                 )}
                             />
-
-
                             <SheetFooter>
                                 <SheetClose asChild>
                                     <Button type="submit">Save changes</Button>

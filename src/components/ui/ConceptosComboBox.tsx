@@ -34,7 +34,7 @@ type Status = {
 
 }
 
-export function ConceptosComboBox() {
+export function ConceptosComboBox({setValue}) {
 
 
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -115,7 +115,7 @@ export function ConceptosComboBox() {
                                                         status
                                                     )
                                                     setOpen(false)
-    
+                                                    setValue(status.value)
                                                 }}
                                             >
                                                 <span>{status.label}</span>
