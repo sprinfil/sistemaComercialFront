@@ -8,6 +8,7 @@ import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { AgregarTarifaServicio } from './AgregarTarifaServicio.tsx';
 import { AgregarTarifaConceptoNew } from './AgregarTarifaConceptoNew.tsx';
+import { DataTableTarifaConceptosNew } from '../../ui/DataTable Tarifas/DataTableTarifaConceptosNew.tsx';
 
 
 export default function TarifaConceptosNewTable({ tipoToma, tarifa }) {
@@ -63,7 +64,7 @@ export default function TarifaConceptosNewTable({ tipoToma, tarifa }) {
             {
                 !loading &&
                 <>
-                    <div>
+                    <div className='hidden'>
                         <div className='flex gap-2 items-center w-full'>
                             <AgregarTarifaConceptoNew trigger={
                                 <IconButton>
@@ -81,7 +82,7 @@ export default function TarifaConceptosNewTable({ tipoToma, tarifa }) {
 
                 </>
             }
-            <DataTableTarifaServicioNew columns={columns} data={newData} sorter='nombre' onRowClick={handleRowClick} />
+            <DataTableTarifaConceptosNew columns={columns} data={newData} sorter='nombre' onRowClick={handleRowClick} updateData={getDetalleConceptos}/>
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect} from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import TarifaServiciosTable from '../../../components/Tables/Components/TarifaServiciosTable'
 import { ContextProvider } from '../../../contexts/ContextProvider'
 import { useStateContext } from "../../../contexts/ContextTarifa.tsx";
@@ -16,7 +16,7 @@ import {
 
 export const TarifaServicios = () => {
 
-  const { tarifa, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa, tipoTomas, setTipoTomas} = useStateContext();
+  const { tarifa, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa, tipoTomas, setTipoTomas } = useStateContext();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => { getTipoTomas(); }, [])
@@ -48,19 +48,19 @@ export const TarifaServicios = () => {
 
       <ContextProvider>
         <Accordion type="single" collapsible className="w-full">
-          {tipoTomas.map((tipoToma, index) => 
-          <AccordionItem key={index} value={`item-${index}`}>
-          <AccordionTrigger>{tipoToma.nombre}</AccordionTrigger> 
-          <AccordionContent>
-              <TarifaServicioNewTable tipoToma = {tipoToma.id} tarifa = {tarifa}/>
-            </AccordionContent>
+          {tipoTomas.map((tipoToma, index) =>
+            <AccordionItem key={index} value={`item-${index}`}>
+              <AccordionTrigger>{tipoToma.nombre}</AccordionTrigger>
+              <AccordionContent>
+                <TarifaServicioNewTable tipoToma={tipoToma.id} tarifa={tarifa} />
+              </AccordionContent>
             </AccordionItem>
           )}
-          </Accordion>
+        </Accordion>
       </ContextProvider>
-      
+
     </div>
-    
+
 
 
   )

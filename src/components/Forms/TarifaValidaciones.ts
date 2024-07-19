@@ -7,11 +7,12 @@ export const nuevaTarifaSchema = z.object({
   })
 
 export const nuevoServicioSchema = z.object({
-    id: z.number(),
     id_tarifa: z.number(),
     id_tipo_toma: z.number(),
-    rango: z.number(),
-    agua: z.number(),
-    alcantarillado: z.number(),
-    saneamiento: z.number(),
+    rango: z.string(),
+    agua: z.string(),
+    alcantarillado: z.string(),
+    saneamiento: z.string(),
   })
+
+

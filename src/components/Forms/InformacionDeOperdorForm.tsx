@@ -398,7 +398,8 @@ const OperadorForm = () => {
                                     </FormItem>
                                 )}
                             />
-                            {/*
+                            
+                           
                             
                                                <FormField
                                 control={form.control}
@@ -445,7 +446,7 @@ const OperadorForm = () => {
                                     </FormItem>
                                 )}
                             />
-                            */}
+                            
 
                             <FormField
                                 control={form.control}
