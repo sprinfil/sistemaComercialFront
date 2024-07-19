@@ -102,7 +102,7 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
           <SheetHeader>
             <SheetTitle>Editar <span className="text-primary">{tarifaServicio.nombre_concepto}</span></SheetTitle>
             <SheetDescription>
-              Editar Rango
+              Aquí puede editar datos del servicio.
             </SheetDescription>
           </SheetHeader>
           <div className="flex items-center justify-center">

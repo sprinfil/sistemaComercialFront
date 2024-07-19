@@ -30,7 +30,8 @@ export const conceptoSchema = z.object({
     id: z.number(),
     nombre: z.string().min(1, "El Nombre es requerido"),
     descripcion: z.string(),
-    prioridad_abono: z.number().min(1, "La prioridad es requerida"),
+    prioridad_abono: z.number().min(1, "La prioridad debe ser minimo a 1").max(10, "La prioridad no puede ser mayor a 10"),
+
 })
 //VALIDACIONES DESCUENTOS
 export const descuentoSchema = z.object({

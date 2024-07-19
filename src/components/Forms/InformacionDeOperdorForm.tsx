@@ -405,7 +405,7 @@ const OperadorForm = () => {
                                 control={form.control}
                                 name="fecha_nacimiento"
                                 render={({ field }) => (
-                                    <FormItem className="flex flex-col">
+                                    <FormItem className="flex flex-col mt-[2vh]">
                                         <FormLabel>Fecha de nacimiento</FormLabel>
                                         <Popover>
                                             <PopoverTrigger asChild>
@@ -427,7 +427,7 @@ const OperadorForm = () => {
                                                     </Button>
                                                 </FormControl>
                                             </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0 bg-gray-50 rounded-sm border" align="start">
+                                                <PopoverContent className="w-auto p-0 bg-gray-50 rounded-sm border mt-10" align="start">
                                                 <Calendar
                                                     mode="single"
                                                     selected={field.value}
@@ -438,6 +438,7 @@ const OperadorForm = () => {
                                                     initialFocus
                                                 />
                                             </PopoverContent>
+                                            
                                         </Popover>
                                         <FormDescription>
 
