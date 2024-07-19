@@ -55,6 +55,22 @@ const Catalogos = () => {
       titulo: "Giro Comercial",
       componente: <GiroComercial />
     },
+    {
+      titulo: "Tipo de toma",
+      componente: <TipoDeToma />
+    },
+    {
+    titulo: "Conceptos",
+    componente: <Conceptos />
+    },
+        {
+      titulo: "Ajustes",
+      componente: <Ajustes />
+    },
+        {
+        titulo: "Constancias",
+        componente: <Constancias />
+      },
 
   ]
 
