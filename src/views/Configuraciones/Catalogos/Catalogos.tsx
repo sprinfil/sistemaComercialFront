@@ -13,15 +13,32 @@ import TipoDeToma from './TipoDeToma'
 
 const Catalogos = () => {
 
+
+  /*
+        {
+        titulo: "Tipo de toma",
+        componente: <TipoDeToma />
+      },
+      {
+      titulo: "Conceptos",
+      componente: <Conceptos />
+    },
+        {
+      titulo: "Ajustes",
+      componente: <Ajustes />
+    },
+        {
+        titulo: "Constancias",
+        componente: <Constancias />
+      },
+  */
+
   const opciones = [
     {
       titulo: "Anomalías",
       componente: <Anomalias />
     },
-    {
-      titulo: "Conceptos",
-      componente: <Conceptos />
-    },
+
     {
       titulo: "Descuentos",
       componente: <Descuentos />
@@ -31,25 +48,14 @@ const Catalogos = () => {
       componente: <Convenios />
     },
     {
-      titulo: "Ajustes",
-      componente: <Ajustes />
+      titulo: "Bonificaciones",
+      componente: <Bonificaciones />
     },
     {
-        titulo: "Constancias",
-        componente: <Constancias />
-      },
-      {
-        titulo: "Bonificaciones",
-        componente: <Bonificaciones />
-      },
-      {
-        titulo: "Giro Comercial",
-        componente: <GiroComercial />
-      },
-      {
-        titulo: "Tipo de toma",
-        componente: <TipoDeToma />
-      },
+      titulo: "Giro Comercial",
+      componente: <GiroComercial />
+    },
+
   ]
 
   return (
