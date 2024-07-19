@@ -281,6 +281,14 @@ const TarifaForm = () => {
         console.log(accion);
     }, [accion]);
 
+    useEffect(() =>
+        {
+            setBloquear(true); 
+            if (accion === "editar") {
+                setBloquear(false);
+            }
+        }
+    );
     
     
 

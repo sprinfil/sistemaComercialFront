@@ -401,10 +401,11 @@ const ConceptoForm = () => {
                                     max = {10}
                                     readOnly = {!abrirInput}
                                     {...field}
+                                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))} //SE OCUPA CONVERTIR PARA QUE NO LO MARQUE STRING KIEN SABE XQ JEJE
                                     />
                                     </FormControl>
                                     <FormDescription>
-                                        Agrega su prioridad.
+                                        El 1 es minima y el 10 es maxima prioridad
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

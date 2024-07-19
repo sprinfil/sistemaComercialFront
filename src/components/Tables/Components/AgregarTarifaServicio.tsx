@@ -74,9 +74,9 @@ export function AgregarTarifaServicio({ trigger, id_tipo_toma, updateData }) {
             </SheetTrigger>
             <SheetContent side={"bottom"}>
                 <SheetHeader>
-                    <SheetTitle>Agregar Concepto</SheetTitle>
+                    <SheetTitle>Agregar nuevo servicio</SheetTitle>
                     <SheetDescription>
-                        Agrega una nueva tarifa para un concepto
+                        Aquí puedes agregar un nuevo rango para dar servicio.
                     </SheetDescription>
                 </SheetHeader>
                 <div className="flex items-center justify-center">
@@ -89,7 +89,7 @@ export function AgregarTarifaServicio({ trigger, id_tipo_toma, updateData }) {
                                     <FormItem className="w-[400px]">
                                         <FormLabel>rango</FormLabel>
                                         <FormControl>
-                                            <Input  className="col-span-3" {...field} />
+                                            <Input placeholder="0m3" className="col-span-3" {...field} />
                                         </FormControl>
                                         <FormDescription>
 
@@ -105,7 +105,7 @@ export function AgregarTarifaServicio({ trigger, id_tipo_toma, updateData }) {
                                     <FormItem className="w-[400px]">
                                         <FormLabel>agua</FormLabel>
                                         <FormControl>
-                                            <Input  className="col-span-3" {...field} />
+                                            <Input placeholder="$0" className="col-span-3" {...field} />
                                         </FormControl>
                                         <FormDescription>
 
@@ -121,7 +121,7 @@ export function AgregarTarifaServicio({ trigger, id_tipo_toma, updateData }) {
                                     <FormItem className="w-[400px]">
                                         <FormLabel>alcantarillado</FormLabel>
                                         <FormControl>
-                                            <Input  className="col-span-3" {...field} />
+                                            <Input placeholder="$0" className="col-span-3" {...field} />
                                         </FormControl>
                                         <FormDescription>
 
@@ -137,7 +137,7 @@ export function AgregarTarifaServicio({ trigger, id_tipo_toma, updateData }) {
                                     <FormItem className="w-[400px]">
                                         <FormLabel>saneamiento</FormLabel>
                                         <FormControl>
-                                            <Input  className="col-span-3" {...field} />
+                                            <Input placeholder="$0" className="col-span-3" {...field} />
                                         </FormControl>
                                         <FormDescription>
 
@@ -148,7 +148,7 @@ export function AgregarTarifaServicio({ trigger, id_tipo_toma, updateData }) {
                             />
                             <SheetFooter>
                                 <SheetClose asChild>
-                                    <Button type="submit">Save changes</Button>
+                                    <Button type="submit">Guardar</Button>
                                 </SheetClose>
                             </SheetFooter>
                         </form>
