@@ -116,6 +116,7 @@ const ConceptoForm = () => {
             id: concepto.id,
             nombre: concepto.nombre,
             descripcion: concepto.descripcion,
+            prioridad_abono: concepto.prioridad_abono,
         },
     })
 
@@ -130,6 +131,7 @@ const ConceptoForm = () => {
                     if (data.restore) {
                         setConceptoIdParaRestaurar(data.concepto_id);
                         setModalReactivacionOpen(true);
+
                     }
                     else if (data.restore == false) {
                         errorYaExisteToast();
@@ -142,12 +144,16 @@ const ConceptoForm = () => {
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            prioridad_abono: 1,
                         });
                         form.reset({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            prioridad_abono: 1,
+
                         });
+                        setAccion("creado")
                         getConcepto();
                         successToastCreado();
                     }
@@ -164,12 +170,13 @@ const ConceptoForm = () => {
         if (accion == "editar") {
             axiosClient.put(`/Concepto/update/${concepto.id}`, values)
                 .then((data) => {
+                    console.log("entro al metodo para editar")
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
                     getConcepto();
-                    setConcepto(data);
+                    setConcepto(data.data);
                     successToastEditado(); //toast editado
                 })
                 .catch((err) => {
@@ -196,10 +203,12 @@ const ConceptoForm = () => {
                     id: 0,
                     nombre: "",
                     descripcion: "ninguna",
-                    estado: "activo"
+                    prioridad_abono: 1,
+
                 });
                 getConcepto();
                 successToastRestaurado();
+                setAccion("creado");
                 setModalReactivacionOpen(false);
             })
             .catch((err) => {
@@ -243,6 +252,7 @@ const ConceptoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                prioridad_abono: 1,
             });
             setConcepto({});
             setAbrirInput(false);
@@ -255,12 +265,25 @@ const ConceptoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                prioridad_abono: 1,
+
             });
             setConcepto({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                prioridad_abono: 1,
+
             })
+        }
+        if (accion == "creado") {
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
+            setConcepto({});
+            setAbrirInput(false);
         }
         if (accion == "ver") {
             setAbrirInput(false);
@@ -270,6 +293,8 @@ const ConceptoForm = () => {
                 id: concepto.id,
                 nombre: concepto.nombre,
                 descripcion: concepto.descripcion,
+                prioridad_abono: concepto.prioridad_abono,
+
             });
         }
         if (accion == "editar") {
@@ -356,6 +381,31 @@ const ConceptoForm = () => {
                                     </FormControl>
                                     <FormDescription>
                                         Agrega una breve descripción.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="prioridad_abono"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Prioridad</FormLabel>
+                                    <FormControl>
+                                    <Input
+                                    id="number"
+                                    type="number"
+                                    defaultValue={1}
+                                    min = {1}
+                                    max = {10}
+                                    readOnly = {!abrirInput}
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))} //SE OCUPA CONVERTIR PARA QUE NO LO MARQUE STRING KIEN SABE XQ JEJE
+                                    />
+                                    </FormControl>
+                                    <FormDescription>
+                                        El 1 es minima y el 10 es maxima prioridad
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

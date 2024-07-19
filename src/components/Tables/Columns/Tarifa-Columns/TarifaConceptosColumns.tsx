@@ -1,9 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import IconButton from "../../ui/IconButton"
+import IconButton from "../../../ui/IconButton"
 import {EyeOpenIcon, DotsHorizontalIcon} from '@radix-ui/react-icons';
-import { useStateContext } from "../../../contexts/ContextTarifa"
+import { useStateContext } from "../../../../contexts/ContextTarifa"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -25,46 +25,46 @@ export type TarifaConceptos = {
 
 export const columns: ColumnDef<TarifaConceptos>[] = [
   {
-    accessorKey: "Rango(hasta)",
+    accessorKey: "Nombre",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Rango(hasta)
+          Nombre
         </Button>
       )
     },
   },
   {
-    accessorKey: "Agua",
+    accessorKey: "Comercial",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Agua
+          Comercial
         </Button>
       )
     },
   },
   {
-    accessorKey: "Alcantarillado",
+    accessorKey: "Industrial",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Alcantarillado
+          Industrial
         </Button>
       )
     },
   },
   {
-    accessorKey: "Sanamiento",
+    accessorKey: "Domestica",
     header: ({ column }) => {
       return (
         <Button
@@ -72,6 +72,19 @@ export const columns: ColumnDef<TarifaConceptos>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Sanamiento
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "Especial",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Especial
         </Button>
       )
     },

@@ -29,15 +29,19 @@ import Modal from "../ui/Modal.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { Switch } from "../ui/switch.tsx";
 
-const TarifaForm = ({ setActiveTab} ) => {
+
+
+const TarifaForm = () => {
     const { toast } = useToast()
     const { tarifa, setTarifa, loadingTable, setLoadingTable, setTarifas, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
     const [indiceTarifa, setIndiceTarifa] = useState(0);
-
+    const [bloquear, setBloquear] = useState(false);
+    const getCurrentDate = () => new Date().toISOString().split("T")[0];
 
     const form = useForm<z.infer<typeof tarifaSchema>>({
         resolver: zodResolver(tarifaSchema),
@@ -45,6 +49,8 @@ const TarifaForm = ({ setActiveTab} ) => {
             id: tarifa.id,
             nombre: tarifa.nombre,
             descripcion: tarifa.descripcion,
+            fecha: getCurrentDate(), // Establece la fecha por defecto como la fecha actual
+            estado: false,
         },
     })
 
@@ -53,18 +59,18 @@ const TarifaForm = ({ setActiveTab} ) => {
     const opcionesTabs = ["Tarifa", "Servicios", "Conceptos"];
     //METODO PARA TENER CONTROL DEL TAP
     const nextTab = () => {
-        
+
         const currentIndex = opcionesTabs.indexOf("Tarifa");
         const indiceTarifa = (currentIndex + 1) % opcionesTabs.length;
         setActiveTab(opcionesTabs[indiceTarifa]);
-        
+
     };
 
     //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "El giro comercial se ha creado correctamente",
+            description: "La tarifa se ha creado correctamente",
             variant: "success",
 
         })
@@ -72,7 +78,7 @@ const TarifaForm = ({ setActiveTab} ) => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "El giro comercial se ha editado correctamente",
+            description: "La tarifa  se ha editado correctamente",
             variant: "success",
 
         })
@@ -80,7 +86,7 @@ const TarifaForm = ({ setActiveTab} ) => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "El giro comercial se ha eliminado correctamente",
+            description: "La tarifa se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -88,7 +94,7 @@ const TarifaForm = ({ setActiveTab} ) => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "El giro comercial se ha restaurado correctamente",
+            description: "La tarifa se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -110,14 +116,43 @@ const TarifaForm = ({ setActiveTab} ) => {
     }
 
 
+
+
     function onSubmit(values: z.infer<typeof tarifaSchema>) {
         console.log("submit");
+        const estadoConvertido = values.estado ? 'activo' : 'inactivo';
+
+            const datosAEnviar = {
+                ...values,
+                estado: estadoConvertido,
+            };
+
+
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/giros-catalogos`, values)
-                .then(() => {
+            axiosClient.post(`/tarifa/create`, datosAEnviar)
+                .then((response) => {
+                    const data = response.data;
                     setLoading(false);
-                    nextTab(); //PARA IR AL SIGUIENTE TAP AL DARLE SIGUIENTE
+                    setTarifa({
+                        id: 0,
+                        nombre: "",
+                        descripcion: "ninguna",
+                        fecha: getCurrentDate(),
+                        estado: false,
+
+                    });
+                    form.reset({
+                        id: 0,
+                        nombre: "",
+                        descripcion: "ninguna",
+                        fecha: getCurrentDate(),
+                        estado: false,
+                    });
+                    getTarifas();
+                    successToastCreado();
+                    setAccion("creado");
+
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -127,16 +162,16 @@ const TarifaForm = ({ setActiveTab} ) => {
                     }
                     setLoading(false);
                 })
-                console.log(abrirInput);
+            console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/giros-catalogos/${tarifa.id}`, values)
+            axiosClient.put(`/tarifa/update/${tarifa.id}`, datosAEnviar)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
-                    getGirosComerciales();
+                    getTarifas();
                     setTarifa(data.data);
                     successToastEditado();
                     //setNotification("usuario creado");
@@ -153,14 +188,14 @@ const TarifaForm = ({ setActiveTab} ) => {
     }
 
     //con este metodo obtienes las anomalias de la bd
-    const getGirosComerciales = async () => {
+    const getTarifas = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/giros-catalogos");
+            const response = await axiosClient.get("/tarifa");
             setLoadingTable(false);
-            setTarifas(response.data);
+            setTarifas(response.data.data);
         } catch (error) {
-            setLoadingTable(false);
+            setLoading(false);
             errorToast();
             console.error("Failed to fetch constancias:", error);
         }
@@ -169,8 +204,8 @@ const TarifaForm = ({ setActiveTab} ) => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/giros-catalogos/${tarifa.id}`);
-            getGirosComerciales();
+            await axiosClient.delete(`/tarifa/log_delete/${tarifa.id}`);
+            getTarifas();
             setAccion("eliminar");
             successToastEliminado();
         } catch (error) {
@@ -181,79 +216,109 @@ const TarifaForm = ({ setActiveTab} ) => {
 
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
-        if (accion == "eliminar") {
+        if (accion === "eliminar") {
+            setBloquear(false);
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                fecha: getCurrentDate(),
+                estado: false,
             });
             setTarifa({});
             setAbrirInput(false);
         }
-        if (accion == "crear") {
+        if (accion === "creado") {
+            setBloquear(false);
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                fecha: getCurrentDate(),
+                estado: false,
+            });
+            setTarifa({});
+            setAbrirInput(false);
+        }
+        if (accion === "crear") {
             console.log("creando");
             setAbrirInput(true);
+            setBloquear(false);
             setErrors({});
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                fecha: getCurrentDate(),
+                estado: false,
             });
             setTarifa({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
-            })
+                fecha: getCurrentDate(),
+                estado: false,
+            });
         }
-        if (accion == "ver") {
+        if (accion === "ver") {
             setAbrirInput(false);
             setErrors({});
             setAccion("");
+            setBloquear(true);
             form.reset({
                 id: tarifa.id,
                 nombre: tarifa.nombre,
                 descripcion: tarifa.descripcion,
-                estado: tarifa.estado
+                fecha: tarifa.fecha,
+                estado: tarifa.estado === "activo" // Convertir "activo" a true y "inactivo" a false
             });
         }
-        if (accion == "editar") {
+        if (accion === "editar") {
             setAbrirInput(true);
+            setBloquear(false);
             setErrors({});
         }
         console.log(accion);
     }, [accion]);
 
+    useEffect(() =>
+        {
+            setBloquear(true); 
+            if (accion === "editar") {
+                setBloquear(false);
+            }
+        }
+    );
+    
+    
+
     return (
         <div className="overflow-auto">
-
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+            <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
                         {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva tarifa</p>}
                         {tarifa.nombre != "" && <p className="text-muted-foreground text-[20px]">{tarifa.nombre}</p>}
                     </div>
                     {(tarifa.nombre != null && tarifa.nombre != "") &&
-                                <>
-                                    <Modal
-                                        method={onDelete}
-                                        button={
-                                            <IconButton>
-                                                <TrashIcon className="w-[20px] h-[20px]" />
-                                            </IconButton>}
-                                    />
-                                    <div onClick={() => setAccion("editar")}>
-                                        <IconButton>
-                                            <Pencil2Icon className="w-[20px] h-[20px]" />
-                                        </IconButton>
-                                    </div>
-                                </>
-                            }
+                        <>
+                            <Modal
+                                method={onDelete}
+                                button={
+                                    <IconButton>
+                                        <TrashIcon className="w-[20px] h-[20px]" />
+                                    </IconButton>}
+                            />
+                            <div onClick={() => setAccion("editar")}>
+                                <IconButton>
+                                    <Pencil2Icon className="w-[20px] h-[20px]" />
+                                </IconButton>
+                            </div>
+                        </>
+                    }
                 </div>
             </div>
-            
+
             <div className="py-[20px] px-[10px] ">
 
                 {errors && <Error errors={errors} />}
@@ -290,6 +355,39 @@ const TarifaForm = ({ setActiveTab} ) => {
                                     </FormControl>
                                     <FormDescription>
                                         Agrega una breve descripción.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        
+                    <FormField
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="items-center">Activo</FormLabel>
+                                    <FormControl className="ml-4">
+                                        {
+                                            bloquear ? <Switch
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            
+                                            }
+                                            disabled
+                                            /> :
+                                            <Switch
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            
+                                            }
+                                            
+                                            />
+                                        }
+                                    
+                                    </FormControl>
+                                    <FormDescription>
+                                        Aquí puedes activar la tarifa.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

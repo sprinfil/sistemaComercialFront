@@ -42,7 +42,7 @@ const DescuentoForm = () => {
 
 
      //#region SUCCESSTOAST
-     function successToastCreado() {
+    function successToastCreado() {
         toast({
             title: "¡Éxito!",
             description: "El descuento se ha creado correctamente",
@@ -134,6 +134,7 @@ const DescuentoForm = () => {
                     }
                     else{
                         successToastCreado();
+                        setAccion("creado");
                         setLoading(false);
                         setDescuento({
                             id: 0,
@@ -226,6 +227,7 @@ const DescuentoForm = () => {
                 });
                 getDescuentos();
                 successToastRestaurado();
+                setAccion("creado");
                 setModalReactivacionOpen(false);
             })
             .catch((err) => {

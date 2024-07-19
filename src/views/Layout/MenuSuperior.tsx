@@ -94,7 +94,7 @@ const MenuSuperior = () => {
                 {
                     titulo: "Punto de venta",
                     descripcion: "Registra los pagos de los usuarios.",
-                    route: "/proximamente"
+                    route: "/Cajas"
                 },
             ]
         },
@@ -202,10 +202,9 @@ const MenuSuperior = () => {
                     <NavigationMenuList >
                         {opciones.map((opcion, key) => (
                             <NavigationMenuItem key={key}>
-                                <NavigationMenuTrigger key={key}><div className='flex gap-2 items-center'>{opcion.titulo}{opcion.icon}</div></NavigationMenuTrigger>
+                                <NavigationMenuTrigger key={key}><div className='flex gap-2 items-center'> <span className='text-primary'> {opcion.icon}</span>{opcion.titulo}</div></NavigationMenuTrigger>
                                 <NavigationMenuContent>
                                     <div className='flex'>
-
                                         <ul className='px-[10px] py-[10px] w-[1100px]' key={key}>
                                             {opcion.opciones.map((opcion, index) => (
                                                 <Link to={opcion.route} key={index}>

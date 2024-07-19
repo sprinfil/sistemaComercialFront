@@ -1,5 +1,5 @@
 crear un proyecto react dentro de laravel
-    npm create vite
+    npm create vite [nombre del proyecto]
     cd [nombre del proyecto]
     npm install
     npm run dev

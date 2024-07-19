@@ -139,6 +139,7 @@ const AnomaliaForm = () => {
                         });
                         getAnomalias();
                         successToastCreado();
+                        setAccion("creado");
                     }
                 
                 })
@@ -218,7 +219,9 @@ const AnomaliaForm = () => {
                 });
                 getAnomalias();
                 successToastRestaurado();
+                setAccion("creado");
                 setModalReactivacionOpen(false);
+
             })
             .catch((err) => {
                 errorToast();
@@ -229,6 +232,15 @@ const AnomaliaForm = () => {
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
+            setAnomalia({});
+            setAbrirInput(false);
+        }
+        if (accion == "creado") {
             form.reset({
                 id: 0,
                 nombre: "",
@@ -270,7 +282,7 @@ const AnomaliaForm = () => {
 
     return (
         <>
-            <div className="overflow-auto">
+            <div className="overflow-auto max-w-full max-h-full">
                 <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">

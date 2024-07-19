@@ -1,9 +1,12 @@
 import { createContext, useContext, useState, ReactNode, FC } from "react";
-import { Tarifa } from "../components/Tables/Columns/TarifaColumns.tsx";
-
+import { Tarifa } from "../components/Tables/Columns/Tarifa-Columns/TarifaColumns.tsx";
+import { TarifaServicioDetalle } from "../components/Tables/Columns/TarifaServicioDetalleColumns.tsx";
+import { tipoTomaId } from "../components/Tables/Columns/TarifaServicioDetalleColumns.tsx";
 // Define la interfaz para el estado del usuario y los métodos para actualizar el estado
 interface StateContextType {
     tarifa: Tarifa;
+    servicios: TarifaServicioDetalle;
+    setServicios: (servicios:TarifaServicioDetalle) => void;
     accion: string;
     setTarifa: (tarifa: Tarifa) => void;
     activeTab: string;
@@ -13,12 +16,16 @@ interface StateContextType {
     setTarifas: (tarifas: Tarifa[]) => void;
     setAccion: (accion: string) => void;
     setLoadingTable: (loading: boolean) => void;
+    tipoTomas: tipoTomaId;
+    setTipoTomas: (tipoTomas: tipoTomaId[]) => void;
 }
 
 // Crea el contexto con valores predeterminados adecuados según las interfaces
 const StateContext = createContext<StateContextType>({
     tarifa: {} as Tarifa,
+    servicios: {} as TarifaServicioDetalle,
     setTarifa: () => {},
+    setServicios: () => {},
     tarifas: [],
     activeTab: "Tarifa",
     setActiveTab: () => {},
@@ -26,7 +33,9 @@ const StateContext = createContext<StateContextType>({
     accion: "",
     setAccion: () => {},
     setTarifas: () => {},
-    setLoadingTable: () => {}
+    setLoadingTable: () => {},
+    tipoTomas: [],
+    setTipoTomas: () => {}
 });
 
 // Define el componente proveedor que envuelve a los hijos con el proveedor de contexto
@@ -36,16 +45,20 @@ interface ContextProviderProps {
 
 export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
     const [tarifa, setTarifa] = useState<Tarifa>({} as Tarifa);
+    const [servicios, setServicios] = useState<TarifaServicioDetalle>({} as TarifaServicioDetalle);
     const [tarifas, setTarifas] = useState<Tarifa[]>([]);
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [accion, setAccion] = useState<string>("");
     const [activeTab, setActiveTab] = useState<string>("");
+    const [tipoTomas, setTipoTomas] = useState<tipoTomaId[]>([]);
 
 
     return (
         <StateContext.Provider value={{
             tarifa,
             setTarifa,
+            servicios,
+            setServicios,
             tarifas,
             setTarifas,
             activeTab,
@@ -53,7 +66,9 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
             loadingTable,
             setLoadingTable,
             accion,
-            setAccion
+            setAccion,
+            tipoTomas,
+            setTipoTomas,
         }}>
             {children}
         </StateContext.Provider>

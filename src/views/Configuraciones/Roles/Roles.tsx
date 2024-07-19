@@ -17,6 +17,8 @@ const Roles = () => {
         },
     ]
 
+    const [activeTab, setActiveTab] = useState("Permisos");
+
     return (
         <div>
             <ContextProvider>
@@ -26,13 +28,13 @@ const Roles = () => {
 
                         {/*Datatable*/}
                         <div className='w-[35%] rounded-md border border-border p-4 overflow-auto h-[88vh]'>
-                            <RolTable />
+                            <RolTable setActiveTab = {setActiveTab}/>
                         </div>
 
                         {/*VISTAS DEL TAB*/}
 
                         <div className='w-[65%] rounded-tr-md rounded-tl-md border border-border h-[88vh] p-4 overflow-auto '>
-                            <Tabs defaultValue="Permisos" className="">
+                            <Tabs defaultValue={activeTab} className="" onValueChange={setActiveTab}>
                                 <TabsList>
                                     {opciones.map((opcion, index) => (
                                         <>

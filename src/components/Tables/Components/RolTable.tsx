@@ -9,7 +9,7 @@ import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 
-export default function RolTable() {
+export default function RolTable({setActiveTab}) {
   const { toast } = useToast()
   const { roles, setRoles, loadingTable, setLoadingTable, setAccion, setRol, editando } = useStateContext();
 
@@ -40,6 +40,10 @@ export default function RolTable() {
 
   };
 
+  const setDetallesTab = () =>{
+    setActiveTab("Detalles");
+  }
+
   function successToastCreado() {
     toast({
         title: "Cambios sin Guardar",
@@ -55,7 +59,7 @@ export default function RolTable() {
   return (
 
     <div>
-      <div onClick={() => { setAccion("crear") }}>
+      <div onClick={() => { setAccion("crear"); setDetallesTab(); }}>
         <IconButton>
           <div className='flex gap-2 items-center'> Agregar nuevo Rol<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
