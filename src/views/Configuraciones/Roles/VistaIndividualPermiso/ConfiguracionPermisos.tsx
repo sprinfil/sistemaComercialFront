@@ -187,6 +187,7 @@ export const ConfiguracionPermisos = () => {
 
       //MODULO CONFIGURACIONES
       VerConfiguraciones: permissions.includes("VerConfiguraciones"),
+      VerCatalogos: permissions.includes("VerCatalogos"),
     },
   });
 

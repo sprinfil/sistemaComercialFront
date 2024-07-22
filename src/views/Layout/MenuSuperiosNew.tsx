@@ -77,16 +77,19 @@ export const MenuSuperiosNew = () => {
                     titulo: "Consulta Usuario",
                     descripcion: "Mira los detalles de los usuarios, consulta por número de toma o nombre de usuario",
                     route: "/proximamente",
+                    permission: ""
                 },
                 {
                     titulo: "Contratos",
                     descripcion: "Genera un nuevo contrato",
-                    route: "/proximamente"
+                    route: "/proximamente",
+                    permission: ""
                 },
                 {
                     titulo: "Crear Nuevo Usuario",
                     descripcion: "Registra un nuevo usuario.",
-                    route: "/CrearUsuario"
+                    route: "/CrearUsuario",
+                    permission: ""
                 }
             ]
 
@@ -99,7 +102,8 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Ver poligonos",
                     descripcion: "Administra las posiciones geograficas de las rutas y libros.",
-                    route: "/poligonos"
+                    route: "/poligonos",
+                    permission: ""
                 },
             ]
         },
@@ -111,12 +115,14 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Generar Ordenes de Trabajo",
                     descripcion: "Genera ordenes para operadores de campo",
-                    route: "/proximamente"
+                    route: "/proximamente",
+                    permission: ""
                 },
                 {
                     titulo: "Asignar Ordenes de Trabajo",
                     descripcion: "Asigna Ordenes de trabajo para operadores de campo",
-                    route: "/proximamente"
+                    route: "/proximamente",
+                    permission: ""
                 },
             ]
         },
@@ -128,7 +134,8 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Monitores",
                     descripcion: "Haz consultas de cualquier entidad que necesites.",
-                    route: "/proximamente"
+                    route: "/proximamente",
+                    permission: ""
                 },
             ]
         },
@@ -140,7 +147,8 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Punto de venta",
                     descripcion: "Registra los pagos de los usuarios.",
-                    route: "/proximamente"
+                    route: "/proximamente",
+                    permission: ""
                 },
             ]
         },
@@ -152,22 +160,26 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Cargas de Trabajo",
                     descripcion: "Adminsitra las cargas de trabajo para los operadores de campo.",
-                    route: "/proximamente"
+                    route: "/proximamente",
+                    permission: ""
                 },
                 {
                     titulo: "Anomalias",
                     descripcion: "Gestiona, Monitorea y valida Anomalias",
-                    route: "/proximamente"
+                    route: "/proximamente",
+                    permission: ""
                 },
                 {
                     titulo: "Facturar",
                     descripcion: "Factura o Refactura",
-                    route: "/proximamente"
+                    route: "/proximamente",
+                    permission: ""
                 },
                 {
                     titulo: "Monitor de Operadores de Campo",
                     descripcion: "Consulta el recorrido de los operadores de campo",
-                    route: "/proximamente"
+                    route: "/proximamente",
+                    permission: ""
                 },
             ]
         },
@@ -179,29 +191,34 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Catálogos",
                     descripcion: "Gestiona los catálogos del sistema.",
-                    route: "/catalogos"
+                    route: "/catalogos",
+                    permission: "VerCatalogos"
                 },
                 {
                     titulo: "Operadores del Sistema",
                     descripcion: "Gestiona Operadores de sistema, También sus roles y permisos.",
                     route: "/operadores"
+                    ,
+                    permission: ""
                 },
                 {
                     titulo: "Roles",
                     descripcion: "Gestiona los roles del sistema.",
-                    route: "/roles"
+                    route: "/roles",
+                    permission: ""
                 },
                 {
                     titulo: "Configuraciones Generales",
                     descripcion: "Opciones Adicionales.",
-                    route: "/proximamente"
+                    route: "/proximamente",
+                    permission: ""
                 },
                 {
                     titulo: "Tarifa",
                     descripcion: "Consulta y gestiona las tarifas.",
-                    route: "/Tarifa"
+                    route: "/Tarifa",
+                    permission: ""
                 },
-
             ]
         },
 
@@ -218,25 +235,28 @@ export const MenuSuperiosNew = () => {
                                 <MenubarMenu>
                                     <MenubarTrigger><div className='flex gap-2 items-center'> <span className='text-primary'> {opcion.icon}</span>{opcion.titulo}</div></MenubarTrigger>
                                     <MenubarContent>
-                                        {opcion.opciones.map((opcion, key) => (
-                                            <>
-                                                <Link to={opcion.route} key={index}>
-                                                    <MenubarItem>
-                                                        <div key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
-                                                            <div key={key} className="mb-1 text-[12px] font-medium">
-                                                                {opcion.titulo}
-                                                            </div>
-                                                            <p key={key} className="text-[12px] leading-tight text-muted-foreground">
-                                                                {opcion.descripcion}
-                                                            </p>
-                                                        </div>
+                                        {opcion.opciones.map((opcion, key) => {
+                                            if (permissions.includes(opcion.permission) || user.id == 1) {
+                                                return (
+                                                    <>
+                                                        <Link to={opcion.route} key={index}>
+                                                            <MenubarItem>
+                                                                <div key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
+                                                                    <div key={key} className="mb-1 text-[12px] font-medium">
+                                                                        {opcion.titulo}
+                                                                    </div>
+                                                                    <p key={key} className="text-[12px] leading-tight text-muted-foreground">
+                                                                        {opcion.descripcion}
+                                                                    </p>
+                                                                </div>
 
-                                                        {/*<MenubarShortcut>⌘T</MenubarShortcut>*/}
-                                                    </MenubarItem>
-                                                </Link>
-
-                                            </>
-                                        ))}
+                                                                {/*<MenubarShortcut>⌘T</MenubarShortcut>*/}
+                                                            </MenubarItem>
+                                                        </Link>
+                                                    </>
+                                                )
+                                            }
+                                        })}
                                     </MenubarContent>
                                 </MenubarMenu>
                             )

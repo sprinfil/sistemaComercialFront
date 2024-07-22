@@ -178,7 +178,7 @@ const TarifaForm = () => {
                 })
                 .catch((err) => {
                     const response = err.response;
-                    errorToast();
+                    
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
