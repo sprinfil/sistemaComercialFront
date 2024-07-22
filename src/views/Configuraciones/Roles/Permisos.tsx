@@ -41,18 +41,18 @@ const Permisos = () => {
 
   const options = [
     {
-      titulo: "Modulos",
+      titulo: "Módulos",
       opciones: [
         {
           nombre: "Usuarios",
           pantalla: "",
         },
         {
-          nombre: "Poligonos Geográficos",
+          nombre: "Polígonos Geográficos",
           pantalla: "",
         },
         {
-          nombre: "Ordenes de trabajo",
+          nombre: "Órdenes de trabajo",
           pantalla: "",
         },
         {
