@@ -23,7 +23,7 @@ import { MouseEvent } from 'react';
 import axiosClient from '../../axios-client';
 
 export const MenuSuperiosNew = () => {
-    const { setToken, setUser, user } = useStateContext();
+    const { setToken, setUser, user, permissions, setPermissions } = useStateContext();
 
     const logout = (e: MouseEvent<SVGSVGElement>): void => {
         e.preventDefault();
@@ -38,22 +38,39 @@ export const MenuSuperiosNew = () => {
     }
 
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await axiosClient.get(`/users/${localStorage.getItem("user_id")}`);
-                console.log(response.data);
-                setUser(response.data);
-            } catch (error) {
-                console.error("Failed to fetch user:", error);
-            }
-        };
-
         fetchUser();
     }, []);
+
+    useEffect(() => {
+        getPermissions();
+    }, [user]);
+
+    //obtener los permisos del usuario
+    const getPermissions = async () => {
+        try {
+            const response = await axiosClient.get(`/Rol/get_all_permissions_by_user_id/${user.id}`);
+            setPermissions(response.data);
+            console.log(user.id)
+            console.log(response.data)
+        } catch (error) {
+            console.error("Failed to fetch anomalias:", error);
+        }
+    };
+
+    const fetchUser = async () => {
+        try {
+            const response = await axiosClient.get(`/users/${localStorage.getItem("user_id")}`);
+            console.log(response.data);
+            setUser(response.data);
+        } catch (error) {
+            console.error("Failed to fetch user:", error);
+        }
+    };
 
     const opciones = [
         {
             titulo: "Usuarios",
+            permission: "",
             icon: <PersonIcon />,
             opciones: [
                 {
@@ -76,6 +93,7 @@ export const MenuSuperiosNew = () => {
         },
         {
             titulo: "Poligonos Geograficos",
+            permission: "",
             icon: <GlobeIcon />,
             opciones: [
                 {
@@ -87,6 +105,7 @@ export const MenuSuperiosNew = () => {
         },
         {
             titulo: "Ordenes de Trabajo",
+            permission: "",
             icon: <ClipboardCopyIcon />,
             opciones: [
                 {
@@ -103,6 +122,7 @@ export const MenuSuperiosNew = () => {
         },
         {
             titulo: "Monitores",
+            permission: "",
             icon: <DesktopIcon />,
             opciones: [
                 {
@@ -114,6 +134,7 @@ export const MenuSuperiosNew = () => {
         },
         {
             titulo: "Cajas",
+            permission: "",
             icon: <BoxModelIcon />,
             opciones: [
                 {
@@ -125,6 +146,7 @@ export const MenuSuperiosNew = () => {
         },
         {
             titulo: "Lectura y Facturación",
+            permission: "",
             icon: <ReaderIcon />,
             opciones: [
                 {
@@ -151,6 +173,7 @@ export const MenuSuperiosNew = () => {
         },
         {
             titulo: "Configuraciones",
+            permission: "VerConfiguraciones",
             icon: <GearIcon />,
             opciones: [
                 {
@@ -186,35 +209,39 @@ export const MenuSuperiosNew = () => {
 
     return (
         <>
-        <p className='relative block xl:hidden text-sm text-red-500 p-1'>La resolucion no es compatible</p>
+            <p className='relative block xl:hidden text-sm text-red-500 p-1'>La resolucion no es compatible</p>
             <div className='relative hidden xl:block'>
                 <Menubar>
-                    {opciones.map((opcion, index) => (
-                        <MenubarMenu>
-                            <MenubarTrigger><div className='flex gap-2 items-center'> <span className='text-primary'> {opcion.icon}</span>{opcion.titulo}</div></MenubarTrigger>
-                            <MenubarContent>
-                                {opcion.opciones.map((opcion, key) => (
-                                    <>
-                                        <Link to={opcion.route} key={index}>
-                                            <MenubarItem>
-                                                <div key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
-                                                    <div key={key} className="mb-1 text-[12px] font-medium">
-                                                        {opcion.titulo}
-                                                    </div>
-                                                    <p key={key} className="text-[12px] leading-tight text-muted-foreground">
-                                                        {opcion.descripcion}
-                                                    </p>
-                                                </div>
+                    {opciones.map((opcion, index) => {
+                        if (permissions.includes(opcion.permission) || user.id == 1) {
+                            return (
+                                <MenubarMenu>
+                                    <MenubarTrigger><div className='flex gap-2 items-center'> <span className='text-primary'> {opcion.icon}</span>{opcion.titulo}</div></MenubarTrigger>
+                                    <MenubarContent>
+                                        {opcion.opciones.map((opcion, key) => (
+                                            <>
+                                                <Link to={opcion.route} key={index}>
+                                                    <MenubarItem>
+                                                        <div key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
+                                                            <div key={key} className="mb-1 text-[12px] font-medium">
+                                                                {opcion.titulo}
+                                                            </div>
+                                                            <p key={key} className="text-[12px] leading-tight text-muted-foreground">
+                                                                {opcion.descripcion}
+                                                            </p>
+                                                        </div>
 
-                                                {/*<MenubarShortcut>⌘T</MenubarShortcut>*/}
-                                            </MenubarItem>
-                                        </Link>
+                                                        {/*<MenubarShortcut>⌘T</MenubarShortcut>*/}
+                                                    </MenubarItem>
+                                                </Link>
 
-                                    </>
-                                ))}
-                            </MenubarContent>
-                        </MenubarMenu>
-                    ))}
+                                            </>
+                                        ))}
+                                    </MenubarContent>
+                                </MenubarMenu>
+                            )
+                        }
+                    })}
 
                 </Menubar>
                 <div className=' h-full w-[200px] absolute right-5 flex items-center top-0  justify-center gap-3'>

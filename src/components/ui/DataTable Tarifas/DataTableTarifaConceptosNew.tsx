@@ -82,9 +82,20 @@ export function DataTableTarifaConceptosNew<TData, TValue>({
 
   return (
     <>
-      <EdicionTarifaConcepto open = {openModal} setOpen = {setOpenModal} tarifaServicio = {tarifaServicio} updateData={updateData}/>
+      <EdicionTarifaConcepto open={openModal} setOpen={setOpenModal} tarifaServicio={tarifaServicio} updateData={updateData} />
       <div className="">
-        <div className="flex items-center py-4">
+        <div className="flex items-center py-4 px-2">
+
+          <Input
+            placeholder="Buscar Concepto..."
+            type="text"
+            value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
+            }
+            className="w-full"
+          />
+
         </div>
         <div className="rounded-md border h-full overflow-auto ">
           <Table>
@@ -110,19 +121,19 @@ export function DataTableTarifaConceptosNew<TData, TValue>({
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <>
-             
-                      <TableRow
-                        key={row.id}
-                        onClick={() => handleRowClick(row.id, row.original)}
-                        className={`cursor-pointer hover:bg-border`}
-                      >
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                 
+
+                    <TableRow
+                      key={row.id}
+                      onClick={() => handleRowClick(row.id, row.original)}
+                      className={`cursor-pointer hover:bg-border`}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+
                   </>
                 ))
               ) : (

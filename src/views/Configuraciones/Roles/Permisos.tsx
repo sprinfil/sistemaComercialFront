@@ -84,7 +84,7 @@ const Permisos = () => {
       {
         !loading &&
         <ContextProviderPermisos>
-          <div className='w-full h-[30px] flex justify-center border-b mb-[10px] border-border'><p>{rol.name != null && rol.name != "" ? rol.name : <p className="text-red-500">Selecciona Un Rol</p>}</p></div>
+          <div className='w-full h-[30px] flex justify-center border-b mb-[10px] border-border'><p>{rol.name != null && rol.name != "" ? <p className='text-primary'>{rol.name}</p>  : <p className="text-red-500">Selecciona Un Rol</p>}</p></div>
           <div className='max-h-[74vh]'>
             <div className='flex gap-2 h-full '>
               <div className='w-[300px] h-full'>

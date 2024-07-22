@@ -66,7 +66,7 @@ export default function TarifaServicioNewTable({ tipoToma, tarifa }) {
                 <div onClick={() => { setAccion("") }}>
                   <IconButton>
                     <div className='flex gap-5 items-center'>
-                      <div className=''>Agregar nuevo servicio </div>
+                      <div className=''>Agregar nueva tarifa para servicio</div>
                       <PlusCircledIcon className='w-[20px] h-[20px]' />
                     </div>
                   </IconButton>
@@ -77,7 +77,7 @@ export default function TarifaServicioNewTable({ tipoToma, tarifa }) {
             </div>
           </div>
 
-          <DataTableTarifaServicioNew columns={columns} data={newData} sorter='nombre' onRowClick={handleRowClick} updateData={getDetalleServicios} />
+          <DataTableTarifaServicioNew columns={columns} data={newData}  sorter="rango" onRowClick={handleRowClick} updateData={getDetalleServicios} />
         </div>
       }
 

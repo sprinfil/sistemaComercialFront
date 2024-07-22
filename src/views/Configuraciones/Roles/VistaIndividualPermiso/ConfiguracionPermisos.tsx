@@ -44,6 +44,7 @@ import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 const modulos = [
   {
     titulo: "Catálogos",
+    permission: "VerCatalogos",
     subModulos: [
       {
         titulo: "Catálogo de anomalias",
@@ -85,6 +86,7 @@ const modulos = [
   },
   {
     titulo: "Operadores del sistema",
+    permission: "",
     subModulos: [
       {
         titulo: "Operadores del sistema",
@@ -134,7 +136,7 @@ export const ConfiguracionPermisos = () => {
       EditarGiroComercial: permissions.includes("EditarGiroComercial"),
       EliminarGircoComercial: permissions.includes("EliminarGircoComercial"),
 
-      
+
       //CATALOGO CONCEPTOS
       VerConceptos: permissions.includes("VerConceptos"),
       CrearConcepto: permissions.includes("CrearConcepto"),
@@ -182,6 +184,9 @@ export const ConfiguracionPermisos = () => {
       CrearOperador: permissions.includes("CrearOperador"),
       EditarOperador: permissions.includes("EditarOperador"),
       EliminarOperador: permissions.includes("EliminarOperador"),
+
+      //MODULO CONFIGURACIONES
+      VerConfiguraciones: permissions.includes("VerConfiguraciones"),
     },
   });
 
@@ -224,124 +229,163 @@ export const ConfiguracionPermisos = () => {
 
   return (
     <>
-      {
-        editando &&
-        <div className='w-[50%] h-[4rem] fixed top-[11vh] left-[45%] z-50 '></div>
-      }
-      <div className='w-full h-[40px] bg-muted mb-[20px] rounded-md sticky top-0 z-10 flex items-center'>
-
-        <div className='absolute left-3 flex gap-2'>
-          <p>Configuración</p>
-        </div>
-        <div className='absolute right-3 flex gap-2'>
-
-          {
-            editar &&
-            <div onClick={() => { _editar(); handleFormSubmit(); }}>
-              <IconButton>
-                <CheckCircledIcon className='text-green-500' />
-              </IconButton>
-            </div>
-          }
-
-          {
-            !editar &&
-            <div onClick={_editar}>
-              <IconButton>
-                <Pencil1Icon />
-              </IconButton>
-            </div>
-          }
-          {/*
-          RESTORE BUTTON
-               <IconButton>
-            <SymbolIcon />
-          </IconButton>
-          */}
-
-
-        </div>
-      </div>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        {modulos.map((modulo, index) => (
-          <>
-            <Accordion type="single" collapsible>
-              <AccordionItem value={modulo.titulo}>
-                <AccordionTrigger>{modulo.titulo}</AccordionTrigger>
-                <AccordionContent>
-                  <div key={index} className='border border-border rounded-md mb-[20px]'>
-                    <Form {...form}>
-                      <div>
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>SubModulo</TableHead>
-                              <TableHead>Ver</TableHead>
-                              <TableHead>Crear</TableHead>
-                              <TableHead>Editar</TableHead>
-                              <TableHead>Eliminar</TableHead>
-                              {
-                                editar &&
-                                <TableHead></TableHead>
-                              }
-                            </TableRow>
-                          </TableHeader>
-                          {modulo.subModulos.map((subModulo, index) => (
-                            <>
-                              <TableBody>
-                                <TableRow>
-                                  <TableCell>{subModulo.titulo}</TableCell>
-                                  {subModulo.Permisos.map((permiso, index) => (
-                                    <TableCell>
-                                      <FormField
-                                        control={form.control}
-                                        name={permiso}
-                                        render={({ field }) => (
-                                          <FormItem>
-                                            <FormControl>
-                                              <Switch
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
-                                                disabled={!editar}
-                                              />
-                                            </FormControl>
-                                            <FormMessage />
-                                          </FormItem>
-                                        )}
-                                      />
-                                    </TableCell>
-                                  ))}
+        <Form {...form}>
+          {
+            editando &&
+            <div className='w-[50%] h-[4rem] fixed top-[11vh] left-[45%] z-50 '></div>
+          }
+          <div className='w-full h-[40px] bg-muted mb-[20px] rounded-md sticky top-0 z-10 flex items-center'>
 
-                                  {
-                                    editar &&
-                                    <div className='flex'>
-                                      <div className='w-full h-[60px] items-center justify-center flex p-1' onClick={() => { all(subModulo.Permisos) }}>
-                                        <IconButton>
-                                          <CheckCircledIcon />
-                                        </IconButton>
-                                      </div>
-                                      <div className='w-full h-[60px] items-center justify-center flex p-1' onClick={() => { none(subModulo.Permisos) }}>
-                                        <IconButton>
-                                          <CrossCircledIcon />
-                                        </IconButton>
-                                      </div>
-                                    </div>
-                                  }
+            <div className='absolute left-3 flex gap-2'>
+              <p>Configuración</p>
+              <FormField
+                control={form.control}
+                name={"VerConfiguraciones"}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={!editar}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                                </TableRow>
-                              </TableBody>
-                            </>
-                          ))}
-                        </Table>
+            </div>
+            <div className='absolute right-3 flex gap-2'>
+
+              {
+                editar &&
+                <div onClick={() => { _editar(); handleFormSubmit(); }}>
+                  <IconButton>
+                    <CheckCircledIcon className='text-green-500' />
+                  </IconButton>
+                </div>
+              }
+
+              {
+                !editar &&
+                <div onClick={_editar}>
+                  <IconButton>
+                    <Pencil1Icon />
+                  </IconButton>
+                </div>
+              }
+
+            </div>
+          </div>
+
+          {modulos.map((modulo, index) => (
+            <>
+              <div className='relative'>
+                <Accordion type="single" collapsible>
+                  <AccordionItem value={modulo.titulo}>
+                    <div className='absolute top-4 right-7'>
+                      <FormField
+                        control={form.control}
+                        name={modulo.permission}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                disabled={!editar}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <AccordionTrigger>
+                      {modulo.titulo}
+                    </AccordionTrigger>
+
+                    <AccordionContent>
+                      <div key={index} className='border border-border rounded-md mb-[20px]'>
+
+                        <div>
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Modulo</TableHead>
+                                <TableHead>Ver</TableHead>
+                                <TableHead>Crear</TableHead>
+                                <TableHead>Editar</TableHead>
+                                <TableHead>Eliminar</TableHead>
+                                {
+                                  editar &&
+                                  <TableHead></TableHead>
+                                }
+                              </TableRow>
+                            </TableHeader>
+                            {modulo.subModulos.map((subModulo, index) => (
+                              <>
+                                <TableBody>
+                                  <TableRow>
+                                    <TableCell>{subModulo.titulo}</TableCell>
+                                    {subModulo.Permisos.map((permiso, index) => (
+                                      <TableCell>
+                                        {
+                                          permiso != "" &&
+                                          <FormField
+                                            control={form.control}
+                                            name={permiso}
+                                            render={({ field }) => (
+                                              <FormItem>
+                                                <FormControl>
+                                                  <Switch
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                    disabled={!editar}
+                                                  />
+                                                </FormControl>
+                                                <FormMessage />
+                                              </FormItem>
+                                            )}
+                                          />
+                                        }
+
+                                      </TableCell>
+                                    ))}
+
+                                    {
+                                      editar &&
+                                      <div className='flex'>
+                                        <div className='w-full h-[60px] items-center justify-center flex p-1' onClick={() => { all(subModulo.Permisos) }}>
+                                          <IconButton>
+                                            <CheckCircledIcon />
+                                          </IconButton>
+                                        </div>
+                                        <div className='w-full h-[60px] items-center justify-center flex p-1' onClick={() => { none(subModulo.Permisos) }}>
+                                          <IconButton>
+                                            <CrossCircledIcon />
+                                          </IconButton>
+                                        </div>
+                                      </div>
+                                    }
+
+                                  </TableRow>
+                                </TableBody>
+                              </>
+                            ))}
+                          </Table>
+                        </div>
+
                       </div>
-                    </Form>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </>
-        ))}
-
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+            </>
+          ))}
+        </Form>
       </form >
       {/* Other form fields go here */}
     </>

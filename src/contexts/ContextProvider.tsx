@@ -6,6 +6,8 @@ interface StateContextType {
     token: string | null;
     setUser: (user: object) => void;
     setToken: (token: string | null) => void;
+    permissions: string[];
+    setPermissions: (permissions: string[]) => void;
 }
 
 // Crea el contexto con valores predeterminados adecuados según las interfaces
@@ -14,6 +16,8 @@ const StateContext = createContext<StateContextType>({
     token: null,
     setUser: () => {},
     setToken: () => {},
+    permissions: [],
+    setPermissions: () => { },
 });
 
 // Define el componente proveedor que envuelve a los hijos con el proveedor de contexto
@@ -24,6 +28,7 @@ interface ContextProviderProps {
 export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
     const [user, setUser] = useState<object>({});
     const [token, _setToken] = useState<string | null>(localStorage.getItem('ACCESS_TOKEN'));
+    const [permissions, setPermissions] = useState<string[]>([]);
 
     // Función para manejar la actualización del token y gestionar localStorage
     const setToken = (token: string | null) => {
@@ -35,12 +40,24 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
         }
     };
 
+    //obtener los permisos del usuario
+    const getPermissions = async () => {
+        try {
+          const response = await axiosClient.get(`/Rol/get_all_permissions_by_rol_id/${rol.id}`);
+          setPermissions(response.data);
+        } catch (error) {
+          console.error("Failed to fetch anomalias:", error);
+        }
+      };
+
     return (
         <StateContext.Provider value={{
             user,
             token,
             setUser,
             setToken,
+            permissions,
+            setPermissions, 
         }}>
             {children}
         </StateContext.Provider>

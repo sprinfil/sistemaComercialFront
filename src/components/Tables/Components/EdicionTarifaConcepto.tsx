@@ -39,7 +39,6 @@ export function EdicionTarifaConcepto({ trigger = null, open, setOpen, tarifaSer
   const form = useForm<z.infer<typeof TarifaConceptoDetalleSchema>>({
     resolver: zodResolver(TarifaConceptoDetalleSchema),
     defaultValues: {
-      id_tarifa: objeto.id_tarifa,
       id_tipo_toma: objeto.id_tipo_toma,
       id_concepto: objeto.id_concepto,
       monto: objeto.monto,

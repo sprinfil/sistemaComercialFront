@@ -52,7 +52,7 @@ export const TarifaServicios = () => {
             <AccordionItem key={index} value={`item-${index}`}>
               <AccordionTrigger>{tipoToma.nombre}</AccordionTrigger>
               <AccordionContent>
-                <TarifaServicioNewTable tipoToma={tipoToma.id} tarifa={tarifa} />
+                <TarifaServicioNewTable tipoToma={tipoToma.id} tarifa={tarifa}/>
               </AccordionContent>
             </AccordionItem>
           )}
