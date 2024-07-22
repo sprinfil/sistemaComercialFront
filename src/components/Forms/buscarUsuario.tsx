@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm} from "react-hook-form";
 import { z } from "zod";
 import { Button } from '../../components/ui/button.tsx';
 import {
@@ -14,7 +14,7 @@ import {
 } from "../../components/ui/form.tsx";
 import { Input } from '../../components/ui/input.tsx';
 import { anomaliaSchema } from './validaciones.ts';
-
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -22,6 +22,7 @@ export const BuscarUsuario = () => {
 
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
 
     const form = useForm<z.infer<typeof anomaliaSchema>>({
         resolver: zodResolver(anomaliaSchema),
@@ -37,12 +38,8 @@ export const BuscarUsuario = () => {
 
     }
 
-    const prueba = () => {
-        console.log("ya jala");
-    }
-
-  return (
-   <div className='w-[53vh] rounded-md border border-border p-4 h-[30vh]'>
+return (
+<div className='mt-5 w-[73vh] rounded-md border border-border p-4 h-[43vh]'>
     <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div style={{ color: 'grey' }}>Consultar al usuario</div>
@@ -53,7 +50,7 @@ export const BuscarUsuario = () => {
                     <FormItem>
                         <FormLabel>Nombre del usuario o la toma</FormLabel>
                         <FormControl>
-                            <Input className = "h-10 w-[49vh]" placeholder="Escribe el nombre del usuario o numero de toma" {...field} />
+                            <Input placeholder="Escribe el nombre del usuario o numero de toma" {...field} />
                         </FormControl>
                         <FormDescription>
                         {/* AQUI PUEDE IR DESCRIPCIÓN DEBAJO DEL INPUT EN EL FORM */}
@@ -62,9 +59,10 @@ export const BuscarUsuario = () => {
                     </FormItem>
                 )}
             />
-            <Button type="submit">Aceptar</Button>
-            <Button type="button" className="ml-[20vh] mt-[50vh]" onClick={prueba}>Crear usuario</Button>
-
+            <div className="flex justify-end items-end mt-9 gap-2">
+            <Button type="submit" >Aceptar</Button>
+            <Button type="button">Crear usuario</Button>
+            </div>
         </form>
     </Form>
     </div>
