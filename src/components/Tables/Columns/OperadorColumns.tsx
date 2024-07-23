@@ -25,6 +25,7 @@ export type Operador = {
   password_confirmation: string
   codigo_empleado: string
   nombre: string
+  nombre_completo: string
   apellido_paterno: string
   apellido_materno: string
   CURP: string
@@ -34,7 +35,7 @@ export type Operador = {
 
 export const columns: ColumnDef<Operador>[] = [
   {
-    accessorKey: "nombre",
+    accessorKey: "nombre_completo",
     header: ({ column }) => {
       return (
         <Button

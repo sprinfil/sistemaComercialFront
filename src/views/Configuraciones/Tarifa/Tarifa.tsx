@@ -91,9 +91,9 @@ const TarifaFormEdit = () => {
   return (
     <>
         {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GGG*/}
-      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[75vh] p-4  '>
+      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[66vh] p-4  overflow-auto'>
             <TarifaForm /> 
-          </div>) : (<div className='w-full rounded-md border border-border h-[75vh] p-4  '>
+          </div>) : (<div className='w-full rounded-md border border-border h-[66vh] p-4 overflow-auto '>
             <TarifaForm />
           </div>)}
     </>

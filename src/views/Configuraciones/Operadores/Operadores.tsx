@@ -2,11 +2,12 @@ import React from 'react'
 import OperadorTable from '../../../components/Tables/Components/OperadorTable'
 import OperadorForm from '../../../components/Forms/InformacionDeOperdorForm'
 import RolForm from '../../../components/Forms/RolForm'
-import Permisos from '../Roles/Permisos'
 import { ContextProvider } from '../../../contexts/ContextOperador'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useStateContext } from "../../../contexts/ContextOperador.tsx";
 import { OperadoresRoles } from './OperadoresRoles.tsx'
+import PermisosUsuarios from '../Roles/PermisosUsuarios.tsx'
+
 
 
 const Roles = () => {
@@ -21,7 +22,7 @@ const Roles = () => {
         },
         {
             titulo: "Permisos",
-            componente: ""
+            componente: <PermisosUsuarios/>
         },
         
     ]

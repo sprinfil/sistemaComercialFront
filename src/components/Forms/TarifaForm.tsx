@@ -104,15 +104,21 @@ const TarifaForm = () => {
 
     //Funcion de errores para el Toast
     function errorToast() {
-
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
             description: "Algo salió mal.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
+    }
 
-
+       //Funcion de errores para el Toast
+       function errorToastMensaje(mensaje) {
+        toast({
+            variant: "destructive",
+            title: mensaje,
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
     }
 
 
@@ -181,6 +187,9 @@ const TarifaForm = () => {
                     
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
+                    }
+                    if (response && response.status === 400) {
+                        errorToastMensaje(response.data.error)
                     }
                     setLoading(false);
                 })
