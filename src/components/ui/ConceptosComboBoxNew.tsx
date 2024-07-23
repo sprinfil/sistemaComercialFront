@@ -33,7 +33,12 @@ type Status = {
 
 }
 
-export const ConceptosComboBoxNew = ({ field, form}) => {
+type ConceptosComboBoxNewProps = {
+    field: any;
+    onSelect: (selected: Status) => void; // Nueva prop para el callback
+};
+
+export const ConceptosComboBoxNew = ({ field, form, name = "id_concepto", setCargoSeleccionado}) => {
 
 
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -79,7 +84,7 @@ export const ConceptosComboBoxNew = ({ field, form}) => {
                                 ? languages.find(
                                     (language) => language.value === field.value
                                 )?.label
-                                : "Select language"}
+                                : "Selecciona un concepto"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </FormControl>
@@ -88,7 +93,7 @@ export const ConceptosComboBoxNew = ({ field, form}) => {
                     <Command>
                         <CommandInput placeholder="Buscar Concepto ... " />
                         <CommandList>
-                            <CommandEmpty>No language found.</CommandEmpty>
+                            <CommandEmpty>Concepto no encontrado.</CommandEmpty>
                             <CommandGroup>
                                 {
                                     loading &&
@@ -102,7 +107,9 @@ export const ConceptosComboBoxNew = ({ field, form}) => {
                                                 value={language.label}
                                                 key={language.value}
                                                 onSelect={() => {
-                                                    form.setValue("id_concepto", language.value)
+                                                    form.setValue(name, language.value)
+                                                    setCargoSeleccionado(language.label); 
+
                                                 }}
                                             >
                                                 <Check
