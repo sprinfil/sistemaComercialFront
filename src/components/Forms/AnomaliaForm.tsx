@@ -155,7 +155,11 @@ const AnomaliaForm = () => {
         }
         if (accion == "editar") {
             axiosClient.put(`/AnomaliasCatalogo/update/${anomalia.id}`, values)
-                .then((data) => {
+                .then((response) => {
+                    const data = response.data;
+                    if (data.confirmUpdate) {
+                        setModalReactivacionOpen(true);
+                    } else {
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
@@ -164,6 +168,8 @@ const AnomaliaForm = () => {
                     setAnomalia(data.data);
                     //setNotification("usuario creado");
                     successToastEditado();
+                    }
+                    
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -175,6 +181,14 @@ const AnomaliaForm = () => {
                 })
         }
     }
+    const handleConfirmUpdate = async () => {
+        try {
+            const response = await axiosClient.post('/actualizar-tarifa', { confirmUpdate: true });
+            setModalReactivacionOpen(true);
+        } catch (error) {
+            console.error('Error en la actualización:', error);
+        }
+    };
 
     //con este metodo obtienes las anomalias de la bd
     const getAnomalias = async () => {
