@@ -10,6 +10,7 @@ import GiroComercial from './GiroComercial'
 import Bonificaciones from './Bonificaciones'
 import TipoDeToma from './TipoDeToma'
 import { useStateContext } from '../../../contexts/ContextProvider'
+import { Colonia } from './Colonias-Calles/Colonia'
 
 
 const Catalogos = () => {
@@ -61,6 +62,11 @@ const Catalogos = () => {
       titulo: "Tipo de toma",
       componente: <TipoDeToma />,
       permission: "VerTiposDeToma"
+    },
+    {
+      titulo: "Colonias y calles",
+      componente: <Colonia />,
+      permission: "VerColoniasCalles"
     },
   ]
 
