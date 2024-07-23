@@ -32,6 +32,8 @@ import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import { Switch } from "../ui/switch.tsx";
 import { ConceptosComboBoxNew } from "../ui/ConceptosComboBoxNew.tsx";
 import OrdenDeTrabajoCargosTable from "../Tables/Components/OrdenDeTrabajoCargosTable.tsx";
+import { OrdenDeTrabajoAplicacionComboBox } from "../ui/OrdenDeTrabajoAplicacionComboBox.tsx";
+
 const OrdenDeTrabajoForm = () => {
     const { toast } = useToast()
     const { ordenDeTrabajo, setOrdenDeTrabajo, loadingTable, setLoadingTable, setOrdenDeTrabajos, setAccion, accion } = useStateContext();
@@ -404,11 +406,27 @@ const OrdenDeTrabajoForm = () => {
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
+                            </div>
+                        )}
+                        />
+                        <FormField
+                        control={form.control}
+                        name="aplicacion"
+                        render={({ field }) => (
+                            <div className="flex items-center space-x-4">
+                                <FormItem className="flex items-center justify-center">
+                                    <FormLabel className="mr-4">Aplicación</FormLabel>
+                                    <FormControl>
+                                        <OrdenDeTrabajoAplicacionComboBox form={form} field={field} name="aplicacion" setCargoSeleccionado={setCargoSeleccionado}/>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
                                 <Button type="button" className="flex-shrink-0" onClick={handleAgregarCargo}>Agregar cargo</Button>
                             </div>
                         )}
                         />
                         {accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>}
+                        {accion == "editar" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>}
 
                             {loading && <Loader />}
                             {abrirInput && <Button type="submit">Guardar</Button>}
