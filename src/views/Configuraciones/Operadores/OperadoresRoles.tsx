@@ -10,7 +10,7 @@ export const OperadoresRoles = () => {
 
     const [Loading, setLoading] = useState(false);
     const [roles, setRoles] = useState([]);
-    const { editando, setEditando, setOperadores } = useStateContext();
+    const { editando, setEditando, setOperadores, tab } = useStateContext();
     const [editar, setEditar] = useState(false);
     const { operador } = useStateContext();
     const [switch_values, setSwitch_values] = useState({});
@@ -23,6 +23,16 @@ export const OperadoresRoles = () => {
     useEffect(() => {
         sync_roles();
     }, [operador]);
+
+    useEffect(() => {
+        if (!editar) {
+            sync_roles();
+        }
+    }, [switch_values]);
+
+    useEffect(() => {
+        
+    }, [tab]);
 
 
 
@@ -83,11 +93,8 @@ export const OperadoresRoles = () => {
                 }
             })
             setSwitch_values(switch_values_temp);
-            getOperadores();
+            //getOperadores();
         }
-
-        console.log(roles_names);
-        console.log(switch_values);
     }
 
     const getOperadores = async () => {
@@ -115,7 +122,6 @@ export const OperadoresRoles = () => {
             const response = await axiosClient.get("/Rol");
             setLoading(false);
             setRoles(response.data.data);
-
         } catch (error) {
             setLoading(false);
             console.error("Failed to fetch anomalias:", error);

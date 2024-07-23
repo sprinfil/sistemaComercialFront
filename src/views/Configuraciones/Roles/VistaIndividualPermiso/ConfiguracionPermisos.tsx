@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/accordion"
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { useStateContext as OperadorContext } from '../../../../contexts/ContextOperador.tsx';
 
 const modulos = [
   {
@@ -99,10 +100,11 @@ const modulos = [
 
 
 
-export const ConfiguracionPermisos = () => {
+export const ConfiguracionPermisos = ({ type = "Roles" }) => {
   const { toast } = useToast()
   const [editar, setEditar] = useState(false);
   const { permissions, setPermissions, rol, editando, setEditando } = useStateContext();
+  const {operador} = OperadorContext();
 
   function successToastCreado() {
     toast({
@@ -192,17 +194,37 @@ export const ConfiguracionPermisos = () => {
   });
 
   function onSubmit(values: z.infer<typeof AnomaliaPermissionsSchema>) {
-    console.log(JSON.stringify(values));
-    axiosClient.post(`/Rol/give_rol_permissions/${rol.id}`, JSON.stringify(values))
-      .then((values) => {
-        setPermissions(values.data);
-        console.log(values);
-        successToastCreado();
-      })
-      .catch((err) => {
-        const response = err.response;
-        ErrorToast();
-      })
+
+    if (type == "Roles") {
+      axiosClient.post(`/Rol/give_rol_permissions/${rol.id}`, JSON.stringify(values))
+        .then((values) => {
+          setPermissions(values.data);
+          console.log(values);
+          successToastCreado();
+        })
+        .catch((err) => {
+          const response = err.response;
+          ErrorToast();
+        })
+    }
+
+    if (type == "Operadores") {
+      axiosClient.post(`/Rol/give_user_permissions/${operador.user.id}`, JSON.stringify(values))
+        .then((values) => {
+          let ctr = 0;
+          values.data.forEach(element => {
+            permissions[ctr] = element;
+            ctr = ctr + 1;
+          });
+          console.log(values);
+          successToastCreado();
+        })
+        .catch((err) => {
+          const response = err.response;
+          ErrorToast();
+        })
+    }
+
   }
 
   const all = (permisos) => {

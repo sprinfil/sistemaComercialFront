@@ -12,7 +12,8 @@ import {
 import IconButton from "../../ui/IconButton"
 import { TrashIcon, Pencil2Icon, PlusCircledIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import { useState } from "react"
-import { useStateContext } from "../../../contexts/ContextOperador"
+import { useStateContext as OperadorContext } from "../../../contexts/ContextOperador"
+
 import { Checkbox } from "@/components/ui/checkbox"
 
 // This type is used to define the shape of our data.
@@ -52,7 +53,7 @@ export const columns: ColumnDef<Operador>[] = [
     id: "actions",
     cell: ({ row }) => {
       const operador = row.original
-      const { setOperador, setAccion } = useStateContext();
+      const { setOperador, setAccion } = OperadorContext();
       
       return (
         <div onClick={()=>{setOperador(operador);setAccion("ver")}}>
