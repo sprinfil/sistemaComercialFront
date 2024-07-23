@@ -10,7 +10,7 @@ import GiroComercial from './GiroComercial'
 import Bonificaciones from './Bonificaciones'
 import TipoDeToma from './TipoDeToma'
 import { useStateContext } from '../../../contexts/ContextProvider'
-
+import OrdenDeTrabajo from './OrdenDeTrabajo'
 
 const Catalogos = () => {
 
@@ -61,6 +61,11 @@ const Catalogos = () => {
       titulo: "Tipo de toma",
       componente: <TipoDeToma />,
       permission: "VerTiposDeToma"
+    },
+    {
+      titulo: "Orden de trabajo",
+      componente: <OrdenDeTrabajo />,
+      permission: "VerOrdenDeTrabajo"
     },
   ]
 
