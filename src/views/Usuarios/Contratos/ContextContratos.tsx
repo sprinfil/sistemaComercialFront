@@ -1,36 +1,36 @@
 import { createContext, useContext, useState, ReactNode, FC } from "react";
-import { Operador } from "../components/Tables/Columns/OperadorColumns";
+import { ContratoBuscarUsuario } from "./Columns/ContratoConsultaUsuarioColumns";
 
 // Define la interfaz para el estado del usuario y los métodos para actualizar el estado
 interface StateContextType {
-    operador: Operador;
+    operador: ContratoBuscarUsuario;
     accion: string;
-    setOperador: (operador: Operador) => void;
-    operadores: Operador[];
+    nombreBuscado: string;
+    setNombreBuscado: (nombreBuscado:string) => void;
+    setOperador: (operador: ContratoBuscarUsuario) => void;
+    usuariosEncontrados: ContratoBuscarUsuario[];
     loadingTable: boolean;
-    setOperadores: (operador: Operador[]) => void;
+    setusuariosEncontrados: (usuariosEncontrados: ContratoBuscarUsuario[]) => void;
     setAccion: (accion: string) => void;
     setLoadingTable: (loading: boolean) => void;
     editando: boolean;
     setEditando: (loading: boolean) => void;
-    tab: string;
-    setTab: (tab: string) => void;
 }
 
 // Crea el contexto con valores predeterminados adecuados según las interfaces
 const StateContext = createContext<StateContextType>({
-    operador: {} as Operador,
+    operador: {} as ContratoBuscarUsuario,
     setOperador: () => {},
-    operadores: [],
+    usuariosEncontrados: [],
     loadingTable: false,
     accion: "",
+    nombreBuscado: "",
+    setNombreBuscado: () => {},
     setAccion: () => {},
-    setOperadores: () => {},
+    setusuariosEncontrados: () => {},
     setLoadingTable: () => {},
     editando: false,
     setEditando: () => {},
-    tab: "",
-    setTab: () => {},
 });
 
 // Define el componente proveedor que envuelve a los hijos con el proveedor de contexto
@@ -39,27 +39,27 @@ interface ContextProviderProps {
 }
 
 export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
-    const [operador, setOperador] = useState<Operador>({} as Operador);
-    const [operadores, setOperadores] = useState<Operador[]>([]);
+    const [operador, setOperador] = useState<ContratoBuscarUsuario>({} as ContratoBuscarUsuario);
+    const [usuariosEncontrados, setusuariosEncontrados] = useState<ContratoBuscarUsuario[]>([]);
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [accion, setAccion] = useState<string>("");
+    const [nombreBuscado, setNombreBuscado] = useState<string>("");
     const [editando, setEditando] = useState<boolean>(false);
-    const [tab, setTab] = useState<string>("");
 
     return (
         <StateContext.Provider value={{
             operador,
             setOperador,
-            operadores,
-            setOperadores,
+            usuariosEncontrados,
+            setusuariosEncontrados,
             loadingTable,
             setLoadingTable,
             accion,
             setAccion,
             editando,
             setEditando,
-            tab,
-            setTab
+            nombreBuscado,
+            setNombreBuscado,
         }}>
             {children}
         </StateContext.Provider>

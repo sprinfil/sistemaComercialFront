@@ -38,32 +38,20 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void; // Nueva prop para el callback
 };
 
-export const ConceptosComboBoxNew = ({ field, form, name = "id_concepto", setCargoSeleccionado}) => {
+const valoresParaAplicacionCargo: Status[] = [
+    { value: '1', label: 'Generar' },
+    { value: '2', label: 'Asignar' },
+    { value: '3', label: 'Concluir' },
+    // Add more static values here
+];
+
+export const OrdenDeTrabajoAplicacionComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado}) => {
 
 
     const [loading, setLoading] = React.useState<boolean>(false);
-    const [languages, setLanguages] = React.useState<Status[]>([]);
+    const [languages, setLanguages] = React.useState<Status[]>(valoresParaAplicacionCargo);
 
 
-    React.useEffect(() => {
-        getConcepto();
-    }, []);
-
-    const getConcepto = async () => {
-        setLoading(true);
-        try {
-            const response = await axiosClient.get("/Concepto");
-            let ctr = 0;
-            response.data.data.forEach(concepto => {
-                languages[ctr] = { value: concepto.id, label: concepto.nombre };
-                ctr = ctr + 1;
-            });
-            setLoading(false);
-        } catch (error) {
-            setLoading(false);
-            console.error("Failed to fetch concepto:", error);
-        }
-    };
 
     const [open, setOpen] = React.useState(false)
 
@@ -84,16 +72,16 @@ export const ConceptosComboBoxNew = ({ field, form, name = "id_concepto", setCar
                                 ? languages.find(
                                     (language) => language.value === field.value
                                 )?.label
-                                : "Selecciona un concepto"}
+                                : "Selecciona cuando se aplica el cargo"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0 h-[300px]">
+                <PopoverContent className="w-full p-0 h-[150px]">
                     <Command>
-                        <CommandInput placeholder="Buscar Concepto ... " />
+                        <CommandInput placeholder="Buscar aplicación ... " />
                         <CommandList>
-                            <CommandEmpty>Concepto no encontrado.</CommandEmpty>
+                            <CommandEmpty>Aplicación no encontrada.</CommandEmpty>
                             <CommandGroup>
                                 {
                                     loading &&

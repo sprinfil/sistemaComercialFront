@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Anomalias from './Anomalias'
 import Conceptos from './Conceptos'
@@ -11,11 +11,15 @@ import Bonificaciones from './Bonificaciones'
 import TipoDeToma from './TipoDeToma'
 import { useStateContext } from '../../../contexts/ContextProvider'
 import { Colonia } from './Colonias-Calles/Colonia'
+import OrdenDeTrabajo from './OrdenDeTrabajo'
+import notFound from "../../../img/notFound.svg"
 
 
 const Catalogos = () => {
 
   const { permissions, user } = useStateContext();
+  const [seleccionarCatalogo, setSeleccionarCatalogo] = useState(true);
+
 
   const opciones = [
     {
@@ -67,12 +71,15 @@ const Catalogos = () => {
       titulo: "Colonias y calles",
       componente: <Colonia />,
       permission: "VerColoniasCalles"
+      titulo: "Orden de trabajo",
+      componente: <OrdenDeTrabajo />,
+      permission: "VerOrdenDeTrabajo"
     },
   ]
 
   return (
     <div className='w-full'>
-      <Tabs defaultValue="Anomalías" className="">
+      <Tabs defaultValue="" className="" onValueChange={() => { setSeleccionarCatalogo(false) }}>
 
         <TabsList>
           {opciones.map((opcion, index) => {
@@ -91,6 +98,15 @@ const Catalogos = () => {
           </>
         ))}
       </Tabs>
+      {
+        seleccionarCatalogo &&
+        <>
+          <div className='w-full h-[70vh] mt-[20px] flex flex-col items-center justify-center gap-5'>
+            <p>Selecciona un catalogo.</p>
+          </div>
+        </>
+      }
+
     </div >
   )
 }

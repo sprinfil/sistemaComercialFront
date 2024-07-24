@@ -14,13 +14,13 @@ import {
     FormMessage,
 } from "../../components/ui/form.tsx";
 import { Input } from '../../components/ui/input.tsx';
-import { anomaliaSchema } from './validaciones.ts';
+import { OrdenDeTrabajoCrearSchema } from './OrdenDeTrabajoValidaciones.ts';
 import { ModeToggle } from '../../components/ui/mode-toggle.tsx';
 import axiosClient from '../../axios-client.ts';
 import Loader from "../../components/ui/Loader.tsx";
 import Error from "../../components/ui/Error.tsx";
 import { Textarea } from "../ui/textarea.tsx";
-import { useStateContext } from "../../contexts/ContextAnomalias.tsx";
+import { useStateContext } from "../../contexts/ContextOrdenDeTrabajo.tsx";
 import { useEffect } from "react";
 import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
@@ -29,22 +29,34 @@ import Modal from "../ui/Modal.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
-
-
-const AnomaliaForm = () => {
+import { Switch } from "../ui/switch.tsx";
+import { ConceptosComboBoxNew } from "../ui/ConceptosComboBoxNew.tsx";
+import OrdenDeTrabajoCargosTable from "../Tables/Components/OrdenDeTrabajoCargosTable.tsx";
+import { OrdenDeTrabajoAplicacionComboBox } from "../ui/OrdenDeTrabajoAplicacionComboBox.tsx";
+type OrdenDeTrabajo = {
+    nombre: string;
+    aplicacion: string;
+    // Otras propiedades relevantes
+  };
+  
+const OrdenDeTrabajoForm = () => {
     const { toast } = useToast()
-    const { anomalia, setAnomalia, loadingTable, setLoadingTable, setAnomalias, setAccion, accion } = useStateContext();
+    const { ordenDeTrabajo, setOrdenDeTrabajo, loadingTable, setLoadingTable, setOrdenDeTrabajos, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
-    const [anomaliaIdParaRestaurar, setAnomaliaIdParaRestaurar] = useState(null);
+    const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
-
+    const [bloquear, setBloquear] = useState(false);
+    const [cargoSeleccionado, setCargoSeleccionado] = useState();
+    const [nombreSeleccionado, setNombreSeleccionado] = useState<string | null>(null);
+    const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
+    const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>([]);
      //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía se ha creado correctamente",
+            description: "La orden de trabajo se ha creado correctamente",
             variant: "success",
 
         })
@@ -52,7 +64,7 @@ const AnomaliaForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha editado correctamente",
+            description: "La orden de trabajo se ha editado correctamente",
             variant: "success",
 
         })
@@ -60,7 +72,7 @@ const AnomaliaForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha eliminado correctamente",
+            description: "La orden de trabajo se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -68,7 +80,7 @@ const AnomaliaForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha restaurado correctamente",
+            description: "La orden de trabajo se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -93,56 +105,59 @@ const AnomaliaForm = () => {
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
-            description: "La anomalía ya existe.",
+            description: "El tipo de toma ya existe.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }
 
 
-
-    const form = useForm<z.infer<typeof anomaliaSchema>>({
-        resolver: zodResolver(anomaliaSchema),
+    const form = useForm<z.infer<typeof OrdenDeTrabajoCrearSchema>>({
+        resolver: zodResolver(OrdenDeTrabajoCrearSchema),
         defaultValues: {
-            id: anomalia.id,
-            nombre: anomalia.nombre,
-            descripcion: anomalia.descripcion,
+            id: ordenDeTrabajo.id,
+            nombre: ordenDeTrabajo.nombre,
+            estado: ordenDeTrabajo.estado,
+            cargos: ordenDeTrabajo.cargos,
+            aplicacion: ordenDeTrabajo.aplicacion
         },
     })
 
 
 
-    function onSubmit(values: z.infer<typeof anomaliaSchema>) {
+    function onSubmit(values: z.infer<typeof OrdenDeTrabajoCrearSchema>) {
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/AnomaliasCatalogo/create`, values)
+            axiosClient.post(`/TipoToma/create`, values)
                 .then((response) => {
                     const data = response.data;
-                    if (data.restore) {
-                        setAnomaliaIdParaRestaurar(data.anomalia_id);
+                    if(data.restore)
+                    {
+                        setIdParaRestaurar(data.tipoToma_id);
                         setModalReactivacionOpen(true);
                     }
                     else if (data.restore == false) {
                         errorYaExisteToast();
                         setLoading(false);
                     }
-                    else{
-                        setLoading(false);
-                        setAnomalia({
-                            id: 0,
-                            nombre: "",
-                            descripcion: "ninguna",
-                        });
-                        form.reset({
-                            id: 0,
-                            nombre: "",
-                            descripcion: "ninguna",
-                        });
-                        getAnomalias();
-                        successToastCreado();
-                        setAccion("creado");
-                    }
-                
-                })
+                    else
+                    {
+                    setLoading(false);
+                    setOrdenDeTrabajo({
+                        id: 0,
+                        nombre: "",
+                        descripcion: "ninguna",
+                    });
+                    form.reset({
+                        id: 0,
+                        nombre: "",
+                        descripcion: "ninguna",
+                    });
+                    setAccion("creado");
+                    getAnomalias();
+                    successToastCreado();
+                    console.log(values);
+                    //setNotification("usuario creado");
+        }})
                 .catch((err) => {
                     const response = err.response;
                     errorToast();
@@ -154,22 +169,16 @@ const AnomaliaForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/AnomaliasCatalogo/update/${anomalia.id}`, values)
-                .then((response) => {
-                    const data = response.data;
-                    if (data.confirmUpdate) {
-                        setModalReactivacionOpen(true);
-                    } else {
+            axiosClient.put(`/TipoToma/update/${ordenDeTrabajo.id}`, values)
+                .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
                     getAnomalias();
-                    setAnomalia(data.data);
+                    setOrdenDeTrabajo(data.data);
                     //setNotification("usuario creado");
                     successToastEditado();
-                    }
-                    
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -181,22 +190,14 @@ const AnomaliaForm = () => {
                 })
         }
     }
-    const handleConfirmUpdate = async () => {
-        try {
-            const response = await axiosClient.post('/actualizar-tarifa', { confirmUpdate: true });
-            setModalReactivacionOpen(true);
-        } catch (error) {
-            console.error('Error en la actualización:', error);
-        }
-    };
 
     //con este metodo obtienes las anomalias de la bd
     const getAnomalias = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/AnomaliasCatalogo");
+            const response = await axiosClient.get("/TipoToma");
             setLoadingTable(false);
-            setAnomalias(response.data.data);
+            setOrdenDeTrabajos(response.data.data);
             console.log(response.data.data);
         } catch (error) {
             setLoadingTable(false);
@@ -208,7 +209,7 @@ const AnomaliaForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${anomalia.id}`);
+            await axiosClient.delete(`/TipoToma/log_delete/${ordenDeTrabajo.id}`);
             getAnomalias();
             setAccion("eliminar");
             successToastEliminado();
@@ -217,25 +218,23 @@ const AnomaliaForm = () => {
             console.error("Failed to delete anomalia:", error);
         }
     };
-
      //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
-    const restaurarDato = (anomalia_id: any) => {
-        axiosClient.put(`/AnomaliasCatalogo/restaurar/${anomalia_id}`)
+     const restaurarDato = (IdParaRestaurar: any) => {
+        axiosClient.put(`/TipoToma/restore/${IdParaRestaurar}`)
             .then(() => {
                 setLoading(false);
                 setAbrirInput(false);
                 setAccion("crear");
-                setAnomalia({
+                setOrdenDeTrabajo({
                     id: 0,
                     nombre: "",
                     descripcion: "ninguna",
                     estado: "activo"
                 });
                 getAnomalias();
-                successToastRestaurado();
                 setAccion("creado");
+                successToastRestaurado();
                 setModalReactivacionOpen(false);
-
             })
             .catch((err) => {
                 errorToast();
@@ -251,20 +250,10 @@ const AnomaliaForm = () => {
                 nombre: "",
                 descripcion: "ninguna",
             });
-            setAnomalia({});
-            setAbrirInput(false);
-        }
-        if (accion == "creado") {
-            form.reset({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            });
-            setAnomalia({});
+            setOrdenDeTrabajo({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
-            console.log("creando");
             setAbrirInput(true);
             setErrors({});
             form.reset({
@@ -272,7 +261,21 @@ const AnomaliaForm = () => {
                 nombre: "",
                 descripcion: "ninguna",
             });
-            setAnomalia({
+            setOrdenDeTrabajo({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            })
+        }
+        if (accion == "creado") {
+            setAbrirInput(true);
+            setErrors({});
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
+            setOrdenDeTrabajo({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
@@ -282,10 +285,11 @@ const AnomaliaForm = () => {
             setAbrirInput(false);
             setErrors({});
             setAccion("");
+            setCargosAgregados([]);
             form.reset({
-                id: anomalia.id,
-                nombre: anomalia.nombre,
-                descripcion: anomalia.descripcion,
+                id: ordenDeTrabajo.id,
+                nombre: ordenDeTrabajo.nombre,
+                descripcion: ordenDeTrabajo.descripcion,
             });
         }
         if (accion == "editar") {
@@ -294,16 +298,31 @@ const AnomaliaForm = () => {
         }
     }, [accion]);
 
+    const handleAgregarCargo = () => {
+        if (nombreSeleccionado && aplicacionSeleccionada) {
+            const nuevoCargo: OrdenDeTrabajo = {
+                nombre: nombreSeleccionado,
+                aplicacion: aplicacionSeleccionada,
+            };
+    
+            setCargosAgregados((prev) => [...prev, nuevoCargo]);
+            setNombreSeleccionado(null);
+            setAplicacionSeleccionada(null);
+        } else {
+            console.log("Nombre o aplicación no seleccionados");
+        }
+    };
+
     return (
         <>
-            <div className="overflow-auto max-w-full max-h-full">
+            <div className="overflow-auto">
                 <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva anomalía</p>}
-                            {anomalia.nombre != "" && <p className="text-muted-foreground text-[20px]">{anomalia.nombre}</p>}
+                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
+                            {ordenDeTrabajo.nombre != "" && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
                         </div>
-                        {(anomalia.nombre != null && anomalia.nombre != "") &&
+                        {(ordenDeTrabajo.nombre != null && ordenDeTrabajo.nombre != "") &&
                             <>
                                 <Modal
                                     method={onDelete}
@@ -331,7 +350,7 @@ const AnomaliaForm = () => {
                         <ModalReactivacion
                             isOpen={ModalReactivacionOpen}
                             setIsOpen={setModalReactivacionOpen}
-                            method={() => restaurarDato(anomaliaIdParaRestaurar)}
+                            method={() => restaurarDato(IdParaRestaurar)}
                         />
                     }
 
@@ -349,35 +368,81 @@ const AnomaliaForm = () => {
                                     <FormItem>
                                         <FormLabel>Nombre</FormLabel>
                                         <FormControl>
-                                            <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la anomalía" {...field} />
+                                            <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la orden de trabajo" {...field} />
                                         </FormControl>
                                         <FormDescription>
-                                            El nombre de la anomalía.
+                                            El nombre de la orden de trabajo.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
-                                control={form.control}
-                                name="descripción"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Descripción</FormLabel>
-                                        <FormControl>
-                                            <Textarea
-                                                readOnly={!abrirInput}
-                                                placeholder="Descripcion de la anomalía"
-                                                {...field}
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="items-center">Activo</FormLabel>
+                                    <FormControl className="ml-4">
+                                        {
+                                            bloquear ? <Switch
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            
+                                            }
+                                            disabled
+                                            /> :
+                                            <Switch
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            
+                                            }
+                                            
                                             />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Agrega una breve descripción.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                                        }
+                                    
+                                    </FormControl>
+                                    <FormDescription>
+                                        Aquí puedes activar la orden de trabajo.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                        control={form.control}
+                        name="cargos"
+                        render={({ field }) => (
+                            <div className="flex items-center space-x-4">
+                                <FormItem className="flex items-center justify-center">
+                                    <FormLabel className="mr-4">Cargos</FormLabel>
+                                    <FormControl>
+                                        <ConceptosComboBoxNew form={form} field={field} name="cargos" setCargoSeleccionado={setNombreSeleccionado}/>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            </div>
+                        )}
+                        />
+                        <FormField
+                        control={form.control}
+                        name="aplicacion"
+                        render={({ field }) => (
+                            <div className="flex items-center space-x-4">
+                                <FormItem className="flex items-center justify-center">
+                                    <FormLabel className="mr-4">Aplicación</FormLabel>
+                                    <FormControl>
+                                        <OrdenDeTrabajoAplicacionComboBox form={form} field={field} name="aplicacion" setCargoSeleccionado={setAplicacionSeleccionada}/>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                                {/*<Button type="button" className="flex-shrink-0" onClick={handleAgregarCargo}>Agregar cargo</Button>*/}
+                            </div>
+                        )}
+                        />
+                        {/*accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
+                        {/*accion == "editar" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
+
                             {loading && <Loader />}
                             {abrirInput && <Button type="submit">Guardar</Button>}
 
@@ -390,4 +455,4 @@ const AnomaliaForm = () => {
     )
 }
 
-export default AnomaliaForm
+export default OrdenDeTrabajoForm
