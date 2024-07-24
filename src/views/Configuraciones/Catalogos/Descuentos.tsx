@@ -37,9 +37,9 @@ const DescuentoFormEdit = () => {
   return (
     <>
         {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR G*/}
-      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[75vh] p-4 overflow-auto'>
+      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[81vh] p-4 overflow-auto'>
             <DescuentoForm />
-          </div>) : (<div className='w-full rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+          </div>) : (<div className='w-full rounded-md border border-border h-[81vh] p-4 overflow-auto'>
             <DescuentoForm />
           </div>)}
     </>
