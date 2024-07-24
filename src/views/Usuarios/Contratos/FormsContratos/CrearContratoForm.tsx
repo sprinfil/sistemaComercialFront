@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react';
 import {
     Form,
     FormControl,
@@ -11,48 +11,48 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { crearContratoSchema } from '../validacionesContratacion'; 
-const [errors, setErrors] = useState({});
 import { z } from "zod";
 import { Input } from '../../../../components/ui/input.tsx';
 import Loader from "../../../../components/ui/Loader.tsx";
 import { Button } from '../../../../components/ui/button.tsx';
 
-
-
-//EN ESTA PANTALLA SE VA A CREAR LA TOMA(OBTIENE ESOS DATOS)
-const [loading, setLoading] = useState(false);
-
-const form = useForm<z.infer<typeof crearContratoSchema>>({
-    resolver: zodResolver(crearContratoSchema),
-    defaultValues: {
-    id_usuario: 1,
-    id_giro_comercial: 1,
-    id_libro: 1,
-    id_codigo_toma: 1,
-    clave_catastral: "",
-    calle:"",
-    entre_calle_1: "",
-    entre_calle_2:"",
-    colonia: "",
-    codigo_postal:"",
-    localidad: "",
-    diametro_toma:"" ,
-    calle_notificaciones:"" ,
-    entre_calle_notificaciones_2:"" ,
-    tipo_servicio: "",
-    tipo_toma: "",
-    tipo_contratacion:"" ,
-    },
-});
-
-
 export const CrearContratoForm = () => {
-return (
-    <div className="overflow-auto">
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
+
+    const form = useForm<z.infer<typeof crearContratoSchema>>({
+        resolver: zodResolver(crearContratoSchema),
+        defaultValues: {
+            id_usuario: 1,
+            id_giro_comercial: 1,
+            id_libro: 1,
+            id_codigo_toma: 1,
+            clave_catastral: "",
+            calle:"",
+            entre_calle_1: "",
+            entre_calle_2:"",
+            colonia: "",
+            codigo_postal:"",
+            localidad: "",
+            diametro_toma:"" ,
+            calle_notificaciones:"" ,
+            entre_calle_notificaciones_2:"" ,
+            tipo_servicio: "",
+            tipo_toma: "",
+            tipo_contratacion:"" ,
+        },
+    });
+
+    const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
+        // Handle form submission
+    };
+
+    return (
+        <div className="overflow-auto">
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end '>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        <p className="text-[20px] font-medium">Crear usuario fisico</p>
+                        <p className="text-[20px] font-medium">Crear contrato</p>
                     </div>
                 </div>
             </div>
@@ -83,7 +83,7 @@ return (
                                     name="calle"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Apellido paterno</FormLabel>
+                                            <FormLabel>Cuenta</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="Escribe el apellido paterno" {...field} />
                                             </FormControl>
@@ -99,7 +99,7 @@ return (
                                     name="entre_calle_1"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Apellido materno</FormLabel>
+                                            <FormLabel>Tarifa</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="Escribe el apellido materno" {...field} />
                                             </FormControl>
@@ -117,7 +117,7 @@ return (
                                         <FormItem>
                                             <FormLabel>Telefono</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Escribe telefono del usuario" {...field} type='number' />
+                                                <Input placeholder="Diametro" {...field} type='number' />
                                             </FormControl>
                                             <FormDescription>
                                                 
@@ -186,5 +186,5 @@ return (
                 </Form>
             </div>
         </div>
-  )
-}
+    );
+};

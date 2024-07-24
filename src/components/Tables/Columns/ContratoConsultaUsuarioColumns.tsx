@@ -1,10 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-import { Button } from "../../../../components/ui/button"
-import IconButton from "../../../../components/ui/IconButton"
+import { Button } from "../../ui/button"
+import IconButton from "../../ui/IconButton"
 import {EyeOpenIcon } from '@radix-ui/react-icons';
-import { useStateContext } from "../ContextContratos";
-import { Checkbox } from "../../../../components/ui/checkbox"
+import { useStateContext } from "../../../contexts/ContextContratos";
+import { Checkbox } from "../../ui/checkbox"
 
 // AQUI VAN TODOS LOS DATOS QUE SE REQUIERAN PARA HACER UNA BUSQUEDA ESPECIFICA
 export type ContratoBuscarUsuario = {
@@ -21,28 +21,6 @@ export type ContratoBuscarUsuario = {
 
 
 export const columns: ColumnDef<ContratoBuscarUsuario>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "nombre",
     header: ({ column }) => {
@@ -155,11 +133,8 @@ export const columns: ColumnDef<ContratoBuscarUsuario>[] = [
       const {setOperador, setAccion } = useStateContext();
 
       return (
-        <div onClick={()=>{setOperador(TipoDeToma);setAccion("ver")}}>
-          <IconButton>
-            <EyeOpenIcon className="w-[20px] h-[20px]"/>
-          </IconButton>
-        </div>
+       <>
+       </>
       )
     },
   },

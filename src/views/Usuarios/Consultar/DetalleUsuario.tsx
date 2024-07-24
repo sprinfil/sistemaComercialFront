@@ -5,10 +5,15 @@ import { useStateContext, ContextProvider } from '../../../contexts/ContextDetal
 import PantallaDetalleUsuario from './VistasDetalleUsuario/PantallaDetalleUsuario'
 import InformacionPensionado from './VistasDetalleUsuario/InformacionPensionado'
 import InformaciónGeneral from './VistasDetalleUsuario/InformaciónGeneral'
+import { columns, ContratoBuscarUsuario } from "../../../components/Tables/Columns/ContratoConsultaUsuarioColumns";
+
+
+
 
 const DetalleUsuario = () => {
 
   const { pantalla} = useStateContext();
+
 
   const [mostrarPantalla, setMostrarPantalla] = useState();
 

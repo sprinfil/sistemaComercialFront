@@ -127,7 +127,7 @@ const OrdenDeTrabajoForm = () => {
     function onSubmit(values: z.infer<typeof OrdenDeTrabajoCrearSchema>) {
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/TipoToma/create`, values)
+            axiosClient.post(`/OrdenTrabajoCatalogo/create`, values)
                 .then((response) => {
                     const data = response.data;
                     if(data.restore)
@@ -195,7 +195,7 @@ const OrdenDeTrabajoForm = () => {
     const getAnomalias = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/TipoToma");
+            const response = await axiosClient.get("/OrdenTrabajoCatalogo");
             setLoadingTable(false);
             setOrdenDeTrabajos(response.data.data);
             console.log(response.data.data);

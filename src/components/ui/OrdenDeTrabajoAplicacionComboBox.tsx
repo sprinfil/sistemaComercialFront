@@ -35,7 +35,7 @@ type Status = {
 
 type ConceptosComboBoxNewProps = {
     field: any;
-    onSelect: (selected: Status) => void; // Nueva prop para el callback
+    onSelect: (selected: Status) => void; 
 };
 
 const valoresParaAplicacionCargo: Status[] = [

@@ -16,21 +16,30 @@ import { Input } from "../../../../components/ui/input.tsx";
 import { BuscarContratacionSchema } from "../validacionesContratacion.ts";
 import { useNavigate } from 'react-router-dom';
 import axiosClient from "../../../../axios-client.ts";
-import { useToast } from "../../../../components/ui/use-toast"; //IMPORTACIONES TOAST
-import { ToastAction } from "../../../../components/ui/toast"; //IMPORTACIONES TOAST
-import ContratoConsultaUsuarioTable from "../Table/ContratoConsultaUsuarioTable.tsx";
-import { useStateContext } from "../ContextContratos.tsx";
-import { ContextProvider } from "../ContextContratos.tsx";
+import { useToast } from "../../../../components/ui/use-toast.ts"; //IMPORTACIONES TOAST
+import { ToastAction } from "../../../../components/ui/toast.tsx"; //IMPORTACIONES TOAST
+import ContratoConsultaUsuarioTable from "../../../../components/Tables/Components/ContratoConsultaUsuarioTable.tsx";
+import { useStateContext } from "../../../../contexts/ContextContratos.tsx";
+import { ContextProvider } from "../../../../contexts/ContextContratos.tsx";
 
-export const BuscarUsuarioContratacion = () => {
+
+interface BuscarUsuarioProps
+{
+    navegacion: string;
+    botonCrearUsuario: boolean;
+    tipoAccion:string;
+}
+
+export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAccion}: BuscarUsuarioProps) => {
 
     const { toast } = useToast()
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [mostrarTabla, setMostrarTabla] = useState(false);
-    const {usuariosEncontrados, setusuariosEncontrados} = useStateContext();
+    const {usuariosEncontrados, setusuariosEncontrados, accion, setAccion} = useStateContext();
     const [nombreBuscado, setNombreBuscado] = useState<string>('');
-
+   
+    console.log("este es la accion pare " + accion);
     const navigate = useNavigate();
 
     const form = useForm<z.infer<typeof BuscarContratacionSchema>>({
@@ -54,11 +63,13 @@ export const BuscarUsuarioContratacion = () => {
     function onSubmit(values: z.infer<typeof BuscarContratacionSchema>) {
         console.log(values);
         setLoading(true);
+        setusuariosEncontrados([]);
         axiosClient.get(`/usuarios/consulta/${values.nombre}`)
         .then((response) => 
         {
             setNombreBuscado(values.nombre);
             setusuariosEncontrados(response.data.data);
+            setAccion(tipoAccion);
         })
         .catch((err) =>{
             const response = err.response;
@@ -71,31 +82,32 @@ export const BuscarUsuarioContratacion = () => {
     }
 
     useEffect(() => {
-
+        
         const numObject = usuariosEncontrados.length;
         console.log("Número de usuarios encontrados:", numObject);
-
         if (numObject > 1) {
             setMostrarTabla(true);
         } else if (numObject === 1) {
             setMostrarTabla(false);
-            navigate('/CrearUsuario');
+            navigate(navegacion);
         } else {
             setMostrarTabla(false); 
         }
-    }, [usuariosEncontrados, navigate]);
 
-    
+
+    }, [usuariosEncontrados, navigate, navegacion]);
+
 
 function handleNavigationCrearUsuario ()
     {
+
         navigate('/CrearUsuario');
     }
 
     return (
         <ContextProvider>
             <div>
-            <div className='mt-5 max-w-md mx-0 rounded-md border border-border p-4 h-[43vh] '>
+            <div className='mt-5 ml-5 max-w-md mx-0 rounded-md border border-border p-4 h-[43vh] '>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div style={{ color: 'grey' }}>Consultar al usuario</div>
@@ -117,17 +129,19 @@ function handleNavigationCrearUsuario ()
                     />
                     <div className="flex justify-end items-end mt-9 gap-2">
                         <Button type="submit">Aceptar</Button>
-                        <Button type="button" onClick={handleNavigationCrearUsuario}>Crear usuario</Button>
+                        {
+                            botonCrearUsuario && <Button type="button" onClick={handleNavigationCrearUsuario}>Crear usuario</Button>
+                        }
                     </div>
                 </form>
             </Form>
         </div>
 
-        {mostrarTabla&&<h1 className="mt-10">Selecciona un usuario</h1>}
+        {mostrarTabla&&<h1 className="mt-10 ml-6">Selecciona un usuario</h1>}
 
         {
 
-        mostrarTabla && <ContratoConsultaUsuarioTable nombreBuscado={nombreBuscado}/>
+        mostrarTabla && <ContratoConsultaUsuarioTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado}/>
         }
             
         </div>

@@ -25,23 +25,30 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon } from "@radix-ui/react-icons";
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
+import { useLocation } from 'react-router-dom';
 
 const InformacionGeneralForm = () => {
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [abrirInput, setAbrirInput] = useState(false);
 
+  const location = useLocation();
+
+  const { contratoBuscarUsuario } = location.state || {};  //AQUI SE OBTIENE EL OBJETO
+  console.log("aver que dato pasa =", JSON.stringify(contratoBuscarUsuario, null, 2)); //POR SI QUIERES CONVERGTIR UN OBJETO A JSON
+
   const form = useForm<z.infer<typeof informaciongeneralSchema>>({
     resolver: zodResolver(informaciongeneralSchema),
     defaultValues: {
-      id: 0,
-      nombre: "",
-      apellidopaterno: "",
-      apellidomaterno: "",
-      telefono: "",
-      curp: "",
-      rfc: "",
-      correo: "",
+      id: contratoBuscarUsuario.id,
+      nombre: contratoBuscarUsuario.nombre,
+      apellidopaterno: contratoBuscarUsuario.apellido_paterno,
+      apellidomaterno: contratoBuscarUsuario.apellido_materno,
+      telefono: contratoBuscarUsuario.telefono,
+      curp: contratoBuscarUsuario.curp,
+      rfc: contratoBuscarUsuario.rfc,
+      correo: contratoBuscarUsuario.correo,
     },
   });
 
