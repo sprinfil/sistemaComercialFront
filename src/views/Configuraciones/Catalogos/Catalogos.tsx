@@ -10,6 +10,7 @@ import GiroComercial from './GiroComercial'
 import Bonificaciones from './Bonificaciones'
 import TipoDeToma from './TipoDeToma'
 import { useStateContext } from '../../../contexts/ContextProvider'
+import { Colonia } from './Colonias-Calles/Colonia'
 import OrdenDeTrabajo from './OrdenDeTrabajo'
 import notFound from "../../../img/notFound.svg"
 
@@ -67,10 +68,16 @@ const Catalogos = () => {
       permission: "VerTiposDeToma"
     },
     {
+      titulo: "Colonias y calles",
+      componente: <Colonia />,
+      permission: "VerColoniasCalles"
+      
+    },
+    {
       titulo: "Orden de trabajo",
       componente: <OrdenDeTrabajo />,
       permission: "VerOrdenDeTrabajo"
-    },
+    }
   ]
 
   return (
