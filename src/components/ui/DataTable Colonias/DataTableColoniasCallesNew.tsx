@@ -78,7 +78,7 @@ export function DataTableColoniaCalleNew<TData, TValue>({
         isOpen={openModal}
         setIsOpen={setOpenModal}
         method={deleteRecord}
-        text={modalText}
+        text={"ESTAS PENDEJO?"}
       />
       <div className="">
         <div className="flex items-center py-4 px-2">
