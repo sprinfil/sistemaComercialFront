@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import logo from '../../img/logo.png';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -30,21 +30,44 @@ import ModalReactivacion from "../ui/ModalReactivación.tsx";
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import { Concepto } from "../Tables/Columns/ConceptosColumns.tsx";
-
+import MarcoForm from "../ui/MarcoForm.tsx";
+import { Switch } from "../ui/switch.tsx";
+import { ComboBoxCeroUno } from "../ui/ComboBoxCeroUno.tsx";
 
 
 
 
 const ConceptoForm = () => {
+    const formTarifa = useRef(null);
     const { toast } = useToast()
     const { concepto, setConcepto, loadingTable, setLoadingTable, setConceptos, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
+    const [loadingTipoTomas, setLoadingTipoTomas] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
     const [conceptoIdParaRestaurar, setConceptoIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
+    const [tipoTomas, setTipoDeTomas] = useState([])
+    const [tarifas, setTarifas] = useState([]);
 
 
+    useEffect((() => {
+        getTipoTomas();
+    }), [])
+
+    //con este metodo obtienes las anomalias de la bd
+    const getTipoTomas = async () => {
+        setLoadingTipoTomas(true);
+        try {
+            const response = await axiosClient.get("/TipoToma");
+            setLoadingTipoTomas(false);
+            setTipoDeTomas(response.data.data);
+        } catch (error) {
+            setLoadingTipoTomas(false);
+            errorToast();
+            console.error("Failed to fetch anomalias:", error);
+        }
+    };
 
     //#region SUCCESSTOAST
     function successToastCreado() {
@@ -103,13 +126,6 @@ const ConceptoForm = () => {
         })
     }
 
-
-
-
-
-
-
-
     const form = useForm<z.infer<typeof conceptoSchema>>({
         resolver: zodResolver(conceptoSchema),
         defaultValues: {
@@ -117,15 +133,18 @@ const ConceptoForm = () => {
             nombre: concepto.nombre,
             descripcion: concepto.descripcion,
             prioridad_abono: concepto.prioridad_abono,
+            genera_iva: concepto.genera_iva,
         },
     })
 
 
 
-    function onSubmit(values: z.infer<typeof conceptoSchema>) {
+    function onSubmit(values) {
+        let values2 = { ...values, tarifas }
+        console.log(tarifas);
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/Concepto/create`, values)
+            axiosClient.post(`/Concepto/create`, values2)
                 .then((response) => {
                     const data = response.data;
                     if (data.restore) {
@@ -145,13 +164,14 @@ const ConceptoForm = () => {
                             nombre: "",
                             descripcion: "ninguna",
                             prioridad_abono: 1,
+                            genera_iva: "0",
                         });
                         form.reset({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
                             prioridad_abono: 1,
-
+                            genera_iva: "0",
                         });
                         setAccion("creado")
                         getConcepto();
@@ -168,7 +188,8 @@ const ConceptoForm = () => {
                 })
         }
         if (accion == "editar") {
-            axiosClient.put(`/Concepto/update/${concepto.id}`, values)
+            console.log(values2);
+            axiosClient.put(`/Concepto/update/${concepto.id}`, values2)
                 .then((data) => {
                     console.log("entro al metodo para editar")
                     setLoading(false);
@@ -190,7 +211,26 @@ const ConceptoForm = () => {
         }
     }
 
-
+    function onSubmitTarifa() {
+        const formData = new FormData(formTarifa.current);
+        let values = {};
+        for (let [name, value] of formData.entries()) {
+            values[name] = value;
+        }
+        let tarifas_temp = []
+        let ctr = 0;
+        for (const key in values) {
+            if (values.hasOwnProperty(key)) {
+                tarifas_temp[ctr] = {
+                    id_tipo_toma: key,
+                    monto: values[key]
+                }
+                ctr = ctr + 1;
+            }
+        }
+        setTarifas(tarifas_temp);
+    }
+    useEffect(()=>{ if(accion == "editar" || accion == "crear"){handleFormSubmit()}},[tarifas])
 
     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
     const restaurarDato = (concepto_id: any) => {
@@ -204,7 +244,7 @@ const ConceptoForm = () => {
                     nombre: "",
                     descripcion: "ninguna",
                     prioridad_abono: 1,
-
+                    genera_iva: "0",
                 });
                 getConcepto();
                 successToastRestaurado();
@@ -266,6 +306,7 @@ const ConceptoForm = () => {
                 nombre: "",
                 descripcion: "ninguna",
                 prioridad_abono: 1,
+                genera_iva: "0",
 
             });
             setConcepto({
@@ -273,7 +314,7 @@ const ConceptoForm = () => {
                 nombre: "",
                 descripcion: "ninguna",
                 prioridad_abono: 1,
-
+                genera_iva: "0",
             })
         }
         if (accion == "creado") {
@@ -281,6 +322,7 @@ const ConceptoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                genera_iva: "0",
             });
             setConcepto({});
             setAbrirInput(false);
@@ -294,7 +336,7 @@ const ConceptoForm = () => {
                 nombre: concepto.nombre,
                 descripcion: concepto.descripcion,
                 prioridad_abono: concepto.prioridad_abono,
-
+                genera_iva: String(concepto.genera_iva),
             });
         }
         if (accion == "editar") {
@@ -302,6 +344,15 @@ const ConceptoForm = () => {
             setErrors({});
         }
     }, [accion]);
+
+    const handleFormSubmit = () => {
+        form.handleSubmit(onSubmit)();
+    };
+
+    const handleTarifaFormSubmit = () => {
+        console.log("hola");
+        onSubmitTarifa();
+    };
 
     return (
 
@@ -345,80 +396,128 @@ const ConceptoForm = () => {
                     }
                 </div>
             </div>
+            {errors && <Error errors={errors} />}
             <div className="py-[20px] px-[10px] ">
 
-                {errors && <Error errors={errors} />}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <FormField
-                            control={form.control}
-                            name="nombre"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nombre</FormLabel>
-                                    <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre del concepto" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
-                                        El nombre del concepto.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="descripcion"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Descripción</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            readOnly={!abrirInput}
-                                            placeholder="Descripcion del concepto"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        Agrega una breve descripción.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="prioridad_abono"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Prioridad</FormLabel>
-                                    <FormControl>
-                                    <Input
-                                    id="number"
-                                    type="number"
-                                    defaultValue={1}
-                                    min = {1}
-                                    max = {10}
-                                    readOnly = {!abrirInput}
-                                    {...field}
-                                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))} //SE OCUPA CONVERTIR PARA QUE NO LO MARQUE STRING KIEN SABE XQ JEJE
-                                    />
-                                    </FormControl>
-                                    <FormDescription>
-                                        El 1 es minima y el 10 es maxima prioridad
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <MarcoForm title={"Informacion del concepto"}>
+                            <FormField
+                                control={form.control}
+                                name="nombre"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Nombre</FormLabel>
+                                        <FormControl>
+                                            <Input readOnly={!abrirInput} placeholder="Escribe el nombre del concepto" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+                                            El nombre del concepto.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="prioridad_abono"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Prioridad</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                id="number"
+                                                type="number"
+                                                defaultValue={1}
+                                                min={1}
+                                                max={10}
+                                                readOnly={!abrirInput}
+                                                {...field}
+                                                onChange={(e) => field.onChange(parseInt(e.target.value, 10))} //SE OCUPA CONVERTIR PARA QUE NO LO MARQUE STRING KIEN SABE XQ JEJE
+                                            />
+                                        </FormControl>
+                                        <FormDescription>
+                                            El 1 es minima y el 10 es maxima prioridad
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                        {loading && <Loader />}
+                            <FormField
+                                control={form.control}
+                                name="descripcion"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Descripción</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                readOnly={!abrirInput}
+                                                placeholder="Descripcion del concepto"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormDescription>
+                                            Agrega una breve descripción.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                        {abrirInput && <Button type="submit">Guardar</Button>}
+                            <FormField
+                                control={form.control}
+                                name="genera_iva"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Genera IVA</FormLabel>
+                                        <FormControl>
+                                            <ComboBoxCeroUno currentValue={String(concepto.genera_iva)} placeholder={"IVA"} form={form} name={"genera_iva"} readOnly={!abrirInput} />
+                                        </FormControl>
+                                        <FormDescription>
 
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </MarcoForm>
 
                     </form>
                 </Form>
+
+                {
+                    loadingTipoTomas &&
+                    <Loader />
+                }
+                {
+                    !loadingTipoTomas &&
+                    <>
+                        <form ref={formTarifa} onSubmit={onSubmitTarifa}>
+                            <MarcoForm title={"Tarifa"}>
+                                <>
+                                    {
+                                        tipoTomas.map((tipoToma, index) => {
+                                            return (
+                                                <div>
+                                                    <p className="mb-[10px]">{tipoToma.nombre}</p>
+                                                    <input readOnly={!abrirInput} type="number" placeholder={`Tarifa ${tipoToma.nombre}`} name={tipoToma.id} className="w-full bg-background border border-border p-2 rounded-md" />
+                                                </div>
+                                            )
+                                        })
+                                    }
+
+                                </>
+                            </MarcoForm>
+                        </form>
+                    </>
+                }
+
+                {loading && <Loader />}
+
+                {abrirInput &&
+                    <Button onClick={() => { handleTarifaFormSubmit(); }}>Guardar</Button>
+                }
             </div>
         </div>
     )
