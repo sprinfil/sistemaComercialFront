@@ -55,6 +55,10 @@ const ConceptoForm = () => {
         getTipoTomas();
     }), [])
 
+    useEffect((() => {
+        getTipoTomas();
+    }), [concepto])
+
     //con este metodo obtienes las anomalias de la bd
     const getTipoTomas = async () => {
         setLoadingTipoTomas(true);
@@ -338,6 +342,7 @@ const ConceptoForm = () => {
                 prioridad_abono: concepto.prioridad_abono,
                 genera_iva: String(concepto.genera_iva),
             });
+            console.log(concepto);
         }
         if (accion == "editar") {
             setAbrirInput(true);
@@ -501,7 +506,7 @@ const ConceptoForm = () => {
                                             return (
                                                 <div>
                                                     <p className="mb-[10px]">{tipoToma.nombre}</p>
-                                                    <input readOnly={!abrirInput} type="number" placeholder={`Tarifa ${tipoToma.nombre}`} name={tipoToma.id} className="w-full bg-background border border-border p-2 rounded-md" />
+                                                    <input defaultValue={ concepto.tarifas != null ? concepto.tarifas[index].monto : 0} readOnly={!abrirInput} type="number" placeholder={`Tarifa ${tipoToma.nombre}`} name={tipoToma.id} className="w-full bg-background border border-border p-2 rounded-md" />
                                                 </div>
                                             )
                                         })

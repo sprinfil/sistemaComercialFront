@@ -14,6 +14,7 @@ export type Concepto = {
   descripcion: string
   prioridad_abono: number
   genera_iva: string
+  tarifas: Array<{}>
 }
 
 

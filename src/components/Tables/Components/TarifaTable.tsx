@@ -8,7 +8,7 @@ import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 
 export default function TarifaTable() {
-  const { tarifas, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa } = useStateContext();
+  const { tarifas, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa, accion } = useStateContext();
 
   useEffect(() => {
     getTarifa();
