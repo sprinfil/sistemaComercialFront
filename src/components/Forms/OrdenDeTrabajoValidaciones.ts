@@ -7,5 +7,6 @@ export const OrdenDeTrabajoCrearSchema = z.object({
     nombre: z.string().min(1, "El Nombre es requerido"),
     estado: z.boolean(),
     cargos: z.number(),
+    aplicacion: z.string(),
 })
 

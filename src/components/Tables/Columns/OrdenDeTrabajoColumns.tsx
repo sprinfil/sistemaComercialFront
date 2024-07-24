@@ -13,6 +13,7 @@ export type OrdenDeTrabajo = {
   nombre: string
   estado: boolean
   cargos: BigInteger
+  aplicacion: string
 }
 
 

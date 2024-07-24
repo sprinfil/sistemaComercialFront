@@ -47,7 +47,21 @@ export const columns: ColumnDef<OrdenDeTrabajo, any>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Nombre
+          Cargo
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "aplicacion",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Se aplica
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )

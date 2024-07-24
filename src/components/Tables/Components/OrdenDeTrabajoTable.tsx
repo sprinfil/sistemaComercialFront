@@ -18,7 +18,7 @@ export default function OrdenDeTrabajoTable() {
   const getOrdenDeTrabajo = async () => {
     setLoadingTable(true);
     try {
-      const response = await axiosClient.get("/TipoToma");
+      const response = await axiosClient.get("/OrdenTrabajoCatalogo");
       setLoadingTable(false);
       setOrdenDeTrabajos(response.data.data);
       console.log(response.data.data);

@@ -8,34 +8,32 @@ import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { DataTableCargos } from '../../ui/DataTableCargos.tsx';
 
-export default function OrdenDeTrabajoCargosTable({ cargos }: { cargos: string[] }) {
+interface OrdenDeTrabajoCargosTableProps {
+  cargos: OrdenDeTrabajo[]; // Ensure the type matches
+}
 
-  const { tipodetomas, setTipoDeTomas, loadingTable, setLoadingTable, setAccion, setTipoDeToma} = useStateContext();
-  
+export default function OrdenDeTrabajoCargosTable({ cargos }: OrdenDeTrabajoCargosTableProps) {
+  const { tipodetomas, setTipoDeTomas, loadingTable, setLoadingTable, setAccion, setTipoDeToma } = useStateContext();
+
   const [data, setData] = useState<OrdenDeTrabajo[]>([]);
-  console.log("desde la tabla a ver que llega", cargos);
+  console.log("Received cargos:", cargos);
 
   useEffect(() => {
-    const transformedData: OrdenDeTrabajo[] = cargos.map((cargo, index) => ({
-      nombre: cargo,
-    }));
-    setData(transformedData);
+    setData(cargos); // Use cargos directly if they already match OrdenDeTrabajo[]
   }, [cargos]);
 
-const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
-    {
-      setTipoDeToma(tipoDeToma);
+  const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) => {
+    setTipoDeToma(tipoDeToma);
     setAccion("ver");
-}
+  };
 
   if (loadingTable) {
     return <div><Loader /></div>;
   }
 
   return (
-
     <div>
-      <DataTableCargos columns={columns} data={data} onRowClick={HandleClickRow}/>
+      <DataTableCargos columns={columns} data={data} onRowClick={HandleClickRow} />
     </div>
   );
 }
