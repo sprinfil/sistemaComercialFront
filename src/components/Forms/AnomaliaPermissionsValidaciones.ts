@@ -65,4 +65,5 @@ export const AnomaliaPermissionsSchema = z.object({
   //MODULO CONFIGURACIONES
   VerConfiguraciones: z.boolean(),
   VerCatalogos: z.boolean(),
+  VerOperadoresSistema: z.boolean(),
 })

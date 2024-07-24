@@ -88,7 +88,7 @@ const modulos = [
   },
   {
     titulo: "Operadores del sistema",
-    permission: "",
+    permission: "VerOperadoresSistema",
     subModulos: [
       {
         titulo: "Operadores del sistema",
@@ -191,6 +191,7 @@ export const ConfiguracionPermisos = ({ type }) => {
       //MODULO CONFIGURACIONES
       VerConfiguraciones: permissions.includes("VerConfiguraciones"),
       VerCatalogos: permissions.includes("VerCatalogos"),
+      VerOperadoresSistema: permissions.includes("VerOperadoresSistema"),
     },
   });
 
