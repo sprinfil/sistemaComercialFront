@@ -33,7 +33,12 @@ import { Switch } from "../ui/switch.tsx";
 import { ConceptosComboBoxNew } from "../ui/ConceptosComboBoxNew.tsx";
 import OrdenDeTrabajoCargosTable from "../Tables/Components/OrdenDeTrabajoCargosTable.tsx";
 import { OrdenDeTrabajoAplicacionComboBox } from "../ui/OrdenDeTrabajoAplicacionComboBox.tsx";
-
+type OrdenDeTrabajo = {
+    nombre: string;
+    aplicacion: string;
+    // Otras propiedades relevantes
+  };
+  
 const OrdenDeTrabajoForm = () => {
     const { toast } = useToast()
     const { ordenDeTrabajo, setOrdenDeTrabajo, loadingTable, setLoadingTable, setOrdenDeTrabajos, setAccion, accion } = useStateContext();
@@ -44,7 +49,9 @@ const OrdenDeTrabajoForm = () => {
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
     const [bloquear, setBloquear] = useState(false);
     const [cargoSeleccionado, setCargoSeleccionado] = useState();
-    const [cargosAgregados, setCargosAgregados] = useState([]);
+    const [nombreSeleccionado, setNombreSeleccionado] = useState<string | null>(null);
+    const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
+    const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>([]);
      //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
@@ -111,6 +118,7 @@ const OrdenDeTrabajoForm = () => {
             nombre: ordenDeTrabajo.nombre,
             estado: ordenDeTrabajo.estado,
             cargos: ordenDeTrabajo.cargos,
+            aplicacion: ordenDeTrabajo.aplicacion
         },
     })
 
@@ -290,13 +298,20 @@ const OrdenDeTrabajoForm = () => {
         }
     }, [accion]);
 
-    function handleAgregarCargo() {
-        if (cargoSeleccionado) {
-            setCargosAgregados(prev => [...prev, cargoSeleccionado]);
-            setCargoSeleccionado(null);
+    const handleAgregarCargo = () => {
+        if (nombreSeleccionado && aplicacionSeleccionada) {
+            const nuevoCargo: OrdenDeTrabajo = {
+                nombre: nombreSeleccionado,
+                aplicacion: aplicacionSeleccionada,
+            };
+    
+            setCargosAgregados((prev) => [...prev, nuevoCargo]);
+            setNombreSeleccionado(null);
+            setAplicacionSeleccionada(null);
+        } else {
+            console.log("Nombre o aplicación no seleccionados");
         }
-        console.log(cargoSeleccionado);
-    }
+    };
 
     return (
         <>
@@ -402,7 +417,7 @@ const OrdenDeTrabajoForm = () => {
                                 <FormItem className="flex items-center justify-center">
                                     <FormLabel className="mr-4">Cargos</FormLabel>
                                     <FormControl>
-                                        <ConceptosComboBoxNew form={form} field={field} name="cargos" setCargoSeleccionado={setCargoSeleccionado}/>
+                                        <ConceptosComboBoxNew form={form} field={field} name="cargos" setCargoSeleccionado={setNombreSeleccionado}/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -417,16 +432,16 @@ const OrdenDeTrabajoForm = () => {
                                 <FormItem className="flex items-center justify-center">
                                     <FormLabel className="mr-4">Aplicación</FormLabel>
                                     <FormControl>
-                                        <OrdenDeTrabajoAplicacionComboBox form={form} field={field} name="aplicacion" setCargoSeleccionado={setCargoSeleccionado}/>
+                                        <OrdenDeTrabajoAplicacionComboBox form={form} field={field} name="aplicacion" setCargoSeleccionado={setAplicacionSeleccionada}/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
-                                <Button type="button" className="flex-shrink-0" onClick={handleAgregarCargo}>Agregar cargo</Button>
+                                {/*<Button type="button" className="flex-shrink-0" onClick={handleAgregarCargo}>Agregar cargo</Button>*/}
                             </div>
                         )}
                         />
-                        {accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>}
-                        {accion == "editar" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>}
+                        {/*accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
+                        {/*accion == "editar" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
 
                             {loading && <Loader />}
                             {abrirInput && <Button type="submit">Guardar</Button>}
