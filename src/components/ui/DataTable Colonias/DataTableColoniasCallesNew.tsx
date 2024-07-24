@@ -10,36 +10,18 @@ import {
   getSortedRowModel,
   getPaginationRowModel,
 } from "@tanstack/react-table";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-
-
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { EdicionColoniaCalleNew } from "../../Tables/Components/EdicionColoniaCalleNew";
 import { Trash2Icon } from "lucide-react";
-import axiosClient from "../../../axios-client.ts"; // Importar tu cliente axios
+import ModalText from "../ModalText.tsx";
+import axiosClient from "../../../axios-client.ts";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   sorter: string;
   onRowClick?: (row: TData) => void;
-  updateData: () => void;
+  updateData: () => void; // Ensure updateData is defined in the props
 }
 
 export function DataTableColoniaCalleNew<TData, TValue>({
@@ -51,11 +33,10 @@ export function DataTableColoniaCalleNew<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
+  const [selectedRow, setSelectedRow] = React.useState<TData | null>(null); // State for selected row
   const [openModal, setOpenModal] = React.useState(false);
-  const [openDeleteModal, setOpenDeleteModal] = React.useState(false); // Estado para el modal de eliminación
-  const [coloniaCalle, setColoniaCalle] = React.useState({});
-  
+  const [modalText, setModalText] = React.useState("");
+
   const table = useReactTable({
     data,
     columns,
@@ -73,81 +54,56 @@ export function DataTableColoniaCalleNew<TData, TValue>({
   });
 
   const handleRowClick = (rowId: string, rowData: TData) => {
-    setColoniaCalle(rowData);
-    setSelectedRow(rowId);
-    onRowClick?.(rowData);
+    setSelectedRow(rowData);
+    setModalText(`Are you sure you want to delete ${rowId}?`);
     setOpenModal(true);
   };
 
-  const handleDeleteClick = (rowId: string, rowData: TData) => {
-    setColoniaCalle(rowData);
-    setSelectedRow(rowId);
-    setOpenDeleteModal(true); // Abre el modal de confirmación de eliminación
-  };
-
-  const handleDelete = () => {
-    axiosClient.delete(`/calle/delete/${coloniaCalle.id}`)
-      .then((response) => {
-        console.log(response);
-        updateData(); // Actualiza la tabla después de eliminar
-        setOpenDeleteModal(false); // Cierra el modal de confirmación de eliminación
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const deleteRecord = async () => {
+    if (selectedRow) {
+      try {
+        // Call your API to delete the record here
+        await axiosClient.delete(`/calle/delete/${(selectedRow as any).id}`);
+        updateData(); // Refresh data after deletion
+        setOpenModal(false); // Close the modal after successful deletion
+      } catch (error) {
+        console.error("Error deleting record:", error);
+      }
+    }
   };
 
   return (
     <>
-      <EdicionColoniaCalleNew updateData={updateData} open={openModal} setOpen={setOpenModal} coloniaCalle={coloniaCalle} />
-      
-      {openDeleteModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-5 rounded-md z-50">
-            <h3>Confirmar Eliminación</h3>
-            <p>¿Estás seguro de que deseas eliminar esta calle?</p>
-            <div className="flex justify-end space-x-3">
-              <Button variant="outline" onClick={() => setOpenDeleteModal(false)}>Cancelar</Button>
-              <Button variant="destructive" onClick={handleDelete}>Eliminar</Button>
-            </div>
-          </div>
-        </div>
-      )}
-      
+      <ModalText
+        isOpen={openModal}
+        setIsOpen={setOpenModal}
+        method={deleteRecord}
+        text={modalText}
+      />
       <div className="">
         <div className="flex items-center py-4 px-2">
-          {/* <Input
-            placeholder="Buscar Rango..."
-            type="text"
-            value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
-            }
-            className="w-full"
-          /> */}
+          {/* Your search input or other controls */}
         </div>
         <div className="rounded-md border h-full overflow-auto ">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-                      </TableHead>
-                    );
-                  })}
+                    </TableHead>
+                  ))}
                 </TableRow>
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
+              {table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
@@ -162,9 +118,9 @@ export function DataTableColoniaCalleNew<TData, TValue>({
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleDeleteClick(row.id, row.original)}
+                        onClick={() => handleRowClick(row.id, row.original)}
                       >
-                        <Trash2Icon className=" h-4 w-4" />
+                        <Trash2Icon className="h-4 w-4" />
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -172,7 +128,7 @@ export function DataTableColoniaCalleNew<TData, TValue>({
               ) : (
                 <TableRow>
                   <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No resultados.
+                    No results.
                   </TableCell>
                 </TableRow>
               )}
@@ -186,7 +142,7 @@ export function DataTableColoniaCalleNew<TData, TValue>({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Anterior
+            Previous
           </Button>
           <Button
             variant="outline"
@@ -194,7 +150,7 @@ export function DataTableColoniaCalleNew<TData, TValue>({
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Siguiente
+            Next
           </Button>
         </div>
       </div>
