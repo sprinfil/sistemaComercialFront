@@ -40,6 +40,8 @@ import {
 } from "@/components/ui/accordion"
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { useStateContext as OperadorContext } from '../../../../contexts/ContextOperador.tsx';
+import { count } from 'console';
 
 const modulos = [
   {
@@ -86,7 +88,7 @@ const modulos = [
   },
   {
     titulo: "Operadores del sistema",
-    permission: "",
+    permission: "VerOperadoresSistema",
     subModulos: [
       {
         titulo: "Operadores del sistema",
@@ -99,10 +101,11 @@ const modulos = [
 
 
 
-export const ConfiguracionPermisos = () => {
+export const ConfiguracionPermisos = ({ type }) => {
   const { toast } = useToast()
   const [editar, setEditar] = useState(false);
   const { permissions, setPermissions, rol, editando, setEditando } = useStateContext();
+  const {operador} = OperadorContext();
 
   function successToastCreado() {
     toast({
@@ -188,21 +191,38 @@ export const ConfiguracionPermisos = () => {
       //MODULO CONFIGURACIONES
       VerConfiguraciones: permissions.includes("VerConfiguraciones"),
       VerCatalogos: permissions.includes("VerCatalogos"),
+      VerOperadoresSistema: permissions.includes("VerOperadoresSistema"),
     },
   });
 
   function onSubmit(values: z.infer<typeof AnomaliaPermissionsSchema>) {
-    console.log(JSON.stringify(values));
-    axiosClient.post(`/Rol/give_rol_permissions/${rol.id}`, JSON.stringify(values))
-      .then((values) => {
-        setPermissions(values.data);
-        console.log(values);
-        successToastCreado();
-      })
-      .catch((err) => {
-        const response = err.response;
-        ErrorToast();
-      })
+
+    if (type == "Roles") {
+      console.log('hola');
+      axiosClient.post(`/Rol/give_rol_permissions/${rol.id}`, JSON.stringify(values))
+        .then((values) => {
+          setPermissions(values.data);
+          successToastCreado();
+        })
+        .catch((err) => {
+          const response = err.response;
+          ErrorToast();
+        })
+    }
+
+    if (type == "Operadores") {
+      axiosClient.post(`/Rol/give_user_permissions/${operador.user.id}`, JSON.stringify(values))
+        .then((values) => {
+          setPermissions(values.data);
+          console.log(permissions);
+          successToastCreado();
+        })
+        .catch((err) => {
+          const response = err.response;
+          ErrorToast();
+        })
+    }
+
   }
 
   const all = (permisos) => {
