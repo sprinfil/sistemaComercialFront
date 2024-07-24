@@ -66,7 +66,7 @@ const Catalogos = () => {
 
   return (
     <div className='w-full'>
-      <Tabs defaultValue="Anomalías" className="">
+      <Tabs defaultValue="" className="">
 
         <TabsList>
           {opciones.map((opcion, index) => {

@@ -13,7 +13,7 @@ const Roles = () => {
         },
         {
             titulo: "Permisos",
-            componente: <Permisos/>
+            componente: <Permisos type = "Roles"/>
         },
     ]
 

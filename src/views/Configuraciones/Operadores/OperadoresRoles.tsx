@@ -12,13 +12,13 @@ export const OperadoresRoles = () => {
     const [roles, setRoles] = useState([]);
     const { editando, setEditando, setOperadores, tab } = useStateContext();
     const [editar, setEditar] = useState(false);
-    const { operador } = useStateContext();
+    const { operador, setOperador, operadores } = useStateContext();
     const [switch_values, setSwitch_values] = useState({});
 
 
     useEffect(() => {
         getRoles();
-    }, []);
+    }, [tab]);
 
     useEffect(() => {
         sync_roles();
@@ -29,13 +29,6 @@ export const OperadoresRoles = () => {
             sync_roles();
         }
     }, [switch_values]);
-
-    useEffect(() => {
-        
-    }, [tab]);
-
-
-
 
 
     const _editar = () => {
@@ -93,7 +86,7 @@ export const OperadoresRoles = () => {
                 }
             })
             setSwitch_values(switch_values_temp);
-            //getOperadores();
+       
         }
     }
 
@@ -103,18 +96,20 @@ export const OperadoresRoles = () => {
             const response = await axiosClient.get("/Operador");
             setLoading(false);
             setOperadores(response.data);
-            //console.log(response.data);
+
+            const selectedOperador = response.data.find(operador_temp => operador_temp.id === operador.id);
+            if (selectedOperador) {
+                setOperador(selectedOperador);
+                console.log(selectedOperador);
+            } else {
+                console.error(`No existe el operador`);
+            }
+
         } catch (error) {
             setLoading(false);
             console.error("Failed to fetch Operadores:", error);
         }
     };
-
-    useEffect(() => {
-        if (operador.user) {
-            sync_roles();
-        }
-    }, [roles])
 
     const getRoles = async () => {
         setLoading(true);

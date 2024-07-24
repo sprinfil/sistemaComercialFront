@@ -41,6 +41,7 @@ import {
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import { useStateContext as OperadorContext } from '../../../../contexts/ContextOperador.tsx';
+import { count } from 'console';
 
 const modulos = [
   {
@@ -100,7 +101,7 @@ const modulos = [
 
 
 
-export const ConfiguracionPermisos = ({ type = "Roles" }) => {
+export const ConfiguracionPermisos = ({ type }) => {
   const { toast } = useToast()
   const [editar, setEditar] = useState(false);
   const { permissions, setPermissions, rol, editando, setEditando } = useStateContext();
@@ -196,10 +197,10 @@ export const ConfiguracionPermisos = ({ type = "Roles" }) => {
   function onSubmit(values: z.infer<typeof AnomaliaPermissionsSchema>) {
 
     if (type == "Roles") {
+      console.log('hola');
       axiosClient.post(`/Rol/give_rol_permissions/${rol.id}`, JSON.stringify(values))
         .then((values) => {
           setPermissions(values.data);
-          console.log(values);
           successToastCreado();
         })
         .catch((err) => {
@@ -211,12 +212,8 @@ export const ConfiguracionPermisos = ({ type = "Roles" }) => {
     if (type == "Operadores") {
       axiosClient.post(`/Rol/give_user_permissions/${operador.user.id}`, JSON.stringify(values))
         .then((values) => {
-          let ctr = 0;
-          values.data.forEach(element => {
-            permissions[ctr] = element;
-            ctr = ctr + 1;
-          });
-          console.log(values);
+          setPermissions(values.data);
+          console.log(permissions);
           successToastCreado();
         })
         .catch((err) => {

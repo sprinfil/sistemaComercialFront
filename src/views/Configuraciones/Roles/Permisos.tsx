@@ -9,7 +9,7 @@ import axiosClient from '../../../axios-client'
 import Loader from '../../../components/ui/Loader'
 import { permission } from 'process'
 
-const Permisos = ({ type = "Roles" }) => {
+const Permisos = ({ type }) => {
 
   const { rol, permissions, setPermissions } = useStateContext();
   const [loading, setLoading] = useState(false);
@@ -46,11 +46,7 @@ const Permisos = ({ type = "Roles" }) => {
       try {
         const response = await axiosClient.get(`/Rol/get_all_permissions_by_user_id/${operador.user.id}`);
         setLoading(false);
-        let ctr = 0;
-        response.data.forEach(element => {
-          permissions[ctr] = element;
-          ctr = ctr + 1;
-        });
+        setPermissions(response.data);
       } catch (error) {
         setLoading(false);
         console.error("Failed to fetch anomalias:", error);

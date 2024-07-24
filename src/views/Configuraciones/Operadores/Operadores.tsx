@@ -7,33 +7,33 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useStateContext } from "../../../contexts/ContextOperador.tsx";
 import { OperadoresRoles } from './OperadoresRoles.tsx'
 import Permisos from '../Roles/Permisos.tsx'
+import { ContextProvider as ContextRolProvider } from '../../../contexts/ContextRol.tsx'
 
 
 
 
 const Roles = () => {
-
-
-
     return (
         <div>
             <ContextProvider>
-                <div className='w-full max-h-[75vh] mt-[10px]'>
-                    {/*Contenedor principal*/}
-                    <div className='flex gap-2 '>
+                <ContextRolProvider>
+                    <div className='w-full max-h-[75vh] mt-[10px]'>
+                        {/*Contenedor principal*/}
+                        <div className='flex gap-2 '>
 
-                        {/*Datatable*/}
-                        <div className='w-[35%] rounded-md border border-border p-4 overflow-auto h-[88vh]'>
-                            <OperadorTable />
+                            {/*Datatable*/}
+                            <div className='w-[35%] rounded-md border border-border p-4 overflow-auto h-[88vh]'>
+                                <OperadorTable />
+                            </div>
+
+                            {/*VISTAS DEL TAB*/}
+                            <div className='w-[65%] rounded-md border border-border h-[88vh] p-4 overflow-auto '>
+                                <TabsComponent />
+                            </div>
+
                         </div>
-
-                        {/*VISTAS DEL TAB*/}
-                        <div className='w-[65%] rounded-md border border-border h-[88vh] p-4 overflow-auto '>
-                            <TabsComponent />
-                        </div>
-
                     </div>
-                </div>
+                </ContextRolProvider>
             </ContextProvider>
         </div>
     )
@@ -76,7 +76,7 @@ const TabsComponent = () => {
     ]
 
     const handleTabChange = (newValue) => {
-      setTab(newValue);
+        setTab(newValue);
     };
 
     return (
