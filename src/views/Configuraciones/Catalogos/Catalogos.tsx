@@ -71,10 +71,13 @@ const Catalogos = () => {
       titulo: "Colonias y calles",
       componente: <Colonia />,
       permission: "VerColoniasCalles"
+      
+    },
+    {
       titulo: "Orden de trabajo",
       componente: <OrdenDeTrabajo />,
       permission: "VerOrdenDeTrabajo"
-    },
+    }
   ]
 
   return (
