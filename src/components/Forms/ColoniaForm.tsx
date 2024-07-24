@@ -46,7 +46,6 @@ const ColoniaForm = () => {
     const form = useForm<z.infer<typeof coloniaSchema>>({
         resolver: zodResolver(coloniaSchema),
         defaultValues: {
-            id: colonia.id,
             nombre: colonia.nombre,
         },
     })
@@ -123,17 +122,9 @@ const ColoniaForm = () => {
 
     function onSubmit(values: z.infer<typeof coloniaSchema>) {
         console.log("submit");
-        const estadoConvertido = values.estado ? 'activo' : 'inactivo';
-
-            const datosAEnviar = {
-                ...values,
-                estado: estadoConvertido,
-            };
-
-
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/colonia/create`, datosAEnviar)
+            axiosClient.post(`/colonia/store`, values)
                 .then((response) => {
                     const data = response.data;
                     setLoading(false);
@@ -162,7 +153,8 @@ const ColoniaForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/colonia/update/${colonia.id}`, datosAEnviar)
+            console.log(colonia.id)
+            axiosClient.put(`/colonia/update/${colonia.id}`, values)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
@@ -193,7 +185,7 @@ const ColoniaForm = () => {
         try {
             const response = await axiosClient.get("/colonia");
             setLoadingTable(false);
-            setColonias(response.data.data);
+            setColonias(response.data);
         } catch (error) {
             setLoading(false);
             errorToast();
@@ -204,13 +196,13 @@ const ColoniaForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/colonia/log_delete/${colonia.id}`);
+            await axiosClient.delete(`/colonia/delete/${colonia.id}`);
             getColonias();
             setAccion("eliminar");
             successToastEliminado();
         } catch (error) {
             errorToast();
-            console.error("Failed to delete Giro Comercial:", error);
+            console.error("Failed to delete colonias:", error);
         }
     };
 
@@ -249,12 +241,12 @@ const ColoniaForm = () => {
             });
         }
         if (accion === "ver") {
+            console.log(colonia)
             setAbrirInput(false);
             setErrors({});
             setAccion("");
             setBloquear(true);
             form.reset({
-                id: colonia.id,
                 nombre: colonia.nombre,
             });
         }
@@ -316,30 +308,10 @@ const ColoniaForm = () => {
                                 <FormItem>
                                     <FormLabel>Nombre</FormLabel>
                                     <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la tarifa" {...field} />
+                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la colonia" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El nombre de la tarifa.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="descripcion"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Descripción</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            readOnly={!abrirInput}
-                                            placeholder="Descripcion de la tarifa"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        Agrega una breve descripción.
+                                        El nombre de la colonia.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

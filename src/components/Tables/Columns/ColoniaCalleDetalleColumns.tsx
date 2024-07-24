@@ -8,14 +8,12 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type ColoniaCalleDetalleColumns = {
+export type ColoniaCalleDetalle = {
     id: number
-    id_tarifa: string
-    id_tipo_toma: string
-    rango: string
-    agua: string
-    alcantarillado: string
-    saneamiento: string
+    id_colonia: string
+    id_tipo_colonia: string
+    nombre: string
+
 }
 
 export type tipoColoniaId = {
@@ -25,15 +23,11 @@ export type tipoColoniaId = {
 }
 
 
-export const columns: ColumnDef<ColoniaCalleDetalleColumns>[] = [
+export const columns: ColumnDef<ColoniaCalleDetalle>[] = [
     
     {
-        accessorKey: "calle",
+        accessorKey: "nombre",
         header: "Calle",
-        cell: ({ row }) => {
-            const formatted = parseFloat(row.getValue("calle"))
-            return <div className="">{formatted} m3</div>
-          },
     },
     
 ]

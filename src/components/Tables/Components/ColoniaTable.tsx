@@ -20,6 +20,7 @@ export default function ColoniaTable() {
       const response = await axiosClient.get("/colonia");
       setLoadingTable(false);
       setColonias(response.data);
+      console.log(response.data)
       //console.log(response.data.data);
     } catch (error) {
       setLoadingTable(false);

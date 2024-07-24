@@ -6,6 +6,7 @@ import ColoniaTable from '../../../../components/Tables/Components/ColoniaTable.
 import ColoniaForm from '../../../../components/Forms/ColoniaForm.tsx';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ColoniaCalle } from '../Colonias-Calles/ColoniaCalle.tsx';
+import ColoniaCalleNewTable from '../../../../components/Tables/Components/ColoniaCalleNewTable.tsx';
 import { Button } from '../../../../components/ui/button.tsx';
 import { EdicionTarifaServicio } from '../../../../components/Tables/Components/EdicionTarifaServicio.tsx';
 import { OcultarTable } from '../../../../components/Tables/Components/OcultarTable.tsx';
@@ -22,7 +23,7 @@ export const Colonia = () => {
     },
     {
       titulo: "Calles",
-      componente: <ColoniaCalle />
+      componente: <ColoniaCalleNewTable />
     },
     
   ]

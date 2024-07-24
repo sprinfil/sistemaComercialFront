@@ -56,7 +56,7 @@ export const columns: ColumnDef<Colonia>[] = [
     cell: ({ row }) => {
       const colonia = row.original
       const { setColonia, setAccion } = useStateContext();
-
+      
       return (
         <div onClick={()=>{setColonia(colonia);setAccion("ver")}}>
           <IconButton>
