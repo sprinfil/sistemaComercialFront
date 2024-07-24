@@ -82,8 +82,8 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Contratos",
                     descripcion: "Genera un nuevo contrato",
-                    route: "/proximamente",
-                    permission: ""
+                    permission: "",
+                    route: "/Contratacion"
                 },
                 {
                     titulo: "Crear Nuevo Usuario",

@@ -13,6 +13,7 @@ import Roles from './views/Configuraciones/Roles/Roles';
 import Operadores from  './views/Configuraciones/Operadores/Operadores'
 import { Tarifa } from './views/Configuraciones/Tarifa/Tarifa';
 import App from './views/Cajas/Cajas';
+import { ContratacionBuscarUsuario } from './views/Usuarios/Contratos/ContratacionBuscarUsuario';
 
 const router = createBrowserRouter ([
     {
@@ -63,6 +64,10 @@ const router = createBrowserRouter ([
             {
                 path:'/Cajas',
                 element: <App/>
+            },
+            {
+                path:'/Contratacion',
+                element: <ContratacionBuscarUsuario/>
             },
         ]
     },

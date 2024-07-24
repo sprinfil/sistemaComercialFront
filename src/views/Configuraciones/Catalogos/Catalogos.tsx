@@ -19,6 +19,7 @@ const Catalogos = () => {
   const { permissions, user } = useStateContext();
   const [seleccionarCatalogo, setSeleccionarCatalogo] = useState(true);
 
+
   const opciones = [
     {
       titulo: "Anomalías",

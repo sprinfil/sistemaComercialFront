@@ -1,9 +1,4 @@
-import { useState } from "react";
-import logo from '../../img/logo.png';
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from '../../components/ui/button.tsx';
+import React, {useState} from 'react'
 import {
     Form,
     FormControl,
@@ -12,68 +7,52 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "../../components/ui/form.tsx";
-import { Input } from '../../components/ui/input.tsx';
-import { crearusuarionuevoSchema } from './crearusuarioValidaciones.ts';
-import { ModeToggle } from '../../components/ui/mode-toggle.tsx';
-import axiosClient from '../../axios-client.ts';
-import Loader from "../../components/ui/Loader.tsx";
-import Error from "../../components/ui/Error.tsx";
-import { Textarea } from "../ui/textarea.tsx";
-import { useEffect } from "react";
-import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
-import IconButton from "../ui/IconButton.tsx";
-import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
-import Modal from "../ui/Modal.tsx";
+} from "../../../../components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { crearContratoSchema } from '../validacionesContratacion'; 
+const [errors, setErrors] = useState({});
+import { z } from "zod";
+import { Input } from '../../../../components/ui/input.tsx';
+import Loader from "../../../../components/ui/Loader.tsx";
+import { Button } from '../../../../components/ui/button.tsx';
 
-const CrearUsuarioForm = () => {
-    const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState({});
-    const [abrirInput, setAbrirInput] = useState(false);
 
-    const form = useForm<z.infer<typeof crearusuarionuevoSchema>>({
-        resolver: zodResolver(crearusuarionuevoSchema),
-        defaultValues: {
-            id: 0,
-            nombre: "",
-            apellido_paterno:"",
-            apellido_materno:"",
-            telefono:"",
-            curp: "",
-            rfc: "",
-            correo: "",
-        },
-    });
 
-    async function onSubmit(values: z.infer<typeof crearusuarionuevoSchema>) {
-        setLoading(true);
-        setErrors({});
-        console.log('Valores enviados:', values);
-    
-        try {
-            const response = await axiosClient.post('/usuarios/create', values);
-            console.log('Usuario creado:', response.data);
-            form.reset(); // Limpiar el formulario
-            // Aquí puedes realizar alguna acción adicional, como redirigir al usuario o mostrar un mensaje de éxito
-        } catch (error) {
-            if (error.response && error.response.data) {
-                console.error('Errores de validación:', error.response.data);
-                setErrors(error.response.data);
-            } else {
-                console.error('Error general:', error);
-                setErrors({ general: 'Ocurrió un error al crear el usuario' });
-            }
-        } finally {
-            setLoading(false);
-        }
-    }
+//EN ESTA PANTALLA SE VA A CREAR LA TOMA(OBTIENE ESOS DATOS)
+const [loading, setLoading] = useState(false);
 
-    return (
-        <div className="overflow-auto ">
+const form = useForm<z.infer<typeof crearContratoSchema>>({
+    resolver: zodResolver(crearContratoSchema),
+    defaultValues: {
+    id_usuario: 1,
+    id_giro_comercial: 1,
+    id_libro: 1,
+    id_codigo_toma: 1,
+    clave_catastral: "",
+    calle:"",
+    entre_calle_1: "",
+    entre_calle_2:"",
+    colonia: "",
+    codigo_postal:"",
+    localidad: "",
+    diametro_toma:"" ,
+    calle_notificaciones:"" ,
+    entre_calle_notificaciones_2:"" ,
+    tipo_servicio: "",
+    tipo_toma: "",
+    tipo_contratacion:"" ,
+    },
+});
+
+
+export const CrearContratoForm = () => {
+return (
+    <div className="overflow-auto">
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-                <div className='h-[20px] w-full flex items-center justify-end'>
+                <div className='h-[20px] w-full flex items-center justify-end '>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        <p className="text-[20px] font-medium">Crear usuario</p>
+                        <p className="text-[20px] font-medium">Crear usuario fisico</p>
                     </div>
                 </div>
             </div>
@@ -85,12 +64,12 @@ const CrearUsuarioForm = () => {
                             <div className="w-[50%]">
                                 <FormField
                                     control={form.control}
-                                    name="nombre"
+                                    name="clave_catastral"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Nombre</FormLabel>
+                                            <FormLabel>claveCatastral</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Escribe el nombre del usuario" {...field} />
+                                                <Input placeholder="Escribe su clave catastral" {...field} />
                                             </FormControl>
                                             <FormDescription>
                                                 
@@ -101,7 +80,7 @@ const CrearUsuarioForm = () => {
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="apellido_paterno"
+                                    name="calle"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Apellido paterno</FormLabel>
@@ -117,7 +96,7 @@ const CrearUsuarioForm = () => {
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="apellido_materno"
+                                    name="entre_calle_1"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Apellido materno</FormLabel>
@@ -133,7 +112,7 @@ const CrearUsuarioForm = () => {
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="telefono"
+                                    name="entre_calle_2"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Telefono</FormLabel>
@@ -151,7 +130,7 @@ const CrearUsuarioForm = () => {
                             <div className="w-[50%]">
                                 <FormField
                                     control={form.control}
-                                    name="curp"
+                                    name="colonia"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>CURP</FormLabel>
@@ -167,7 +146,7 @@ const CrearUsuarioForm = () => {
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="rfc"
+                                    name="codigo_postal"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>RFC</FormLabel>
@@ -183,15 +162,15 @@ const CrearUsuarioForm = () => {
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="correo"
+                                    name="localidad"
                                     render={({ field }) => (
-                                        <FormItem>
+                                        <FormItem>  
                                             <FormLabel>Correo electronico</FormLabel>
                                             <FormControl>
                                                 <Input  placeholder="Escribe el correo electronico" {...field} type='email'/>
                                             </FormControl>
                                             <FormDescription>
-                                               
+                                
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
@@ -207,7 +186,5 @@ const CrearUsuarioForm = () => {
                 </Form>
             </div>
         </div>
-    );
+  )
 }
-
-export default CrearUsuarioForm;
