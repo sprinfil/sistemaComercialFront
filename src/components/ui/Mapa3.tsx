@@ -63,8 +63,8 @@ export const Mapa3 = () => {
     }, []);
 
     return (
-        <div className='h-full'>
-            <div id="map" className='w-full h-full rounded-md'></div>
+        <div className='max-h-[80vh] h-full'>
+            <div id="map" className='w-full h-full '></div>
         </div>
     );
 }
