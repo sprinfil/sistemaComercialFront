@@ -118,7 +118,7 @@ const OrdenDeTrabajoForm = () => {
             nombre: ordenDeTrabajo.nombre,
             estado: ordenDeTrabajo.estado,
             cargos: ordenDeTrabajo.cargos,
-            aplicacion: ordenDeTrabajo.aplicacion
+            momento: ordenDeTrabajo.momento
         },
     })
 
@@ -126,8 +126,22 @@ const OrdenDeTrabajoForm = () => {
 
     function onSubmit(values: z.infer<typeof OrdenDeTrabajoCrearSchema>) {
         setLoading(true);
+
+        const transformedData = {
+            id: values.id,
+            nombre: values.nombre,
+            orden_trabajo_conf: {
+                id: 1, // Si necesitas un ID fijo o estático, puedes usar un valor por defecto
+                id_orden_trabajo_catalogo: values.id_orden_trabajo_catalogo || 5, // Usa un valor por defecto o extrae el valor correctamente
+                id_concepto_catalogo: values.id_concepto_catalogo || 1, // Usa un valor por defecto o extrae el valor correctamente
+                accion: values.accion || "modificar",
+                momento: values.aplicacion || "generar",
+                atributo: values.estado || "estatus",
+                valor: values.valor || "baja temporal",
+            },
+        };
         if (accion == "crear") {
-            axiosClient.post(`/OrdenTrabajoCatalogo/create`, values)
+            axiosClient.post(`/OrdenTrabajoCatalogo/create`, transformedData )
                 .then((response) => {
                     const data = response.data;
                     if(data.restore)
@@ -279,6 +293,7 @@ const OrdenDeTrabajoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                
             })
         }
         if (accion == "ver") {
@@ -289,7 +304,8 @@ const OrdenDeTrabajoForm = () => {
             form.reset({
                 id: ordenDeTrabajo.id,
                 nombre: ordenDeTrabajo.nombre,
-                descripcion: ordenDeTrabajo.descripcion,
+                cargos: ordenDeTrabajo.cargos,
+                aplicacion: ordenDeTrabajo.aplicacion,
             });
         }
         if (accion == "editar") {
@@ -430,7 +446,7 @@ const OrdenDeTrabajoForm = () => {
                         render={({ field }) => (
                             <div className="flex items-center space-x-4">
                                 <FormItem className="flex items-center justify-center">
-                                    <FormLabel className="mr-4">Aplicación</FormLabel>
+                                    <FormLabel className="mr-4">Accion a realizar de la OT</FormLabel>
                                     <FormControl>
                                         <OrdenDeTrabajoAplicacionComboBox form={form} field={field} name="aplicacion" setCargoSeleccionado={setAplicacionSeleccionada}/>
                                     </FormControl>
@@ -440,6 +456,7 @@ const OrdenDeTrabajoForm = () => {
                             </div>
                         )}
                         />
+                       
                         {/*accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
                         {/*accion == "editar" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
 

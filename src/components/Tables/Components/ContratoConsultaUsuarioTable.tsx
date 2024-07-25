@@ -15,32 +15,53 @@ interface ConsultaUsuarioTableProps {
 
 export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2}: ConsultaUsuarioTableProps) {
 
+  console.log("este es el que recibeeee" + nombreBuscado)
   const { usuariosEncontrados, setusuariosEncontrados, loadingTable, setLoadingTable, setAccion,setusuario, usuario} = useStateContext();
   const tableRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (nombreBuscado) {
-      const loadAndScroll = async () => {
-        setLoadingTable(true);
+        const loadAndScroll = async () => {
+            setLoadingTable(true);
 
-        try {
-          const response = await axiosClient.get(`/usuarios/consulta/${nombreBuscado}`);
-          setusuariosEncontrados(response.data.data); // Actualiza los datos
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        } finally {
-          setLoadingTable(false);
-        }
+            try {
+                const endpoints = [
+                    `/usuarios/consultaCorreo/${nombreBuscado}`,
+                    `/usuarios/consultaRFC/${nombreBuscado}`,
+                    `/usuarios/consulta/${nombreBuscado}`,
+                    `/usuarios/consultaCodigo/${nombreBuscado}`,
+                    `/usuarios/consultaCURP/${nombreBuscado}`,
 
-        if (tableRef.current) {
-          tableRef.current.scrollIntoView({ behavior: 'auto' });
-        }
-      };
+                ];
 
-      loadAndScroll();
+                const results = await Promise.all(endpoints.map(endpoint =>
+                    axiosClient.get(endpoint)
+                        .then(response => response.data.data)
+                        .catch(err => {
+                            console.error('Error fetching data:', err);
+                            return []; // Devuelve un array vacío en caso de error
+                        })
+                ));
+
+                // Combina los resultados de todas las consultas
+                const combinedResults = results.flat();
+                setusuariosEncontrados(combinedResults); // Actualiza los datos
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoadingTable(false);
+            }
+
+            if (tableRef.current) {
+                tableRef.current.scrollIntoView({ behavior: 'auto' });
+            }
+        };
+
+        loadAndScroll();
     }
-  }, [nombreBuscado, setusuariosEncontrados, setLoadingTable]);
+}, [nombreBuscado, setusuariosEncontrados, setLoadingTable]);
 
   const handleRowClick = (contratoBuscarUsuario: ContratoBuscarUsuario) => {
     setusuario(contratoBuscarUsuario);

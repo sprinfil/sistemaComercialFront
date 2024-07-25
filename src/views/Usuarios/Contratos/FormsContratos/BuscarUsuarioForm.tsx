@@ -64,22 +64,63 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
         console.log(values);
         setLoading(true);
         setusuariosEncontrados([]);
-        axiosClient.get(`/usuarios/consulta/${values.nombre}`)
-        .then((response) => 
-        {
-            setNombreBuscado(values.nombre);
-            setusuariosEncontrados(response.data.data);
-            setAccion(tipoAccion);
-        })
-        .catch((err) =>{
-            const response = err.response;
-            errorToast();
-            if (response && response.status === 422) {
-                setErrors(response.data.errors);
+    
+        const criterio = values.nombre.trim();
+    
+        // Define los endpoints para las diferentes consultas
+        const endpoints = [
+            `/usuarios/consultaCorreo/${criterio}`,
+            `/usuarios/consultaRFC/${criterio}`,
+            `/usuarios/consulta/${criterio}`,
+            `/usuarios/consultaCodigo/${criterio}`,
+            `/usuarios/consultaCURP/${criterio}`,
+
+        ];
+    
+        // Ejecuta todas las consultas en paralelo
+        Promise.all(endpoints.map(endpoint =>
+            axiosClient.get(endpoint)
+                .then(response => response.data.data)
+                
+                .catch(err => {
+                    setErrors(err);
+                    return []; // Devuelve un array vacío en caso de error
+                })
+        ))
+        .then(results => {
+          // Combina los resultados de todas las consultas
+        const combinedResults = results.flat();
+
+        // Actualiza el estado con todos los resultados combinados
+        if (combinedResults.length > 0) {
+            setNombreBuscado(values.nombre); // O usa otro valor si es necesario
+            setusuariosEncontrados(combinedResults);
+            if (combinedResults.length === 1) {
+                if (tipoAccion === "verUsuarioDetalle") {
+                    navigate("/usuario", { state: { contratoBuscarUsuario: combinedResults[0] } });
+                } else if (tipoAccion === "crearContratacionUsuario") {
+                    navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: combinedResults[0] } });
+                }
+            } else {
+                setMostrarTabla(true);
             }
-            setLoading(false);
+
+        } else {
+            console.log("No users found");
+            setMostrarTabla(false);
+        }
+                
+        setAccion(tipoAccion);
         })
+        .catch(err => {
+            setErrors(err);
+        })
+        .finally(() => {
+            setLoading(false);
+        });
     }
+    
+   
 
     useEffect(() => {
         
@@ -89,7 +130,6 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
             setMostrarTabla(true);
         } else if (numObject === 1) {
             setMostrarTabla(false);
-            navigate(navegacion);
         } else {
             setMostrarTabla(false); 
         }

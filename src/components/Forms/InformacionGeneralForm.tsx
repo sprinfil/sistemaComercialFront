@@ -35,20 +35,20 @@ const InformacionGeneralForm = () => {
 
   const location = useLocation();
 
-  const { contratoBuscarUsuario } = location.state || {};  //AQUI SE OBTIENE EL OBJETO
+  const contratoBuscarUsuario = location.state?.contratoBuscarUsuario || {};
   console.log("aver que dato pasa =", JSON.stringify(contratoBuscarUsuario, null, 2)); //POR SI QUIERES CONVERGTIR UN OBJETO A JSON
 
   const form = useForm<z.infer<typeof informaciongeneralSchema>>({
     resolver: zodResolver(informaciongeneralSchema),
     defaultValues: {
-      id: contratoBuscarUsuario.id,
-      nombre: contratoBuscarUsuario.nombre,
-      apellidopaterno: contratoBuscarUsuario.apellido_paterno,
-      apellidomaterno: contratoBuscarUsuario.apellido_materno,
-      telefono: contratoBuscarUsuario.telefono,
-      curp: contratoBuscarUsuario.curp,
-      rfc: contratoBuscarUsuario.rfc,
-      correo: contratoBuscarUsuario.correo,
+      id: contratoBuscarUsuario.id || '', // Asegúrate de que el id tenga un valor predeterminado
+      nombre: contratoBuscarUsuario.nombre || '',
+      apellidopaterno: contratoBuscarUsuario.apellido_paterno || '',
+      apellidomaterno: contratoBuscarUsuario.apellido_materno || '',
+      telefono: contratoBuscarUsuario.telefono || '',
+      curp: contratoBuscarUsuario.curp || '',
+      rfc: contratoBuscarUsuario.rfc || '',
+      correo: contratoBuscarUsuario.correo || '',
     },
   });
 
