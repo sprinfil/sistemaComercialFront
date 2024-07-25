@@ -6,6 +6,7 @@ export const nuevaColoniaSchema = z.object({
   })
 
 export const nuevaCalleSchema = z.object({
-    id_colonia: z.number(),
-    nombre: z.string(),
+  nombre: z.string(),  
+  id_colonia: z.number(),
+    
   })
