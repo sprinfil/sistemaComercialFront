@@ -49,9 +49,9 @@ const TarifaForm = () => {
     const form = useForm<z.infer<typeof tarifaSchema>>({
         resolver: zodResolver(tarifaSchema),
         defaultValues: {
-            id: tarifa.id,
-            nombre: tarifa.nombre,
-            descripcion: tarifa.descripcion,
+            id: tarifa != null ? tarifa.id : 0,
+            nombre: tarifa != null ? tarifa.nombre : "",
+            descripcion: tarifa != null ? tarifa.descripcion : "",
             fecha: getCurrentDate(), // Establece la fecha por defecto como la fecha actual
             estado: false,
         },
@@ -193,7 +193,7 @@ const TarifaForm = () => {
                         setAbrirInput(false);
                         setAccion("");
                         getTarifas();
-                        setTarifa(data.data);
+                        setTarifa(data);
                         successToastEditado();
                         //setNotification("usuario creado");
                     }
@@ -219,6 +219,7 @@ const TarifaForm = () => {
             setLoading(false);
             getTarifas();
             setAccion("");
+            setAbrirInput(false);
             successToastActivo();
         } catch (error) {
             console.error('Error en la actualización:', error);
