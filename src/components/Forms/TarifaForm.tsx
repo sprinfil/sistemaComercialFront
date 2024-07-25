@@ -438,7 +438,7 @@ const TarifaForm = () => {
                             isOpen={abrirModal}
                             setIsOpen={setAbrirModal}
                             method={() => handleConfirmUpdate()}
-                            text = {"Existen tarifas anteriores activas. ¿Desea activar esta y desactivar las otras?"}
+                            text = {"Si activas esta tarifa se desactivaran todas las demás, ¿Deseas continuar?"}
                         />
                     </form>
                 </Form>

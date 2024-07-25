@@ -47,7 +47,7 @@ export const TarifaServicios = () => {
     <div className=' w-full  flex justify-center'>
       <ContextProvider>
         {
-          tarifa.descripcion == null &&
+          tarifa.nombre == null ||  tarifa.nombre == ""  &&
           <>
             <div className=''>
               <p>Selecciona una tarifa</p>
@@ -55,9 +55,10 @@ export const TarifaServicios = () => {
           </>
         }
         {
-          tarifa.descripcion != null &&
+          tarifa.nombre != null &&  tarifa.nombre != "" &&
           <>
             <Accordion type="single" collapsible className="w-full">
+            <p className='text-primary'>{tarifa.nombre}</p>
               {tipoTomas.map((tipoToma, index) =>
                 <AccordionItem key={index} value={`item-${index}`}>
                   <AccordionTrigger>{tipoToma.nombre}</AccordionTrigger>
