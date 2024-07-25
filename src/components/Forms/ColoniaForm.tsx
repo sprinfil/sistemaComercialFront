@@ -42,6 +42,8 @@ const ColoniaForm = () => {
     const [indiceTarifa, setIndiceTarifa] = useState(0);
     const [bloquear, setBloquear] = useState(false);
     const getCurrentDate = () => new Date().toISOString().split("T")[0];
+    const [coloniaIdParaRestaurar, setColoniaIdParaRestaurar] = useState(null);
+    const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
 
     const form = useForm<z.infer<typeof coloniaSchema>>({
         resolver: zodResolver(coloniaSchema),
@@ -116,6 +118,15 @@ const ColoniaForm = () => {
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }
+    function errorYaExisteToast() {
+
+        toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "La colonia ya existe.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+    }
 
 
 
@@ -127,20 +138,28 @@ const ColoniaForm = () => {
             axiosClient.post(`/colonia/store`, values)
                 .then((response) => {
                     const data = response.data;
-                    setLoading(false);
-                    setColonia({
-                        id: 0,
-                        nombre: "",
+                    if(data.restore){
+                        setColoniaIdParaRestaurar(data.colonia_id);
+                        setModalReactivacionOpen(true);
+                    }
+                    else if (data.restore == false) {
+                        errorYaExisteToast();
+                        setLoading(false);
+                    }else{
+                        setLoading(false);
+                        setColonia({
+                            id: 0,
+                            nombre: "",
 
-                    });
-                    form.reset({
-                        id: 0,
-                        nombre: "",
-                    });
-                    getColonias();
-                    successToastCreado();
-                    setAccion("creado");
-
+                        });
+                        form.reset({
+                            id: 0,
+                            nombre: "",
+                        });
+                        getColonias();
+                        successToastCreado();
+                        setAccion("creado");
+                    }
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -178,6 +197,28 @@ const ColoniaForm = () => {
                 })
         }
     }
+
+    const restaurarDato = (id_colonia: any) => {
+        axiosClient.put(`/colonia/restore/${id_colonia}`)
+            .then(() => {
+                setLoading(false);
+                setAbrirInput(false);
+                setAccion("crear");
+                setColonia({
+                    id: 0,
+                    nombre: "",
+                });
+                getColonias();
+                successToastRestaurado();
+                setAccion("creado");
+                setModalReactivacionOpen(false);
+
+            })
+            .catch((err) => {
+                errorToast();
+                setLoading(false);
+            });
+    };
 
     //con este metodo obtienes las anomalias de la bd
     const getColonias = async () => {
@@ -292,6 +333,13 @@ const ColoniaForm = () => {
                                 </IconButton>
                             </div>
                         </>
+                    }
+                    {ModalReactivacionOpen &&
+                        <ModalReactivacion
+                            isOpen={ModalReactivacionOpen}
+                            setIsOpen={setModalReactivacionOpen}
+                            method={() => restaurarDato(coloniaIdParaRestaurar)}
+                        />
                     }
                 </div>
             </div>
