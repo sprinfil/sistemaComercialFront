@@ -59,6 +59,16 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }
+    //Funcion de errores para el Toast
+    function noUsuarioEncontrado() {
+
+        toast({
+            variant: "destructive",
+            title: "Oh, no. Algo salió mal.",
+            description: "No se encontró ningun usuario",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+    }
 
     function onSubmit(values: z.infer<typeof BuscarContratacionSchema>) {
         console.log(values);
@@ -106,8 +116,8 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
             }
 
         } else {
-            console.log("No users found");
-            setMostrarTabla(false);
+                noUsuarioEncontrado();
+                setMostrarTabla(false);
         }
                 
         setAccion(tipoAccion);
