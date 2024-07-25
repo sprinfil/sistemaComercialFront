@@ -4,6 +4,7 @@ import { TrashIcon, ContainerIcon, PlusIcon, Pencil2Icon, ReaderIcon } from '@ra
 import IconButton from '../../components/ui/IconButton';
 import { Checkbox } from "@/components/ui/checkbox"
 import Mapa2 from '../../components/ui/Mapa2';
+import { Mapa3 } from '../../components/ui/Mapa3';
 
 const Poligonos = () => {
 
@@ -67,7 +68,7 @@ const Poligonos = () => {
             </div>
             {/*Contenedor del mapa*/}
             <div className=' h-full w-[70%]'>
-                <Mapa2 />
+                <Mapa3 />
             </div>
         </div>
     );

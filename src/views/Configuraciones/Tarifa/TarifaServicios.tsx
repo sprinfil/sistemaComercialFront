@@ -16,7 +16,7 @@ import {
 
 export const TarifaServicios = () => {
 
-  const { tarifa, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa, tipoTomas, setTipoTomas } = useStateContext();
+  const { accion, tarifa, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa, tipoTomas, setTipoTomas } = useStateContext();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => { getTipoTomas(); }, [])
@@ -45,18 +45,31 @@ export const TarifaServicios = () => {
 
 
     <div className=' w-full  flex justify-center'>
-
       <ContextProvider>
-        <Accordion type="single" collapsible className="w-full">
-          {tipoTomas.map((tipoToma, index) =>
-            <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger>{tipoToma.nombre}</AccordionTrigger>
-              <AccordionContent>
-                <TarifaServicioNewTable tipoToma={tipoToma.id} tarifa={tarifa}/>
-              </AccordionContent>
-            </AccordionItem>
-          )}
-        </Accordion>
+        {
+          tarifa.nombre == null ||  tarifa.nombre == ""  &&
+          <>
+            <div className=''>
+              <p>Selecciona una tarifa</p>
+            </div>
+          </>
+        }
+        {
+          tarifa.nombre != null &&  tarifa.nombre != "" &&
+          <>
+            <Accordion type="single" collapsible className="w-full">
+            <p className='text-primary'>{tarifa.nombre}</p>
+              {tipoTomas.map((tipoToma, index) =>
+                <AccordionItem key={index} value={`item-${index}`}>
+                  <AccordionTrigger>{tipoToma.nombre}</AccordionTrigger>
+                  <AccordionContent>
+                    <TarifaServicioNewTable tipoToma={tipoToma.id} tarifa={tarifa} />
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+            </Accordion>
+          </>
+        }
       </ContextProvider>
 
     </div>

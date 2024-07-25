@@ -14,19 +14,18 @@ import {
     FormMessage,
 } from "../ui/form.tsx";
 import { Input } from '../ui/input.tsx';
-import { tarifaSchema } from './validaciones.ts';
+import { coloniaSchema } from './validaciones.ts';
 import { ModeToggle } from '../ui/mode-toggle.tsx';
 import axiosClient from '../../axios-client.ts';
 import Loader from "../ui/Loader.tsx";
 import Error from "../ui/Error.tsx";
 import { Textarea } from "../ui/textarea.tsx";
-import { useStateContext } from "../../contexts/ContextTarifa.tsx";
+import { useStateContext } from "../../contexts/ContextColonia.tsx";
 import { useEffect } from "react";
 import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
-import ModalText from "../ui/ModalText.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
@@ -34,36 +33,30 @@ import { Switch } from "../ui/switch.tsx";
 
 
 
-const TarifaForm = () => {
+const ColoniaForm = () => {
     const { toast } = useToast()
-    const { tarifa, setTarifa, loadingTable, setLoadingTable, setTarifas, setAccion, accion } = useStateContext();
+    const { colonia, setColonia, loadingTable, setLoadingTable, setColonias, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
     const [indiceTarifa, setIndiceTarifa] = useState(0);
     const [bloquear, setBloquear] = useState(false);
-    const [abrirModal, setAbrirModal] = useState(false);
-
     const getCurrentDate = () => new Date().toISOString().split("T")[0];
 
-    const form = useForm<z.infer<typeof tarifaSchema>>({
-        resolver: zodResolver(tarifaSchema),
+    const form = useForm<z.infer<typeof coloniaSchema>>({
+        resolver: zodResolver(coloniaSchema),
         defaultValues: {
-            id: tarifa != null ? tarifa.id : 0,
-            nombre: tarifa != null ? tarifa.nombre : "",
-            descripcion: tarifa != null ? tarifa.descripcion : "",
-            fecha: getCurrentDate(), // Establece la fecha por defecto como la fecha actual
-            estado: false,
+            nombre: colonia.nombre,
         },
     })
 
 
     //OPCIONES QUE EXISTEN DEL TAP
-    const opcionesTabs = ["Tarifa", "Servicios", "Conceptos"];
+    const opcionesTabs = ["Colonia","Calles"];
     //METODO PARA TENER CONTROL DEL TAP
     const nextTab = () => {
 
-        const currentIndex = opcionesTabs.indexOf("Tarifa");
+        const currentIndex = opcionesTabs.indexOf("Colonia");
         const indiceTarifa = (currentIndex + 1) % opcionesTabs.length;
         setActiveTab(opcionesTabs[indiceTarifa]);
 
@@ -73,7 +66,7 @@ const TarifaForm = () => {
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La tarifa se ha creado correctamente",
+            description: "La colonia se ha creado correctamente",
             variant: "success",
 
         })
@@ -81,15 +74,7 @@ const TarifaForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La tarifa  se ha editado correctamente",
-            variant: "success",
-
-        })
-    }
-    function successToastActivo() {
-        toast({
-            title: "¡Éxito!",
-            description: "La tarifa se ha activado correctamente",
+            description: "La colonia  se ha editado correctamente",
             variant: "success",
 
         })
@@ -97,7 +82,7 @@ const TarifaForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La tarifa se ha eliminado correctamente",
+            description: "La colonia se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -105,7 +90,7 @@ const TarifaForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La tarifa se ha restaurado correctamente",
+            description: "La colonia se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -135,38 +120,24 @@ const TarifaForm = () => {
 
 
 
-    function onSubmit(values: z.infer<typeof tarifaSchema>) {
+    function onSubmit(values: z.infer<typeof coloniaSchema>) {
         console.log("submit");
-        const estadoConvertido = values.estado ? 'activo' : 'inactivo';
-
-            const datosAEnviar = {
-                ...values,
-                estado: estadoConvertido,
-            };
-
-
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/tarifa/create`, datosAEnviar)
+            axiosClient.post(`/colonia/store`, values)
                 .then((response) => {
                     const data = response.data;
                     setLoading(false);
-                    setTarifa({
+                    setColonia({
                         id: 0,
                         nombre: "",
-                        descripcion: "ninguna",
-                        fecha: getCurrentDate(),
-                        estado: false,
 
                     });
                     form.reset({
                         id: 0,
                         nombre: "",
-                        descripcion: "ninguna",
-                        fecha: getCurrentDate(),
-                        estado: false,
                     });
-                    getTarifas();
+                    getColonias();
                     successToastCreado();
                     setAccion("creado");
 
@@ -182,26 +153,21 @@ const TarifaForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/tarifa/update/${tarifa.id}`, datosAEnviar)
-                .then((response) => {
-                    const data = response.data;
-                    if (response.data.confirmUpdate) {
-                        setAbrirModal(true);
-                    } else {
-                        setLoading(false);
-                        //alert("anomalia creada");
-                        setAbrirInput(false);
-                        setAccion("");
-                        getTarifas();
-                        setTarifa(data);
-                        successToastEditado();
-                        //setNotification("usuario creado");
-                    }
-            
+            console.log(colonia.id)
+            axiosClient.put(`/colonia/update/${colonia.id}`, values)
+                .then((data) => {
+                    setLoading(false);
+                    //alert("anomalia creada");
+                    setAbrirInput(false);
+                    setAccion("");
+                    getColonias();
+                    setColonia(data.data);
+                    successToastEditado();
+                    //setNotification("usuario creado");
                 })
                 .catch((err) => {
                     const response = err.response;
-                    errorToast();
+                    
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -212,27 +178,14 @@ const TarifaForm = () => {
                 })
         }
     }
-    const handleConfirmUpdate = async () => {
-        try {
-            const response = await axiosClient.put('/actualizar-tarifa', { confirmUpdate: true, tarifa_id:tarifa.id});
-            setAbrirModal(false);
-            setLoading(false);
-            getTarifas();
-            setAccion("");
-            setAbrirInput(false);
-            successToastActivo();
-        } catch (error) {
-            console.error('Error en la actualización:', error);
-        }
-    };
 
     //con este metodo obtienes las anomalias de la bd
-    const getTarifas = async () => {
+    const getColonias = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/tarifa");
+            const response = await axiosClient.get("/colonia");
             setLoadingTable(false);
-            setTarifas(response.data.data);
+            setColonias(response.data);
         } catch (error) {
             setLoading(false);
             errorToast();
@@ -243,13 +196,13 @@ const TarifaForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/tarifa/log_delete/${tarifa.id}`);
-            getTarifas();
+            await axiosClient.delete(`/colonia/delete/${colonia.id}`);
+            getColonias();
             setAccion("eliminar");
             successToastEliminado();
         } catch (error) {
             errorToast();
-            console.error("Failed to delete Giro Comercial:", error);
+            console.error("Failed to delete colonias:", error);
         }
     };
 
@@ -260,11 +213,8 @@ const TarifaForm = () => {
             form.reset({
                 id: 0,
                 nombre: "",
-                descripcion: "ninguna",
-                fecha: getCurrentDate(),
-                estado: false,
             });
-            setTarifa({});
+            setColonia({});
             setAbrirInput(false);
         }
         if (accion === "creado") {
@@ -272,11 +222,8 @@ const TarifaForm = () => {
             form.reset({
                 id: 0,
                 nombre: "",
-                descripcion: "ninguna",
-                fecha: getCurrentDate(),
-                estado: false,
             });
-            setTarifa({});
+            setColonia({});
             setAbrirInput(false);
         }
         if (accion === "crear") {
@@ -287,29 +234,20 @@ const TarifaForm = () => {
             form.reset({
                 id: 0,
                 nombre: "",
-                descripcion: "ninguna",
-                fecha: getCurrentDate(),
-                estado: false,
             });
-            setTarifa({
+            setColonia({
                 id: 0,
                 nombre: "",
-                descripcion: "ninguna",
-                fecha: getCurrentDate(),
-                estado: false,
             });
         }
         if (accion === "ver") {
+            console.log(colonia)
             setAbrirInput(false);
             setErrors({});
             setAccion("");
             setBloquear(true);
             form.reset({
-                id: tarifa.id,
-                nombre: tarifa.nombre,
-                descripcion: tarifa.descripcion,
-                fecha: tarifa.fecha,
-                estado: tarifa.estado === "activo" // Convertir "activo" a true y "inactivo" a false
+                nombre: colonia.nombre,
             });
         }
         if (accion === "editar") {
@@ -336,10 +274,10 @@ const TarifaForm = () => {
             <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva tarifa</p>}
-                        {tarifa.nombre != "" && <p className="text-muted-foreground text-[20px]">{tarifa.nombre}</p>}
+                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Añadir nueva colonia</p>}
+                        {colonia.nombre != "" && <p className="text-muted-foreground text-[20px]">{colonia.nombre}</p>}
                     </div>
-                    {(tarifa.nombre != null && tarifa.nombre != "") &&
+                    {(colonia.nombre != null && colonia.nombre != "") &&
                         <>
                             <Modal
                                 method={onDelete}
@@ -370,63 +308,10 @@ const TarifaForm = () => {
                                 <FormItem>
                                     <FormLabel>Nombre</FormLabel>
                                     <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la tarifa" {...field} />
+                                        <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la colonia" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El nombre de la tarifa.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="descripcion"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Descripción</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            readOnly={!abrirInput}
-                                            placeholder="Descripcion de la tarifa"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
-                                        Agrega una breve descripción.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        
-                    <FormField
-                            control={form.control}
-                            name="estado"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="items-center">Estatus</FormLabel>
-                                    <FormControl className="ml-4">
-                                        {
-                                            bloquear ? <Switch
-                                            checked={field.value}
-                                            onCheckedChange={(checked) => field.onChange(checked)
-                                            
-                                            }
-                                            disabled
-                                            /> :
-                                            <Switch
-                                            checked={field.value}
-                                            onCheckedChange={(checked) => field.onChange(checked)
-                                            
-                                            }
-                                            
-                                            />
-                                        }
-                                    
-                                    </FormControl>
-                                    <FormDescription>
-                                        Aquí puedes activar la tarifa.
+                                        El nombre de la colonia.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -434,12 +319,7 @@ const TarifaForm = () => {
                         />
                         {loading && <Loader />}
                         {abrirInput && <Button type="submit">Siguiente</Button>}
-                        <ModalText 
-                            isOpen={abrirModal}
-                            setIsOpen={setAbrirModal}
-                            method={() => handleConfirmUpdate()}
-                            text = {"Si activas esta tarifa se desactivaran todas las demás, ¿Deseas continuar?"}
-                        />
+
                     </form>
                 </Form>
             </div>
@@ -448,4 +328,4 @@ const TarifaForm = () => {
     )
 }
 
-export default TarifaForm
+export default ColoniaForm

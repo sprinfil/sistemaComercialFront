@@ -56,47 +56,12 @@
       @apply bg-background text-foreground;
     }
   }
-/* Estilos para navegadores basados en WebKit (Chrome, Safari) */
-::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f0f0f0; /* Color del track */
-  border-radius: 10px; /* Bordes redondeados */
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #c1c1c1; /* Color del thumb */
-  border-radius: 10px; /* Bordes redondeados */
-  border: 3px solid #f0f0f0; /* Espacio alrededor del thumb */
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #a0a0a0; /* Color del thumb al pasar el mouse */
-}
 
 /* Estilos para Firefox */
 * {
   scrollbar-width: thin; /* Ancho del scrollbar */
-  scrollbar-color: #c1c1c1 #f0f0f0; /* thumb color y track color */
+  scrollbar-color:  #8d8d8d transparent;/* thumb color y track color */
 }
 
-/* Opcional: Estilos adicionales para Firefox */
-*::-webkit-scrollbar-track {
-  background: #f0f0f0; /* Color del track */
-  border-radius: 10px; /* Bordes redondeados */
-}
-
-*::-webkit-scrollbar-thumb {
-  background-color: #c1c1c1; /* Color del thumb */
-  border-radius: 10px; /* Bordes redondeados */
-  border: 3px solid #f0f0f0; /* Espacio alrededor del thumb */
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background-color: #a0a0a0; /* Color del thumb al pasar el mouse */
-}
 
 .container-gradiant{ /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#0f3443+0,34e69f+100 */ background: #0f3443; /* Old browsers */ background: -moz-linear-gradient(left, #0f3443 0%, #34e69f 100%); /* FF3.6-15 */ background: -webkit-linear-gradient(left, #0f3443 0%,#34e69f 100%); /* Chrome10-25,Safari5.1-6 */ background: linear-gradient(to right, #0f3443 0%,#34e69f 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0f3443', endColorstr='#34e69f',GradientType=1 ); /* IE6-9 */ }
