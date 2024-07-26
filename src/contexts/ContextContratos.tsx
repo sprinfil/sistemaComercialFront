@@ -1,13 +1,13 @@
 import { createContext, useContext, useState, ReactNode, FC } from "react";
-import { ContratoBuscarUsuario } from "./Columns/ContratoConsultaUsuarioColumns";
+import { ContratoBuscarUsuario } from "../components/Tables/Columns/ContratoConsultaUsuarioColumns";
 
 // Define la interfaz para el estado del usuario y los métodos para actualizar el estado
 interface StateContextType {
-    operador: ContratoBuscarUsuario;
+    usuario: ContratoBuscarUsuario;
     accion: string;
     nombreBuscado: string;
     setNombreBuscado: (nombreBuscado:string) => void;
-    setOperador: (operador: ContratoBuscarUsuario) => void;
+    setusuario: (usuario: ContratoBuscarUsuario) => void;
     usuariosEncontrados: ContratoBuscarUsuario[];
     loadingTable: boolean;
     setusuariosEncontrados: (usuariosEncontrados: ContratoBuscarUsuario[]) => void;
@@ -19,8 +19,8 @@ interface StateContextType {
 
 // Crea el contexto con valores predeterminados adecuados según las interfaces
 const StateContext = createContext<StateContextType>({
-    operador: {} as ContratoBuscarUsuario,
-    setOperador: () => {},
+    usuario: {} as ContratoBuscarUsuario,
+    setusuario: () => {},
     usuariosEncontrados: [],
     loadingTable: false,
     accion: "",
@@ -39,7 +39,7 @@ interface ContextProviderProps {
 }
 
 export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
-    const [operador, setOperador] = useState<ContratoBuscarUsuario>({} as ContratoBuscarUsuario);
+    const [usuario, setusuario] = useState<ContratoBuscarUsuario>({} as ContratoBuscarUsuario);
     const [usuariosEncontrados, setusuariosEncontrados] = useState<ContratoBuscarUsuario[]>([]);
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [accion, setAccion] = useState<string>("");
@@ -48,8 +48,8 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
 
     return (
         <StateContext.Provider value={{
-            operador,
-            setOperador,
+            usuario,
+            setusuario,
             usuariosEncontrados,
             setusuariosEncontrados,
             loadingTable,

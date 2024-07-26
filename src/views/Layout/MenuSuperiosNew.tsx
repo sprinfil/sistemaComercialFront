@@ -76,7 +76,7 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Consulta Usuario",
                     descripcion: "Mira los detalles de los usuarios, consulta por número de toma o nombre de usuario",
-                    route: "/proximamente",
+                    route: "/Buscar/Usuario",
                     permission: ""
                 },
                 {

@@ -1,6 +1,6 @@
 import { Descuento } from "../components/Tables/Columns/DescuentoColumns.tsx";
 import React, { createContext, useContext, useState, ReactNode, FC, ReactElement } from "react";
-
+import InformacionGeneralForm from "../components/Forms/InformacionGeneralForm.tsx";
 interface StateContextType {
     pantalla: ReactElement | null;
     setPantalla: (pantalla: ReactElement | null) => void;
@@ -23,7 +23,7 @@ interface ContextProviderProps {
 }
 
 export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
-    const [pantalla, setPantalla] = useState<ReactElement | null>(null);
+    const [pantalla, setPantalla] = useState<ReactElement | null>(<InformacionGeneralForm/>);
     const [click, setClick] = useState<boolean>(false);
 
     return (

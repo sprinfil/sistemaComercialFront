@@ -14,6 +14,8 @@ import Operadores from  './views/Configuraciones/Operadores/Operadores'
 import { Tarifa } from './views/Configuraciones/Tarifa/Tarifa';
 import App from './views/Cajas/Cajas';
 import { ContratacionBuscarUsuario } from './views/Usuarios/Contratos/ContratacionBuscarUsuario';
+import BuscarUsuario from './views/Usuarios/Consultar/BuscarUsuario';
+import { CrearContratoForm } from './views/Usuarios/Contratos/FormsContratos/CrearContratoForm';
 
 const router = createBrowserRouter ([
     {
@@ -68,6 +70,14 @@ const router = createBrowserRouter ([
             {
                 path:'/Contratacion',
                 element: <ContratacionBuscarUsuario/>
+            },
+            {
+                path:'/Buscar/Usuario',
+                element: <BuscarUsuario/>
+            },
+            {
+                path:'/Crear/Contrato/Usuario',
+                element: <CrearContratoForm/>
             },
         ]
     },

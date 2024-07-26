@@ -25,23 +25,31 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon } from "@radix-ui/react-icons";
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
+import { useLocation } from 'react-router-dom';
+import MarcoForm from "../ui/MarcoForm.tsx";
 
 const InformacionGeneralForm = () => {
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [abrirInput, setAbrirInput] = useState(false);
 
+  const location = useLocation();
+
+  const contratoBuscarUsuario = location.state?.contratoBuscarUsuario || {};
+  console.log("aver que dato pasa =", JSON.stringify(contratoBuscarUsuario, null, 2)); //POR SI QUIERES CONVERGTIR UN OBJETO A JSON
+
   const form = useForm<z.infer<typeof informaciongeneralSchema>>({
     resolver: zodResolver(informaciongeneralSchema),
     defaultValues: {
-      id: 0,
-      nombre: "",
-      apellidopaterno: "",
-      apellidomaterno: "",
-      telefono: "",
-      curp: "",
-      rfc: "",
-      correo: "",
+      id: contratoBuscarUsuario.id || '', // Asegúrate de que el id tenga un valor predeterminado
+      nombre: contratoBuscarUsuario.nombre || '',
+      apellidopaterno: contratoBuscarUsuario.apellido_paterno || '',
+      apellidomaterno: contratoBuscarUsuario.apellido_materno || '',
+      telefono: contratoBuscarUsuario.telefono || '',
+      curp: contratoBuscarUsuario.curp || '',
+      rfc: contratoBuscarUsuario.rfc || '',
+      correo: contratoBuscarUsuario.correo || '',
     },
   });
 
@@ -68,7 +76,7 @@ const InformacionGeneralForm = () => {
   }
 
   return (
-    <div className="overflow-auto w-full ">
+    <div className="overflow-auto w-full h-[88vh]">
       <div className="flex h-[40px] items-center mb-[10px] bg-card rounded-sm">
         <div className="h-[20px] w-full flex items-center justify-end">
           <div className="mb-[10px] h-full w-full mx-4">
@@ -77,9 +85,13 @@ const InformacionGeneralForm = () => {
         </div>
       </div>
       <div className="py-[20px] px-[10px] w-full">
+
         <Form {...form}>
           <form className=" flex gap-2">
-            <div className="w-[50%] ">
+
+            <MarcoForm title={"Información Principal"}>
+
+
               <FormField
                 control={form.control}
                 name="nombre"
@@ -133,9 +145,9 @@ const InformacionGeneralForm = () => {
                   </FormItem>
                 )}
               />
-            </div>
 
-            <div className="w-[50%]">
+
+
               <FormField
                 control={form.control}
                 name="rfc"
@@ -175,7 +187,7 @@ const InformacionGeneralForm = () => {
                   </FormItem>
                 )}
               />
-            </div>
+            </MarcoForm>
           </form>
         </Form>
       </div>

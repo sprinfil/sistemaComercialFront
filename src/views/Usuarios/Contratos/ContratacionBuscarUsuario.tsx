@@ -1,6 +1,6 @@
 import React from 'react'
-import { BuscarUsuarioContratacion } from './FormsContratos/BuscarUsuarioContratacionForm'
-import { ContextProvider } from './ContextContratos'
+import { BuscarUsuarioForm } from './FormsContratos/BuscarUsuarioForm'
+import { ContextProvider } from '../../../contexts/ContextContratos'
 
 
 export const ContratacionBuscarUsuario = () => {
@@ -8,7 +8,7 @@ export const ContratacionBuscarUsuario = () => {
 
   return (
     <ContextProvider>
-    <BuscarUsuarioContratacion/>
+    <BuscarUsuarioForm navegacion={"/CrearUsuario"} botonCrearUsuario={true} tipoAccion={"crearContratacionUsuario"}/>
     </ContextProvider>
   )
 }
