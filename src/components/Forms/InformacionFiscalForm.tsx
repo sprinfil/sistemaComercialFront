@@ -52,7 +52,7 @@ const InformacionFiscalForm = ({ userId }) => {
     resolver: zodResolver(informacionficalSchema),
     defaultValues: {
       id: 0,
-      id_modelo: "2",
+      id_modelo: "0",
       modelo: "usuario",
       regimen_fiscal: "",
       razon_social: "",
@@ -74,55 +74,81 @@ const InformacionFiscalForm = ({ userId }) => {
 
   function onSubmit(values: z.infer<typeof informacionficalSchema>) {
     console.log(values);
-        axiosClient.post(`/datos_fiscales/create`, values)
-            .then((response) => {
-                const data = response.data;
-          
-                    successToastCreado();               
-            
-            })
-            .catch((err) => {
-                const response = err.response;
-                errorToast();
-                if (response && response.status === 422) {
-                    setErrors(response.data.errors);
-                }
-                setLoading(false);
-            })
-        console.log(abrirInput);
-    
-}
-const { setValue } = form;
+    const { getValues } = form;
 
-useEffect(() => {
-  // Función para obtener los datos de la base de datos
-  const fetchData = async () => {
-    try {
-      const response = await axiosClient.get(`/datos_fiscales/show/${userId}`);
-      const data = response.data;
-      // Actualiza los valores del formulario con los datos obtenidos
-      setValue("regimen_fiscal", data.regimen_fiscal);
-      setValue("razon_social", data.razon_social);
-      setValue("pais", data.pais);
-      setValue("estado", data.estado);
-      setValue("municipio", data.municipio);
-      setValue("localidad", data.localidad);
-      setValue("colonia", data.colonia);
-      setValue("calle", data.calle);
-      setValue("referencia", data.referencia);
-      setValue("numero_exterior", data.numero_exterior);
-      setValue("codigo_postal", data.codigo_postal);
-      setValue("nombre", data.nombre);
-      setValue("telefono", data.telefono);
-      setValue("correo", data.correo);
-
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    if (!getValues("id")) {
+      axiosClient.post(`/datos_fiscales/create`, values)
+        .then((response) => {
+          const data = response.data;
+          successToastCreado();
+        })
+        .catch((err) => {
+          const response = err.response;
+          errorToast();
+          if (response && response.status === 422) {
+            setErrors(response.data.errors);
+          }
+          setLoading(false);
+        })
+    } else {
+      axiosClient.put(`/datos_fiscales/update/${getValues("id")}`, values)
+        .then((response) => {
+          const data = response.data;
+          successToastCreado();
+          setAbrirInput(false)
+        })
+        .catch((err) => {
+          const response = err.response;
+          errorToast();
+          if (response && response.status === 422) {
+            setErrors(response.data.errors);
+          }
+          setLoading(false);
+        })
     }
-  };
+  }
+  const { setValue } = form;
 
-  fetchData();
-}, [userId, setValue]);
+  useEffect(() => {
+    // Función para obtener los datos de la base de datos
+    let values = {
+      "modelo": "usuario",
+      "id_modelo": userId,
+    };
+
+    const fetchData = async () => {
+      try {
+        const response = await axiosClient.get(`/datos_fiscales/showPorModelo`, {
+          params: values
+        });
+        const data = response.data;
+
+        // Actualiza los valores del formulario con los datos obtenidos
+        setValue("id", data.id);
+        setValue("modelo", "usuario");
+        setValue("id_modelo", String(data.id_modelo));
+        setValue("regimen_fiscal", data.regimen_fiscal);
+        setValue("razon_social", data.razon_social);
+        setValue("pais", data.pais);
+        setValue("estado", data.estado);
+        setValue("municipio", data.municipio);
+        setValue("localidad", data.localidad);
+        setValue("colonia", data.colonia);
+        setValue("calle", data.calle);
+        setValue("referencia", data.referencia);
+        setValue("numero_exterior", data.numero_exterior);
+        setValue("codigo_postal", data.codigo_postal);
+        setValue("nombre", data.nombre);
+        setValue("telefono", data.telefono);
+        setValue("correo", data.correo);
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [userId, setValue]);
 
 
   // #region HANDLE
@@ -179,7 +205,7 @@ useEffect(() => {
                   <FormItem>
                     <FormLabel>Régimen fiscal</FormLabel>
                     <FormControl>
-                      <Input readOnly={!abrirInput} placeholder="Régimen fiscal" {...field}  set/>
+                      <Input readOnly={!abrirInput} placeholder="Régimen fiscal" {...field} set />
                     </FormControl>
                     <FormDescription></FormDescription>
                     <FormMessage />

@@ -64,10 +64,6 @@ const DetalleUsuario = () => {
           nombre: "Fiscal",
           pantalla:  <InformacionFiscal idUsuario={contratoBuscarUsuario.id}/>
         },
-        {
-          nombre: "Pensionado",
-          pantalla:  <InformacionPensionado />
-        },
       ]
     }
   ]
@@ -76,8 +72,8 @@ const DetalleUsuario = () => {
     <>
       <ContextProvider>
         <div>
-          <div className='flex gap-2 mt-2'>
-            <div className='w-[300px]'>
+          <div className='flex gap-2 mt-2 px-2'>
+            <div className='w-[300px] '>
               <MenuLateral options={options}  context = {useStateContext}/>
             </div>
             <div className='w-full '>
