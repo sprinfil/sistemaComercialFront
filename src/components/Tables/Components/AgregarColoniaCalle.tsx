@@ -27,18 +27,24 @@ import {
     FormLabel,
     FormMessage,
 } from "../../../components/ui/form.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ConceptosComboBoxNew } from "../../ui/ConceptosComboBoxNew.tsx";
 import axiosClient from "../../../axios-client.ts";
 import { ContextProvider, useStateContext } from "../../../contexts/ContextColonia.tsx";
+import { ToastAction } from "@radix-ui/react-toast";
+import { useToast } from "../../ui/use-toast.ts";
+import ModalReactivacion from "../../ui/ModalReactivación.tsx";
+import Loader from "../../ui/Loader.tsx";
+import ColoniaCalleNewTable from "./ColoniaCalleNewTable.tsx";
 
 
 export function AgregarColoniaCalle({ trigger, id_tipo_colonia, updateData }) {
 
+    const { toast } = useToast()
     const [nombreConcepto, setNombreConcepto] = useState("");
-    const [idConcepto, setIdoConcepto] = useState("");
     const {colonias, setColonias, setLoadingTable, colonia, calles, setAccion} = useStateContext();
-
+    const [coloniaIdParaRestaurar, setColoniaIdParaRestaurar] = useState(null);
+    const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState();
 
@@ -50,20 +56,62 @@ export function AgregarColoniaCalle({ trigger, id_tipo_colonia, updateData }) {
         },
     })
 
+    function errorYaExisteToast() {
+
+        toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "La colonia ya existe.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+    }
+
     function onSubmit(values: z.infer<typeof nuevaCalleSchema>) {
         console.log("Valores enviados:", values);
         axiosClient.post(`/calle/store`, values)
-            .then((response) => {
-                console.log(response.data);
-                updateData();
+                .then((response) => {
+                    const data = response.data;
+                    if(data.restore){
+                        setColoniaIdParaRestaurar(data.calle_id);
+                        setModalReactivacionOpen(true);
+                        
+                    }else if (data.restore == false) {
+                        errorYaExisteToast();
+                        setLoading(false);
+                    console.log(response.data);
+                    updateData();
+                }
             })
             .catch((err) => {
                 console.log(err.response);
             })
     }
 
+    const restaurarDato = (id: any) => {
+        axiosClient.put(`/calle/restore/${id}`)
+            .then(() => {
+                setLoading(false);
+                setModalReactivacionOpen(false);
+                
+            })
+            .catch((err) => {
+                setLoading(false);
+            });
+    };
+
+
 
     return (
+        <div className="">
+        <div className='h-[20px] w-full flex items-center justify-end'>
+        {ModalReactivacionOpen &&
+                        <ModalReactivacion
+                            isOpen={ModalReactivacionOpen}
+                            setIsOpen={setModalReactivacionOpen}
+                            method={() => restaurarDato(coloniaIdParaRestaurar)}
+                        />
+                    }
+                    
         <Sheet>
             <SheetTrigger asChild>
                 <Button variant="outline">{trigger}</Button>
@@ -100,9 +148,13 @@ export function AgregarColoniaCalle({ trigger, id_tipo_colonia, updateData }) {
                                 </SheetClose>
                             </SheetFooter>
                         </form>
+                        
                     </Form>
                 </div>
             </SheetContent>
         </Sheet>
+        
+        </div>
+        </div>
     )
 }

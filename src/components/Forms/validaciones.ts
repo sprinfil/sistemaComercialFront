@@ -90,7 +90,7 @@ export const tarifaSchema = z.object({
 
 })
 
-export const coloniaSchema = z.object({
+export const coloniaSchema = z.object({ 
   nombre: z.string().min(1, "El Nombre es requerido"),
 
 })
