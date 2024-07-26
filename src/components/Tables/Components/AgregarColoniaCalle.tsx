@@ -92,7 +92,7 @@ export function AgregarColoniaCalle({ trigger, id_tipo_colonia, updateData }) {
             .then(() => {
                 setLoading(false);
                 setModalReactivacionOpen(false);
-                
+                updateData();
             })
             .catch((err) => {
                 setLoading(false);
