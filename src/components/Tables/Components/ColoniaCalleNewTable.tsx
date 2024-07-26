@@ -39,11 +39,6 @@ export default function ColoniaCalleNewTable({ tipoColonia}) {
       setLoading(false);
       console.error("Failed to fetch calle:", error);
     }
-
-    
-    
-
-
   }
 
 
@@ -82,7 +77,6 @@ export default function ColoniaCalleNewTable({ tipoColonia}) {
               />
             </div>
           </div>
-
           <DataTableColoniaCalleNew columns={columns} data={newData}  sorter="nombre" onRowClick={handleRowClick} updateData={getColoniaDetalle} />
         </div>
       }

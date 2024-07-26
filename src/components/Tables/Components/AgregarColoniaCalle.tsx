@@ -27,7 +27,7 @@ import {
     FormLabel,
     FormMessage,
 } from "../../../components/ui/form.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ConceptosComboBoxNew } from "../../ui/ConceptosComboBoxNew.tsx";
 import axiosClient from "../../../axios-client.ts";
 import { ContextProvider, useStateContext } from "../../../contexts/ContextColonia.tsx";
@@ -74,6 +74,7 @@ export function AgregarColoniaCalle({ trigger, id_tipo_colonia, updateData }) {
                     if(data.restore){
                         setColoniaIdParaRestaurar(data.calle_id);
                         setModalReactivacionOpen(true);
+                        
                     }else if (data.restore == false) {
                         errorYaExisteToast();
                         setLoading(false);
@@ -97,6 +98,7 @@ export function AgregarColoniaCalle({ trigger, id_tipo_colonia, updateData }) {
                 setLoading(false);
             });
     };
+
 
 
     return (
