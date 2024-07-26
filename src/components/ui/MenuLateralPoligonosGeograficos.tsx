@@ -23,28 +23,29 @@ const MenuLateralPoligonosGeograficos = () => {
         container?.classList.toggle("max-h-0");
     }
 
-   
-      useEffect(() => {
+
+    useEffect(() => {
         getRutas()
     }, []);
-   
 
 
-   
-        const getRutas = async () => {
+
+
+    const getRutas = async () => {
         try {
             const response = await axiosClient.get("/ruta");
             setRutas(response.data.data);
+            console.log(response.data.data)
         } catch (error) {
             console.error("Error fetching rutas:", error.response?.data?.message || error.message);
         }
     };
-   
+
 
 
     return (
         <>
-            <div className='h-full w-full overflow-auto mt-[10px]'>
+            <div className='h-full w-full overflow-auto mt-[10px] px-2'>
                 {/*Menu de poligonos*/}
                 <div className='bg-principal border-border border'>
                     {/*superior*/}
@@ -73,8 +74,8 @@ const MenuLateralPoligonosGeograficos = () => {
                                 <>
                                     <div>
                                         <div className='w-full flex items-center border border-b-border relative '>
-                                            <div className={` ${ruta.color == null ? 'bg-primary': `` }  w-[10px] h-full absolute`}></div>
-                                            <div className='w-[45%] text-primary py-1 px-2 flex items-center gap-2 ml-[10px] cursor-pointer transition-all duration-200 hover:bg-muted' onClick={() => { toggle_open(ruta.id) }}>
+                                            <div style={{ backgroundColor: ruta.color ? ruta.color : '' }} className={` w-[10px] h-full absolute ${!ruta.color ? 'bg-primary' : ''}`}></div>
+                                            <div style={{ color: ruta.color ? ruta.color : '' }} className={`w-[45%] text-primary py-1 px-2 flex items-center gap-2 ml-[10px] cursor-pointer transition-all duration-200 hover:bg-muted`} onClick={() => { toggle_open(ruta.id) }}>
                                                 <p>{ruta.nombre}</p>
                                             </div>
                                             <div className='w-[55%]'>
@@ -96,11 +97,11 @@ const MenuLateralPoligonosGeograficos = () => {
                                             </div>
                                         </div>
 
-                                        <div className={` w-full relative transition-all ease duration-300 overflow-hidden max-h-0 scale-y-0`} id={`${ruta.id}`}>
-                                            <div className='bg-muted w-[10px] h-full absolute'></div>
+                                        <div className={`ml-[5px] w-full relative transition-all ease duration-300 overflow-hidden max-h-0 scale-y-0`} id={`${ruta.id}`}>
+                                        <div style={{ backgroundColor: ruta.color ? ruta.color : '' }} className={` w-[10px] h-full absolute ${!ruta.color ? 'bg-primary' : ''}`}></div>
                                             {
                                                 ruta.libros[0] == null &&
-                                                <p className='ml-[10px] text-red-500'>Sin libros.</p>
+                                                <p className='ml-[15px] text-red-500'>Sin libros.</p>
                                             }
                                             {ruta.libros.map((libro, index) => {
                                                 return (

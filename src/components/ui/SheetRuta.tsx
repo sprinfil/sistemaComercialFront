@@ -40,11 +40,12 @@ const SheetRuta = ({ trigger, updateData }) => {
         resolver: zodResolver(RutaSchema),
         defaultValues: {
             nombre: "",
-
+            color: ""
         },
     })
 
     function onSubmit(values: z.infer<typeof RutaSchema>) {
+
         axiosClient.post(`/ruta/create`, values)
             .then((response) => {
                 console.log(response);
