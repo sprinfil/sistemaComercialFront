@@ -27,32 +27,33 @@ import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from '@radix-ui/react-toast'
 import { useStateContext } from '../../contexts/ContextPoligonos'
 
-const SheetRuta = ({ trigger, updateData, ruta}) => {
+const SheetLibro = ({ trigger, updateData, libro, id_ruta}) => {
     const { toast } = useToast()
     const [open, setOpen] = useState(false);
 
-    const RutaSchema = z.object({
+    const LibroSchema = z.object({
         nombre: z.string().min(2, "Por lo menos 2 caracteres").max(20, "Máximo 20 caracteres"),
-        color: z.string(),
+        id_ruta: z.number(),
     })
 
 
-    const form = useForm<z.infer<typeof RutaSchema>>({
-        resolver: zodResolver(RutaSchema),
+    const form = useForm<z.infer<typeof LibroSchema>>({
+        resolver: zodResolver(LibroSchema),
         defaultValues: {
-            nombre: ruta != null ? ruta.nombre : "",
-            color: ruta != null ? ruta.color : ""
+            id_ruta: id_ruta,
+            nombre: libro != null ? libro.nombre : "",
         },
     })
 
-    function onSubmit(values: z.infer<typeof RutaSchema>) {
-        if (ruta == null) {
-            axiosClient.post(`/ruta/create`, values)
+    function onSubmit(values: z.infer<typeof LibroSchema>) {
+
+        if (libro == null) {
+            axiosClient.post(`/libro/create`, values)
                 .then((response) => {
                     console.log(response);
                     toast({
                         title: "Exito",
-                        description: "Ruta Creada",
+                        description: "libro Creado",
                         variant: "success",
                         action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                     })
@@ -60,7 +61,6 @@ const SheetRuta = ({ trigger, updateData, ruta}) => {
                     setOpen(false);
                     form.reset({
                         nombre: "",
-                        color: ""
                     });
                 })
                 .catch((response) => {
@@ -72,12 +72,12 @@ const SheetRuta = ({ trigger, updateData, ruta}) => {
                     })
                 })
         } else {
-            axiosClient.put(`/ruta/update/${ruta.id}`, values)
+            axiosClient.put(`/libro/update/${libro.id}`, values)
                 .then((response) => {
                     console.log(response);
                     toast({
                         title: "Exito",
-                        description: "Ruta Actualizada",
+                        description: "Ruta Creada",
                         variant: "success",
                         action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                     })
@@ -103,7 +103,7 @@ const SheetRuta = ({ trigger, updateData, ruta}) => {
                 <SheetTrigger>{trigger}</SheetTrigger>
                 <SheetContent side={"left"}>
                     <SheetHeader>
-                        <SheetTitle>{ruta == null ? "Crear Ruta" : "Editar " + ruta.nombre}</SheetTitle>
+                        <SheetTitle>{libro == null ? "Crear Libro" : "Editar " + libro.nombre}</SheetTitle>
                         <SheetDescription>
                             Llena toda la información correspondiente
                         </SheetDescription>
@@ -126,22 +126,6 @@ const SheetRuta = ({ trigger, updateData, ruta}) => {
                                             </FormItem>
                                         )}
                                     />
-                                    <FormField
-                                        control={form.control}
-                                        name="color"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Color</FormLabel>
-                                                <FormControl>
-                                                    <Input type="color" placeholder="nombre" {...field} />
-                                                </FormControl>
-                                                <FormDescription>
-
-                                                </FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
                                     <Button type="submit">Guardar</Button>
                                 </form>
                             </Form>
@@ -153,4 +137,4 @@ const SheetRuta = ({ trigger, updateData, ruta}) => {
     )
 }
 
-export default SheetRuta
+export default SheetLibro
