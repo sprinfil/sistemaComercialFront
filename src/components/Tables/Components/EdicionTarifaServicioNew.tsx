@@ -30,13 +30,15 @@ import { TarifaConceptoDetalleSchema } from "../../Forms/TarifaConceptoDetalleVa
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client.ts";
 import { nuevoServicioSchema } from "../../Forms/TarifaValidaciones.ts";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from '@radix-ui/react-toast'
 
 const SHEET_SIDES = ["bottom"] as const
 
 export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifaServicio, updateData }) {
 
   const [objeto, setObjeto] = useState({});
-
+  const { toast } = useToast()
   const form = useForm<z.infer<typeof nuevoServicioSchema>>({
     resolver: zodResolver(nuevoServicioSchema),
     defaultValues: {
@@ -89,8 +91,13 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
         updateData();
         setOpen(false);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((response) => {
+        toast({
+          title: "Error",
+          description: response.response.data.message,
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+      })
       })
 
   }
