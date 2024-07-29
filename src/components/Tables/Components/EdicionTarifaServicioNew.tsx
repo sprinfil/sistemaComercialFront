@@ -83,8 +83,6 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
   };
 
   function onSubmit(values: z.infer<typeof TarifaConceptoDetalleSchema>) {
-
-
     axiosClient.put(`/tarifaServicioDetalle/update/${tarifaServicio.id}`, values)
       .then((response) => {
         console.log(response);

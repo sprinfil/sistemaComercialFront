@@ -33,7 +33,7 @@ export const columns: ColumnDef<TarifaServicioDetalle>[] = [
         header: "Rango",
         cell: ({ row }) => {
             const formatted = parseFloat(row.getValue("rango"))
-            return <div className="">{formatted} m3</div>
+            return <div className="">HASTA {formatted} m3</div>
           },
     },
     {
