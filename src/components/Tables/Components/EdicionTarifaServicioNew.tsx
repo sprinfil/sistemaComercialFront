@@ -42,8 +42,8 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
   const form = useForm<z.infer<typeof nuevoServicioSchema>>({
     resolver: zodResolver(nuevoServicioSchema),
     defaultValues: {
-        id_tarifa: tarifaServicio.id,
-        id_tipo_toma: tarifaServicio.id_tipo_toma,
+        id_tarifa: String( tarifaServicio.id),
+        id_tipo_toma: String( tarifaServicio.id_tipo_toma),
         rango: tarifaServicio.rango,
         agua:  tarifaServicio.agua,
         alcantarillado: tarifaServicio,
@@ -63,8 +63,8 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
   
       setObjeto(tarifaServicio);
       reset({
-        id_tarifa: tarifaServicio.id_tarifa,
-        id_tipo_toma: tarifaServicio.id_tipo_toma,
+        id_tarifa: tarifaServicio.id_tarifa.toString(),
+        id_tipo_toma: tarifaServicio.id_tipo_toma.toString(),
         rango: rango.toString(),
         agua:  agua.toString(),
         alcantarillado: alcantarillado.toString(),
@@ -79,6 +79,15 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
   }
 
   const handleFormSubmit = () => {
+    const values = form.getValues();
+    
+    console.log("id_tarifa:", values.id_tarifa, typeof values.id_tarifa);
+    console.log("id_tipo_toma:", values.id_tipo_toma, typeof values.id_tipo_toma);
+    console.log("rango:", values.rango, typeof values.rango);
+    console.log("alcantarillado:", values.alcantarillado, typeof values.alcantarillado);
+    console.log("saneamiento:", values.saneamiento, typeof values.saneamiento);
+    console.log("agua:", values.agua, typeof values.agua);
+   
     form.handleSubmit(onSubmit)();
   };
 
