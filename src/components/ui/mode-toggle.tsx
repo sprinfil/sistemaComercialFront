@@ -14,7 +14,7 @@ export function ModeToggle() {
 
   return (
     <>
-      <div className="w-[200px]">
+      <div className="">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon">

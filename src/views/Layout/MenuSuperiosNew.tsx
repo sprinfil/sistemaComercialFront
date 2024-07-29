@@ -147,7 +147,7 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Punto de venta",
                     descripcion: "Registra los pagos de los usuarios.",
-                    route: "/proximamente",
+                    route: "/cajas",
                     permission: ""
                 },
             ]
@@ -227,7 +227,7 @@ export const MenuSuperiosNew = () => {
     return (
         <>
             <p className='relative xl:hidden text-sm text-red-500 p-1 h-[9vh] flex items-center justify-center'>La resolucion no es compatible</p>
-            <div className='relative hidden xl:block'>
+            <div className='relative hidden xl:block '>
                 <Menubar>
                     {opciones.map((opcion, index) => {
                         if (permissions.includes(opcion.permission) || user.id == 1) {
