@@ -13,7 +13,7 @@ import { useStateContext } from '../../../contexts/ContextProvider'
 import { Colonia } from './Colonias-Calles/Colonia'
 import OrdenDeTrabajo from './OrdenDeTrabajo'
 import notFound from "../../../img/notFound.svg"
-
+import Caja from './Caja'
 
 const Catalogos = () => {
 
@@ -78,9 +78,15 @@ const Catalogos = () => {
       componente: <OrdenDeTrabajo />,
       permission: "VerOrdenDeTrabajo"
     }
+    ,
+    {
+      titulo: "Caja",
+      componente: <Caja />,
+      permission: "VerCaja"
+    }
   ]
 
-  return (
+  return ( 
     <div className='w-full'>
       <Tabs defaultValue="" className="" onValueChange={() => { setSeleccionarCatalogo(false) }}>
 
