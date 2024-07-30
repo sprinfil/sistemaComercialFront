@@ -67,7 +67,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
         toast({
             variant: "destructive",
             title: "Oh, no. Algo salió mal.",
-            description: "No se encontró ningun usuario",
+            description: "No se encontró ningún usuario",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }

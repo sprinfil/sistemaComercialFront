@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const BuscarContratacionSchema = z.object({
-    nombre: z.string().min(1,"Ingresa algo para buscar al usuario"),
+    nombre: z.string().min(1,"Ingrese información para buscar al usuario"),
     filtro: z.string(),
 
 })
