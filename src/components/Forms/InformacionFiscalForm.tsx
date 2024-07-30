@@ -20,7 +20,7 @@ import { ToastAction } from "@/components/ui/toast";
 import IconButton from "../ui/IconButton.tsx";
 import { Pencil2Icon } from "@radix-ui/react-icons";
 import MarcoForm from "../ui/MarcoForm.tsx";
-
+import Loader from "../ui/Loader.tsx";
 const InformacionFiscalForm = ({ userId }) => {
   const { toast } = useToast();
   const [mostrarTooltip, setMostrarTooltip] = useState(false);
@@ -117,12 +117,14 @@ const InformacionFiscalForm = ({ userId }) => {
     };
 
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await axiosClient.get(`/datos_fiscales/showPorModelo`, {
           params: values
+
         });
         const data = response.data;
-
+        setLoading(false);
         // Actualiza los valores del formulario con los datos obtenidos
         setValue("id", data.id);
         setValue("modelo", "usuario");
@@ -195,7 +197,10 @@ const InformacionFiscalForm = ({ userId }) => {
         </div>
       </div>
       <div className="py-[20px] px-[10px] w-full">
-        <Form {...form}>
+      {loading && <Loader/>}
+        {
+          !loading &&
+          <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <MarcoForm title={"Datos fiscales"}>
               <FormField
@@ -401,13 +406,15 @@ const InformacionFiscalForm = ({ userId }) => {
                 )}
               />
             </MarcoForm>
-
+               
             <div className="flex space-x-4 mt-7">
               {abrirInput && <Button type="submit">Guardar</Button>}
               {abrirInput && <Button onClick={handleCancelar} type="button" variant={"destructive"}>Cancelar</Button>}
             </div>
           </form>
         </Form>
+        }
+       
       </div>
     </div>
   );

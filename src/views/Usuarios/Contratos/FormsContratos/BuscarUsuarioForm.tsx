@@ -21,7 +21,7 @@ import { ToastAction } from "../../../../components/ui/toast.tsx"; //IMPORTACION
 import ContratoConsultaUsuarioTable from "../../../../components/Tables/Components/ContratoConsultaUsuarioTable.tsx";
 import { useStateContext } from "../../../../contexts/ContextContratos.tsx";
 import { ContextProvider } from "../../../../contexts/ContextContratos.tsx";
-
+import { BuscarUsuarioComboBox } from "../../../../components/ui/BuscarUsuarioComboBox.tsx";
 
 interface BuscarUsuarioProps
 {
@@ -38,7 +38,8 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
     const [mostrarTabla, setMostrarTabla] = useState(false);
     const {usuariosEncontrados, setusuariosEncontrados, accion, setAccion} = useStateContext();
     const [nombreBuscado, setNombreBuscado] = useState<string>('');
-   
+    const [nombreSeleccionado, setNombreSeleccionado] = useState<string | null>(null);
+
     console.log("este es la accion pare " + accion);
     const navigate = useNavigate();
 
@@ -46,6 +47,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
         resolver: zodResolver(BuscarContratacionSchema),
         defaultValues: {
             nombre: "",
+            filtro: "",
         },
     })
 
@@ -74,63 +76,62 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
         console.log(values);
         setLoading(true);
         setusuariosEncontrados([]);
-    
+        
         const criterio = values.nombre.trim();
-    
-        // Define los endpoints para las diferentes consultas
-        const endpoints = [
-            `/usuarios/consultaCorreo/${criterio}`,
-            `/usuarios/consultaRFC/${criterio}`,
-            `/usuarios/consulta/${criterio}`,
-            `/usuarios/consultaCodigo/${criterio}`,
-            `/usuarios/consultaCURP/${criterio}`,
 
-        ];
-    
-        // Ejecuta todas las consultas en paralelo
-        Promise.all(endpoints.map(endpoint =>
-            axiosClient.get(endpoint)
-                .then(response => response.data.data)
-                
-                .catch(err => {
-                    setErrors(err);
-                    return []; // Devuelve un array vacío en caso de error
-                })
-        ))
-        .then(results => {
-          // Combina los resultados de todas las consultas
-        const combinedResults = results.flat();
+        let endpoint = "";
 
-        // Actualiza el estado con todos los resultados combinados
-        if (combinedResults.length > 0) {
-            setNombreBuscado(values.nombre); // O usa otro valor si es necesario
-            setusuariosEncontrados(combinedResults);
-            if (combinedResults.length === 1) {
-                if (tipoAccion === "verUsuarioDetalle") {
-                    navigate("/usuario", { state: { contratoBuscarUsuario: combinedResults[0] } });
-                } else if (tipoAccion === "crearContratacionUsuario") {
-                    navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: combinedResults[0] } });
-                }
-            } else {
-                setMostrarTabla(true);
-            }
-
-        } else {
-                noUsuarioEncontrado();
-                setMostrarTabla(false);
+        switch (values.filtro) {
+            case "1":
+                endpoint = `/usuarios/consulta/${criterio}`;
+                break;
+            case "2":
+                endpoint = `/usuarios/consultaCodigo/${criterio}`;
+                break;
+            case "3":
+                endpoint = `/usuarios/consultaCorreo/${criterio}`;
+                break;
+            default:
+                setLoading(false);
+                console.log("Filtro no válido");
+                return;
         }
-                
-        setAccion(tipoAccion);
-        })
-        .catch(err => {
-            setErrors(err);
-        })
-        .finally(() => {
-            setLoading(false);
-        });
+        
+                    
+                // PARA EJECUTAR LA CONSULTA
+                axiosClient.get(endpoint)
+                    .then(response => {
+                        const results = response.data.data;
+                        
+                        if (results.length > 0) {
+                            setNombreBuscado(values.nombre);
+                            setusuariosEncontrados(results);
+                            if (results.length === 1) {
+                                if (tipoAccion === "verUsuarioDetalle") {
+                                    navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                } else if (tipoAccion === "crearContratacionUsuario") {
+                                    navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                }
+                            } else {
+                                setMostrarTabla(true);
+                            }
+                        } else {
+                            noUsuarioEncontrado();
+                            setMostrarTabla(false);
+                        }
+                        
+                        setAccion(tipoAccion);
+                    })
+                    .catch(err => {
+                        setErrors(err);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    });        
+            
+                    
     }
     
-   
 
     useEffect(() => {
         
@@ -157,10 +158,25 @@ function handleNavigationCrearUsuario ()
     return (
         <ContextProvider>
             <div>
-            <div className='mt-5 ml-5 max-w-md mx-0 rounded-md border border-border p-4 h-[43vh] '>
+            <div className='mt-5 ml-5 max-w-md mx-0 rounded-md border border-border p-4 h-[53vh] '>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div style={{ color: 'grey' }}>Consultar al usuario</div>
+                
+                    <FormField
+                        control={form.control}
+                        name="filtro"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Filtrar por:</FormLabel>
+                                <BuscarUsuarioComboBox form={form} field={field} name="filtro" setCargoSeleccionado={setNombreSeleccionado}/>
+                                <FormDescription>
+                                {/* AQUI PUEDE IR DESCRIPCIÓN DEBAJO DEL INPUT EN EL FORM */}
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <FormField
                         control={form.control}
                         name="nombre"
@@ -177,6 +193,7 @@ function handleNavigationCrearUsuario ()
                             </FormItem>
                         )}
                     />
+            
                     <div className="flex justify-end items-end mt-9 gap-2">
                         <Button type="submit">Aceptar</Button>
                         {

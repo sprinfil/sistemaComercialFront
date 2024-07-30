@@ -20,7 +20,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { informaciongeneralSchema } from '../../../components/Forms/informacionGeneralValidaciones.ts'
-
+import CrearOrdenDeTrabajo from './VistasDetalleUsuario/CrearOrdenDeTrabajo.tsx'
+import { OcultarTableDetalleUsuario } from '../../../components/Tables/Components/OcultarTableDetalleUsuario.tsx'
+import TomasUsuario from './VistasDetalleUsuario/TomasUsuario.tsx'
 const DetalleUsuario = () => {
 
   const { pantalla} = useStateContext();
@@ -45,6 +47,7 @@ const DetalleUsuario = () => {
 
 
   const [mostrarPantalla, setMostrarPantalla] = useState();
+  const [accion, setAccion] = useState();
 
   useEffect(()=>{
     setMostrarPantalla(pantalla)
@@ -64,23 +67,33 @@ const DetalleUsuario = () => {
           nombre: "Fiscal",
           pantalla:  <InformacionFiscal idUsuario={contratoBuscarUsuario.id}/>
         },
+        {
+          nombre: "Ordenes de trabajo",
+          pantalla:  <CrearOrdenDeTrabajo idUsuario={contratoBuscarUsuario.id}/>
+        },
+        {
+          nombre: "Tomas",
+          pantalla:  <TomasUsuario idUsuario={contratoBuscarUsuario.id}/>
+        },
       ]
     }
   ]
 
   return (
     <>
+    
       <ContextProvider>
         <div>
           <div className='flex gap-2 mt-2 px-2'>
-            <div className='w-[300px] '>
+            <OcultarTableDetalleUsuario accion={accion} >
               <MenuLateral options={options}  context = {useStateContext}/>
-            </div>
+              </OcultarTableDetalleUsuario>
             <div className='w-full '>
               <PantallaDetalleUsuario/>
             </div>
           </div>
         </div>
+        
       </ContextProvider>
 
     </>
