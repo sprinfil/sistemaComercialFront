@@ -201,8 +201,8 @@ const CrearUsuarioMoralForm = () => {
                             </div>
                             {loading && <Loader />}
                         </div>
-                        <div className=" w-full flex justify-normal mt-4">
-                            <Button type="submit">Guardar</Button>
+                        <div className=" w-full flex justify-end mt-4">
+                        <Button type="submit" className="w-[30vh] h-[6vh]">Crear nuevo usuario</Button>
                         </div>   
                     </form>
                 </Form>

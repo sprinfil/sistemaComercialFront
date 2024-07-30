@@ -406,7 +406,7 @@ const ConceptoForm = () => {
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <MarcoForm title={"Informacion del concepto"}>
+                        <MarcoForm title={"Información del concepto"}>
                             <FormField
                                 control={form.control}
                                 name="nombre"
@@ -442,7 +442,7 @@ const ConceptoForm = () => {
                                             />
                                         </FormControl>
                                         <FormDescription>
-                                            El 1 es minima y el 10 es maxima prioridad
+                                            El 1 es mínimo y el 10 es máximo prioridad
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>

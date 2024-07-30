@@ -87,7 +87,7 @@ export function AgregarTarifaServicio({ trigger, id_tipo_toma, updateData }) {
                                 name="rango"
                                 render={({ field }) => (
                                     <FormItem className="w-[400px]">
-                                        <FormLabel>rango</FormLabel>
+                                        <FormLabel>Rango</FormLabel>
                                         <FormControl>
                                             <Input placeholder="0m3" className="col-span-3" {...field} />
                                         </FormControl>
@@ -103,7 +103,7 @@ export function AgregarTarifaServicio({ trigger, id_tipo_toma, updateData }) {
                                 name="agua"
                                 render={({ field }) => (
                                     <FormItem className="w-[400px]">
-                                        <FormLabel>agua</FormLabel>
+                                        <FormLabel>Agua</FormLabel>
                                         <FormControl>
                                             <Input placeholder="$0" className="col-span-3" {...field} />
                                         </FormControl>
@@ -119,7 +119,7 @@ export function AgregarTarifaServicio({ trigger, id_tipo_toma, updateData }) {
                                 name="alcantarillado"
                                 render={({ field }) => (
                                     <FormItem className="w-[400px]">
-                                        <FormLabel>alcantarillado</FormLabel>
+                                        <FormLabel>Alcantarillado</FormLabel>
                                         <FormControl>
                                             <Input placeholder="$0" className="col-span-3" {...field} />
                                         </FormControl>
@@ -135,7 +135,7 @@ export function AgregarTarifaServicio({ trigger, id_tipo_toma, updateData }) {
                                 name="saneamiento"
                                 render={({ field }) => (
                                     <FormItem className="w-[400px]">
-                                        <FormLabel>saneamiento</FormLabel>
+                                        <FormLabel>Saneamiento</FormLabel>
                                         <FormControl>
                                             <Input placeholder="$0" className="col-span-3" {...field} />
                                         </FormControl>
