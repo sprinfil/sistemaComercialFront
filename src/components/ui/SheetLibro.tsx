@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Sheet,
     SheetContent,
@@ -45,6 +45,7 @@ const SheetLibro = ({ trigger, updateData, libro, id_ruta}) => {
         },
     })
 
+
     function onSubmit(values: z.infer<typeof LibroSchema>) {
 
         if (libro == null) {
@@ -77,7 +78,7 @@ const SheetLibro = ({ trigger, updateData, libro, id_ruta}) => {
                     console.log(response);
                     toast({
                         title: "Exito",
-                        description: "Ruta Creada",
+                        description: "Libro Editado",
                         variant: "success",
                         action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                     })

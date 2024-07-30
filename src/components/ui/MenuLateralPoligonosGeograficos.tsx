@@ -105,10 +105,10 @@ const MenuLateralPoligonosGeograficos = () => {
                                                         <a title='Agregar libro'>
                                                             <SheetLibro
                                                                 trigger={
-                                                                <IconButton>
-                                                                    <ReaderIcon className="w-[17px] h-[17px]" />
-                                                                    <PlusIcon className="w-[17px] h-[17px]" />
-                                                                </IconButton>}
+                                                                    <IconButton>
+                                                                        <ReaderIcon className="w-[17px] h-[17px]" />
+                                                                        <PlusIcon className="w-[17px] h-[17px]" />
+                                                                    </IconButton>}
                                                                 id_ruta={ruta.id}
                                                                 updateData={getRutas}
                                                             />
@@ -144,9 +144,16 @@ const MenuLateralPoligonosGeograficos = () => {
                                                         </div>
                                                         <div className='ml-[40px] flex items-center '>
                                                             <Checkbox id="terms" className="mr-[10px]" />
-                                                            <IconButton>
-                                                                <Pencil2Icon />
-                                                            </IconButton>
+                                                            <SheetLibro
+                                                                trigger={
+                                                                    <IconButton>
+                                                                        <Pencil2Icon />
+                                                                    </IconButton>
+                                                                }
+                                                                updateData={getRutas}
+                                                                id_ruta={ruta.id}
+                                                                libro={libro}
+                                                            />
                                                             <IconButton>
                                                                 <TrashIcon className='w-[17px] h-[17px] text-red-500' />
                                                             </IconButton>
