@@ -57,7 +57,7 @@ const MenuLateralPoligonosGeograficos = () => {
                     {/*superior*/}
                     <div className='h-[50px] w-full p-2 flex rounded-tl-md rounded-tr-md'>
                         <div className='w-[90%] text-[12px] flex items-center'>
-                            <p>Poligonos Geográficos</p>
+                            <p>Polígonos Geográficos</p>
                         </div>
                         <div className='w-[10%] flex items-center justify-end'>
                             <a title='Crear Ruta'>

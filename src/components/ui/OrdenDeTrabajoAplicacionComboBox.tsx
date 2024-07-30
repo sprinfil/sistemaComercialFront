@@ -38,9 +38,9 @@ type ConceptosComboBoxNewProps = {
 };
 
 const valoresParaAplicacionCargo: Status[] = [
-  { value: '1', label: 'generar' },
-  { value: '2', label: 'modificar' },
-  { value: '3', label: 'quitar' },
+  { value: '1', label: 'Generar' },
+  { value: '2', label: 'Modificar' },
+  { value: '3', label: 'Quitar' },
   // Add more static values here
 ];
 
