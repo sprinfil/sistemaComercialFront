@@ -23,12 +23,15 @@ import { informaciongeneralSchema } from '../../../components/Forms/informacionG
 import CrearOrdenDeTrabajo from './VistasDetalleUsuario/CrearOrdenDeTrabajo.tsx'
 import { OcultarTableDetalleUsuario } from '../../../components/Tables/Components/OcultarTableDetalleUsuario.tsx'
 import TomasUsuario from './VistasDetalleUsuario/TomasUsuario.tsx'
+import { BreadCrumbDetalleUsuario } from '../../../components/ui/breadCrumbDetalleUsuario.tsx' 
+import { ZustandTomasPorUsuario } from '../../../contexts/ZustandTomasPorUsuario.tsx'
+
 const DetalleUsuario = () => {
 
   const { pantalla} = useStateContext();
   const location = useLocation();
   const contratoBuscarUsuario = location.state?.contratoBuscarUsuario || {};
-  console.log("aver que dato pasa informacion fiscal =", JSON.stringify(contratoBuscarUsuario, null, 2)); //POR SI QUIERES CONVERGTIR UN OBJETO A JSON
+  //console.log("aver que dato pasa informacion fiscal =", JSON.stringify(contratoBuscarUsuario, null, 2)); //POR SI QUIERES CONVERGTIR UN OBJETO A JSON
 
 
   const form = useForm<z.infer<typeof informaciongeneralSchema>>({
@@ -44,6 +47,8 @@ const DetalleUsuario = () => {
       correo: contratoBuscarUsuario.correo || '',
     },
   });
+
+  const {tomasRuta} = ZustandTomasPorUsuario(); //obtener la ruta del componente breadCrumb
 
 
   const [mostrarPantalla, setMostrarPantalla] = useState();
@@ -82,19 +87,27 @@ const DetalleUsuario = () => {
   return (
     <>
     
-      <ContextProvider>
-        <div>
-          <div className='flex gap-2 mt-2 px-2'>
-            <OcultarTableDetalleUsuario accion={accion} >
-              <MenuLateral options={options}  context = {useStateContext}/>
-              </OcultarTableDetalleUsuario>
-            <div className='w-full '>
-              <PantallaDetalleUsuario/>
-            </div>
+        <ContextProvider>
+      <div>
+        {/* Breadcrumb en la parte superior */}
+        <div className='mt-2 px-2'>
+          <BreadCrumbDetalleUsuario mostrarSiguiente ={tomasRuta}/>
+        </div>
+
+        {/* Contenido principal */}
+        <div className='flex gap-2 mt-2 px-2'>
+          <div className='flex-shrink-0 mt-5 ml-5'>
+            <OcultarTableDetalleUsuario accion={accion}>
+              <MenuLateral options={options} context={useStateContext} />
+            </OcultarTableDetalleUsuario>
+          </div>
+          <div className='w-full'>
+            <PantallaDetalleUsuario />
           </div>
         </div>
-        
-      </ContextProvider>
+      </div>
+    </ContextProvider>
+
 
     </>
 
