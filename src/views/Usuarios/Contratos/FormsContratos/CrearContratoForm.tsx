@@ -104,7 +104,7 @@ export const CrearContratoForm = () => {
                                                 <Input placeholder="Escribe el apellido materno" {...field} />
                                             </FormControl>
                                             <FormDescription>
-                                               
+                                    
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>

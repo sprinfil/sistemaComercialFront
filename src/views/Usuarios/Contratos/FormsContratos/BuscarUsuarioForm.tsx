@@ -22,7 +22,8 @@ import ContratoConsultaUsuarioTable from "../../../../components/Tables/Componen
 import { useStateContext } from "../../../../contexts/ContextContratos.tsx";
 import { ContextProvider } from "../../../../contexts/ContextContratos.tsx";
 import { BuscarUsuarioComboBox } from "../../../../components/ui/BuscarUsuarioComboBox.tsx";
-
+import { Import } from "lucide-react";
+import { ZustandGeneralUsuario } from "../../../../contexts/ZustandGeneralUsuario.tsx";
 interface BuscarUsuarioProps
 {
     navegacion: string;
@@ -36,9 +37,14 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [mostrarTabla, setMostrarTabla] = useState(false);
-    const {usuariosEncontrados, setusuariosEncontrados, accion, setAccion} = useStateContext();
-    const [nombreBuscado, setNombreBuscado] = useState<string>('');
-    const [nombreSeleccionado, setNombreSeleccionado] = useState<string | null>(null);
+
+    //variables globales del zustand
+    const {nombreBuscado, setNombreBuscado, 
+        nombreSeleccionado, setNombreSeleccionado, 
+        usuariosEncontrados, setUsuariosEncontrados, 
+        accion, setAccion
+    
+    } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
 
     console.log("este es la accion pare " + accion);
     const navigate = useNavigate();
@@ -50,6 +56,8 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
             filtro: "",
         },
     })
+
+ //#region TOAST(MENSAJES)   
 
     //Funcion de errores para el Toast
     function errorToast() {
@@ -71,11 +79,12 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }
+//#endregion
 
     function onSubmit(values: z.infer<typeof BuscarContratacionSchema>) {
         console.log(values);
         setLoading(true);
-        setusuariosEncontrados([]);
+        setUsuariosEncontrados([]);
         
         const criterio = values.nombre.trim();
 
@@ -102,10 +111,10 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                 axiosClient.get(endpoint)
                     .then(response => {
                         const results = response.data.data;
-                        
+                        setUsuariosEncontrados(response.data.data);
                         if (results.length > 0) {
                             setNombreBuscado(values.nombre);
-                            setusuariosEncontrados(results);
+                            setUsuariosEncontrados(results);
                             if (results.length === 1) {
                                 if (tipoAccion === "verUsuarioDetalle") {
                                     navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });

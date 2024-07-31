@@ -9,24 +9,29 @@ import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { ZustandTomasPorUsuario } from '../../../contexts/ZustandTomasPorUsuario.tsx';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
+export default function TomaPorUsuarioTable() {
 
-export default function TomaPorUsuarioTable({idUsuario}) {
 
 
-
-  const {tomas, setTomas, loadingTable, setLoadingTable, setToma, setAccion, setTomasRuta} = ZustandTomasPorUsuario();
+  const {tomas, setTomas, loadingTable, setLoadingTable, setToma, setAccion, setTomasRuta, usuariosEncontrados, setUsuariosEncontrados} = ZustandGeneralUsuario();
 
   const navigate = useNavigate();
 
 
   useEffect(() => {
+    console.log("USUARIOS ENCONTRADOS:", usuariosEncontrados); 
+  }, [setUsuariosEncontrados]);
+
+
+  useEffect(() => {
     gettomaPorUsuario();
-  }, [idUsuario]);
+  }, [usuariosEncontrados.id]);
 
   const gettomaPorUsuario = async () => {
     setLoadingTable(true);
     try {
-      const response = await axiosClient.get(`/usuarios/consulta/tomas/${idUsuario}`);
+      const response = await axiosClient.get(`/usuarios/consulta/tomas/${usuariosEncontrados.id}`);
       setLoadingTable(false);
       setTomas(response.data.data);
       console.log(response);

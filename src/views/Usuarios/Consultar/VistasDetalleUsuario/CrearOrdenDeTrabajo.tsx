@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { Button } from '../../../../components/ui/button'
 import ModalGenerarOrdenDeTrabajo from '../../../../components/ui/ModalGenerarOrdenDeTrabajo'
 import OrdenDeTrabajoUsuarioTable from '../../../../components/Tables/Components/OrdenDeTrabajoUsuarioTable'
+import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario'
 
-const CrearOrdenDeTrabajo = ({idUsuario}) => {
+const CrearOrdenDeTrabajo = () => {
 
   const [abrirModal, setAbrirModal] = useState(false);
 
+  const {usuariosEncontrados, setUsuariosEncontrados} = ZustandGeneralUsuario();
 
 
   function handleGenerarOrdenDeTrabajo()

@@ -21,13 +21,16 @@ import IconButton from "../ui/IconButton.tsx";
 import { Pencil2Icon } from "@radix-ui/react-icons";
 import MarcoForm from "../ui/MarcoForm.tsx";
 import Loader from "../ui/Loader.tsx";
-const InformacionFiscalForm = ({ userId }) => {
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
+
+const InformacionFiscalForm = () => {
   const { toast } = useToast();
   const [mostrarTooltip, setMostrarTooltip] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [abrirInput, setAbrirInput] = useState(false);
   const [datosFiscalesDesplegados, setdatosFiscalesDesplegados] = useState({});
+  const {usuariosEncontrados, setUsuariosEncontrados} = ZustandGeneralUsuario();
 
   // #region SUCCESSTOAST
   function successToastCreado() {
@@ -113,7 +116,7 @@ const InformacionFiscalForm = ({ userId }) => {
     // Función para obtener los datos de la base de datos
     let values = {
       "modelo": "usuario",
-      "id_modelo": userId,
+      "id_modelo": usuariosEncontrados.id,
     };
 
     const fetchData = async () => {
@@ -150,7 +153,7 @@ const InformacionFiscalForm = ({ userId }) => {
     };
 
     fetchData();
-  }, [userId, setValue]);
+  }, [usuariosEncontrados.id, setValue]);
 
 
   // #region HANDLE

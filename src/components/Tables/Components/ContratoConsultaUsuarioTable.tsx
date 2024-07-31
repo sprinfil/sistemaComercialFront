@@ -8,6 +8,7 @@ import { ContextProvider } from '../../../contexts/ContextContratos.tsx';
 import { DataTableUsuarios } from '../../ui/DataTableUsuarios.tsx';
 import DetalleUsuario from '../../../views/Usuarios/Consultar/DetalleUsuario.tsx';
 import { useNavigate } from 'react-router-dom';
+import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario';
 
 interface ConsultaUsuarioTableProps {
   nombreBuscado: string;
@@ -16,7 +17,8 @@ interface ConsultaUsuarioTableProps {
 export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2}: ConsultaUsuarioTableProps) {
 
   console.log("este es el que recibeeee" + nombreBuscado)
-  const { usuariosEncontrados, setusuariosEncontrados, loadingTable, setLoadingTable, setAccion,setusuario, usuario} = useStateContext();
+  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, setLoadingTable, loadingTable, setAccion, setUsuario, usuario} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+
   const tableRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
@@ -27,11 +29,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2}: 
 
             try {
                 const endpoints = [
-                    `/usuarios/consultaCorreo/${nombreBuscado}`,
-                    `/usuarios/consultaRFC/${nombreBuscado}`,
                     `/usuarios/consulta/${nombreBuscado}`,
-                    `/usuarios/consultaCodigo/${nombreBuscado}`,
-                    `/usuarios/consultaCURP/${nombreBuscado}`,
 
                 ];
 
@@ -46,7 +44,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2}: 
 
                 // Combina los resultados de todas las consultas
                 const combinedResults = results.flat();
-                setusuariosEncontrados(combinedResults); // Actualiza los datos
+                setUsuariosEncontrados(combinedResults); // Actualiza los datos
 
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -61,10 +59,10 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2}: 
 
         loadAndScroll();
     }
-}, [nombreBuscado, setusuariosEncontrados, setLoadingTable]);
+}, [nombreBuscado, setUsuariosEncontrados, setLoadingTable]);
 
   const handleRowClick = (contratoBuscarUsuario: ContratoBuscarUsuario) => {
-    setusuario(contratoBuscarUsuario);
+    setUsuariosEncontrados(contratoBuscarUsuario);
 
     if(accion2 == "verUsuarioDetalle")
     {

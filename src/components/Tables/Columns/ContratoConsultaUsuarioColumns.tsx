@@ -7,7 +7,7 @@ import { useStateContext } from "../../../contexts/ContextContratos";
 import { Checkbox } from "../../ui/checkbox"
 
 // AQUI VAN TODOS LOS DATOS QUE SE REQUIERAN PARA HACER UNA BUSQUEDA ESPECIFICA
-export type ContratoBuscarUsuario = {
+export type BuscarUsuario = {
   id: number
   nombre: string
   apellido_paterno: string
@@ -20,7 +20,7 @@ export type ContratoBuscarUsuario = {
 }
 
 
-export const columns: ColumnDef<ContratoBuscarUsuario>[] = [
+export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorKey: "nombre",
     header: ({ column }) => {
