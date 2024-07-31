@@ -41,7 +41,7 @@ function App() {
 
     return (
         <div>
-            <div className='bg-muted w-full h-[7vh] flex items-center px-2 relative border-b border-border'>
+            <div className=' bg-muted w-full h-[7vh] flex items-center px-2 relative border-b border-border'>
                 <a title='Modulo Principal'>
                     <Link to={"/dashboard"}>
                         <IconButton>
