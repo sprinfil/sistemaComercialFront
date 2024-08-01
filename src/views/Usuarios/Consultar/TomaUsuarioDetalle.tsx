@@ -1,41 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, {useEffect, useState} from 'react'
+import { BreadCrumbDetalleUsuario } from '../../../components/ui/breadCrumbDetalleUsuario'
+import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx'
+import { useStateContext, ContextProvider } from '../../../contexts/ContextDetalleUsuario';
+import { OcultarTableDetalleUsuario } from '../../../components/Tables/Components/OcultarTableDetalleUsuario';
 import MenuLateral from '../../../components/ui/MenuLateral';
 import PantallaDetalleUsuario from './VistasDetalleUsuario/PantallaDetalleUsuario';
 import InformaciónGeneral from './VistasDetalleUsuario/InformaciónGeneral';
 import InformacionFiscal from './VistasDetalleUsuario/InformacionFiscal';
 import CrearOrdenDeTrabajo from './VistasDetalleUsuario/CrearOrdenDeTrabajo';
 import TomasUsuario from './VistasDetalleUsuario/TomasUsuario';
-import { useStateContext, ContextProvider } from '../../../contexts/ContextDetalleUsuario';
-import { OcultarTableDetalleUsuario } from '../../../components/Tables/Components/OcultarTableDetalleUsuario';
-import { BreadCrumbDetalleUsuario } from '../../../components/ui/breadCrumbDetalleUsuario';
-import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
-import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario';
-import Loader from '../../../components/ui/Loader';
 
-const DetalleUsuario: React.FC = () => {
-  const { pantalla } = useStateContext();
-  const location = useLocation();
-  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, tomasRuta, usuariosRecuperado} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
-  const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
+export const TomaUsuarioDetalle = () => {
 
-
-
-  useEffect(() => {
-    console.log("USUARIOS ENCONTRADOS: PP", usuariosEncontrados);
-    console.log("ESTE FUE EL USUARIO RECUPERADO", usuariosRecuperado);
-    setMostrarSiguiente(false);
-  }, [usuariosRecuperado, usuariosEncontrados]);
-
-  
-
-  const [mostrarPantalla, setMostrarPantalla] = useState(pantalla);
+  const {tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado}= ZustandGeneralUsuario()
   const [accion, setAccion] = useState<string | undefined>();
 
   useEffect(() => {
-    setMostrarPantalla(pantalla);
-    console.log(pantalla);
-  }, [pantalla]);
+    console.log("ESTE USUARIO LLEGA A LA TOMA DETALLE:", usuariosEncontrados);
+
+    if (usuariosEncontrados.length > 0) {
+      // Establece el estado global solo si hay usuarios encontrados
+      setUsuariosRecuperado(usuariosEncontrados); // Debe ser un arreglo de usuarios
+    }
+  }, [usuariosEncontrados, setUsuariosRecuperado]);
+
+  console.log("ESTE ES EL USUARIO RECUPERADO " + JSON.stringify(usuariosRecuperado));
 
   const options = [
     {
@@ -53,10 +42,7 @@ const DetalleUsuario: React.FC = () => {
           nombre: "Ordenes de trabajo",
           pantalla: <CrearOrdenDeTrabajo/>
         },
-        {
-          nombre: "Tomas",
-          pantalla: <TomasUsuario/>
-        },
+       
       ]
     }
   ];
@@ -67,8 +53,7 @@ const DetalleUsuario: React.FC = () => {
         <div>
           {/* Breadcrumb en la parte superior */}
           <div className='mt-2 px-2'>
-            
-            <BreadCrumbDetalleUsuario />
+            <BreadCrumbDetalleUsuario/>
           </div>
 
           {/* Contenido principal */}
@@ -85,7 +70,5 @@ const DetalleUsuario: React.FC = () => {
         </div>
       </ContextProvider>
     </>
-  );
-};
-
-export default DetalleUsuario;
+  )
+}

@@ -1,23 +1,23 @@
 import { useEffect, useRef, useState} from 'react';
 import { DataTable } from '../../ui/DataTable.tsx';
-import { columns, BuscarUsuario } from "../Columns/ContratoConsultaUsuarioColumns.tsx";
+import { columns, BuscarTomaUsuario } from "../Columns/ContratoConsultaTomaColumns.tsx";
 import axiosClient from '../../../axios-client.ts';
 import Loader from '../../ui/Loader.tsx';
 import { useStateContext } from '../../../contexts/ContextContratos.tsx';
 import { ContextProvider } from '../../../contexts/ContextContratos.tsx';
-import { DataTableUsuarios } from '../../ui/DataTableUsuarios.tsx';
 import DetalleUsuario from '../../../views/Usuarios/Consultar/DetalleUsuario.tsx';
 import { useNavigate } from 'react-router-dom';
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario';
 import { Link } from 'react-router-dom';
+import { DataTableTomaUsuarios } from '../../ui/DataTableTomaUsuarios.tsx';
 interface ConsultaUsuarioTableProps {
   nombreBuscado: string;
 }
 
-export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, filtroSeleccionado}: ConsultaUsuarioTableProps) {
+export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filtroSeleccionado}: ConsultaUsuarioTableProps) {
 
   console.log("este es el que recibeeee" + nombreBuscado)
-  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, setLoadingTable, loadingTable, setAccion, setUsuario, usuario, setUsuariosRecuperado} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, setLoadingTable, loadingTable, setAccion, setUsuario, usuario, setUsuariosRecuperado, tomaUsuariosEncontrados, setTomaUsuariosEncontrados} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
 
   const tableRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -72,8 +72,8 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
     }
 }, [nombreBuscado, setUsuariosEncontrados, setLoadingTable]);
 
-  const handleRowClick = (contratobuscarUsuario: BuscarUsuario) => {
-    setUsuariosEncontrados([contratobuscarUsuario]);
+  const handleRowClick = (contratobuscarUsuario: BuscarTomaUsuario) => {
+    setTomaUsuariosEncontrados([contratobuscarUsuario]);
     if(accion2 == "verUsuarioDetalle")
     {
       navigate("/usuario");
@@ -92,7 +92,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
   return (
     <ContextProvider>
     <div ref={tableRef}>
-        <DataTableUsuarios columns={columns} data={usuariosEncontrados} sorter='nombre' onRowClick={handleRowClick} />
+        <DataTableTomaUsuarios columns={columns} data={tomaUsuariosEncontrados} sorter='nombre' onRowClick={handleRowClick} />
       </div>
     </ContextProvider>
   

@@ -7,120 +7,120 @@ import { useStateContext } from "../../../contexts/ContextContratos";
 import { Checkbox } from "../../ui/checkbox"
 
 // AQUI VAN TODOS LOS DATOS QUE SE REQUIERAN PARA HACER UNA BUSQUEDA ESPECIFICA
-export type BuscarUsuario = {
+export type BuscarTomaUsuario = {
   id: number
-  nombre: string
-  apellido_paterno: string
-  apellido_materno: string
-  nombre_contacto: string
-  telefono: string
-  curp: string
-  rfc: string
-  correo: string
+  clave_catastral: string
+  calle: string
+  numero_casa: string
+  entre_calle_1: string
+  entre_calle_2: string
+  colonia: string
+  codigo_postal: string
+  localidad: string
 }
 
 
-export const columns: ColumnDef<BuscarUsuario>[] = [
+export const columns: ColumnDef<BuscarTomaUsuario>[] = [
   {
-    accessorKey: "nombre",
+    accessorKey: "clave_catastral",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Nombre
+          Clave catastral
         </Button>
       )
     },
   },
   {
-    accessorKey: "apellido_paterno",
+    accessorKey: "calle",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Apellido paterno
+          Calle
         </Button>
       )
     },
   },
   {
-    accessorKey: "apellido_materno",
+    accessorKey: "numero_casa",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Apellido materno
+          #
         </Button>
       )
     },
   },
   {
-    accessorKey: "nombre_contacto",
+    accessorKey: "entre_calle_1",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Nombre de contacto
+          Entre calle 1
         </Button>
       )
     },
   },
   {
-    accessorKey: "telefono",
+    accessorKey: "entre_calle_2",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Telefono
+          Entre calle 2
         </Button>
       )
     },
   },
   {
-    accessorKey: "curp",
+    accessorKey: "colonia",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          CURP
+          Colonia
         </Button>
       )
     },
   },
   {
-    accessorKey: "rfc",
+    accessorKey: "codigo_postal",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          RFC
+          Codigo postal 
         </Button>
       )
     },
   },
   {
-    accessorKey: "correo",
+    accessorKey: "localidad",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Correo
+          Localidad 
         </Button>
       )
     },
