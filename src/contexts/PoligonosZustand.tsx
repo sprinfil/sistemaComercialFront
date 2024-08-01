@@ -6,6 +6,9 @@ const PoligonosZustand = create((set) => ({
 
     ruta_visibility: [],
     set_ruta_visibility: (newItems) => set({ ruta_visibility: newItems }),
+
+    loading_import: false,  // Nueva variable booleana
+    set_loading_import: (isLoading) => set({ loading_import: isLoading }),
   }));
 
 export default PoligonosZustand;
