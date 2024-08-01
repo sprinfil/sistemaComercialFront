@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import axiosClient from "../../axios-client";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import Loader from "../../components/ui/Loader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UpdateIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { UpdateIcon, MagnifyingGlassIcon,PlusIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx"; // Asegúrate de que esta ruta sea correcta
+import Modal from "../ui/Modal.tsx";
+import { useStateContext } from "../../contexts/ContextConcepto.tsx";
 
 const PuntoVentaForm = () => {
   const [userInput, setUserInput] = useState("");
@@ -15,6 +17,9 @@ const PuntoVentaForm = () => {
   const [pendingCargos, setPendingCargos] = useState([]);
   const [selectedCargos, setSelectedCargos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [conceptos, setConceptos] = useState([]);
+  const [loadingTable, setLoadingTable] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Estado para almacenar las cantidades a abonar
@@ -93,6 +98,21 @@ const PuntoVentaForm = () => {
     });
   };
 
+  const handleF5Press = (event: KeyboardEvent) => {
+    if (event.key === 'F5') {
+      event.preventDefault(); // Prevenir recarga de página
+      handleSearch(); // Llamar a la función de pago
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleF5Press);
+
+    return () => {
+      window.removeEventListener('keydown', handleF5Press);
+    };
+  }, []);
+
   const handleAmountChange = (id, value) => {
     setAmountsToPay(prevAmounts => ({
       ...prevAmounts,
@@ -104,6 +124,53 @@ const PuntoVentaForm = () => {
     return value === 1 ? 'Sí' : 'No';
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  const calculateTotal = () => {
+  return selectedCargos.reduce((acc, cargo) => acc + parseFloat(cargo.monto || 0), 0);
+};
+
+const calculateTotalAbonado = () => {
+  return selectedCargos.reduce((acc, cargo) => acc + (parseFloat(amountsToPay[cargo.id] || 0)), 0);
+};
+
+const getConcepto = async () => {
+    setLoadingTable(true);
+    try {
+      const response = await axiosClient.get("/Concepto");
+      // Asegúrate de que la respuesta incluye el concepto y el monto
+      const data = response.data.data; 
+      // Si la respuesta es una lista de conceptos, asegúrate de manejarlo adecuadamente
+      setConceptos(data.map(item => ({
+        concepto: item.concepto, // Ajusta la propiedad según el nombre en tu API
+        monto: item.monto // Ajusta la propiedad según el nombre en tu API
+      })));
+      console.log(data);
+    } catch (error) {
+      console.error("Fallo la consulta del concepto:", error);
+    } finally {
+      setLoadingTable(false);
+    }
+  };
+
+const openModal = () => {
+  getConcepto(); // Llama a getConcepto cuando se abre el modal
+  setIsModalOpen(true); // Abre el modal
+};
+
+const closeModal = () => {
+  setIsModalOpen(false); // Cierra el modal
+};
+
+const totalAcumulado = calculateTotal();
+const totalAbonado = calculateTotalAbonado();
+const totalRestante = totalAcumulado - totalAbonado;
+  
+
   return (
     <div className="flex flex-col">
       <div className="h-10 justify-center flex items-center rounded-sm">
@@ -112,6 +179,7 @@ const PuntoVentaForm = () => {
           className="h-8 ml-1 mr-1 w-96"
           value={userInput}
           onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
         />
         <IconButton onClick={handleSearch} title="Buscar">
           <MagnifyingGlassIcon className="w-[20px] h-[20px]" />
@@ -123,7 +191,7 @@ const PuntoVentaForm = () => {
       {error && <p className="text-red-500">{error}</p>}
       {loading && <Loader />}
       {!loading && userData && (
-        <div className="flex">
+        <div className="flex min-h-[70vh] ">
           <div className="border rounded-sm w-2/3 ml-1 mr-1 mt-2">
             <Tabs defaultValue="general">
               <TabsList>
@@ -131,9 +199,9 @@ const PuntoVentaForm = () => {
                 <TabsTrigger value="cargos">Cargos</TabsTrigger>
                 <TabsTrigger value="pagos">Pagos</TabsTrigger>
               </TabsList>
-
+  
               <TabsContent value="general">
-                <div className="justify-center ml-5 mr-5 me-5 mt-5">
+                <div className="justify-center ml-5 mr-5 mt-5">
                   <div className="relative">
                     <div className="absolute -top-3 left-3 bg-white px-2 text-sm font-semibold">
                       Información de Usuario/Toma
@@ -158,12 +226,6 @@ const PuntoVentaForm = () => {
                         <div>{userData.codigo_postal}</div>
                         <div className="font-semibold">Localidad:</div>
                         <div>{userData.localidad}</div>
-                        <div className="font-semibold">Calle Notificaciones:</div>
-                        <div>{userData.calle_notificaciones}</div>
-                        <div className="font-semibold">Entre Calle Notificaciones 1:</div>
-                        <div>{userData.entre_calle_notificaciones_1}</div>
-                        <div className="font-semibold">Entre Calle Notificaciones 2:</div>
-                        <div>{userData.entre_calle_notificaciones_2}</div>
                         <div className="font-semibold">Tipo Servicio:</div>
                         <div>{userData.tipo_servicio}</div>
                         <div className="font-semibold">Tipo Toma:</div>
@@ -179,10 +241,10 @@ const PuntoVentaForm = () => {
                   </div>
                 </div>
               </TabsContent>
-
+  
               {cargosData && (
                 <TabsContent value="cargos">
-                  <div className="relative">
+                  <div className="relative ml-5 mr-5">
                     <div className="absolute -top-4 left-4 bg-white px-2 text-sm font-semibold">
                       Información de Cargos
                     </div>
@@ -223,7 +285,7 @@ const PuntoVentaForm = () => {
                                 {cargo.concepto}
                               </td>
                               <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
-                                ${cargo.monto.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                ${parseFloat(cargo.monto)}
                               </td>
                               <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {cargo.estado}
@@ -240,15 +302,24 @@ const PuntoVentaForm = () => {
                             </tr>
                           ))}
                         </tbody>
+                        <IconButton onClick={openModal} title="open">
+                          <PlusIcon className="w-[20px] h-[20px]" />
+                        </IconButton>
+                        {isModalOpen && (
+                          <Modal onClose={closeModal}>
+                            {/* Aquí puedes renderizar el contenido del modal */}
+                            {/* Utiliza la variable conceptos para mostrar la información */}
+                          </Modal>
+                        )}
                       </table>
                     </div>
                   </div>
                 </TabsContent>
               )}
-
+  
               {pagosData && (
                 <TabsContent value="pagos">
-                  <div className="relative">
+                  <div className="relative ml-5 mr-5">
                     <div className="absolute -top-4 left-4 bg-white px-2 text-sm font-semibold">
                       Información de Pagos
                     </div>
@@ -271,22 +342,23 @@ const PuntoVentaForm = () => {
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                          {pagosData.map((pago, index) => (
-                            <tr key={index}>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                ${pago.total_pagado.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {pago.forma_pago}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {pago.fecha_pago}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {pago.estado}
-                              </td>
-                            </tr>
-                          ))}
+                        {pagosData.map((pago, index) => (
+                          <tr key={index}>
+                            <td className="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                              ${parseFloat(pago.total_pagado)}
+                            </td>
+                            <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {pago.forma_pago}
+                            </td>
+                            <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {pago.fecha_pago}
+                            </td>
+                            <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {pago.estado}
+                            </td>
+                          </tr>
+                        ))}
+                        
                         </tbody>
                       </table>
                     </div>
@@ -295,12 +367,12 @@ const PuntoVentaForm = () => {
               )}
             </Tabs>
           </div>
-
+  
           <div className="border rounded-sm w-1/3 ml-1 mr-1 mt-2 flex flex-col relative">
             <div className="absolute left-4 bg-white px-2 text-sm font-semibold mt-2">
               Cargos Seleccionados
             </div>
-            <div className="flex-grow mt-4">
+            <div className="flex-grow mt-4 ml-3 m-4">
               {selectedCargos.length > 0 ? (
                 <div className="border rounded-sm p-4 max-h-96 overflow-y-auto">
                   <table className="w-full table-fixed">
@@ -324,28 +396,35 @@ const PuntoVentaForm = () => {
                             {cargo.concepto}
                           </td>
                           <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
-                            ${cargo.monto.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            ${parseFloat(cargo.monto)}
                           </td>
                           <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500">
                             <input
                               type="number"
                               value={amountsToPay[cargo.id] || ""}
-                              onChange={(e) => handleAmountChange(cargo.id, parseFloat(e.target.value))}
+                              onChange={(e) => handleAmountChange(cargo.id, parseFloat(e.target.value) || 0)}
                               className="w-full border rounded-sm p-1"
                             />
                           </td>
                         </tr>
                       ))}
+                      <tr>
+                        <td className="px-2 py-4 text-sm font-semibold text-gray-500">Total a pagar</td>
+                        <td className="px-2 py-4 text-sm font-semibold text-gray-500">
+                          ${totalRestante}
+                        </td>
+                        <td></td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
               ) : (
-                <p className="text-sm mt-5">Seleccione uno o más cargos para mostrar la información aquí.</p>
+                <p className="text-sm mt-5 ml-3">Seleccione uno o más cargos para mostrar la información aquí.</p>
               )}
             </div>
-            <Button className="h-10 w-full mt-4" onClick={handleSearch}>
-              PAGAR (F5)
-            </Button>
+              <Button onClick={() => alert('PAGAR(F5)')}>
+                PAGAR(F5)
+              </Button>
           </div>
         </div>
       )}
