@@ -42,7 +42,7 @@ export function BreadCrumbDetalleUsuario() {
     <nav className="ml-5 mt-5">
       <ol style={{ listStyle: 'none', display: 'flex', padding: 0 }}>
         <li>
-          <Link to="/usuario" onClick={handleClick} className="text-white">
+          <Link to="/usuario" onClick={handleClick}>
           <p className="text-[15px] font-medium">{usuario ? usuario.nombre : 'Nombre no disponible'}
 
           </p>
