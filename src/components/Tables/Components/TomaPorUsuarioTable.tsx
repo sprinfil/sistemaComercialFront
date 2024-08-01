@@ -10,31 +10,34 @@ import { ZustandTomasPorUsuario } from '../../../contexts/ZustandTomasPorUsuario
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
+import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario.tsx';
+
 export default function TomaPorUsuarioTable() {
 
 
 
-  const {tomas, setTomas, loadingTable, setLoadingTable, setToma, setAccion, setTomasRuta, usuariosEncontrados, setUsuariosEncontrados} = ZustandGeneralUsuario();
+  const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
+
+
+  const {tomas, setTomas, loadingTable, setLoadingTable, setToma, setAccion, setTomasRuta, usuariosEncontrados, setUsuariosEncontrados, clearUsuariosEncontrados} = ZustandGeneralUsuario();
 
   const navigate = useNavigate();
 
 
   useEffect(() => {
-    console.log("USUARIOS ENCONTRADOS:", usuariosEncontrados); 
-  }, [setUsuariosEncontrados]);
+    if (usuariosEncontrados.length > 0) {
+      gettomaPorUsuario(usuariosEncontrados[0].id);
+    }
+    
+  }, [usuariosEncontrados]);
 
-
-  useEffect(() => {
-    gettomaPorUsuario();
-  }, [usuariosEncontrados.id]);
-
-  const gettomaPorUsuario = async () => {
+  const gettomaPorUsuario = async (idUsuario) => {
     setLoadingTable(true);
     try {
-      const response = await axiosClient.get(`/usuarios/consulta/tomas/${usuariosEncontrados.id}`);
+      const response = await axiosClient.get(`/usuarios/consulta/tomas/${idUsuario}`);
       setLoadingTable(false);
       setTomas(response.data.data);
-      console.log(response);
+      console.log("tomas del usuario" + JSON.stringify(response.data.data));
     } catch (error) {
       setLoadingTable(false);
       console.error("Failed to fetch anomalias:", error);
@@ -47,6 +50,7 @@ export default function TomaPorUsuarioTable() {
   {
     setToma(tomaPorUsuario);
     setTomasRuta(true);
+    setMostrarSiguiente(true)
     console.log("se debió abrir la ruta");
     navigate('/usuario/toma');
     setAccion("ver");
@@ -60,7 +64,7 @@ export default function TomaPorUsuarioTable() {
   return (
 
     <div>      
-      <DataTable columns={columns} data={tomas} sorter='nombre' onRowClick={handleRowClick}/>
+      <DataTable columns={columns} data={tomas} sorter='clave_catastral' onRowClick={handleRowClick}/>
     </div>
   );
 }

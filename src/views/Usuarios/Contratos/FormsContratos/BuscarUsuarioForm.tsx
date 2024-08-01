@@ -37,6 +37,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [mostrarTabla, setMostrarTabla] = useState(false);
+    const [filtroSeleccionado, setFiltroSeleccionado] = useState("");
 
     //variables globales del zustand
     const {nombreBuscado, setNombreBuscado, 
@@ -93,18 +94,23 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
         switch (values.filtro) {
             case "1":
                 endpoint = `/usuarios/consulta/${criterio}`;
+                setFiltroSeleccionado("1");
                 break;
             case "2":
                 endpoint = `/usuarios/consultaCodigo/${criterio}`;
+                setFiltroSeleccionado("2");
+
                 break;
             case "3":
                 endpoint = `/usuarios/consultaCorreo/${criterio}`;
+                setFiltroSeleccionado("3");
                 break;
             default:
                 setLoading(false);
                 console.log("Filtro no válido");
                 return;
         }
+
         
                     
                 // PARA EJECUTAR LA CONSULTA
@@ -167,8 +173,8 @@ function handleNavigationCrearUsuario ()
     return (
         <ContextProvider>
             <div>
-            <div className='mt-5 ml-5 max-w-md mx-0 rounded-md border border-border p-4 h-[53vh] '>
-            <Form {...form}>
+            <div className='mt-5 w-full rounded-md border border-border p-4 h-[55vh] '>
+                <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div style={{ color: 'grey' }}>Consultar al usuario</div>
                 
@@ -203,7 +209,7 @@ function handleNavigationCrearUsuario ()
                         )}
                     />
             
-                    <div className="flex justify-end items-end mt-9 gap-2">
+            <div className="flex justify-end items-end gap-2 mt-10px">
                         <Button type="submit">Aceptar</Button>
                         {
                             botonCrearUsuario && <Button type="button" onClick={handleNavigationCrearUsuario}>Crear usuario</Button>
@@ -217,7 +223,7 @@ function handleNavigationCrearUsuario ()
 
         {
 
-        mostrarTabla && <ContratoConsultaUsuarioTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado}/>
+        mostrarTabla && <ContratoConsultaUsuarioTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
         }
             
         </div>

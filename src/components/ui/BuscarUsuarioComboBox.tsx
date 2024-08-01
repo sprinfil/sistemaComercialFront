@@ -46,6 +46,7 @@ export const BuscarUsuarioComboBox = ({ field, form, name = "id_concepto", setCa
         {value: "1", label: "Nombre"},
         {value: "2", label: "Codigo usuario"},
         {value: "3", label: "Correo"},
+        {value: "4", label: "Dirección"},
 
 
 
@@ -72,16 +73,16 @@ export const BuscarUsuarioComboBox = ({ field, form, name = "id_concepto", setCa
                                 ? languages.find(
                                     (language) => language.value === field.value
                                 )?.label
-                                : "Selecciona un concepto"}
+                                : "Selecciona un filtro"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0 h-[300px]">
                     <Command>
-                        <CommandInput placeholder="Buscar Concepto ... " />
+                        <CommandInput placeholder="Buscar filtro ... " />
                         <CommandList>
-                            <CommandEmpty>Concepto no encontrado.</CommandEmpty>
+                            <CommandEmpty>Filtro no encontrado.</CommandEmpty>
                             <CommandGroup>
                                 {
                                     loading &&

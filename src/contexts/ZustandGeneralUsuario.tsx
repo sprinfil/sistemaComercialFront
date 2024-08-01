@@ -14,6 +14,15 @@ export interface DatosUsuario
   correo: string;
 }
 
+interface BreadcrumbState {
+  mostrarSiguiente: boolean;
+  setMostrarSiguiente: (value: boolean) => void;
+}
+
+export const useBreadcrumbStore = create<BreadcrumbState>((set) => ({
+  mostrarSiguiente: false,
+  setMostrarSiguiente: (value: boolean) => set({ mostrarSiguiente: value }),
+}));
 
 interface GeneralUsuario {
   toma: TomaPorUsuario | null;
@@ -21,7 +30,10 @@ interface GeneralUsuario {
   usuario: BuscarUsuario | null;
   setUsuario: (usuario: BuscarUsuario) => void;
   usuariosEncontrados: BuscarUsuario[];
-  setUsuariosEncontrados : (usuariosEncontrados: []) => void;
+  setUsuariosEncontrados: (usuarios: BuscarUsuario[]) => void;
+  usuariosRecuperado: BuscarUsuario[];
+  setUsuariosRecuperado: (usuarios: BuscarUsuario[]) => void; // Recibe un arreglo
+  clearUsuariosEncontrados: () => void;
   nombreBuscado: string,
   setNombreBuscado: (nombreBuscado: string) => void;
   nombreSeleccionado: string | null;
@@ -49,11 +61,14 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   tomas: [],
   setTomas: (tomas) => set({ tomas }),
   usuariosEncontrados: [],
-  setUsuariosEncontrados: (usuariosEncontrados) => set ({usuariosEncontrados}),
+  setUsuariosEncontrados: (usuarios) => set({ usuariosEncontrados: usuarios }),
+  usuariosRecuperado: [],
+  setUsuariosRecuperado: (usuarios) => set({ usuariosRecuperado: usuarios }), // Debe recibir un arreglo
+  clearUsuariosEncontrados: () => set({ usuariosEncontrados: [] }),
   loadingTable: false,
   setLoadingTable: (loading) => set({ loadingTable: loading }),
   tomasRuta: false,
-  setTomasRuta: (tomasRuta) => set({tomasRuta}),
+  setTomasRuta: (value) => set({ tomasRuta: value }),
   nombreBuscado: '',
   setNombreBuscado: (nombreBuscado) => set({nombreBuscado}),
   nombreSeleccionado: '',

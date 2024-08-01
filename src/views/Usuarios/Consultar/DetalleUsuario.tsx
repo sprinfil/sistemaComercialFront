@@ -9,23 +9,25 @@ import TomasUsuario from './VistasDetalleUsuario/TomasUsuario';
 import { useStateContext, ContextProvider } from '../../../contexts/ContextDetalleUsuario';
 import { OcultarTableDetalleUsuario } from '../../../components/Tables/Components/OcultarTableDetalleUsuario';
 import { BreadCrumbDetalleUsuario } from '../../../components/ui/breadCrumbDetalleUsuario';
-import { ZustandTomasPorUsuario } from '../../../contexts/ZustandTomasPorUsuario';
+import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario';
 import Loader from '../../../components/ui/Loader';
 
 const DetalleUsuario: React.FC = () => {
   const { pantalla } = useStateContext();
   const location = useLocation();
-  const { tomasRuta } = ZustandTomasPorUsuario(); // obtener la ruta del componente breadCrumb
-  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados } = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, tomasRuta, usuariosRecuperado} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+  const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
 
 
   useEffect(() => {
-    console.log("USUARIOS ENCONTRADOS:", usuariosEncontrados); 
-  }, [setUsuariosEncontrados]);
+    console.log("USUARIOS ENCONTRADOS: PP", usuariosEncontrados);
+    console.log("ESTE FUE EL USUARIO RECUPERADO", usuariosRecuperado);
+    setMostrarSiguiente(false);
+  }, [usuariosRecuperado, usuariosEncontrados]);
 
-
+  
 
   const [mostrarPantalla, setMostrarPantalla] = useState(pantalla);
   const [accion, setAccion] = useState<string | undefined>();
@@ -65,7 +67,8 @@ const DetalleUsuario: React.FC = () => {
         <div>
           {/* Breadcrumb en la parte superior */}
           <div className='mt-2 px-2'>
-            <BreadCrumbDetalleUsuario mostrarSiguiente={tomasRuta} />
+            
+            <BreadCrumbDetalleUsuario />
           </div>
 
           {/* Contenido principal */}
