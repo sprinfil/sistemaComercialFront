@@ -113,7 +113,8 @@ export const Mapa3 = () => {
             }
 
             return ruta.libros.map((libro) => {
-                if (libro.Puntos && libro_visibility[libro.id]) {
+
+                if (libro.Puntos && libro_visibility[libro.id] && libro.Puntos.length > 0) {
 
                     let polygonCoordinates = libro.Puntos.map((punto) => ({
                         lat: punto.latitud,
