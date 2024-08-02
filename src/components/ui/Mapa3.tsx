@@ -19,6 +19,7 @@ export const Mapa3 = () => {
     const [menuPosition, setMenuPosition] = useState(null);
     const [cursorStyle, setCursorStyle] = useState('default');
     const [editando, set_editando] = useState(false);
+    const [overlays, setOverlays] = useState([]);
 
     const getRutas = async () => {
         try {
@@ -45,6 +46,7 @@ export const Mapa3 = () => {
                 });
 
                 set_map(map_temp);
+
             });
         }
 
@@ -55,9 +57,61 @@ export const Mapa3 = () => {
         polygons.forEach(polygon => {
             polygon.setMap(null);
         });
+        overlays.forEach(overlay => overlay.onRemove());
         setPolygons([]);
+        setOverlays([]);
+
+
 
         const newPolygons = rutas.map((ruta) => {
+
+
+
+
+            class CustomLabel extends google.maps.OverlayView {
+
+                constructor(position, text, color) {
+                    super();
+                    this.position = position;
+                    this.text = text;
+                    this.color = color;
+                    this.div = null;
+                }
+
+                onAdd() {
+                    const div = document.createElement("div");
+                    div.style.position = "absolute";
+                    div.style.zIndex = "1000";
+                    //div.style.backgroundColor = "#c4c4c4";
+                    //div.style.border = "1px solid black";
+                    div.style.padding = "2px";
+                    div.style.fontSize = "12px";
+                    div.style.fontWeight = "bold";
+                    div.style.color = "black";
+                    div.innerHTML = this.text;
+                    this.div = div;
+                    const panes = this.getPanes();
+                    panes.overlayLayer.appendChild(div);
+                }
+
+                draw() {
+                    const overlayProjection = this.getProjection();
+                    const position = overlayProjection.fromLatLngToDivPixel(this.position);
+                    const div = this.div;
+                    if (div) {
+                        div.style.left = `${position.x}px`;
+                        div.style.top = `${position.y}px`;
+                    }
+                }
+
+                onRemove() {
+                    if (this.div) {
+                        this.div.parentNode.removeChild(this.div);
+                        this.div = null;
+                    }
+                }
+            }
+
             return ruta.libros.map((libro) => {
                 if (libro.Puntos && libro_visibility[libro.id]) {
 
@@ -77,6 +131,17 @@ export const Mapa3 = () => {
                         //editable: false,
                     });
 
+                    // Obtener el centro del polígono
+                    const bounds = new google.maps.LatLngBounds();
+                    polygon.getPath().forEach(function (latlng) {
+                        bounds.extend(latlng);
+                    });
+                    const center = bounds.getCenter();
+
+                    // Crear y agregar el overlay al mapa
+                    const labelOverlay = new CustomLabel(center, libro.nombre, ruta.color || "black"); // libro.nombre es un ejemplo de texto
+                    labelOverlay.setMap(map);
+
                     polygon.addListener('click', (event) => {
                         const path = polygon.getPath();
                         const points = path.getArray().map((point) => ({
@@ -88,34 +153,35 @@ export const Mapa3 = () => {
                             puntos: points
                         }
 
-                        
-                            if (polygon.editable) {
-                                polygon.setEditable(false);
-                                polygon.setDraggable(false);
 
-                                axiosClient.post(`/asignacionGeografica/update_points/${libro.Puntos[0].id_asignacion_geografica}`, values)
-                                    .then((response) => {
-                                        console.log(response)
-                                        getRutas();
-                                    })
-                                    .catch((response) => {
-                                        console.log(response);
-                                    });
+                        if (polygon.editable) {
+                            polygon.setEditable(false);
+                            polygon.setDraggable(false);
 
-                            } else {
-                                polygon.setEditable(true);
-                                polygon.setDraggable(true);
-                            }
-                            console.log(polygon.getDraggable());
+                            axiosClient.post(`/asignacionGeografica/update_points/${libro.Puntos[0].id_asignacion_geografica}`, values)
+                                .then((response) => {
+                                    console.log(response)
+                                    getRutas();
+                                })
+                                .catch((response) => {
+                                    console.log(response);
+                                });
+
+                        } else {
+                            polygon.setEditable(true);
+                            polygon.setDraggable(true);
+                        }
+                        console.log(polygon.getDraggable());
                     });
 
-                    return polygon;
+                    return { polygon, labelOverlay };
                 }
                 return null;
             }).filter(polygon => polygon !== null);
         }).flat();
 
-        setPolygons(newPolygons);
+        setPolygons(newPolygons.map(p => p.polygon));
+        setOverlays(newPolygons.map(p => p.labelOverlay));
 
     }, [libro_visibility]);
 

@@ -148,16 +148,17 @@ const MenuLateralPoligonosGeograficos = () => {
                     {/*Cuerpo*/}
                     {
                         loading_rutas &&
-                        <p className='p-2 bg-green-500 text-white'> Cargando Rutas ... </p>
+                        <p className='p-2 bg-green-500 text-white sticky top-0 z-50'> Cargando Rutas ... </p>
                     }
                     {
                         loading_import &&
-                        <p className='p-2 bg-blue-500 text-white'> Cargando Importanción ... </p>
+                        <p className='p-2 bg-blue-500 text-white sticky top-0 z-50'> Cargando Importanción ... </p>
                     }
                     {
                         rutas.length == 0 && !loading_import && !loading_rutas &&
-                        <p className='p-2 text-red-500'> Sin Polígonos. </p>
+                        <p className='p-2 text-red-500 sticky top-0 z-50'> Sin Polígonos. </p>
                     }
+
                     {rutas.length > 0 &&
                         <div className=' h-full'>
                             {/*contenedor rutas y libros*/}

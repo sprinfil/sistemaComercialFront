@@ -20,7 +20,7 @@ export const ModalImportarGeoJson = ({ trigger, updateData }) => {
     const { toast } = useToast()
     const [file, setFile] = useState(null);
     const [limpiar_poligonos, set_limpiar_poligonos] = useState(false);
-    const {loading_import, set_loading_import} = PoligonosZustand();
+    const { loading_import, set_loading_import } = PoligonosZustand();
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -54,26 +54,8 @@ export const ModalImportarGeoJson = ({ trigger, updateData }) => {
                         nombres_rutas.push(name_ruta);
                         nombres_libros.push(object.properties.name);
                         nombres_libros[object.properties.name] = object.geometry.coordinates[0][0];
-                        //console.log(object.geometry.coordinates[0][0]);
                     })
                     nombres_rutas = [...new Set(nombres_rutas)].sort();
-
-                    /*
-                        json.features.forEach((object, index) => {
-                        let name_libro = object.properties.name;
-                        let match = name_libro.match(/[Ll]/);
-                        if (match) {
-                            let indexL = name_libro.indexOf(match[0]);
-                            name_libro = name_libro.substring(indexL);
-                        }
-                        nombres_libros.push(name_libro);
-                    })
-                    nombres_libros = [...new Set(nombres_libros)].sort();
-                    console.log(nombres_libros)
-                    */
-
-
-
 
                     const agrupados = nombres_rutas.reduce((acc, ruta) => {
                         acc[ruta] = Object.keys(nombres_libros)
@@ -82,35 +64,74 @@ export const ModalImportarGeoJson = ({ trigger, updateData }) => {
                         return acc;
                     }, {});
 
-                    //console.log(values)
-                    //console.log(nombres_libros)
-
                     let values = {
                         data: agrupados
                     }
 
-                    axiosClient.post("/ruta/create_masive", values)
-                        .then((response) => {
-                            toast({
-                                title: "Exito",
-                                description: "Datos Importados Correctamente",
-                                variant: "success",
-                                action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                    if (limpiar_poligonos) {
+                        axiosClient.post("/ruta/masive_polygon_delete")
+
+                            .then((response) => {
+
+                                axiosClient.post("/ruta/create_masive", values)
+                                    .then((response) => {
+                                        toast({
+                                            title: "Exito",
+                                            description: "Datos Importados Correctamente",
+                                            variant: "success",
+                                            action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                                        })
+                                        set_loading_import(false);
+                                        updateData();
+                                    })
+                                    .catch((response) => {
+                                        console.log(response.response.data.message);
+                                        toast({
+                                            title: "Error",
+                                            /*description: response.response.data.message */
+                                            description: "A ocurrido un Error",
+                                            variant: "destructive",
+                                            action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                                        })
+                                        set_loading_import(false);
+                                    })
+
+                            }).catch((response) => {
+                                console.log(response.response.data.message);
+                                toast({
+                                    title: "Error",
+                                    /*description: response.response.data.message */
+                                    description: "A ocurrido un Error",
+                                    variant: "destructive",
+                                    action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                                })
                             })
-                            set_loading_import(false);
-                            updateData();
-                        })
-                        .catch((response) => {
-                            console.log(response.response.data.message);
-                            toast({
-                                title: "Error",
-                                /*description: response.response.data.message */
-                                description: "A ocurrido un Error",
-                                variant: "destructive",
-                                action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+
+                    } else {
+                        axiosClient.post("/ruta/create_masive", values)
+                            .then((response) => {
+                                toast({
+                                    title: "Exito",
+                                    description: "Datos Importados Correctamente",
+                                    variant: "success",
+                                    action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                                })
+                                set_loading_import(false);
+                                updateData();
                             })
-                            set_loading_import(false);
-                        })
+                            .catch((response) => {
+                                console.log(response.response.data.message);
+                                toast({
+                                    title: "Error",
+                                    /*description: response.response.data.message */
+                                    description: "A ocurrido un Error",
+                                    variant: "destructive",
+                                    action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                                })
+                                set_loading_import(false);
+                            })
+                    }
+                    set_limpiar_poligonos(false);
 
                 } catch (error) {
                     console.error("Error al parsear el archivo GeoJSON:", error);
