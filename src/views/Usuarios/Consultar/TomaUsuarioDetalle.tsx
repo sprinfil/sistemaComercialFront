@@ -11,9 +11,10 @@ import CrearOrdenDeTrabajo from './VistasDetalleUsuario/CrearOrdenDeTrabajo';
 import TomasUsuario from './VistasDetalleUsuario/TomasUsuario';
 import { BreadCrumbDetalleTomaUsuario } from '../../../components/ui/breadCrumbDetalleTomaUsuario.tsx';
 import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
+
 export const TomaUsuarioDetalle = () => {
 
-  const {tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado}= ZustandGeneralUsuario()
+  const {tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, set}= ZustandGeneralUsuario()
   const [accion, setAccion] = useState<string | undefined>();
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
