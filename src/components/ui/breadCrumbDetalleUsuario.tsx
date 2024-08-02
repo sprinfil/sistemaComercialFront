@@ -1,71 +1,61 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import React from "react";
 import { useBreadcrumbStore } from "../../contexts/ZustandGeneralUsuario";
 import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario";
 import { ChevronRight } from "lucide-react";
+import { Usuario } from "../Tables/Columns/ContratoConsultaTomaColumns";
 
 export function BreadCrumbDetalleUsuario() {
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
-  const {usuariosRecuperado, usuariosEncontrados, setUsuariosEncontrados, tomas, tomaUsuariosEncontrados, setTomaUsuariosEncontrados} = ZustandGeneralUsuario();
+  const { usuariosEncontrados, tomaUsuariosEncontrados } = ZustandGeneralUsuario();
   const [usuario, setUsuario] = useState<{ id: number; nombre: string } | null>(null);
-  const [tomaSeleccionada, setTomaSeleccionada] = useState<{ id: number;} | null>(null);
-  const [mostrarRuta, setMostrarRuta] = useState(false);
-
-  console.log("USUARIO RECUPERADO DESDE EL CRUMB" + JSON.stringify(usuariosEncontrados));
-  console.log("TOMADESDE EL CRUMB" + JSON.stringify(tomaUsuariosEncontrados));
-
+  const [tomaSeleccionada, setTomaSeleccionada] = useState<{ id: number; calle?: string; usuario?: Usuario } | null>(null);
 
   useEffect(() => {
-    if(usuariosEncontrados.length > 0)
-    {
+    if (usuariosEncontrados.length > 0) {
       setUsuario(usuariosEncontrados[0]);
-
+    } else {
+      console.log("No hay usuarios encontrados");
     }
-    else{
-      console.log("no hay longitud");
-    }
-   
-  }, [usuariosEncontrados,setUsuariosEncontrados]);
+  }, [usuariosEncontrados]);
 
   useEffect(() => {
-    if(tomas.length > 0)
-      {
-        setTomaSeleccionada(tomaUsuariosEncontrados[0]);
-        setMostrarRuta(false)
-      }
-      else{
-        console.log("no hay longitud");
-      }
-  }, [tomas, setTomaSeleccionada]);
-  
-
+    if (tomaUsuariosEncontrados.length > 0) {
+      setTomaSeleccionada(tomaUsuariosEncontrados[0]);
+    } else {
+      console.log("No hay tomas encontradas");
+    }
+  }, [tomaUsuariosEncontrados]);
 
   const handleClick = () => {
-    // Lógica adicional si es necesario
     setMostrarSiguiente(false);
   };
-
-  
+  const renderNombreUsuario = () => {
+    if (tomaSeleccionada?.usuario?.nombre) {
+      return tomaSeleccionada.usuario.nombre; // Mostrar nombre del usuario asociado a la toma
+    }
+    return usuario ? usuario.nombre : 'Nombre no disponible'; // Mostrar nombre del usuario por defecto
+  };
 
   return (
     <nav className="ml-5 mt-5">
       <ol style={{ listStyle: 'none', display: 'flex', padding: 0 }}>
         <li>
           <Link to="/usuario" onClick={handleClick}>
-          <p className="text-[15px] font-medium">{tomaSeleccionada ? tomaSeleccionada.usuario.nombre: 'Nombre no disponible'}
-
-          </p>
+            <p className="text-[15px] font-medium">
+            {renderNombreUsuario()}
+            </p>
           </Link>
         </li>
      
-        {tomaSeleccionada && mostrarSiguiente && (  
+        {mostrarSiguiente && (  
           <>
-            <li className="w-[8px] h-[8px]"><ChevronRight/></li>
+            <li className="w-[8px] h-[8px]"><ChevronRight /></li>
             <li>
-              <Link to="/usuario/toma" >
-              <p className="text-[15px] font-medium ml-4">Toma: {tomaSeleccionada ? tomaSeleccionada.calle: 'Nombre no disponible'}</p>
-
+              <Link to="/usuario/toma">
+                <p className="text-[15px] font-medium ml-4">
+                  Toma: {tomaSeleccionada && tomaSeleccionada.calle ? tomaSeleccionada.calle : 'Nombre no disponible'}
+                </p>
               </Link>
             </li>
           </>

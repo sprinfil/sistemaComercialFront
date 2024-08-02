@@ -19,7 +19,7 @@ export default function TomaPorUsuarioTable() {
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
 
-  const {tomas, setTomas, loadingTable, setLoadingTable, setToma, setAccion, setTomasRuta, usuariosEncontrados, setUsuariosEncontrados, clearUsuariosEncontrados} = ZustandGeneralUsuario();
+  const {tomas, setTomas, loadingTable, setLoadingTable, setToma, setAccion, setTomasRuta, usuariosEncontrados, setUsuariosEncontrados, clearUsuariosEncontrado, setTomaUsuariosEncontrados} = ZustandGeneralUsuario();
 
   const navigate = useNavigate();
 
