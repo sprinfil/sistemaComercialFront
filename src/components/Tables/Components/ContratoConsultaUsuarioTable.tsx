@@ -40,13 +40,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
               case "3":
                   endpoint = `/usuarios/consultaCorreo/${nombreBuscado}`;
                   break;
-                  case "4":
-                    endpoint = `/usuarios/consultaDireccion/${nombreBuscado}`;
-                    break;
-                    case "5":
-                      endpoint = `/Toma/codigo/${nombreBuscado}`;
-                      break;
-                  
+
               default:
                   console.log("Filtro no válido");
                   return;

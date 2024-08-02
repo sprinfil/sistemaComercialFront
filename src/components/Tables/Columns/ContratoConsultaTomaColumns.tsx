@@ -10,17 +10,105 @@ import { Checkbox } from "../../ui/checkbox"
 export type BuscarTomaUsuario = {
   id: number
   clave_catastral: string
-  calle: string
   numero_casa: string
+  colonia: string
   entre_calle_1: string
   entre_calle_2: string
-  colonia: string
   codigo_postal: string
   localidad: string
+  usuario: Usuario
+}
+
+export type Usuario = {
+  id: number
+  nombre: string
+  apellido_paterno: string
+  apellido_materno: string
+  telefono: string
+  correo: string
+  curp: string
 }
 
 
 export const columns: ColumnDef<BuscarTomaUsuario>[] = [
+  {
+    accessorKey: "usuario.nombre",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Nombre
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "usuario.apellido_paterno",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Apellido materno
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "usuario.apellido_materno",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Apellido paterno
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "usuario.telefono",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Teléfono
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "usuario.correo",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Correo
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "usuario.curp",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          CURP
+        </Button>
+      )
+    },
+  },
   {
     accessorKey: "clave_catastral",
     header: ({ column }) => {
@@ -29,7 +117,7 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Clave catastral
+          Clave catastral 
         </Button>
       )
     },
@@ -42,7 +130,7 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Calle
+          Calle 
         </Button>
       )
     },
@@ -55,33 +143,7 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          #
-        </Button>
-      )
-    },
-  },
-  {
-    accessorKey: "entre_calle_1",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Entre calle 1
-        </Button>
-      )
-    },
-  },
-  {
-    accessorKey: "entre_calle_2",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Entre calle 2
+          # 
         </Button>
       )
     },
@@ -94,7 +156,33 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Colonia
+          Colonia 
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "entre_calle_1",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Entre calle 1 
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "entre_calle_2",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Entre calle 2 
         </Button>
       )
     },
@@ -107,7 +195,7 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Codigo postal 
+          Código postal 
         </Button>
       )
     },

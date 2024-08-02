@@ -40,7 +40,7 @@ export default function TomaPorUsuarioTable() {
       console.log("tomas del usuario" + JSON.stringify(response.data.data));
     } catch (error) {
       setLoadingTable(false);
-      console.error("Failed to fetch anomalias:", error);
+      console.error("Failed to fetch tomas de usuario:", error);
     }
   };
 

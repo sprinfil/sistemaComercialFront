@@ -24,6 +24,7 @@ import { ContextProvider } from "../../../../contexts/ContextContratos.tsx";
 import { BuscarUsuarioComboBox } from "../../../../components/ui/BuscarUsuarioComboBox.tsx";
 import { Import } from "lucide-react";
 import { ZustandGeneralUsuario } from "../../../../contexts/ZustandGeneralUsuario.tsx";
+import ContratoConsultaTomaTable from "../../../../components/Tables/Components/ContratoConsultaTomaTable.tsx";
 interface BuscarUsuarioProps
 {
     navegacion: string;
@@ -36,7 +37,9 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
     const { toast } = useToast()
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
-    const [mostrarTabla, setMostrarTabla] = useState(false);
+    const [mostrarTablaUsuario, setmostrarTablaUsuario] = useState(false);
+    const [mostrarTablaTomaUsuario, setMostrarTablaTomaUsuario] = useState(false);
+
     const [filtroSeleccionado, setFiltroSeleccionado] = useState("");
 
     //variables globales del zustand
@@ -105,6 +108,12 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                 endpoint = `/usuarios/consultaCorreo/${criterio}`;
                 setFiltroSeleccionado("3");
                 break;
+                case "4":
+                    endpoint = `/usuarios/consultaDireccion/${criterio}`;
+                    setFiltroSeleccionado("4");
+                    setMostrarTablaTomaUsuario(true);
+                    setmostrarTablaUsuario(false);
+                    break;
             default:
                 setLoading(false);
                 console.log("Filtro no válido");
@@ -128,11 +137,11 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                                     navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
                                 }
                             } else {
-                                setMostrarTabla(true);
+                                setmostrarTablaUsuario(true);
                             }
                         } else {
                             noUsuarioEncontrado();
-                            setMostrarTabla(false);
+                            setmostrarTablaUsuario(false);
                         }
                         
                         setAccion(tipoAccion);
@@ -150,14 +159,14 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
 
     useEffect(() => {
         
-        const numObject = usuariosEncontrados.length;
+        const numObject = usuariosEncontrados != null ? usuariosEncontrados.length: 0;
         console.log("Número de usuarios encontrados:", numObject);
         if (numObject > 1) {
-            setMostrarTabla(true);
+            setmostrarTablaUsuario(true);
         } else if (numObject === 1) {
-            setMostrarTabla(false);
+            setmostrarTablaUsuario(false);
         } else {
-            setMostrarTabla(false); 
+            setmostrarTablaUsuario(false); 
         }
 
 
@@ -219,11 +228,26 @@ function handleNavigationCrearUsuario ()
             </Form>
         </div>
 
-        {mostrarTabla&&<h1 className="mt-10 ml-6">Selecciona un usuario</h1>}
+        {mostrarTablaUsuario&&filtroSeleccionado == "1" && <h1 className="mt-10 ml-6">Selecciona un usuario.</h1>}
+        {mostrarTablaUsuario&&filtroSeleccionado == "2" && <h1 className="mt-10 ml-6">Selecciona un usuario.</h1>}
+        {mostrarTablaUsuario&&filtroSeleccionado == "3" && <h1 className="mt-10 ml-6">Selecciona un usuario.</h1>}
+        {mostrarTablaTomaUsuario&&filtroSeleccionado == "4"&&<h1 className="mt-10 ml-6">Selecciona la toma del usuario.</h1>}
 
         {
+            
+        mostrarTablaUsuario &&  filtroSeleccionado == "1" && <ContratoConsultaUsuarioTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
+        }
+        {
 
-        mostrarTabla && <ContratoConsultaUsuarioTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
+        mostrarTablaUsuario &&  filtroSeleccionado == "2" && <ContratoConsultaUsuarioTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
+        }
+        {
+
+        mostrarTablaUsuario &&  filtroSeleccionado == "3" && <ContratoConsultaUsuarioTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
+        }
+
+        {
+        mostrarTablaTomaUsuario && filtroSeleccionado == "4" && <ContratoConsultaTomaTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
         }
             
         </div>

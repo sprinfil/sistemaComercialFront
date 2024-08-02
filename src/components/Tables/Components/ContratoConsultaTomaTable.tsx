@@ -30,35 +30,22 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
             let endpoint = "";
 
             switch (filtroSeleccionado) {
-              case "1":
-                  endpoint = `/usuarios/consulta/${nombreBuscado}`;
-                  break;
-              case "2":
-                  endpoint = `/usuarios/consultaCodigo/${nombreBuscado}`;
-  
-                  break;
-              case "3":
-                  endpoint = `/usuarios/consultaCorreo/${nombreBuscado}`;
-                  break;
                   case "4":
                     endpoint = `/usuarios/consultaDireccion/${nombreBuscado}`;
                     break;
-                    case "5":
-                      endpoint = `/Toma/codigo/${nombreBuscado}`;
-                      break;
-                  
               default:
-                  console.log("Filtro no válido");
+                  console.log("No jalo algo paso mal");
                   return;
           }
 
           try {
             const response = await axiosClient.get(endpoint);
             const results = response.data.data;
-            setUsuariosEncontrados(results);
+            setTomaUsuariosEncontrados(results);
+            console.log(response);
 
           } catch (err) {
-            console.log("Error en la consulta:", err);
+            console.log("Error en la consulta toma del usuario:", err);
           } finally {
             setLoadingTable(false);
           }
@@ -76,7 +63,7 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
     setTomaUsuariosEncontrados([contratobuscarUsuario]);
     if(accion2 == "verUsuarioDetalle")
     {
-      navigate("/usuario");
+      navigate("/usuario/toma");
     }
     
     if(accion2 == "crearContratacionUsuario")
