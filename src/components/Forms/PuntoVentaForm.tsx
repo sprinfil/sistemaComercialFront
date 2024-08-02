@@ -17,7 +17,7 @@ const PuntoVentaForm = () => {
   const [pendingCargos, setPendingCargos] = useState([]);
   const [selectedCargos, setSelectedCargos] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [conceptos, setConceptos] = useState([]);
+  const [conceptos, setConceptos] = useState<Concepto[]>([]); // Define el tipo de estado
   const [loadingTable, setLoadingTable] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -138,37 +138,50 @@ const calculateTotalAbonado = () => {
   return selectedCargos.reduce((acc, cargo) => acc + (parseFloat(amountsToPay[cargo.id] || 0)), 0);
 };
 
-const getConcepto = async () => {
-    setLoadingTable(true);
-    try {
-      const response = await axiosClient.get("/Concepto");
-      // Asegúrate de que la respuesta incluye el concepto y el monto
-      const data = response.data.data; 
-      // Si la respuesta es una lista de conceptos, asegúrate de manejarlo adecuadamente
-      setConceptos(data.map(item => ({
-        concepto: item.concepto, // Ajusta la propiedad según el nombre en tu API
-        monto: item.monto // Ajusta la propiedad según el nombre en tu API
-      })));
-      console.log(data);
-    } catch (error) {
-      console.error("Fallo la consulta del concepto:", error);
-    } finally {
-      setLoadingTable(false);
-    }
-  };
+interface Concepto {
+  nombre: string;
+}
+const getConceptos = async (): Promise<Concepto[]> => {
+  try {
+    console.log('Fetching conceptos...');
+    const response = await axiosClient.get<{ data: Concepto[] }>('/Concepto'); // Ajusta la URL según tu API
+    console.log('Response received:', response);
 
-const openModal = () => {
-  getConcepto(); // Llama a getConcepto cuando se abre el modal
+    const data = response.data.data; // Accede al array dentro de la propiedad 'data'
+    console.log('Data extracted:', data);
+
+    if (Array.isArray(data)) {
+      const conceptos = data.map(item => ({ nombre: item.nombre }));
+      console.log('Conceptos processed:', conceptos);
+      return conceptos; // Devuelve solo el campo 'nombre'
+    } else {
+      console.error('La respuesta no es un array:', data);
+      return [];
+    }
+  } catch (error) {
+    console.error('Error obteniendo conceptos:', error);
+    return [];
+  }
+};
+
+const openModal = async () => {
+  console.log('Opening modal...');
+  const conceptosList = await getConceptos(); // Llama a getConceptos cuando se abre el modal
+  console.log('Conceptos list obtained:', conceptosList);
+
+  setConceptos(conceptosList); // Establece los conceptos obtenidos
   setIsModalOpen(true); // Abre el modal
+  console.log('Modal state set to open.');
 };
 
 const closeModal = () => {
   setIsModalOpen(false); // Cierra el modal
+  console.log('Modal state set to closed.');
 };
 
-const totalAcumulado = calculateTotal();
-const totalAbonado = calculateTotalAbonado();
-const totalRestante = totalAcumulado - totalAbonado;
+  const totalAcumulado = calculateTotal();
+  const totalAbonado = calculateTotalAbonado();
+  const totalRestante = totalAcumulado - totalAbonado;
   
 
   return (
@@ -302,15 +315,31 @@ const totalRestante = totalAcumulado - totalAbonado;
                             </tr>
                           ))}
                         </tbody>
-                        <IconButton onClick={openModal} title="open">
-                          <PlusIcon className="w-[20px] h-[20px]" />
-                        </IconButton>
-                        {isModalOpen && (
-                          <Modal onClose={closeModal}>
-                            {/* Aquí puedes renderizar el contenido del modal */}
-                            {/* Utiliza la variable conceptos para mostrar la información */}
-                          </Modal>
-                        )}
+                        <div>
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <Modal
+                trigger={
+                  <IconButton onClick={openModal} title="open">
+                    <PlusIcon className="w-[20px] h-[20px]" />
+                  </IconButton>
+                }
+                title="Conceptos"
+                onConfirm={() => console.log('Confirmed')}
+              >
+                <ul>
+                  {conceptos.map((concepto, index) => (
+                    <li key={index}>{concepto.nombre}</li>
+                  ))}
+                </ul>
+              </Modal>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
                       </table>
                     </div>
                   </div>
