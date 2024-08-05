@@ -11,10 +11,14 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-const Modal = ({ method, button }) => {
+const Modal = ({ method, button, delete_id = null}) => {
 
     const action = () => {
-        method();
+        if(delete_id){
+            method(delete_id);
+        }else{
+            method();
+        }
     }
 
     return (

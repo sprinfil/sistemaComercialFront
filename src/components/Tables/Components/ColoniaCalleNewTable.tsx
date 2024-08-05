@@ -39,11 +39,6 @@ export default function ColoniaCalleNewTable({ tipoColonia}) {
       setLoading(false);
       console.error("Failed to fetch calle:", error);
     }
-
-    
-    
-
-
   }
 
 
@@ -65,7 +60,7 @@ export default function ColoniaCalleNewTable({ tipoColonia}) {
       }
       {
         !loading &&
-        <div className='w-full'>
+        <div className='w-full mt-[20px]'>
           <div onClick={() => { setAccion("crear") }}>
             <div className='flex gap-2 items-center w-full'>
               <AgregarColoniaCalle trigger={
@@ -82,7 +77,6 @@ export default function ColoniaCalleNewTable({ tipoColonia}) {
               />
             </div>
           </div>
-
           <DataTableColoniaCalleNew columns={columns} data={newData}  sorter="nombre" onRowClick={handleRowClick} updateData={getColoniaDetalle} />
         </div>
       }

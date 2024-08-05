@@ -63,10 +63,7 @@ const router = createBrowserRouter ([
                 path:'/Tarifa',
                 element: <Tarifa/>
             },
-            {
-                path:'/Cajas',
-                element: <App/>
-            },
+
             {
                 path:'/Contratacion',
                 element: <ContratacionBuscarUsuario/>
@@ -84,6 +81,10 @@ const router = createBrowserRouter ([
                 element: <TomaUsuarioDetalle/>
             },
         ]
+    },
+    {
+        path:'/Cajas',
+        element: <App/>
     },
     {
         path:'/',
