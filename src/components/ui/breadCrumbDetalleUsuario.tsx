@@ -7,10 +7,13 @@ import { Usuario } from "../Tables/Columns/ContratoConsultaTomaColumns";
 
 export function BreadCrumbDetalleUsuario() {
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
-  const { usuariosEncontrados, tomaUsuariosEncontrados } = ZustandGeneralUsuario();
+  const { usuariosEncontrados, tomaUsuariosEncontrados,findUserOrToma} = ZustandGeneralUsuario();
   const [usuario, setUsuario] = useState<{ id: number; nombre: string } | null>(null);
   const [tomaSeleccionada, setTomaSeleccionada] = useState<{ id: number; calle?: string; usuario?: Usuario } | null>(null);
-
+  
+  
+  
+ 
   useEffect(() => {
     if (usuariosEncontrados.length > 0) {
       setUsuario(usuariosEncontrados[0]);
@@ -30,20 +33,18 @@ export function BreadCrumbDetalleUsuario() {
   const handleClick = () => {
     setMostrarSiguiente(false);
   };
-  const renderNombreUsuario = () => {
-    if (tomaSeleccionada?.usuario?.nombre) {
-      return tomaSeleccionada.usuario.nombre; // Mostrar nombre del usuario asociado a la toma
-    }
-    return usuario ? usuario.nombre : 'Nombre no disponible'; // Mostrar nombre del usuario por defecto
-  };
+
 
   return (
+   
     <nav className="ml-5 mt-5">
-      <ol style={{ listStyle: 'none', display: 'flex', padding: 0 }}>
+       {findUserOrToma ? 
+       <ol style={{ listStyle: 'none', display: 'flex', padding: 0 }}>
         <li>
           <Link to="/usuario" onClick={handleClick}>
             <p className="text-[15px] font-medium">
-            {renderNombreUsuario()}
+            {tomaSeleccionada?.usuario?.nombre ? tomaSeleccionada?.usuario?.nombre : 'Nombre no disponible'}
+
             </p>
           </Link>
         </li>
@@ -60,7 +61,30 @@ export function BreadCrumbDetalleUsuario() {
             </li>
           </>
         )}
-      </ol>
+      </ol> :       
+      <ol style={{ listStyle: 'none', display: 'flex', padding: 0 }}>
+        <li>
+          <Link to="/usuario" onClick={handleClick}>
+            <p className="text-[15px] font-medium">
+            {usuario ? usuario.nombre : 'Nombre no disponible'}
+            </p>
+          </Link>
+        </li>
+     
+        {mostrarSiguiente && (  
+          <>
+            <li className="w-[8px] h-[8px]"><ChevronRight /></li>
+            <li>
+              <Link to="/usuario/toma">
+                <p className="text-[15px] font-medium ml-4">
+                  Toma: {tomaSeleccionada && tomaSeleccionada.calle ? tomaSeleccionada.calle : 'Nombre no disponible'}
+                </p>
+              </Link>
+            </li>
+          </>
+        )}
+      </ol> }
+      
     </nav>
   );
 }

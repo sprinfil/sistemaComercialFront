@@ -50,6 +50,8 @@ interface GeneralUsuario {
   setTomasRuta: (tomasRuta: boolean) => void;
   usuarioObtenido: DatosUsuario | null;
   setUsuarioObtenido: (usuario: DatosUsuario | null) => void;
+  findUserOrToma: boolean;
+  setFindUserOrToma:(findUserOrToma: boolean) => void;
 
 }
 
@@ -79,5 +81,7 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setNombreSeleccionado: (nombreSeleccionado) => set ({nombreSeleccionado}),
   usuarioObtenido: null,
   setUsuarioObtenido: (usuario) => set({ usuarioObtenido: usuario }),
+  findUserOrToma: false,
+  setFindUserOrToma:(findUserOrToma) => set({findUserOrToma}),
 }));
 

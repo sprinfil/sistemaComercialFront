@@ -46,7 +46,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
     const {nombreBuscado, setNombreBuscado, 
         nombreSeleccionado, setNombreSeleccionado, 
         usuariosEncontrados, setUsuariosEncontrados, 
-        accion, setAccion
+        accion, setAccion, setFindUserOrToma, findUserOrToma
     
     } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
 
@@ -98,21 +98,24 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
             case "1":
                 endpoint = `/usuarios/consulta/${criterio}`;
                 setFiltroSeleccionado("1");
+                setFindUserOrToma(false);
                 break;
             case "2":
                 endpoint = `/usuarios/consultaCodigo/${criterio}`;
                 setFiltroSeleccionado("2");
-
+                setFindUserOrToma(false);
                 break;
             case "3":
                 endpoint = `/usuarios/consultaCorreo/${criterio}`;
                 setFiltroSeleccionado("3");
+                setFindUserOrToma(false);
                 break;
                 case "4":
                     endpoint = `/usuarios/consultaDireccion/${criterio}`;
                     setFiltroSeleccionado("4");
                     setMostrarTablaTomaUsuario(true);
                     setmostrarTablaUsuario(false);
+                    setFindUserOrToma(true);
                     break;
             default:
                 setLoading(false);
@@ -206,9 +209,15 @@ function handleNavigationCrearUsuario ()
                         name="nombre"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Nombre del usuario o la toma</FormLabel>
+                                <FormLabel>
+                                    {nombreSeleccionado === "Nombre" && "Escribe el nombre del usuario"}
+                                    {nombreSeleccionado === "Codigo de usuario" && "Escribe el código del usuario"}
+                                    {nombreSeleccionado === "Correo" && "Escribe el correo del usuario"}
+                                    {nombreSeleccionado === "Dirección" && "Escribe la dirección de la toma"}
+
+                                </FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Escribe el nombre del usuario o numero de toma" {...field} />
+                                    <Input placeholder="Escribe la información requerida" {...field} />
                                 </FormControl>
                                 <FormDescription>
                                 {/* AQUI PUEDE IR DESCRIPCIÓN DEBAJO DEL INPUT EN EL FORM */}
