@@ -12,11 +12,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from '@radix-ui/react-toast'
 import { Input } from './input';
 import { Button } from 'react-day-picker';
+import { useNavigate } from 'react-router-dom';
+import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
+import { BuscarTomaUsuario, Usuario } from '../Tables/Columns/ContratoConsultaTomaColumns';
 
 export const Mapa3 = () => {
-
+    const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados} = ZustandGeneralUsuario();
     const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas } = PoligonosZustand();
-
+    const navigate = useNavigate();
     const { setRutas, rutas } = useStateContext();
     const [map, set_map] = useState(null);
     const [polygons, setPolygons] = useState([]);
@@ -219,13 +222,22 @@ export const Mapa3 = () => {
                             <strong>Código Postal: ${toma.codigo_postal}</strong></br>
                             <strong>Colonia: ${toma.colonia}</strong></br>
                             <strong>Número de casa: ${toma.numero_casa}</strong></br>
-                            <button>Ver Detalles</button>
+                            <button id="view-details-btn">Ver Detalles</button>
                             </div>`, // Texto de la etiqueta
                             });
 
                             // O mostrarla al hacer clic en el marcador
                             marker.addListener('click', () => {
                                 infoWindow.open(map, marker);
+                            });
+                            // Agregar un listener para el botón dentro de la InfoWindow
+                            google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+                                const button = document.getElementById('view-details-btn');
+                                if (button) {
+                                    button.addEventListener('click', () => {
+                                        handleViewDetails(toma);
+                                    });
+                                }
                             });
                             /* TOMA INFO */
                         })
@@ -244,6 +256,39 @@ export const Mapa3 = () => {
 
     const toggle_modo_edicion = () => {
         set_editando(!editando);
+    };
+
+    const handleViewDetails = (toma) => {
+        console.log(toma);
+      
+        
+        const usuario: Usuario = {
+            id: toma.usuario.id,
+            nombre: toma.usuario.nombre,
+            apellido_paterno: toma.usuario.apellido_paterno,
+            apellido_materno: toma.usuario.apellido_materno,
+            telefono: toma.usuario.telefono,
+            correo: toma.usuario.correo,
+            curp: toma.usuario.curp,
+        }
+
+        const tomaOb: BuscarTomaUsuario = {
+            id: toma.id,
+            clave_catastral: toma.clave_catastral,
+            numero_casa: toma.numero_casa,
+            colonia: toma.colonia,
+            entre_calle_1: toma.entre_calle_1,
+            entre_calle_2: toma.entre_calle_2,
+            codigo_postal: toma.codigo_postal,
+            localidad: toma.localidad,
+            usuario: usuario
+        };
+        console.log(tomaOb)
+    
+        setTomaUsuariosEncontrados([tomaOb]);
+        console.log(tomaUsuariosEncontrados);
+        navigate("/usuario/toma");
+
     };
 
     // Esta función busca la toma por nombre
@@ -274,7 +319,7 @@ export const Mapa3 = () => {
                             <strong>Código Postal: ${toma.codigo_postal}</strong></br>
                             <strong>Colonia: ${toma.colonia}</strong></br>
                             <strong>Número de casa: ${toma.numero_casa}</strong></br>
-                            <button>Ver Detalles</button>
+                            <button id="view-details-btn">Ver Detalles</button>
                             </div>`, // Texto de la etiqueta
                         });
 
@@ -283,12 +328,21 @@ export const Mapa3 = () => {
                         marker.addListener('click', () => {
                             infoWindow.open(map, marker);
                         });
+                          // Agregar un listener para el botón dentro de la InfoWindow
+                          google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+                            const button = document.getElementById('view-details-btn');
+                            if (button) {
+                                button.addEventListener('click', () => {
+                                    handleViewDetails(toma);
+                                });
+                            }
+                        });
                         /* TOMA INFO */
                     }
                 });
             });
         });
-      
+
         if (foundToma) {
             // Centrar el mapa en la posición de la toma
             search_input.current.value = "";
@@ -328,12 +382,12 @@ export const Mapa3 = () => {
                         <input value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             type='text' className='bg-background p-1  outline-none'
-                            placeholder='Buscar Toma ...' 
+                            placeholder='Buscar Toma ...'
                             ref={search_input}
                             onKeyDown={handleKeyDown}
-                            />
+                        />
                         <button onClick={searchToma}>Buscar</button>
-                  
+
                     </div>
 
                 </div>

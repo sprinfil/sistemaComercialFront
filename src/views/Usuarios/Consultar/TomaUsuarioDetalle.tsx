@@ -13,12 +13,12 @@ import { BreadCrumbDetalleTomaUsuario } from '../../../components/ui/breadCrumbD
 import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
 export const TomaUsuarioDetalle = () => {
 
-  const {tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado}= ZustandGeneralUsuario()
+  const {tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, setTomaUsuariosEncontrados, tomaUsuariosEncontrados}= ZustandGeneralUsuario()
   const [accion, setAccion] = useState<string | undefined>();
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
   useEffect(() => {
-    console.log("ESTE USUARIO LLEGA A LA TOMA DETALLE:", usuariosEncontrados);
+    console.log("ESTE USUARIO LLEGA A LA TOMA DETALLE:", tomaUsuariosEncontrados);
 
     if (usuariosEncontrados.length > 0) {
       // Establece el estado global solo si hay usuarios encontrados
@@ -29,7 +29,7 @@ export const TomaUsuarioDetalle = () => {
     {
       console.log("no hay longitud");
     }
-  }, [usuariosEncontrados, setUsuariosRecuperado]);
+  }, [usuariosEncontrados, setUsuariosRecuperado, tomaUsuariosEncontrados]);
 
   console.log("ESTE ES EL USUARIO RECUPERADO " + JSON.stringify(usuariosRecuperado));
 
