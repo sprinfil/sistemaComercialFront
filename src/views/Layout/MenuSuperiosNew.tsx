@@ -21,9 +21,11 @@ import { ModeToggle } from '../../components/ui/mode-toggle'
 import { ContextProvider, useStateContext } from '../../contexts/ContextProvider';
 import { MouseEvent } from 'react';
 import axiosClient from '../../axios-client';
+import {subMenuZustand} from "../../contexts/ZustandSubmenu.tsx"
 
 export const MenuSuperiosNew = () => {
     const { setToken, setUser, user, permissions, setPermissions } = useStateContext();
+    const {set_titulo, set_icono, titulo} = subMenuZustand();
 
     const logout = (e: MouseEvent<SVGSVGElement>): void => {
         e.preventDefault();
@@ -66,6 +68,12 @@ export const MenuSuperiosNew = () => {
             console.error("Failed to fetch user:", error);
         }
     };
+
+    const handle_menu_trigger_click = (opcion) => {
+        set_titulo(opcion.titulo);
+        set_icono(opcion.icon);
+        
+    }
 
     const opciones = [
         {
@@ -224,6 +232,8 @@ export const MenuSuperiosNew = () => {
 
     ]
 
+
+
     return (
         <>
             <p className='relative xl:hidden text-sm text-red-500 p-1 h-[9vh] flex items-center justify-center'>La resolucion no es compatible</p>
@@ -233,14 +243,14 @@ export const MenuSuperiosNew = () => {
                         if (permissions.includes(opcion.permission) || user.id == 1) {
                             return (
                                 <MenubarMenu>
-                                    <MenubarTrigger><div className='flex gap-2 items-center'> <span className='text-primary'> {opcion.icon}</span>{opcion.titulo}</div></MenubarTrigger>
+                                    <MenubarTrigger ><div className='flex gap-2 items-center'> <span className='text-primary'> {opcion.icon}</span>{opcion.titulo}</div></MenubarTrigger>
                                     <MenubarContent>
                                         {opcion.opciones.map((opcion, key) => {
                                             if (permissions.includes(opcion.permission) || user.id == 1) {
                                                 return (
                                                     <>
                                                         <Link to={opcion.route} key={index}>
-                                                            <MenubarItem>
+                                                            <MenubarItem onClick={()=>{ handle_menu_trigger_click(opcion) }}>
                                                                 <div key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
                                                                     <div key={key} className="mb-1 text-[12px] font-medium">
                                                                         {opcion.titulo}

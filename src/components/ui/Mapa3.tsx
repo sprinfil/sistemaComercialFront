@@ -139,8 +139,8 @@ export const Mapa3 = () => {
                         paths: polygonCoordinates,
                         strokeColor: ruta.color,
                         fillColor: ruta.color,
-                        fillOpacity: 0.3,
-                        strokeOpacity: 0.3,
+                        fillOpacity: 0.2,
+                        strokeOpacity: 0.2,
                         //draggable: true,
                         //editable: false,
                     });
@@ -376,7 +376,7 @@ export const Mapa3 = () => {
                     </div>
                     */
                 }
-                <div className='w-full h-[6vh] bg-muted p-1 flex items-center '>
+                <div className='w-full h-[6vh] bg-muted p-1 flex items-center  border border-border'>
                     <div className='flex gap-2 items-center'>
                         <MagnifyingGlassIcon />
                         <input value={searchQuery}
@@ -392,7 +392,7 @@ export const Mapa3 = () => {
 
                 </div>
 
-                <div id="map" className='w-full h-[84vh]'>
+                <div id="map" className='w-full h-[75vh]'>
                 </div>
             </div>
         </>

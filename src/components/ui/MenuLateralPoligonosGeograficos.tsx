@@ -111,7 +111,7 @@ const MenuLateralPoligonosGeograficos = () => {
 
     return (
         <>
-            <div className='h-full w-full overflow-auto mt-[10px] px-2'>
+            <div className='h-full w-full overflow-auto px-2'>
                 {/*Menu de poligonos*/}
                 <div className='bg-principal border-border border'>
                     {/*superior*/}
