@@ -19,7 +19,7 @@ export default function TomaPorUsuarioTable() {
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
 
-  const {tomas, setTomas, loadingTable, setLoadingTable, setToma, setAccion, setTomasRuta, usuariosEncontrados, setUsuariosEncontrados, clearUsuariosEncontrados} = ZustandGeneralUsuario();
+  const {tomas, setTomas, loadingTable, setLoadingTable, setToma, setAccion, setTomasRuta, usuariosEncontrados, setUsuariosEncontrados, clearUsuariosEncontrado, setTomaUsuariosEncontrados} = ZustandGeneralUsuario();
 
   const navigate = useNavigate();
 
@@ -40,7 +40,7 @@ export default function TomaPorUsuarioTable() {
       console.log("tomas del usuario" + JSON.stringify(response.data.data));
     } catch (error) {
       setLoadingTable(false);
-      console.error("Failed to fetch anomalias:", error);
+      console.error("Failed to fetch tomas de usuario:", error);
     }
   };
 

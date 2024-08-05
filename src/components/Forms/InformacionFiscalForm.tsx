@@ -55,7 +55,7 @@ const InformacionFiscalForm = () => {
     resolver: zodResolver(informacionficalSchema),
     defaultValues: {
       id: 0,
-      id_modelo: "0",
+      id_modelo: 1,
       modelo: "usuario",
       regimen_fiscal: "",
       razon_social: "",
@@ -114,18 +114,26 @@ const InformacionFiscalForm = () => {
 
   useEffect(() => {
     // Función para obtener los datos de la base de datos
-    let values = {
-      "modelo": "usuario",
-      "id_modelo": usuariosEncontrados.id,
+    let info = {
+        info:{
+          "id_modelo": usuariosEncontrados.id,
+          "modelo": "usuario"
+        }
     };
 
+    console.log("ESTOS USUARIOS FUERON ENCONTRADOS EN INFOMRACION FISCAL",usuariosEncontrados);
+    console.log(info)
     const fetchData = async () => {
       setLoading(true);
       try {
         const response = await axiosClient.get(`/datos_fiscales/showPorModelo`, {
-          params: values
-
-        });
+          info: {
+            id_modelo: usuariosEncontrados.id,
+            modelo: 'usuario'
+          }
+        }
+         
+      );
         const data = response.data;
         setLoading(false);
         // Actualiza los valores del formulario con los datos obtenidos

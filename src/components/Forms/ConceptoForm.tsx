@@ -33,8 +33,8 @@ import { Concepto } from "../Tables/Columns/ConceptosColumns.tsx";
 import MarcoForm from "../ui/MarcoForm.tsx";
 import { Switch } from "../ui/switch.tsx";
 import { ComboBoxCeroUno } from "../ui/ComboBoxCeroUno.tsx";
-
-
+import { SelectConceptosAbonable } from "../ui/SelectConceptos.tsx";
+import { SelectTarifaFija } from "../ui/SelectTarifaFija.tsx";
 
 
 const ConceptoForm = () => {
@@ -50,7 +50,22 @@ const ConceptoForm = () => {
     const [tipoTomas, setTipoDeTomas] = useState([])
     const [tarifas, setTarifas] = useState([]);
 
+    const [seleccionarAbono, setseleccionarAbono] = useState('');
 
+    const [isAbonable, setIsAbonable] = useState(false);
+    const [isTarifaFija, setIsTarifaFija] = useState(false);
+
+
+    const handleSelectChange = (value) => {
+        console.log('¿Es abonable?:', value); //ESTE ES EL BOOL QUE MANDA
+        setIsAbonable(value);
+      };
+      
+    const handleSelectChange2 = (value) => {
+        console.log('¿Tarifa fija?:', value); //ESTE ES EL BOOL QUE MANDA
+        setIsTarifaFija(value);
+      };
+  
     useEffect((() => {
         getTipoTomas();
     }), [])
@@ -431,14 +446,12 @@ const ConceptoForm = () => {
                                         <FormLabel>Prioridad</FormLabel>
                                         <FormControl>
                                             <Input
-                                                id="number"
-                                                type="number"
-                                                defaultValue={1}
+                                                id="string"
+                                                type="string"
                                                 min={1}
                                                 max={10}
                                                 readOnly={!abrirInput}
                                                 {...field}
-                                                onChange={(e) => field.onChange(parseInt(e.target.value, 10))} //SE OCUPA CONVERTIR PARA QUE NO LO MARQUE STRING KIEN SABE XQ JEJE
                                             />
                                         </FormControl>
                                         <FormDescription>
@@ -481,6 +494,36 @@ const ConceptoForm = () => {
                                         </FormControl>
                                         <FormDescription>
 
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="abonable"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Abonable</FormLabel>
+                                        <FormControl>
+                                        <SelectConceptosAbonable value={isAbonable} onChange={handleSelectChange}/>
+                                        </FormControl>
+                                        <FormDescription>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="tarifa_fija"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Tarifa fija</FormLabel>
+                                        <FormControl>
+                                            <SelectTarifaFija value={isTarifaFija} onChange={handleSelectChange2}/>
+                                        </FormControl>
+                                        <FormDescription>
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>

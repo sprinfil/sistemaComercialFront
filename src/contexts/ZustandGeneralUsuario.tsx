@@ -1,7 +1,7 @@
 import {create} from 'zustand';
 import { TomaPorUsuario } from '../components/Tables/Columns/TomaPorUsuarioColumns';
 import { BuscarUsuario } from "../components/Tables/Columns/ContratoConsultaUsuarioColumns";
-
+import { BuscarTomaUsuario } from '../components/Tables/Columns/ContratoConsultaTomaColumns';
 export interface DatosUsuario
 {
   id: number;
@@ -31,9 +31,11 @@ interface GeneralUsuario {
   setUsuario: (usuario: BuscarUsuario) => void;
   usuariosEncontrados: BuscarUsuario[];
   setUsuariosEncontrados: (usuarios: BuscarUsuario[]) => void;
-  usuariosRecuperado: BuscarUsuario[];
-  setUsuariosRecuperado: (usuarios: BuscarUsuario[]) => void; // Recibe un arreglo
   clearUsuariosEncontrados: () => void;
+  usuariosRecuperado: BuscarUsuario[];
+  setUsuariosRecuperado: (usuarios: BuscarUsuario[]) => void; 
+  tomaUsuariosEncontrados: BuscarTomaUsuario[],
+  setTomaUsuariosEncontrados: (usuarios: BuscarTomaUsuario[]) => void; 
   nombreBuscado: string,
   setNombreBuscado: (nombreBuscado: string) => void;
   nombreSeleccionado: string | null;
@@ -48,6 +50,8 @@ interface GeneralUsuario {
   setTomasRuta: (tomasRuta: boolean) => void;
   usuarioObtenido: DatosUsuario | null;
   setUsuarioObtenido: (usuario: DatosUsuario | null) => void;
+  findUserOrToma: boolean;
+  setFindUserOrToma:(findUserOrToma: boolean) => void;
 
 }
 
@@ -62,6 +66,8 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setTomas: (tomas) => set({ tomas }),
   usuariosEncontrados: [],
   setUsuariosEncontrados: (usuarios) => set({ usuariosEncontrados: usuarios }),
+  tomaUsuariosEncontrados: [],
+  setTomaUsuariosEncontrados: (usuarios) => set({ tomaUsuariosEncontrados: usuarios }),
   usuariosRecuperado: [],
   setUsuariosRecuperado: (usuarios) => set({ usuariosRecuperado: usuarios }), // Debe recibir un arreglo
   clearUsuariosEncontrados: () => set({ usuariosEncontrados: [] }),
@@ -75,5 +81,7 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setNombreSeleccionado: (nombreSeleccionado) => set ({nombreSeleccionado}),
   usuarioObtenido: null,
   setUsuarioObtenido: (usuario) => set({ usuarioObtenido: usuario }),
+  findUserOrToma: false,
+  setFindUserOrToma:(findUserOrToma) => set({findUserOrToma}),
 }));
 

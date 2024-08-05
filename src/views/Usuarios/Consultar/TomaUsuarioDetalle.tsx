@@ -9,11 +9,13 @@ import InformaciónGeneral from './VistasDetalleUsuario/InformaciónGeneral';
 import InformacionFiscal from './VistasDetalleUsuario/InformacionFiscal';
 import CrearOrdenDeTrabajo from './VistasDetalleUsuario/CrearOrdenDeTrabajo';
 import TomasUsuario from './VistasDetalleUsuario/TomasUsuario';
-
+import { BreadCrumbDetalleTomaUsuario } from '../../../components/ui/breadCrumbDetalleTomaUsuario.tsx';
+import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
 export const TomaUsuarioDetalle = () => {
 
   const {tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado}= ZustandGeneralUsuario()
   const [accion, setAccion] = useState<string | undefined>();
+  const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
   useEffect(() => {
     console.log("ESTE USUARIO LLEGA A LA TOMA DETALLE:", usuariosEncontrados);
@@ -21,6 +23,11 @@ export const TomaUsuarioDetalle = () => {
     if (usuariosEncontrados.length > 0) {
       // Establece el estado global solo si hay usuarios encontrados
       setUsuariosRecuperado(usuariosEncontrados); // Debe ser un arreglo de usuarios
+      setMostrarSiguiente(true);
+    }
+    else
+    {
+      console.log("no hay longitud");
     }
   }, [usuariosEncontrados, setUsuariosRecuperado]);
 

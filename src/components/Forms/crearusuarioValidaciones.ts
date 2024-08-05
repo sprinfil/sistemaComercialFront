@@ -10,4 +10,5 @@ export const crearusuarionuevoSchema = z.object({
     curp: z.string().max(18, "El curp no puede tener mas de 18 caracteres"),
     rfc: z.string().max(13, "El RFC no puede tener mas de 13 caracteres"),
     correo: z.string().min(1, "El correo electronico es requerido"),
+    nombre_contacto:  z.string().min(1, "El nombre de contacto es requerido"),
   })
