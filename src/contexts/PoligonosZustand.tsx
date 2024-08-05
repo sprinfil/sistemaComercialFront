@@ -9,6 +9,9 @@ const PoligonosZustand = create((set) => ({
 
     loading_import: false,  // Nueva variable booleana
     set_loading_import: (isLoading) => set({ loading_import: isLoading }),
+
+    loading_rutas: false,  // Nueva variable booleana
+    set_loading_rutas: (isLoading) => set({ loading_rutas: isLoading }),
   }));
 
 export default PoligonosZustand;

@@ -19,11 +19,11 @@ const MenuLateralPoligonosGeograficos = () => {
 
     const [effect, setEffect] = useState(false);
     const { setRutas, rutas } = useStateContext();
-    const [ loading_rutas, set_loading_rutas ] = useState(false);
+    //const [ loading_rutas, set_loading_rutas ] = useState(false);
     //const [libro_visibility, set_libro_visibility] = useState([]);
     //const [ruta_visibility, set_ruta_visibility] = useState([]);
 
-    const { libro_visibility, set_libro_visibility, ruta_visibility, set_ruta_visibility, loading_import } = PoligonosZustand();
+    const { libro_visibility, set_libro_visibility, ruta_visibility, set_ruta_visibility, loading_import, loading_rutas, set_loading_rutas } = PoligonosZustand();
 
     function toggle_open(id_container) {
         let container = document.getElementById(id_container);
