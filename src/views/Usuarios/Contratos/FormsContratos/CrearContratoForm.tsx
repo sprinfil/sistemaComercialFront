@@ -67,7 +67,7 @@ export const CrearContratoForm = () => {
                                     name="clave_catastral"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>claveCatastral</FormLabel>
+                                            <FormLabel>Clave catastral</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="Escribe su clave catastral" {...field} />
                                             </FormControl>
