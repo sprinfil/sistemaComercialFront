@@ -152,6 +152,8 @@ const ConceptoForm = () => {
             nombre: concepto.nombre,
             descripcion: concepto.descripcion,
             prioridad_abono: concepto.prioridad_abono,
+            abonable: isAbonable,
+            tarifa_fija: isTarifaFija,
             genera_iva: concepto.genera_iva,
         },
     })

@@ -12,8 +12,10 @@ export type Concepto = {
   id: number
   nombre: string
   descripcion: string
-  prioridad_abono: number
+  prioridad_abono: string
   genera_iva: string
+  abonable: boolean,
+  tarifa_fija: boolean,
   tarifas: Array<{}>
 }
 
