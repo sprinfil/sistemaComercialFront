@@ -15,9 +15,10 @@ import { Button } from 'react-day-picker';
 import { useNavigate } from 'react-router-dom';
 import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
 import { BuscarTomaUsuario, Usuario } from '../Tables/Columns/ContratoConsultaTomaColumns';
-
+import { useBreadcrumbStore } from "../../contexts/ZustandGeneralUsuario";
 export const Mapa3 = () => {
-    const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados} = ZustandGeneralUsuario();
+    const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
+    const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma} = ZustandGeneralUsuario();
     const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas } = PoligonosZustand();
     const navigate = useNavigate();
     const { setRutas, rutas } = useStateContext();
@@ -287,6 +288,8 @@ export const Mapa3 = () => {
     
         setTomaUsuariosEncontrados([tomaOb]);
         console.log(tomaUsuariosEncontrados);
+        setFindUserOrToma(true);
+        setMostrarSiguiente(true);
         navigate("/usuario/toma");
 
     };

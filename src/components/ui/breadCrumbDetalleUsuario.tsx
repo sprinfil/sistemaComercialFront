@@ -11,8 +11,8 @@ export function BreadCrumbDetalleUsuario() {
   const [usuario, setUsuario] = useState<{ id: number; nombre: string } | null>(null);
   const [tomaSeleccionada, setTomaSeleccionada] = useState<{ id: number; calle?: string; usuario?: Usuario } | null>(null);
   
-  
-  
+  console.log("este es lo que llega al breadCrumppp", JSON.stringify(tomaUsuariosEncontrados));
+  console.log(tomaUsuariosEncontrados[0].entre_calle_1)
  
   useEffect(() => {
     if (usuariosEncontrados.length > 0) {
@@ -34,6 +34,7 @@ export function BreadCrumbDetalleUsuario() {
     setMostrarSiguiente(false);
   };
 
+  console.log("aver que hay ", JSON.stringify(tomaSeleccionada?.calle));
 
   return (
    
@@ -55,7 +56,7 @@ export function BreadCrumbDetalleUsuario() {
             <li>
               <Link to="/usuario/toma">
                 <p className="text-[15px] font-medium ml-4">
-                  Toma: {tomaSeleccionada && tomaSeleccionada.calle ? tomaSeleccionada.calle : 'Nombre no disponible'}
+                  Toma: {tomaSeleccionada && tomaUsuariosEncontrados[0].entre_calle_1 ? tomaUsuariosEncontrados[0].entre_calle_1 : 'Nombre no disponible'}
                 </p>
               </Link>
             </li>
