@@ -121,7 +121,8 @@ const MenuLateralPoligonosGeograficos = () => {
                         </div>
                         <div className='w-[10%] flex items-center justify-end'>
                             <a title='Crear Ruta'>
-                                <SheetRuta
+                                {/*
+                                 <SheetRuta
                                     trigger={
                                         <IconButton>
                                             <ContainerIcon className="w-[17px] h-[17px]" />
@@ -130,6 +131,8 @@ const MenuLateralPoligonosGeograficos = () => {
                                     }
                                     updateData={getRutas}
                                 />
+                                */}
+                               
                             </a>
                             <a title="Importar GeoJson">
                                 <ModalImportarGeoJson
@@ -200,7 +203,9 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                     ruta={ruta}
                                                                 />
                                                             </a>
-                                                            <a title='Agregar libro'>
+                                                            {
+                                                                /*
+                                                                       <a title='Agregar libro'>
                                                                 <SheetLibro
                                                                     trigger={
                                                                         <IconButton>
@@ -211,6 +216,9 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                     updateData={getRutas}
                                                                 />
                                                             </a>
+                                                                */
+                                                            }
+                                                     
 
 
                                                             <Modal
