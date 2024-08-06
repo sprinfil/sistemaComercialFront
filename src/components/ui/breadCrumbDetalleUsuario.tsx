@@ -7,12 +7,15 @@ import { Usuario } from "../Tables/Columns/ContratoConsultaTomaColumns";
 
 export function BreadCrumbDetalleUsuario() {
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
-  const { usuariosEncontrados, tomaUsuariosEncontrados,findUserOrToma} = ZustandGeneralUsuario();
+  const { usuariosEncontrados, tomaUsuariosEncontrados,findUserOrToma, findUserMapaGeo, toma, tomas} = ZustandGeneralUsuario();
   const [usuario, setUsuario] = useState<{ id: number; nombre: string } | null>(null);
   const [tomaSeleccionada, setTomaSeleccionada] = useState<{ id: number; calle?: string; usuario?: Usuario } | null>(null);
   
-  console.log("este es lo que llega al breadCrumppp", JSON.stringify(tomaUsuariosEncontrados));
-  console.log(tomaUsuariosEncontrados[0].entre_calle_1)
+  //console.log("este es lo que llega al breadCrumppp", JSON.stringify(tomaUsuariosEncontrados));
+  console.log("para confirmar el bread detalle toma 0", usuariosEncontrados);
+  console.log("para confirmar el bread detalle toma 000", tomas);
+
+  //console.log(tomaUsuariosEncontrados[0].entre_calle_1)
  
   useEffect(() => {
     if (usuariosEncontrados.length > 0) {
@@ -23,12 +26,12 @@ export function BreadCrumbDetalleUsuario() {
   }, [usuariosEncontrados]);
 
   useEffect(() => {
-    if (tomaUsuariosEncontrados.length > 0) {
-      setTomaSeleccionada(tomaUsuariosEncontrados[0]);
+    if (toma) {
+      setTomaSeleccionada(toma);
     } else {
       console.log("No hay tomas encontradas");
     }
-  }, [tomaUsuariosEncontrados]);
+  }, [tomaUsuariosEncontrados, usuariosEncontrados]);
 
   const handleClick = () => {
     setMostrarSiguiente(false);
@@ -56,7 +59,10 @@ export function BreadCrumbDetalleUsuario() {
             <li>
               <Link to="/usuario/toma">
                 <p className="text-[15px] font-medium ml-4">
-                  Toma: {tomaSeleccionada && tomaUsuariosEncontrados[0].entre_calle_1 ? tomaUsuariosEncontrados[0].entre_calle_1 : 'Nombre no disponible'}
+                  {findUserMapaGeo ?  tomaSeleccionada?.calle ? tomaSeleccionada?.calle : 'Nombre no disponible'
+                  :
+                  tomaSeleccionada && tomaSeleccionada.calle ? tomaSeleccionada.calle : 'Nombre no disponible'
+                  }
                 </p>
               </Link>
             </li>
@@ -78,7 +84,7 @@ export function BreadCrumbDetalleUsuario() {
             <li>
               <Link to="/usuario/toma">
                 <p className="text-[15px] font-medium ml-4">
-                  Toma: {tomaSeleccionada && tomaSeleccionada.calle ? tomaSeleccionada.calle : 'Nombre no disponible'}
+                  Toma: {tomaSeleccionada && tomaSeleccionada?.calle  ? tomaSeleccionada?.calle  : 'Nombre no disponible'}
                 </p>
               </Link>
             </li>
