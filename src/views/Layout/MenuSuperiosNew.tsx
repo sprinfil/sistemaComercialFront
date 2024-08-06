@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import ReactDOMServer from 'react-dom/server';
 import {
     Menubar,
     MenubarCheckboxItem,
@@ -69,11 +70,16 @@ export const MenuSuperiosNew = () => {
         }
     };
 
-    const handle_menu_trigger_click = (opcion) => {
+    const handle_menu_trigger_click = (opcion, icono) => {
         set_titulo(opcion.titulo);
-        set_icono(opcion.icon);
-        
+        set_icono(icono);
+        const submenuIcono = ReactDOMServer.renderToString(icono);
+        localStorage.setItem("submenu_titulo", opcion.titulo);
+        localStorage.setItem("submenu_icono", submenuIcono);
+        console.log(opcion)
     }
+
+    useEffect((()=>{console.log(titulo + " hola")}),[titulo])
 
     const opciones = [
         {
@@ -239,18 +245,18 @@ export const MenuSuperiosNew = () => {
             <p className='relative xl:hidden text-sm text-red-500 p-1 h-[9vh] flex items-center justify-center'>La resolucion no es compatible</p>
             <div className='relative hidden xl:block '>
                 <Menubar>
-                    {opciones.map((opcion, index) => {
-                        if (permissions.includes(opcion.permission) || user.id == 1) {
+                    {opciones.map((opcionPadre, index) => {
+                        if (permissions.includes(opcionPadre.permission) || user.id == 1) {
                             return (
                                 <MenubarMenu>
-                                    <MenubarTrigger ><div className='flex gap-2 items-center'> <span className='text-primary'> {opcion.icon}</span>{opcion.titulo}</div></MenubarTrigger>
+                                    <MenubarTrigger ><div className='flex gap-2 items-center'> <span className='text-primary'> {opcionPadre.icon}</span>{opcionPadre.titulo}</div></MenubarTrigger>
                                     <MenubarContent>
-                                        {opcion.opciones.map((opcion, key) => {
+                                        {opcionPadre.opciones.map((opcion, key) => {
                                             if (permissions.includes(opcion.permission) || user.id == 1) {
                                                 return (
                                                     <>
                                                         <Link to={opcion.route} key={index}>
-                                                            <MenubarItem onClick={()=>{ handle_menu_trigger_click(opcion) }}>
+                                                            <MenubarItem onClick={()=>{ handle_menu_trigger_click(opcion, opcionPadre.icon) }}>
                                                                 <div key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
                                                                     <div key={key} className="mb-1 text-[12px] font-medium">
                                                                         {opcion.titulo}

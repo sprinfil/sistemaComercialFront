@@ -88,8 +88,8 @@ export const ModalImportarGeoJson = ({ trigger, updateData }) => {
                                         console.log(response.response.data.message);
                                         toast({
                                             title: "Error",
-                                            /*description: response.response.data.message */
-                                            description: "A ocurrido un Error",
+                                            description: response.response.data.message ,
+                                            //description: "A ocurrido un Error",
                                             variant: "destructive",
                                             action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                                         })
@@ -100,8 +100,8 @@ export const ModalImportarGeoJson = ({ trigger, updateData }) => {
                                 console.log(response.response.data.message);
                                 toast({
                                     title: "Error",
-                                    /*description: response.response.data.message */
-                                    description: "A ocurrido un Error",
+                                    description: response.response.data.message ,
+                                    //description: "A ocurrido un Error",
                                     variant: "destructive",
                                     action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                                 })
@@ -124,7 +124,7 @@ export const ModalImportarGeoJson = ({ trigger, updateData }) => {
                                 toast({
                                     title: "Error",
                                     description: response.response.data.message ,
-                                    /*description: "A ocurrido un Error",*/
+                                    //description: "A ocurrido un Error",
                                     variant: "destructive",
                                     action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                                 })

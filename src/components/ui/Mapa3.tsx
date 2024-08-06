@@ -4,7 +4,7 @@ import PoligonosZustand from '../../contexts/PoligonosZustand';
 import { useStateContext } from '../../contexts/ContextPoligonos';
 import axiosClient from '../../axios-client';
 import IconButton from './IconButton';
-import { Pencil2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { Pencil2Icon, MagnifyingGlassIcon, EyeClosedIcon } from '@radix-ui/react-icons';
 import { HoverCard, HoverCardComponent } from './HoverCardComponent';
 import "../../cursors/pencilselectcursor.cur";
 import { LabelOverlay } from './MapLabel';
@@ -15,9 +15,11 @@ import { Button } from 'react-day-picker';
 import { useNavigate } from 'react-router-dom';
 import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
 import { BuscarTomaUsuario, Usuario } from '../Tables/Columns/ContratoConsultaTomaColumns';
+import grifo from "../../img/grifo-de-agua.png"
+import { EyeIcon } from 'lucide-react';
 
 export const Mapa3 = () => {
-    const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados} = ZustandGeneralUsuario();
+    const { tomaUsuariosEncontrados, setTomaUsuariosEncontrados } = ZustandGeneralUsuario();
     const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas } = PoligonosZustand();
     const navigate = useNavigate();
     const { setRutas, rutas } = useStateContext();
@@ -31,6 +33,8 @@ export const Mapa3 = () => {
     const { toast } = useToast()
     const [searchQuery, setSearchQuery] = useState("");
     const search_input = useRef(null);
+    const [hide_all_polygons, set_hide_all_polygons] = useState(false);
+    const [hide_all_tomas, set_hide_all_tomas] = useState(false);
 
     const getRutas = async () => {
         set_loading_rutas(true);
@@ -58,24 +62,20 @@ export const Mapa3 = () => {
                     center: { lat: 24.131, lng: -110.3 },
                     zoom: 13,
                 });
-
                 set_map(map_temp);
-
             });
         }
 
     }, []);
 
     useEffect(() => {
-
+        const newTomasMarkers = [];
         polygons.forEach(polygon => {
             polygon.setMap(null);
         });
         overlays.forEach(overlay => overlay.onRemove());
         setPolygons([]);
         setOverlays([]);
-
-
 
         const newPolygons = rutas.map((ruta) => {
 
@@ -125,7 +125,7 @@ export const Mapa3 = () => {
 
             return ruta.libros.map((libro) => {
 
-                if (libro.polygon && libro_visibility[libro.id] && libro.polygon.coordinates[0].length > 0 && !loading_rutas) {
+                if (libro.polygon && libro_visibility[libro.id] && libro.polygon.coordinates[0].length > 0 && !loading_rutas && !hide_all_polygons) {
 
                     let polygonCoordinates = libro.polygon.coordinates[0].map((punto) => (
                         {
@@ -142,7 +142,7 @@ export const Mapa3 = () => {
                         fillOpacity: 0.2,
                         strokeOpacity: 0.2,
                         //draggable: true,
-                        //editable: false,
+                        editable: false,
                     });
 
                     // Obtener el centro del polígono
@@ -156,7 +156,8 @@ export const Mapa3 = () => {
                     const labelOverlay = new CustomLabel(center, libro.nombre, ruta.color || "black"); // libro.nombre es un ejemplo de texto
                     labelOverlay.setMap(map);
 
-                    polygon.addListener('click', (event) => {
+                    /*
+                      polygon.addListener('click', (event) => {
                         const path = polygon.getPath();
                         const points = path.getArray().map((point) => ({
                             lat: point.lat(),
@@ -167,7 +168,7 @@ export const Mapa3 = () => {
                             puntos: points
                         }
 
-                        /*
+                        
                             if (polygon.editable) {
                             polygon.setEditable(false);
                             polygon.setDraggable(false);
@@ -184,7 +185,7 @@ export const Mapa3 = () => {
                                     toast({
                                         title: "Error",
                                         description: "Error",
-                                        description: "A ocurrido un Error",
+                                        //description: "A ocurrido un Error",
                                         variant: "destructive",
                                         action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                                     })
@@ -194,11 +195,9 @@ export const Mapa3 = () => {
                                     polygon.setEditable(true);
                                     polygon.setDraggable(true);
                                 }
-                        */
-
-
-                        console.log(polygon.getDraggable());
                     });
+                    */
+
 
                     if (libro.tomas.length > 0) {
                         libro.tomas.map((toma, index) => {
@@ -210,10 +209,19 @@ export const Mapa3 = () => {
                                     lat: toma.posicion.coordinates[1], // Latitud
                                     lng: toma.posicion.coordinates[0]  // Longitud
                                 },
-                                map: map,
-                                title: `Toma: ${toma.id_codigo_toma}`, // Puedes agregar un título o descripción si está disponible
+                                map: hide_all_tomas ? null : map,
+                                title: `Toma: ${toma.id_codigo_toma}`,
+                                icon: {
+                                    url: `${grifo}`,
+                                    scaledSize: new google.maps.Size(35, 35),
+                                    anchor: new google.maps.Point(25, 25)
+                                }
+                                // Puedes agregar un título o descripción si está disponible
                             });
-
+                            if(hide_all_polygons){
+                                marker.setMap(null);
+                            }
+                            newTomasMarkers.push(marker);
                             // Crear una etiqueta utilizando InfoWindow
                             const infoWindow = new google.maps.InfoWindow({
                                 content: `<div class="text-black">
@@ -248,20 +256,16 @@ export const Mapa3 = () => {
                 return null;
             }).filter(polygon => polygon !== null);
         }).flat();
-
         setPolygons(newPolygons.map(p => p.polygon));
         setOverlays(newPolygons.map(p => p.labelOverlay));
 
-    }, [libro_visibility]);
+    }, [libro_visibility, hide_all_polygons]);
 
     const toggle_modo_edicion = () => {
         set_editando(!editando);
     };
 
     const handleViewDetails = (toma) => {
-        console.log(toma);
-      
-        
         const usuario: Usuario = {
             id: toma.usuario.id,
             nombre: toma.usuario.nombre,
@@ -271,7 +275,6 @@ export const Mapa3 = () => {
             correo: toma.usuario.correo,
             curp: toma.usuario.curp,
         }
-
         const tomaOb: BuscarTomaUsuario = {
             id: toma.id,
             clave_catastral: toma.clave_catastral,
@@ -283,12 +286,8 @@ export const Mapa3 = () => {
             localidad: toma.localidad,
             usuario: usuario
         };
-        console.log(tomaOb)
-    
         setTomaUsuariosEncontrados([tomaOb]);
-        console.log(tomaUsuariosEncontrados);
         navigate("/usuario/toma");
-
     };
 
     // Esta función busca la toma por nombre
@@ -309,8 +308,13 @@ export const Mapa3 = () => {
                             },
                             map: map,
                             title: `Toma: ${toma.id_codigo_toma}`, // Puedes agregar un título o descripción si está disponible
+                            icon: {
+                                url: `${grifo}`,
+                                scaledSize: new google.maps.Size(35, 35),
+                                anchor: new google.maps.Point(25, 25)
+                            }
                         });
-
+                        map.setZoom(20); 
                         // Crear una etiqueta utilizando InfoWindow
                         const infoWindow = new google.maps.InfoWindow({
                             content: `<div class="text-black">
@@ -328,8 +332,8 @@ export const Mapa3 = () => {
                         marker.addListener('click', () => {
                             infoWindow.open(map, marker);
                         });
-                          // Agregar un listener para el botón dentro de la InfoWindow
-                          google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+                        // Agregar un listener para el botón dentro de la InfoWindow
+                        google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
                             const button = document.getElementById('view-details-btn');
                             if (button) {
                                 button.addEventListener('click', () => {
@@ -359,6 +363,13 @@ export const Mapa3 = () => {
         }
     };
 
+    const handle_hide_all_polygons = () => {
+        set_hide_all_polygons(!hide_all_polygons);
+    }
+    const handle_hide_all_tomas = () => {
+        set_hide_all_tomas(!hide_all_tomas);
+    }
+
     return (
         <>
             <div className='max-h-[90vh] h-full relative '>
@@ -376,19 +387,46 @@ export const Mapa3 = () => {
                     </div>
                     */
                 }
-                <div className='w-full h-[6vh] bg-muted p-1 flex items-center  border border-border'>
+                <div className='w-full h-[6vh] bg-muted p-1 flex items-center gap-4  border border-border'>
                     <div className='flex gap-2 items-center'>
                         <MagnifyingGlassIcon />
                         <input value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            type='text' className='bg-background p-1  outline-none'
+                            type='text' className='bg-background p-1  outline-none text-[10px]'
                             placeholder='Buscar Toma ...'
                             ref={search_input}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={searchToma}>Buscar</button>
-
+                        <button onClick={searchToma} className='bg-background text-[10px] py-1 px-3'>Buscar</button>
                     </div>
+                    {
+                        !loading_rutas &&
+                        <>
+                            <div onClick={handle_hide_all_polygons}>
+                                <IconButton>
+                                    <div className='flex gap-2 items-center text-[10px]'>
+                                        Polígonos
+                                        {hide_all_polygons && <><EyeClosedIcon className='w-[15px] h-[15px]' /></>}
+                                        {!hide_all_polygons && <><EyeIcon className='w-[15px] h-[15px]' /></>}
+                                    </div>
+                                </IconButton>
+                            </div>
+                        </>
+                    }
+                          {
+                        !loading_rutas &&
+                        <>
+                            <div onClick={handle_hide_all_tomas}>
+                                <IconButton>
+                                    <div className='flex gap-2 items-center text-[10px]'>
+                                        Tomas
+                                        {hide_all_tomas && <><EyeClosedIcon className='w-[15px] h-[15px]' /></>}
+                                        {!hide_all_tomas && <><EyeIcon className='w-[15px] h-[15px]' /></>}
+                                    </div>
+                                </IconButton>
+                            </div>
+                        </>
+                    }
 
                 </div>
 

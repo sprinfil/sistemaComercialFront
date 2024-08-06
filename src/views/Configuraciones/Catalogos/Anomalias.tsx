@@ -16,7 +16,7 @@ export default function Anomalias() {
   return (
     <ContextProvider>
 
-      <div className='w-full max-h-[75vh] '>
+      <div className='w-full max-h-[77vh] '>
         {/*Contenedor principal*/}
         <div className='flex gap-2 '>
           {/*Datatable*/}
@@ -41,9 +41,9 @@ const AnomaliasFormEdit = () => {
   return (
     <>
       {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
-      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[81vh] p-4 overflow-auto'>
+      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[77vh] p-4 overflow-auto'>
         <AnomaliaForm />
-      </div>) : (<div className='w-full rounded-md border border-border h-[81vh] p-4 overflow-auto '>
+      </div>) : (<div className='w-full rounded-md border border-border h-[77vh] p-4 overflow-auto '>
         <AnomaliaForm />
       </div>)}
     </>
