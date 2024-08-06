@@ -17,9 +17,12 @@ import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
 import { BuscarTomaUsuario, Usuario } from '../Tables/Columns/ContratoConsultaTomaColumns';
 import grifo from "../../img/grifo-de-agua.png"
 import { EyeIcon } from 'lucide-react';
+import { useBreadcrumbStore } from "../../contexts/ZustandGeneralUsuario";
 
 export const Mapa3 = () => {
     const { tomaUsuariosEncontrados, setTomaUsuariosEncontrados } = ZustandGeneralUsuario();
+    const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
+    const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma} = ZustandGeneralUsuario();
     const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas } = PoligonosZustand();
     const navigate = useNavigate();
     const { setRutas, rutas } = useStateContext();
@@ -287,6 +290,9 @@ export const Mapa3 = () => {
             usuario: usuario
         };
         setTomaUsuariosEncontrados([tomaOb]);
+        console.log(tomaUsuariosEncontrados);
+        setFindUserOrToma(true);
+        setMostrarSiguiente(true);
         navigate("/usuario/toma");
     };
 

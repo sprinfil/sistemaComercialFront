@@ -109,7 +109,7 @@ export const MenuSuperiosNew = () => {
 
         },
         {
-            titulo: "Poligonos Geograficos",
+            titulo: "Polígonos Geográficos",
             permission: "",
             icon: <GlobeIcon />,
             opciones: [
