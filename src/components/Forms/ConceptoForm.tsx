@@ -35,7 +35,13 @@ import { Switch } from "../ui/switch.tsx";
 import { ComboBoxCeroUno } from "../ui/ComboBoxCeroUno.tsx";
 import { SelectConceptosAbonable } from "../ui/SelectConceptos.tsx";
 import { SelectTarifaFija } from "../ui/SelectTarifaFija.tsx";
-
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
 
 const ConceptoForm = () => {
     const formTarifa = useRef(null);
@@ -49,22 +55,18 @@ const ConceptoForm = () => {
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
     const [tipoTomas, setTipoDeTomas] = useState([])
     const [tarifas, setTarifas] = useState([]);
-
+    const [estado, setEstado] = useState('Inactivo');
+    const [control, setcontrol] = useState(false);
     const [seleccionarAbono, setseleccionarAbono] = useState('');
-
+    const [valorConversionBool, setValorConversionBool] = useState(false);
     const [isAbonable, setIsAbonable] = useState(false);
     const [isTarifaFija, setIsTarifaFija] = useState(false);
 
 
-    const handleSelectChange = (value) => {
-        console.log('¿Es abonable?:', value); //ESTE ES EL BOOL QUE MANDA
-        setIsAbonable(value);
-      };
-      
-    const handleSelectChange2 = (value) => {
-        console.log('¿Tarifa fija?:', value); //ESTE ES EL BOOL QUE MANDA
-        setIsTarifaFija(value);
-      };
+    const handleChange = (checked) => {
+        const nuevoEstado = checked ? 'Activo' : 'Inactivo';
+        setEstado(nuevoEstado);
+    };
   
     useEffect((() => {
         getTipoTomas();
@@ -152,16 +154,27 @@ const ConceptoForm = () => {
             nombre: concepto.nombre,
             descripcion: concepto.descripcion,
             prioridad_abono: concepto.prioridad_abono,
-            abonable: isAbonable,
-            tarifa_fija: isTarifaFija,
+            abonable: concepto.abonable,
+            tarifa_fija: concepto.tarifa_fija,
+            cargo_directo: concepto.cargo_directo,
             genera_iva: concepto.genera_iva,
+            estado: false
         },
     })
 
 
 
     function onSubmit(values) {
-        let values2 = { ...values, tarifas }
+
+        const estadoConvertido = values.estado ? 'activo' : 'inactivo';
+
+            // Verifica los valores antes de la conversión
+            console.log("Estado actual:", estado);
+            console.log("Estado convertido:", estadoConvertido);
+        let values2 = { ...values, estado: estadoConvertido, tarifas };
+   
+
+        console.log("estos vaslores se insertaron " ,values2);
         console.log(tarifas);
         setLoading(true);
         if (accion == "crear") {
@@ -308,6 +321,7 @@ const ConceptoForm = () => {
 
     //Actualizar el formulario
     useEffect(() => {
+        setcontrol(false);
         if (accion == "eliminar") {
             form.reset({
                 id: 0,
@@ -317,6 +331,8 @@ const ConceptoForm = () => {
             });
             setConcepto({});
             setAbrirInput(false);
+            setcontrol(false);
+
         }
         if (accion == "crear") {
             console.log("creando");
@@ -337,6 +353,7 @@ const ConceptoForm = () => {
                 prioridad_abono: 1,
                 genera_iva: "0",
             })
+            setcontrol(true);
         }
         if (accion == "creado") {
             form.reset({
@@ -352,18 +369,48 @@ const ConceptoForm = () => {
             setAbrirInput(false);
             setErrors({});
             setAccion("");
+
+
+
+            // VER QUE LLEGA DE LA BASE DE DATOS
+            console.log("Este es el estado recibido desde la base de datos:", concepto.estado);
+
+            // CONVERTIR STRING A BOOLEANO
+            const valorDesdeBaseDeDatos: string = concepto.estado as unknown as string; 
+            const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
+
+            //COMPROBAR LA CONVERCIÓN
+            console.log("Este es el valor booleano convertido:", valorBooleano);
+
+            // OBTENER LA CONVERCIÓN
+            setValorConversionBool(valorBooleano);
+
+ 
+                        
+
+        
+            console.log("este es la conversion booleana", valorConversionBool);
             form.reset({
                 id: concepto.id,
                 nombre: concepto.nombre,
                 descripcion: concepto.descripcion,
                 prioridad_abono: concepto.prioridad_abono,
                 genera_iva: String(concepto.genera_iva),
+                abonable: concepto.abonable,
+                tarifa_fija: concepto.tarifa_fija,
+                cargo_directo: concepto.cargo_directo,
+                estado: valorBooleano
+
             });
             console.log(concepto);
+            setcontrol(false);
+
         }
         if (accion == "editar") {
             setAbrirInput(true);
             setErrors({});
+            setcontrol(true);
+
         }
     }, [accion]);
 
@@ -507,9 +554,36 @@ const ConceptoForm = () => {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Abonable</FormLabel>
+                                        {control ? <Select
+                                            onValueChange={(value) => field.onChange(value === 'si')}
+                                            defaultValue={field.value ? 'si' : 'no'}
+                                            >
                                         <FormControl>
-                                        <SelectConceptosAbonable value={isAbonable} onChange={handleSelectChange}/>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Es abonable?" />
+                                        </SelectTrigger>
                                         </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="si">Si</SelectItem>
+                                        <SelectItem value="no">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    :
+                                    <Select
+                                    disabled
+                                            onValueChange={(value) => field.onChange(value === 'si')}
+                                            defaultValue={field.value ? 'si' : 'no'}
+                                        >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Es abonable?" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="si">Si</SelectItem>
+                                        <SelectItem value="no">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>}
                                         <FormDescription>
                                         </FormDescription>
                                         <FormMessage />
@@ -522,15 +596,127 @@ const ConceptoForm = () => {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Tarifa fija</FormLabel>
+                                        { control ? 
+                                        <Select
+                                        onValueChange={(value) => field.onChange(value === 'si')}
+                                        defaultValue={field.value ? 'si' : 'no'}
+                                        >
                                         <FormControl>
-                                            <SelectTarifaFija value={isTarifaFija} onChange={handleSelectChange2}/>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Tiene tarifa fija?" />
+                                        </SelectTrigger>
                                         </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="si">Si</SelectItem>
+                                        <SelectItem value="no">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    :
+                                    <Select
+                                    disabled
+                                        onValueChange={(value) => field.onChange(value === 'si')}
+                                        defaultValue={field.value ? 'si' : 'no'}
+                                        >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Tiene tarifa fija?" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="si">Si</SelectItem>
+                                        <SelectItem value="no">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>}
                                         <FormDescription>
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
+                             <FormField
+                                control={form.control}
+                                name="cargo_directo"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Cargo directo</FormLabel>
+                                        {/*SE UTILIZO UNA VARIABLE DE CONTROL PARA MANEJAR EL ESTADO DEPENDIENDO LA ACCION QUE
+                                        SE SELECCIONE*/ }
+                                        {
+                                        control ? 
+                                        <Select
+                                        onValueChange={(value) => field.onChange(value === 'si')}
+                                        defaultValue={field.value ? 'si' : 'no'}
+                                        >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Tiene cargo directo?" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="si">Si</SelectItem>
+                                        <SelectItem value="no">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    :
+                                    <Select
+                                    disabled
+                                        onValueChange={(value) => field.onChange(value === 'si')}
+                                            defaultValue={field.value ? 'si' : 'no'}
+                                        >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Tiene cargo directo?" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="si">Si</SelectItem>
+                                        <SelectItem value="no">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+
+                                        }
+                                        
+                                        <FormDescription>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="ml-10 mt-5 w-[50vh]">
+                            <FormField
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="items-center">Activo</FormLabel>
+                                    <FormControl className="ml-4">
+                                      {
+                                        control ?  <Switch
+                                        checked={field.value}
+                                        onCheckedChange={(checked) => field.onChange(checked)
+                                        }
+                                        
+                                        /> 
+                                        : 
+                                         <Switch
+                                        checked={field.value}
+                                        onCheckedChange={(checked) => field.onChange(checked)
+                                        }
+                                        disabled
+                                        />
+                                      }
+                                   
+                                    
+                                    </FormControl>
+                                    <FormDescription>
+                                        Aquí puedes cambiar el estado del concepto.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                            </div>
+                            
                         </MarcoForm>
 
                     </form>

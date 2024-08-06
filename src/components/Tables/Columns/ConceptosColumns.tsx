@@ -16,6 +16,8 @@ export type Concepto = {
   genera_iva: string
   abonable: boolean,
   tarifa_fija: boolean,
+  cargo_directo: boolean,
+  estado: boolean,
   tarifas: Array<{}>
 }
 

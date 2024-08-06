@@ -33,7 +33,9 @@ export const conceptoSchema = z.object({
     prioridad_abono: z.string().min(1, "La prioridad debe ser minimo a 1").max(10, "La prioridad no puede ser mayor a 10"),
     abonable: z.boolean(),
     tarifa_fija:z.boolean(),
+    cargo_directo: z.boolean(),
     genera_iva: z.string(),
+    estado: z.boolean(),
 })
 //VALIDACIONES DESCUENTOS
 export const descuentoSchema = z.object({
