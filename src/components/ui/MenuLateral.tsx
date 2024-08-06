@@ -22,6 +22,7 @@ const MenuLateral = ({ options, context}) => {
     setPantalla(pantalla);
     console.log(pantalla);
   }
+  
 
   return (
     <div className="border border-border rounded-md h-full">
