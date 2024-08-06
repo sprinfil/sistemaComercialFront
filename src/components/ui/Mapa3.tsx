@@ -20,7 +20,6 @@ import { EyeIcon } from 'lucide-react';
 import { useBreadcrumbStore } from "../../contexts/ZustandGeneralUsuario";
 
 export const Mapa3 = () => {
-    const { tomaUsuariosEncontrados, setTomaUsuariosEncontrados } = ZustandGeneralUsuario();
     const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
     const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma} = ZustandGeneralUsuario();
     const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas } = PoligonosZustand();
