@@ -37,7 +37,7 @@ export function BreadCrumbDetalleUsuario() {
 
   return (
    
-    <nav className="ml-5 mt-5">
+    <nav className="ml-2 my-[5px]">
        {findUserOrToma ? 
        <ol style={{ listStyle: 'none', display: 'flex', padding: 0 }}>
         <li>

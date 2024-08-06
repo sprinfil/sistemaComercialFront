@@ -64,14 +64,14 @@ const DetalleUsuario: React.FC = () => {
   return (
     <>
       <ContextProvider>
-        <div className=''>
+        <div className='max-h-[70vh]'>
           {/* Breadcrumb en la parte superior */}
-          <div className='mt-2 px-2'>
+          <div className=''>
             <BreadCrumbDetalleUsuario />
           </div>
 
           {/* Contenido principal */}
-          <div className='flex gap-2 mt-2 px-2'>
+          <div className='flex gap-2 px-2'>
             <div className='flex-shrink-0'>
               <OcultarTableDetalleUsuario accion={accion}>
                 <MenuLateral options={options} context={useStateContext} />

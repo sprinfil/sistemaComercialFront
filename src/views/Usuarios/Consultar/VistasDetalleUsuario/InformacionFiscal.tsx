@@ -4,7 +4,7 @@ import InformacionFiscalForm from '../../../../components/Forms/InformacionFisca
 const InformaciónFiscal = () => {
   return (
     <div>
-        <div className=' w-full rounded-md border border-border h-[81vh] p-4 overflow-auto'>
+        <div className=' w-full rounded-md border border-border h-[77vh] p-4 overflow-auto'>
         {/*Formulario*/}
         <InformacionFiscalForm/>
     </div>
