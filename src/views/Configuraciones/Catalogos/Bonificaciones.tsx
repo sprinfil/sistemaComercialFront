@@ -36,9 +36,9 @@ const BonificacionesFormEdit = () => {
     return (
       <>
           {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLORa GG*/}
-        {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[81vh] p-4'>
+        {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[77vh] p-4'>
               <BonificacionForm />
-            </div>) : (<div className='w-full rounded-md border border-border h-[81vh] p-4'>
+            </div>) : (<div className='w-full rounded-md border border-border h-[77vh] p-4'>
               <BonificacionForm />
             </div>)}
       </>

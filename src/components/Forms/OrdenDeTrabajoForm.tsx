@@ -446,7 +446,7 @@ const OrdenDeTrabajoForm = () => {
                         render={({ field }) => (
                             <div className="flex items-center space-x-4">
                                 <FormItem className="flex items-center justify-center">
-                                    <FormLabel className="mr-4">Accion a realizar de la OT</FormLabel>
+                                    <FormLabel className="mr-4">Acción a realizar de la OT</FormLabel>
                                     <FormControl>
                                         <OrdenDeTrabajoAplicacionComboBox form={form} field={field} name="aplicacion" setCargoSeleccionado={setAplicacionSeleccionada}/>
                                     </FormControl>

@@ -27,7 +27,7 @@ import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
 import { useLocation } from 'react-router-dom';
 import MarcoForm from "../ui/MarcoForm.tsx";
-
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 const InformacionGeneralForm = () => {
 
   const [loading, setLoading] = useState(false);
@@ -35,23 +35,37 @@ const InformacionGeneralForm = () => {
   const [abrirInput, setAbrirInput] = useState(false);
 
   const location = useLocation();
-
-  const contratoBuscarUsuario = location.state?.contratoBuscarUsuario || {};
-  console.log("aver que dato pasa =", JSON.stringify(contratoBuscarUsuario, null, 2)); //POR SI QUIERES CONVERGTIR UN OBJETO A JSON
+  const {usuariosEncontrados, setUsuariosEncontrados} = ZustandGeneralUsuario();
 
   const form = useForm<z.infer<typeof informaciongeneralSchema>>({
     resolver: zodResolver(informaciongeneralSchema),
     defaultValues: {
-      id: contratoBuscarUsuario.id || '', // Asegúrate de que el id tenga un valor predeterminado
-      nombre: contratoBuscarUsuario.nombre || '',
-      apellidopaterno: contratoBuscarUsuario.apellido_paterno || '',
-      apellidomaterno: contratoBuscarUsuario.apellido_materno || '',
-      telefono: contratoBuscarUsuario.telefono || '',
-      curp: contratoBuscarUsuario.curp || '',
-      rfc: contratoBuscarUsuario.rfc || '',
-      correo: contratoBuscarUsuario.correo || '',
+        id: usuariosEncontrados.id || '',
+        nombre: usuariosEncontrados.nombre || '',
+        apellidopaterno: usuariosEncontrados.apellido_paterno || '',
+        apellidomaterno: usuariosEncontrados.apellido_materno || '',
+        telefono: usuariosEncontrados.telefono || '',
+        curp: usuariosEncontrados.curp || '',
+        rfc: usuariosEncontrados.rfc || '',
+        correo: usuariosEncontrados.correo || '',
     },
   });
+
+  useEffect(() => {
+    if (usuariosEncontrados.length > 0) {
+      const usuario = usuariosEncontrados[0]; // Obten el primer usuario del arreglo
+      form.reset({
+        id: usuario.id || '',
+        nombre: usuario.nombre || '',
+        apellidopaterno: usuario.apellido_paterno || '',
+        apellidomaterno: usuario.apellido_materno || '',
+        telefono: usuario.telefono || '',
+        curp: usuario.curp || '',
+        rfc: usuario.rfc || '',
+        correo: usuario.correo || '',
+      });
+    }
+  }, [usuariosEncontrados, form]);
 
   async function onSubmit(values: z.infer<typeof informaciongeneralSchema>) {
     setLoading(true);
@@ -76,7 +90,7 @@ const InformacionGeneralForm = () => {
   }
 
   return (
-    <div className="overflow-auto w-full h-[88vh]">
+    <div className="overflow-auto w-full">
       <div className="flex h-[40px] items-center mb-[10px] bg-card rounded-sm">
         <div className="h-[20px] w-full flex items-center justify-end">
           <div className="mb-[10px] h-full w-full mx-4">

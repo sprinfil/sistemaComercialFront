@@ -127,7 +127,7 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
                                 name="rango"
                                 render={({ field }) => (
                                     <FormItem className="w-[400px]">
-                                        <FormLabel>rango</FormLabel>
+                                        <FormLabel>Rango</FormLabel>
                                         <FormControl>
                                             <Input  className="col-span-3" {...field} />
                                         </FormControl>
@@ -143,7 +143,7 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
                                 name="agua"
                                 render={({ field }) => (
                                     <FormItem className="w-[400px]">
-                                        <FormLabel>agua</FormLabel>
+                                        <FormLabel>Agua</FormLabel>
                                         <FormControl>
                                             <Input  className="col-span-3" {...field} />
                                         </FormControl>
@@ -159,7 +159,7 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
                                 name="alcantarillado"
                                 render={({ field }) => (
                                     <FormItem className="w-[400px]">
-                                        <FormLabel>alcantarillado</FormLabel>
+                                        <FormLabel>Alcantarillado</FormLabel>
                                         <FormControl>
                                             <Input  className="col-span-3" {...field} />
                                         </FormControl>
@@ -175,7 +175,7 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
                                 name="saneamiento"
                                 render={({ field }) => (
                                     <FormItem className="w-[400px]">
-                                        <FormLabel>saneamiento</FormLabel>
+                                        <FormLabel>Saneamiento</FormLabel>
                                         <FormControl>
                                             <Input  className="col-span-3" {...field} />
                                         </FormControl>

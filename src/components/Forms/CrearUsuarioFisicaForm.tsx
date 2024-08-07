@@ -25,11 +25,40 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
+import { ToastComponentGreen } from "../ui/toastComponent.tsx";
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+
+
 
 const CrearUsuarioFisicaForm = () => {
+    const { toast } = useToast()
+
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
+
+   //#region SUCCESSTOAST
+   function successToastCreado() {
+    toast({
+        title: "¡Éxito!",
+        description: "La anomalía se ha creado correctamente",
+        variant: "success",
+
+    })
+}
+ //Funcion de errores para el Toast
+ function errorToast() {
+
+    toast({
+        variant: "destructive",
+        title: "Oh, no. Error",
+        description: "Algo salió mal.",
+        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+    })
+
+
+}
 
     const form = useForm<z.infer<typeof crearusuarionuevoSchema>>({
         resolver: zodResolver(crearusuarionuevoSchema),
@@ -42,6 +71,7 @@ const CrearUsuarioFisicaForm = () => {
             curp: "",
             rfc: "",
             correo: "",
+            nombre_contacto: "",
         },
     });
 
@@ -53,15 +83,18 @@ const CrearUsuarioFisicaForm = () => {
         try {
             const response = await axiosClient.post('/usuarios/create', values);
             console.log('Usuario creado:', response.data);
-            form.reset(); // Limpiar el formulario
-            // Aquí puedes realizar alguna acción adicional, como redirigir al usuario o mostrar un mensaje de éxito
+            successToastCreado();
         } catch (error) {
             if (error.response && error.response.data) {
+                errorToast();
                 console.error('Errores de validación:', error.response.data);
                 setErrors(error.response.data);
+              
             } else {
+                errorToast();
                 console.error('Error general:', error);
                 setErrors({ general: 'Ocurrió un error al crear el usuario' });
+               
             }
         } finally {
             setLoading(false);
@@ -72,9 +105,9 @@ const CrearUsuarioFisicaForm = () => {
         
         <div className="overflow-auto">
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-                <div className='h-[20px] w-full flex items-center justify-end '>
+                <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        <p className="text-[20px] font-medium">Crear usuario fisico</p>
+                        <p className="text-[20px] font-medium">Crear nuevo usuario fisico</p>
                     </div>
                 </div>
             </div>
@@ -82,8 +115,11 @@ const CrearUsuarioFisicaForm = () => {
                 {errors.general && <Error errors={errors.general} />}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <div className="py-[40px] px-[10px] flex gap-2 w-full mb-5 rounded-md border border-border  relative">
-                            <div className="w-[50%]">
+                        <div className="border p-9">
+                           
+                            <div className="">
+                            <div className="flex space-x-5 w-[100%] items-center justify-normal">
+                                <div className="w-[68vh]">
                                 <FormField
                                     control={form.control}
                                     name="nombre"
@@ -100,6 +136,8 @@ const CrearUsuarioFisicaForm = () => {
                                         </FormItem>
                                     )}
                                 />
+                                </div>
+                                <div className="w-[68vh]">
                                 <FormField
                                     control={form.control}
                                     name="apellido_paterno"
@@ -116,6 +154,8 @@ const CrearUsuarioFisicaForm = () => {
                                         </FormItem>
                                     )}
                                 />
+                                </div>
+                                <div className="w-[68vh]">
                                 <FormField
                                     control={form.control}
                                     name="apellido_materno"
@@ -132,24 +172,28 @@ const CrearUsuarioFisicaForm = () => {
                                         </FormItem>
                                     )}
                                 />
+                                </div>
+                            </div>
+                               
                                 <FormField
                                     control={form.control}
-                                    name="telefono"
+                                    name="nombre_contacto"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Telefono</FormLabel>
+                                            <FormLabel>Nombre de contacto</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Escribe telefono del usuario" {...field} type='number' />
+                                                <Input placeholder="Escribe el nombre de contacto" {...field} />
                                             </FormControl>
                                             <FormDescription>
-                                                
+                                        
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
+                               
                             </div>
-                            <div className="w-[50%]">
+                            <div className="w-full">
                                 <FormField
                                     control={form.control}
                                     name="curp"
@@ -173,7 +217,25 @@ const CrearUsuarioFisicaForm = () => {
                                         <FormItem>
                                             <FormLabel>RFC</FormLabel>
                                             <FormControl>
-                                                <Input  placeholder="Escribe la RFC" {...field} />
+                                                <Input  placeholder="Escribe el RFC" {...field} />
+                                            </FormControl>
+                                            <FormDescription>
+                                                
+                                            </FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                /> 
+                                <div className="flex space-x-20 w-[202vh]">
+                                    <div className="w-[200vh]">
+                                        <FormField
+                                    control={form.control}
+                                    name="telefono"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Telefono</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Escribe telefono del usuario" {...field} type='number' />
                                             </FormControl>
                                             <FormDescription>
                                                 
@@ -182,6 +244,8 @@ const CrearUsuarioFisicaForm = () => {
                                         </FormItem>
                                     )}
                                 />
+                                    </div>
+                                <div className="w-full">
                                 <FormField
                                     control={form.control}
                                     name="correo"
@@ -192,18 +256,21 @@ const CrearUsuarioFisicaForm = () => {
                                                 <Input  placeholder="Escribe el correo electronico" {...field} type='email'/>
                                             </FormControl>
                                             <FormDescription>
-                                               
+                                    
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
+                                </div>
+                                
+                                </div>
+                                
                             </div>
                             {loading && <Loader />}
+                            <Button type="submit" className="mt-[5vh] w-[20vh] ml-[182vh]">Guardar</Button>
                         </div>
-                        <div className=" w-full flex justify-normal mt-4">
-                            <Button type="submit">Guardar</Button>
-                        </div>   
+                
                     </form>
                 </Form>
             </div>

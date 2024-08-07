@@ -40,7 +40,7 @@ export default function DescuentoTable() {
 
   return (
 
-    <div>
+    <div className=''>
       <div onClick={()=>{setAccion("crear")}}>
         <IconButton>
           <div className='flex gap-2 items-center'> Agregar nuevo descuento<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
