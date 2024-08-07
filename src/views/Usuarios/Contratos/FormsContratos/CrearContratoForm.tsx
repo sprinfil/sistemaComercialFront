@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import {
     Form,
     FormControl,
@@ -23,9 +24,24 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+import ModalDireccionToma from '../../../../components/ui/ModalDireccionToma.tsx';
+import DireccionNotificaciones from '../DireccionNotificaciones.tsx';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { CallesComboBox } from '../../../../components/ui/CallesComboBox.tsx';
+import { ColoniaComboBox } from '../../../../components/ui/ColoniaComboBox.tsx';
+import { LocalidadComboBox } from '../../../../components/ui/LocalidadComboBox.tsx';
 export const CrearContratoForm = () => {
+
+    const navigate = useNavigate();
+
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
+    const [openModal, setOpenModal] = useState(false);
+    const [calleSeleccionada, setCalleSeleccionada] = useState<string | null>(null);
+
+
+
+
 
     const form = useForm<z.infer<typeof crearContratoSchema>>({
         resolver: zodResolver(crearContratoSchema),
@@ -54,6 +70,21 @@ export const CrearContratoForm = () => {
         },
     });
 
+    const handleAbrirModalNotificaciones = () => 
+    {
+        setOpenModal(true);
+    };
+
+
+        const navegarDireccionToma = () => 
+        {
+            navigate("/direccion/toma");
+        };
+
+        const handleNavigationMapaToma = () => {
+            navigate("/mapa/toma");
+        };
+
     const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
         // Handle form submission
     };
@@ -64,11 +95,13 @@ export const CrearContratoForm = () => {
                 <div className='h-[20px] w-full flex items-center justify-end '>
                     <div className="mb-[10px] h-full w-full mx-4">
                         <p className="text-[20px] font-medium">Crear contrato</p>
+                        <p>Usuario:</p>
                     </div>
                 </div>
             </div>
             <div className="py-[20px] px-[10px]">
         {errors.general && <Error errors={errors.general} />}
+    
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <div className="rounded-md border border-border p-8">
@@ -99,7 +132,7 @@ export const CrearContratoForm = () => {
                                         <FormControl>
                                         <Select
                                         onValueChange={(value) => field.onChange(value === 'si')}
-                                        defaultValue={field.value ? 'si' : 'no'}
+                                        defaultValue={undefined}
                                         >
                                         <FormControl>
                                         <SelectTrigger>
@@ -130,7 +163,7 @@ export const CrearContratoForm = () => {
                                         <FormControl>
                                         <Select
                                         onValueChange={(value) => field.onChange(value === 'si')}
-                                        defaultValue={field.value ? 'si' : 'no'}
+                                        defaultValue={undefined}
                                         >
                                         <FormControl>
                                         <SelectTrigger>
@@ -162,7 +195,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Calle</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Escribe la calle" {...field} />
+                                        <CallesComboBox form={form} field={field} name="calle" setCargoSeleccionado={setCalleSeleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -198,7 +231,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Colonia</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Escribe la colonia" {...field} />
+                                        <ColoniaComboBox form={form} field={field} name="colonia" setCargoSeleccionado={setCalleSeleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -232,7 +265,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Entre calle 1</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Entre calle 1" {...field} />
+                                        <CallesComboBox form={form} field={field} name="entre_calle_1" setCargoSeleccionado={setCalleSeleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -248,7 +281,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Entre calle 2</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Entre calle 2" {...field} />
+                                        <CallesComboBox form={form} field={field} name="entre_calle_2" setCargoSeleccionado={setCalleSeleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -267,7 +300,7 @@ export const CrearContratoForm = () => {
                                 <FormItem>
                                     <FormLabel>Localidad</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Escribe el nombre de la localidad" {...field} />
+                                    <LocalidadComboBox form={form} field={field} name="localidad" setCargoSeleccionado={setCalleSeleccionada}/>
                                     </FormControl>
                                     <FormDescription />
                                     <FormMessage />
@@ -278,99 +311,111 @@ export const CrearContratoForm = () => {
                     <div className='flex space-x-2'>
 
                     </div>
-    <div className='mt-2'>Selecciona servicios a contratar</div>
-    <div className='flex space-x-8 mt-2'>
-    
-    <div className='flex space-x-5 border rounded-md border-border p-5 w-[55vh]'>
-        <FormField
-            control={form.control}
-            name="c_agua"
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel className="items-center">Agua</FormLabel>
-                    <FormControl className="ml-4">         
-                        <Switch
-                            checked={field.value}
-                            onCheckedChange={(checked) => field.onChange(checked)}
-                        />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                </FormItem>
-            )}
-        />
-        <FormField
-            control={form.control}
-            name="c_alc"
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel className="items-center">Alcantarillado</FormLabel>
-                    <FormControl className="ml-4">         
-                        <Switch
-                            checked={field.value}
-                            onCheckedChange={(checked) => field.onChange(checked)}
-                        />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                </FormItem>
-            )}
-        />
-        <FormField
-            control={form.control}
-            name="c_san"
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel className="items-center">Saneamiento</FormLabel>
-                    <FormControl className="ml-4">         
-                        <Switch
-                            checked={field.value}
-                            onCheckedChange={(checked) => field.onChange(checked)}
-                        />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                </FormItem>
-            )}
-        />
-    </div>
-    <div className='w-[30vh]'>
-        <FormField
-            control={form.control}
-            name="tipo_contratacion"
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Tipo de contratación</FormLabel>
-                    <FormControl>
-                        <Select
-                            onValueChange={(value) => field.onChange(value)}
-                            defaultValue={field.value || 'normal'}
-                        >
-                            <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Selecciona el tipo de contratación" />
-                                </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                                <SelectItem value="normal">Normal</SelectItem>
-                                <SelectItem value="condicionado">Condicionado</SelectItem>
-                                <SelectItem value="desarrollador">Desarrollador</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                </FormItem>
-            )}
-        />
-    </div>
-</div>
-                   
+
+
+                <p className="text-muted-foreground text-[20px] mt-5">Selecciona servicios a contratar</p>
+                <div className='flex space-x-8 mt-2'>
+                
+                <div className='flex space-x-10 border rounded-md border-border p-5 w-[55vh]'>
+                    <FormField
+                        control={form.control}
+                        name="c_agua"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="items-center">Agua</FormLabel>
+                                <FormControl className="ml-4">         
+                                    <Switch
+                                        checked={field.value}
+                                        onCheckedChange={(checked) => field.onChange(checked)}
+                                    />
+                                </FormControl>
+                                <FormDescription />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="c_alc"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="items-center">Alcantarillado</FormLabel>
+                                <FormControl className="ml-4">         
+                                    <Switch
+                                        checked={field.value}
+                                        onCheckedChange={(checked) => field.onChange(checked)}
+                                    />
+                                </FormControl>
+                                <FormDescription />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="c_san"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="items-center">Saneamiento</FormLabel>
+                                <FormControl className="ml-4">         
+                                    <Switch
+                                        checked={field.value}
+                                        onCheckedChange={(checked) => field.onChange(checked)}
+                                    />
+                                </FormControl>
+                                <FormDescription />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+                <div className='w-[40vh]'>
+                    <FormField
+                        control={form.control}
+                        name="tipo_contratacion"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Tipo de contratación</FormLabel>
+                                <FormControl>
+                                    <Select
+                                        onValueChange={(value) => field.onChange(value)}
+                                        defaultValue={undefined}
+                                        >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecciona el tipo de contratación" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="normal">Normal</SelectItem>
+                                            <SelectItem value="condicionado">Condicionado</SelectItem>
+                                            <SelectItem value="desarrollador">Desarrollador</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </FormControl>
+                                <FormDescription />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
                         
-                  
+            </div>
+                            
+                                    
+                
                     {loading && <Loader />}
                     <div className="w-full flex justify-normal mt-4">
-                        <Button type="submit" className='ml-[195vh] '>Guardar</Button>
+                        <Button type="submit" className='ml-[195vh]' onClick={handleAbrirModalNotificaciones}>Guardar</Button>
+                        
+                        {
+                           
+                  <ModalDireccionToma
+                  setIsOpen={setOpenModal}
+                  isOpen={openModal}
+                  method1={handleNavigationMapaToma}
+                  method2={navegarDireccionToma}/>
+                }
                     </div>
                 </div>
             </form>

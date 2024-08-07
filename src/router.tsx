@@ -17,6 +17,9 @@ import { ContratacionBuscarUsuario } from './views/Usuarios/Contratos/Contrataci
 import BuscarUsuario from './views/Usuarios/Consultar/BuscarUsuario';
 import { CrearContratoForm } from './views/Usuarios/Contratos/FormsContratos/CrearContratoForm';
 import { TomaUsuarioDetalle } from './views/Usuarios/Consultar/TomaUsuarioDetalle';
+import DireccionNotificaciones from './views/Usuarios/Contratos/DireccionNotificaciones';
+import { EscogerPuntoToma } from './views/Usuarios/Consultar/VistasDetalleUsuario/EscogerPuntoToma';
+
 const router = createBrowserRouter ([
     {
         path:'/',
@@ -79,6 +82,14 @@ const router = createBrowserRouter ([
             {
                 path:'/usuario/toma',
                 element: <TomaUsuarioDetalle/>
+            },
+            {
+                path:'/direccion/toma',
+                element: <DireccionNotificaciones/>
+            },
+            {
+                path:'/mapa/toma',
+                element: <EscogerPuntoToma/>
             },
         ]
     },
