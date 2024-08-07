@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Mapa } from '../../components/ui/Mapa';
-import { TrashIcon, ContainerIcon, PlusIcon, Pencil2Icon, ReaderIcon, EyeOpenIcon, EyeClosedIcon, UploadIcon } from '@radix-ui/react-icons';
+import { TrashIcon, ContainerIcon, PlusIcon, Pencil2Icon, ReaderIcon, EyeOpenIcon, EyeClosedIcon, UploadIcon, DotsVerticalIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 import IconButton from '../../components/ui/IconButton';
 import { Checkbox } from "@/components/ui/checkbox"
 import Mapa2 from '../../components/ui/Mapa2';
@@ -14,11 +14,20 @@ import Modal from './Modal';
 import SheetLibro from './SheetLibro';
 import PoligonosZustand from '../../contexts/PoligonosZustand';
 import { ModalImportarGeoJson } from './ModalImportarGeoJson';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const MenuLateralPoligonosGeograficos = () => {
 
     const [effect, setEffect] = useState(false);
     const { setRutas, rutas } = useStateContext();
+    const [open, set_open] = useState(false);
     //const [ loading_rutas, set_loading_rutas ] = useState(false);
     //const [libro_visibility, set_libro_visibility] = useState([]);
     //const [ruta_visibility, set_ruta_visibility] = useState([]);
@@ -103,10 +112,30 @@ const MenuLateralPoligonosGeograficos = () => {
     }
 
     const change_libro_visibility_by_libro_id = (libro_id) => {
-
         let new_visibility = { ...libro_visibility };
         new_visibility[libro_id] = !new_visibility[libro_id];
         set_libro_visibility(new_visibility);
+    }
+
+    const toggle_open_import = () => {
+        set_open(!open);
+    }
+
+    const export_geojson = () => {
+        axiosClient.get("/ruta/export_geojson")
+        .then((response)=>{
+            const jsonData = JSON.stringify(response.data, null, 2);
+            const url = window.URL.createObjectURL(new Blob([jsonData], { type: 'application/json' }));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'libroslapaz.geojson'); // nombre del archivo
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+        .catch((response)=>{
+            console.log(response)
+        })
     }
 
     return (
@@ -132,19 +161,24 @@ const MenuLateralPoligonosGeograficos = () => {
                                     updateData={getRutas}
                                 />
                                 */}
-                               
-                            </a>
-                            <a title="Importar GeoJson">
-                                <ModalImportarGeoJson
-                                    trigger={
-                                        <IconButton>
-                                            <UploadIcon />
-                                        </IconButton>
-                                    }
-                                    updateData = {getRutas}
-                                />
 
                             </a>
+
+                            <ModalImportarGeoJson
+                                open={open}
+                                toggle_open={toggle_open_import}
+                                updateData={getRutas}
+                            />
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger><DotsHorizontalIcon /></DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={toggle_open_import}>Importar GeoJson</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={export_geojson}>Exportar GeoJson</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                     </div>
 
@@ -218,7 +252,7 @@ const MenuLateralPoligonosGeograficos = () => {
                                                             </a>
                                                                 */
                                                             }
-                                                     
+
 
 
                                                             <Modal
