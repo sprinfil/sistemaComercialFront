@@ -9,11 +9,13 @@ import IconButton from "../ui/IconButton.tsx"; // Asegúrate de que esta ruta se
 import Modal from "../ui/Modal.tsx";
 import { useStateContext } from "../../contexts/ContextConcepto.tsx";
 import { ModalMasFiltros } from "../ui/ModalMasFiltros.tsx";
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 
+import { BuscarUsuario } from "../Tables/Columns/ContratoConsultaUsuarioColumns.tsx"; 
 const PuntoVentaForm = () => {
   const [userInput, setUserInput] = useState("");
-  const [userData, setUserData] = useState(null);
   const [cargosData, setCargosData] = useState(null);
+  const [dataToma, setDataToma] = useState(null);
   const [pagosData, setPagosData] = useState(null);
   const [pendingCargos, setPendingCargos] = useState([]);
   const [selectedCargos, setSelectedCargos] = useState([]);
@@ -21,16 +23,20 @@ const PuntoVentaForm = () => {
   const [conceptos, setConceptos] = useState<Concepto[]>([]); // Define el tipo de estado
   const [loadingTable, setLoadingTable] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cerrarForm, setCerrarForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const {usuariosEncontrados, dataCajaUser, setDataCajaUser} = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
   // Estado para almacenar las cantidades a abonar
   const [amountsToPay, setAmountsToPay] = useState<{ [id: string]: number }>({});
-
+  
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(event.target.value);
   };
+  console.log("estoy fueron los usuarios encontrados", dataCajaUser);
+ 
+  
 
-  const fetchUserData = async () => {
+  const fetchdataUser = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -45,8 +51,12 @@ const PuntoVentaForm = () => {
         pagosResponse.data
       );
 
+      
+
+
       if (userResponse.data) {
-        setUserData(userResponse.data);
+        setDataToma(userResponse.data);
+        
       } else {
         setError("No se encontraron datos para el usuario.");
       }
@@ -71,13 +81,13 @@ const PuntoVentaForm = () => {
 
   const handleSearch = () => {
     if (userInput.trim() !== "") {
-      fetchUserData();
+      fetchdataUser();
     }
   };
 
   const handleClear = () => {
     setUserInput("");
-    setUserData(null);
+    setDataToma(null);
     setCargosData(null);
     setPagosData(null);
     setPendingCargos([]);
@@ -184,7 +194,21 @@ const PuntoVentaForm = () => {
   const totalAbonado = calculateTotalAbonado();
   const totalRestante = totalAcumulado - totalAbonado;
 
+  
 
+useEffect(() => {
+  setLoading(true);
+
+  if (dataCajaUser) {
+    setLoading(false);
+  } else if (dataToma) {
+    setLoading(false);
+  } else {
+    
+  }
+
+}, [dataToma, dataCajaUser]);
+  
   return (
     <div className="flex flex-col">
       <div className="h-10 justify-center flex items-center rounded-sm">
@@ -201,17 +225,20 @@ const PuntoVentaForm = () => {
         <IconButton onClick={handleClear} title="Limpiar">
           <UpdateIcon className="w-[20px] h-[20px]" />
         </IconButton>
+
         <ModalMasFiltros 
         trigger = {
               <IconButton title="Más Filtros">
               <HamburgerMenuIcon className="w-[20px] h-[20px]" />
             </IconButton>
         }
+        setdataUser = {setDataToma}
+        cerrarForm={cerrarForm}
         />
       </div>
       {error && <p className="text-red-500">{error}</p>}
       {loading && <Loader />}
-      {!loading && userData && !error && (
+      {!loading && !error && (
         <div className="flex min-h-[70vh] ">
           <div className="border rounded-sm w-2/3 ml-1 mr-1 mt-2">
             <Tabs defaultValue="general">
@@ -222,46 +249,127 @@ const PuntoVentaForm = () => {
               </TabsList>
 
               <TabsContent value="general">
-                <div className="justify-center ml-5 mr-5 mt-5">
-                  <div className="relative">
-                    <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
-                      Información de Usuario/Toma
-                    </div>
-                    <div className="border rounded-sm p-4">
-                      <div className="grid grid-cols-2 gap-2 text-sm leading-tight">
-                        <div className="font-semibold">Toma:</div>
-                        <div>{userData.id_codigo_toma}</div>
-                        <div className="font-semibold">Clave Catastral:</div>
-                        <div>{userData.clave_catastral}</div>
-                        <div className="font-semibold">Estatus:</div>
-                        <div>{userData.estatus}</div>
-                        <div className="font-semibold">Calle:</div>
-                        <div>{userData.calle}</div>
-                        <div className="font-semibold">Entre Calle 1:</div>
-                        <div>{userData.entre_calle_1}</div>
-                        <div className="font-semibold">Entre Calle 2:</div>
-                        <div>{userData.entre_calle_2}</div>
-                        <div className="font-semibold">Colonia:</div>
-                        <div>{userData.colonia}</div>
-                        <div className="font-semibold">Código Postal:</div>
-                        <div>{userData.codigo_postal}</div>
-                        <div className="font-semibold">Localidad:</div>
-                        <div>{userData.localidad}</div>
-                        <div className="font-semibold">Tipo Servicio:</div>
-                        <div>{userData.tipo_servicio}</div>
-                        <div className="font-semibold">Tipo Toma:</div>
-                        <div>{userData.tipo_toma}</div>
-                        <div className="font-semibold">Tipo Contratación:</div>
-                        <div>{userData.tipo_contratacion}</div>
-                        <div className="font-semibold">Servicio de agua:</div>
-                        <div>{formatYesNo(userData.c_agua)}</div>
-                        <div className="font-semibold">Servicio de agua y alcantarillado:</div>
-                        <div>{formatYesNo(userData.c_alc_san)}</div>
-                      </div>
-                    </div>
+              {dataToma ?
+              <div className="justify-center ml-5 mr-5 mt-5">
+              <div className="relative">
+                {
+                }
+                <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
+                  Información de Usuario/Toma
+                </div>
+                <div className="border rounded-sm p-4">
+                  <div className="grid grid-cols-2 gap-2 text-sm leading-tight">
+                  <div className="font-semibold">Usuario:</div>
+                  <div>{dataToma.nombre}</div>
+                    <div className="font-semibold">Toma:</div>
+                    <div>{dataToma.id_codigo_toma}</div>
+                    <div className="font-semibold">Clave Catastral:</div>
+                    <div>{dataToma.clave_catastral}</div>
+                    <div className="font-semibold">Estatus:</div>
+                    <div>{dataToma.estatus}</div>
+                    <div className="font-semibold">Calle:</div>
+                    <div>{dataToma.calle}</div>
+                    <div className="font-semibold">Entre Calle 1:</div>
+                    <div>{dataToma.entre_calle_1}</div>
+                    <div className="font-semibold">Entre Calle 2:</div>
+                    <div>{dataToma.entre_calle_2}</div>
+                    <div className="font-semibold">Colonia:</div>
+                    <div>{dataToma.colonia}</div>
+                    <div className="font-semibold">Código Postal:</div>
+                    <div>{dataToma.codigo_postal}</div>
+                    <div className="font-semibold">Localidad:</div>
+                    <div>{dataToma.localidad}</div>
+                    <div className="font-semibold">Tipo Servicio:</div>
+                    <div>{dataToma.tipo_servicio}</div>
+                    <div className="font-semibold">Tipo Toma:</div>
+                    <div>{dataToma.tipo_toma}</div>
+                    <div className="font-semibold">Tipo Contratación:</div>
+                    <div>{dataToma.tipo_contratacion}</div>
+                    <div className="font-semibold">Servicio de agua:</div>
+                    <div>{formatYesNo(dataToma.c_agua)}</div>
+                    <div className="font-semibold">Servicio de agua y alcantarillado:</div>
+                    <div>{formatYesNo(dataToma.c_alc_san)}</div>
                   </div>
                 </div>
+              </div>
+            </div> 
+            : 
+            dataCajaUser &&
+              <div className="justify-center ml-5 mr-5 mt-5">
+              <div className="relative">
+                {
+                }
+                <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
+                  Información de Usuario/Toma
+                </div>
+                <div className="border rounded-sm p-4">
+                  <div className="grid grid-cols-2 gap-2 text-sm leading-tight">
+                  <div className="font-semibold">Usuario:</div>
+                  <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                        <div>{dataCajaUser[0].nombre}</div>
+                      ) : (
+                        <div></div>
+                      )}
+                      </div>
+                    <div className="font-semibold">Apellido paterno:</div>
+                    <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                        <div>{dataCajaUser[0].apellido_paterno}</div>
+                      ) : (
+                        <div></div>
+                      )}
+                      </div>
+                    <div className="font-semibold">Apellido materno:</div>
+                    <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                        <div>{dataCajaUser[0].apellido_materno}</div>
+                      ) : (
+                        <div></div>
+                      )}
+                      </div>
+                    <div className="font-semibold">CURP::</div>
+                    <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                        <div>{dataCajaUser[0].curp}</div>
+                      ) : (
+                        <div></div>
+                      )}
+                      </div>
+                    <div className="font-semibold">RFC:</div>
+                    <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                        <div>{dataCajaUser[0].rfc}</div>
+                      ) : (
+                        <div></div>
+                      )}
+                      </div>
+                    <div className="font-semibold">Nombre de contacto:</div>
+                    <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                        <div>{dataCajaUser[0].nombre_contacto}</div>
+                      ) : (
+                        <div></div>
+                      )}
+                      </div>
+                    <div className="font-semibold">Correo:</div>
+                    <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                        <div>{dataCajaUser[0].correo}</div>
+                      ) : (
+                        <div></div>
+                      )}
+                      </div>
+                    <div className="font-semibold">Telefono:</div>
+                    <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                        <div>{dataCajaUser[0].telefono}</div>
+                      ) : (
+                        <div></div>
+                      )}
+                      </div>
+          
+                  </div>
+                </div>
+              </div>
+            </div>
+              }
+
               </TabsContent>
+            
+
 
               {cargosData && (
                 <TabsContent value="cargos">

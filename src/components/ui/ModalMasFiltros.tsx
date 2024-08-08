@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState}from 'react'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -14,9 +14,31 @@ import axiosClient from '../../axios-client';
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from '@radix-ui/react-toast'
 import PoligonosZustand from '../../contexts/PoligonosZustand';
+import { BuscarUsuarioForm } from '../../views/Usuarios/Contratos/FormsContratos/BuscarUsuarioForm';
+import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
+export const ModalMasFiltros = ({trigger, setUserData, cerrarForm}) => {
 
+    const {controlDetalleCaja, setControlDetalleCaja} = ZustandGeneralUsuario();
+    const [isOpen, setIsOpen] = useState(false);
+    const [conditionMet, setConditionMet] = useState(false);
 
-export const ModalMasFiltros = ({trigger}) => {
+   // Simula una acción que cumple la condición después de 3 segundos
+   useEffect(() => {
+    const timer = setTimeout(() => {
+      setConditionMet(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+  // Cierra el AlertDialog cuando la condición se cumple
+  useEffect(() => {
+    if (controlDetalleCaja == "encontroUno") {
+      setIsOpen(false);
+    }
+  }, [conditionMet]);
+
+    
+    
   return (
     <div>
          <AlertDialog>
@@ -27,14 +49,20 @@ export const ModalMasFiltros = ({trigger}) => {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Selecciona El Usuario/Toma</AlertDialogTitle>
                         <AlertDialogDescription>
-                             <div className='h-[70vh] overflow-auto p-4'>
-                                    
+                             <div className='h-[70vh] overflow-auto p-4 max-w-[75rem]'>
+                  
+                                    <BuscarUsuarioForm 
+                                    navegacion={""} 
+                                    botonCrearUsuario={false}  
+                                    tipoAccion={"verDetalleEnCaja"}
+                                    setUserData = {setUserData}
+                                    />
                              </div>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction>Aceptar</AlertDialogAction>
+                    <AlertDialogAction onClick={() => setIsOpen(false)}>Close</AlertDialogAction>
+                    <AlertDialogAction>Aceptar</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
