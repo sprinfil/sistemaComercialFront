@@ -22,6 +22,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import ModalEliminarRuta from './ModalEliminarRuta';
 
 const MenuLateralPoligonosGeograficos = () => {
 
@@ -253,7 +254,7 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                 */
                                                             }
 
-                                                            <Modal
+                                                            <ModalEliminarRuta
                                                                 button={
                                                                     <IconButton>
                                                                         <TrashIcon className='w-[17px] h-[17px] text-red-500' />
