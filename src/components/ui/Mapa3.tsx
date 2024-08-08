@@ -21,7 +21,7 @@ import { useBreadcrumbStore } from "../../contexts/ZustandGeneralUsuario";
 
 export const Mapa3 = () => {
     const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
-    const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma} = ZustandGeneralUsuario();
+    const { tomaUsuariosEncontrados, setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma } = ZustandGeneralUsuario();
     const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas } = PoligonosZustand();
     const navigate = useNavigate();
     const { setRutas, rutas } = useStateContext();
@@ -127,7 +127,7 @@ export const Mapa3 = () => {
 
             return ruta.libros.map((libro) => {
 
-              
+
 
                 if (libro.polygon && libro_visibility[libro.id] && libro.polygon.coordinates[0].length > 0 && !loading_rutas && !hide_all_polygons) {
 
@@ -207,53 +207,56 @@ export const Mapa3 = () => {
 
                     if (libro.tomas.length > 0) {
                         libro.tomas.map((toma, index) => {
-                            console.log(toma)
+                            if (toma.posicion) {
+                                console.log(toma)
 
-                            /* TOMA INFO */
-                            const marker = new google.maps.Marker({
-                                position: {
-                                    lat: toma.posicion.coordinates[1], // Latitud
-                                    lng: toma.posicion.coordinates[0]  // Longitud
-                                },
-                                map: hide_all_tomas ? null : map,
-                                title: `Toma: ${toma.id_codigo_toma}`,
-                                icon: {
-                                    url: `${grifo}`,
-                                    scaledSize: new google.maps.Size(35, 35),
-                                    anchor: new google.maps.Point(25, 25)
+                                /* TOMA INFO */
+                                const marker = new google.maps.Marker({
+                                    position: {
+                                        lat: toma.posicion.coordinates[1], // Latitud
+                                        lng: toma.posicion.coordinates[0]  // Longitud
+                                    },
+                                    map: hide_all_tomas ? null : map,
+                                    title: `Toma: ${toma.id_codigo_toma}`,
+                                    icon: {
+                                        url: `${grifo}`,
+                                        scaledSize: new google.maps.Size(35, 35),
+                                        anchor: new google.maps.Point(25, 25)
+                                    }
+                                    // Puedes agregar un título o descripción si está disponible
+                                });
+                                if (hide_all_polygons) {
+                                    marker.setMap(null);
                                 }
-                                // Puedes agregar un título o descripción si está disponible
-                            });
-                            if(hide_all_polygons){
-                                marker.setMap(null);
+                                newTomasMarkers.push(marker);
+                                // Crear una etiqueta utilizando InfoWindow
+                                const infoWindow = new google.maps.InfoWindow({
+                                    content: `<div class="text-black">
+                                <strong>Código de Toma: ${toma.id_codigo_toma}</strong></br>
+                                <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
+                                <strong>Código Postal: ${toma.codigo_postal}</strong></br>
+                                <strong>Colonia: ${toma.colonia}</strong></br>
+                                <strong>Número de casa: ${toma.numero_casa}</strong></br>
+                                <button id="view-details-btn">Ver Detalles</button>
+                                </div>`, // Texto de la etiqueta
+                                });
+
+                                // O mostrarla al hacer clic en el marcador
+                                marker.addListener('click', () => {
+                                    infoWindow.open(map, marker);
+                                });
+                                // Agregar un listener para el botón dentro de la InfoWindow
+                                google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+                                    const button = document.getElementById('view-details-btn');
+                                    if (button) {
+                                        button.addEventListener('click', () => {
+                                            handleViewDetails(toma);
+                                        });
+                                    }
+                                });
+                                /* TOMA INFO */
                             }
-                            newTomasMarkers.push(marker);
-                            // Crear una etiqueta utilizando InfoWindow
-                            const infoWindow = new google.maps.InfoWindow({
-                                content: `<div class="text-black">
-                            <strong>Código de Toma: ${toma.id_codigo_toma}</strong></br>
-                            <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
-                            <strong>Código Postal: ${toma.codigo_postal}</strong></br>
-                            <strong>Colonia: ${toma.colonia}</strong></br>
-                            <strong>Número de casa: ${toma.numero_casa}</strong></br>
-                            <button id="view-details-btn">Ver Detalles</button>
-                            </div>`, // Texto de la etiqueta
-                            });
 
-                            // O mostrarla al hacer clic en el marcador
-                            marker.addListener('click', () => {
-                                infoWindow.open(map, marker);
-                            });
-                            // Agregar un listener para el botón dentro de la InfoWindow
-                            google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
-                                const button = document.getElementById('view-details-btn');
-                                if (button) {
-                                    button.addEventListener('click', () => {
-                                        handleViewDetails(toma);
-                                    });
-                                }
-                            });
-                            /* TOMA INFO */
                         })
                     }
 
@@ -323,7 +326,7 @@ export const Mapa3 = () => {
                                 anchor: new google.maps.Point(25, 25)
                             }
                         });
-                        map.setZoom(20); 
+                        map.setZoom(20);
                         // Crear una etiqueta utilizando InfoWindow
                         const infoWindow = new google.maps.InfoWindow({
                             content: `<div class="text-black">
@@ -422,9 +425,10 @@ export const Mapa3 = () => {
                             </div>
                         </>
                     }
-                          {
+                    {
                         !loading_rutas &&
                         <>
+                            {/*
                             <div onClick={handle_hide_all_tomas}>
                                 <IconButton>
                                     <div className='flex gap-2 items-center text-[10px]'>
@@ -434,6 +438,8 @@ export const Mapa3 = () => {
                                     </div>
                                 </IconButton>
                             </div>
+                         */}
+
                         </>
                     }
 
