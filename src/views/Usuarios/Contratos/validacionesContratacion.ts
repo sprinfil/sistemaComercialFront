@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 export const BuscarContratacionSchema = z.object({
-    nombre: z.string().min(1,"Ingresa algo para buscar al usuario"),
+    nombre: z.string().min(1,"Ingrese información para buscar al usuario"),
+    filtro: z.string(),
+
 })
 
 
@@ -23,4 +25,8 @@ export const crearContratoSchema = z.object({
     tipo_servicio: z.string().min(1,"Ingresa algo para buscar al usuario"),
     tipo_toma: z.string().min(1,"Ingresa algo para buscar al usuario"),
     tipo_contratacion: z.string().min(1,"Ingresa algo para buscar al usuario"),
+    c_agua: z.boolean(),
+    c_alc: z.boolean(),
+    c_san: z.boolean(),
+
 })

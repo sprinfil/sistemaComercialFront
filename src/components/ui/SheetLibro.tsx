@@ -47,7 +47,7 @@ const SheetLibro = ({ trigger, updateData, libro, id_ruta}) => {
 
 
     function onSubmit(values: z.infer<typeof LibroSchema>) {
-
+        
         if (libro == null) {
             axiosClient.post(`/libro/create`, values)
                 .then((response) => {
@@ -61,6 +61,7 @@ const SheetLibro = ({ trigger, updateData, libro, id_ruta}) => {
                     updateData();
                     setOpen(false);
                     form.reset({
+                        id_ruta: id_ruta,
                         nombre: "",
                     });
                 })
@@ -98,6 +99,11 @@ const SheetLibro = ({ trigger, updateData, libro, id_ruta}) => {
 
     }
 
+    const debug = () =>{
+        console.log(      form.getValues("nombre"))
+        console.log(      form.getValues("id_ruta"))
+    }
+
     return (
         <div>
             <Sheet open={open} onOpenChange={setOpen}>
@@ -127,7 +133,7 @@ const SheetLibro = ({ trigger, updateData, libro, id_ruta}) => {
                                             </FormItem>
                                         )}
                                     />
-                                    <Button type="submit">Guardar</Button>
+                                    <Button type="submit" onClick={debug}>Guardar</Button>
                                 </form>
                             </Form>
                         </>

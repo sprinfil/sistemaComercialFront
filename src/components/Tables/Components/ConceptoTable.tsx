@@ -19,8 +19,8 @@ export default function ConceptoTable() {
     try {
       const response = await axiosClient.get("/Concepto");
       setLoadingTable(false);
-      setConceptos(response.data.data);
-      //console.log(response.data.data);
+      setConceptos(response.data);
+      console.log(response.data);
     } catch (error) {
       setLoadingTable(false);
       console.error("Failed to fetch concepto:", error);
