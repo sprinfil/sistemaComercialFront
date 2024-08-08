@@ -31,9 +31,9 @@ export const conceptoSchema = z.object({
     nombre: z.string().min(1, "El Nombre es requerido"),
     descripcion: z.string(),
     prioridad_abono: z.string().min(1, "La prioridad debe ser minimo a 1").max(10, "La prioridad no puede ser mayor a 10"),
-    abonable: z.boolean(),
-    tarifa_fija:z.boolean(),
-    cargo_directo: z.boolean(),
+    abonable: z.number(),
+    tarifa_fija:z.number(),
+    cargo_directo: z.number(),
     genera_iva: z.string(),
     estado: z.boolean(),
 })
