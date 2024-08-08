@@ -47,6 +47,7 @@ const PuntoVentaForm = () => {
 
       if (userResponse.data) {
         setUserData(userResponse.data);
+        console.log(userData);
       } else {
         setError("No se encontraron datos para el usuario.");
       }
@@ -201,19 +202,19 @@ const PuntoVentaForm = () => {
         <IconButton onClick={handleClear} title="Limpiar">
           <UpdateIcon className="w-[20px] h-[20px]" />
         </IconButton>
-        <ModalMasFiltros 
-        trigger = {
-              <IconButton title="Más Filtros">
+        <ModalMasFiltros
+          trigger={
+            <IconButton title="Más Filtros">
               <HamburgerMenuIcon className="w-[20px] h-[20px]" />
             </IconButton>
-        }
+          }
         />
       </div>
       {error && <p className="text-red-500">{error}</p>}
       {loading && <Loader />}
       {!loading && userData && !error && (
-        <div className="flex min-h-[70vh] ">
-          <div className="border rounded-sm w-2/3 ml-1 mr-1 mt-2">
+        <div className="flex min-h-[78vh] max-h-[78vh] ">
+          <div className="border rounded-sm w-2/3 ml-1 mr-1 mt-2 overflow-auto">
             <Tabs defaultValue="general">
               <TabsList>
                 <TabsTrigger value="general">General</TabsTrigger>
@@ -222,41 +223,68 @@ const PuntoVentaForm = () => {
               </TabsList>
 
               <TabsContent value="general">
-                <div className="justify-center ml-5 mr-5 mt-5">
-                  <div className="relative">
+                <div className="justify-center ml-5 mr-5 py-4 flex gap-3">
+                  <div className="relative w-[50%]">
                     <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
-                      Información de Usuario/Toma
+                      Usuario
                     </div>
                     <div className="border rounded-sm p-4">
-                      <div className="grid grid-cols-2 gap-2 text-sm leading-tight">
-                        <div className="font-semibold">Toma:</div>
-                        <div>{userData.id_codigo_toma}</div>
-                        <div className="font-semibold">Clave Catastral:</div>
-                        <div>{userData.clave_catastral}</div>
-                        <div className="font-semibold">Estatus:</div>
-                        <div>{userData.estatus}</div>
-                        <div className="font-semibold">Calle:</div>
-                        <div>{userData.calle}</div>
-                        <div className="font-semibold">Entre Calle 1:</div>
-                        <div>{userData.entre_calle_1}</div>
-                        <div className="font-semibold">Entre Calle 2:</div>
-                        <div>{userData.entre_calle_2}</div>
-                        <div className="font-semibold">Colonia:</div>
-                        <div>{userData.colonia}</div>
-                        <div className="font-semibold">Código Postal:</div>
-                        <div>{userData.codigo_postal}</div>
-                        <div className="font-semibold">Localidad:</div>
-                        <div>{userData.localidad}</div>
-                        <div className="font-semibold">Tipo Servicio:</div>
-                        <div>{userData.tipo_servicio}</div>
-                        <div className="font-semibold">Tipo Toma:</div>
-                        <div>{userData.tipo_toma}</div>
-                        <div className="font-semibold">Tipo Contratación:</div>
-                        <div>{userData.tipo_contratacion}</div>
-                        <div className="font-semibold">Servicio de agua:</div>
-                        <div>{formatYesNo(userData.c_agua)}</div>
-                        <div className="font-semibold">Servicio de agua y alcantarillado:</div>
-                        <div>{formatYesNo(userData.c_alc_san)}</div>
+                      <div className="grid grid-cols-2 text-sm leading-tight overflow-auto max-h-[60vh] min-h-[60vh]">
+                        <div>
+                          <div className="font-semibold mb-2">Nombre:</div>
+                          <div className="font-semibold mb-2">Telefono:</div>
+                          <div className="font-semibold mb-2">RFC:</div>
+                          <div className="font-semibold mb-2">CURP:</div>
+                          <div className="font-semibold mb-2">Correo:</div>
+                        </div>
+                        <div className="px-4">
+                          <div className="mb-2">{(userData.usuario.nombre || "") + " " + (userData.usuario.apellido_paterno || "") + " " + (userData.usuario.apellido_materno || "")}</div>
+                          <div className="mb-2">{userData.usuario.telefono}</div>
+                          <div className="mb-2">{userData.usuario.rfc}</div>
+                          <div className="mb-2">{userData.usuario.curp}</div>
+                          <div className="mb-2">{userData.usuario.correo}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="relative  w-[50%]">
+                    <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
+                      Toma
+                    </div>
+                    <div className="border rounded-sm p-4">
+                      <div className="grid grid-cols-2 text-sm leading-tight overflow-auto max-h-[60vh] min-h-[60vh]">
+                        <div>
+                          <div className="font-semibold mb-2">Toma:</div>
+                          <div className="font-semibold mb-2">Clave Catastral:</div>
+                          <div className="font-semibold mb-2">Estatus:</div>
+                          <div className="font-semibold mb-2">Calle:</div>
+                          <div className="font-semibold mb-2">Entre Calle 1:</div>
+                          <div className="font-semibold mb-2">Entre Calle 2:</div>
+                          <div className="font-semibold mb-2">Colonia:</div>
+                          <div className="font-semibold mb-2">Código Postal:</div>
+                          <div className="font-semibold mb-2">Localidad:</div>
+                          <div className="font-semibold mb-2">Tipo Servicio:</div>
+                          <div className="font-semibold mb-2">Tipo Toma:</div>
+                          <div className="font-semibold mb-2">Tipo Contratación:</div>
+                          <div className="font-semibold mb-2">Servicio de agua:</div>
+                          <div className="font-semibold mb-2">Servicio de agua y alcantarillado:</div>
+                        </div>
+                        <div className="px-4">
+                          <div className="mb-2">{userData.id_codigo_toma}</div>
+                          <div className="mb-2">{userData.clave_catastral}</div>
+                          <div className="mb-2">{userData.estatus}</div>
+                          <div className="mb-2">{userData.calle}</div>
+                          <div className="mb-2">{userData.entre_calle_1}</div>
+                          <div className="mb-2">{userData.entre_calle_2}</div>
+                          <div className="mb-2">{userData.colonia}</div>
+                          <div className="mb-2">{userData.codigo_postal}</div>
+                          <div className="mb-2">{userData.localidad}</div>
+                          <div className="mb-2">{userData.tipo_servicio}</div>
+                          <div className="mb-2">{userData.tipo_toma}</div>
+                          <div className="mb-2">{userData.tipo_contratacion}</div>
+                          <div className="mb-2">{formatYesNo(userData.c_agua)}</div>
+                          <div className="mb-2">{formatYesNo(userData.c_alc_san)}</div>
+                        </div>
                       </div>
                     </div>
                   </div>
