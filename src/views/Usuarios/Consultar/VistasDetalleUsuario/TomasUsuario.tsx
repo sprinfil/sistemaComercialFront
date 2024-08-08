@@ -5,7 +5,7 @@ import TomaPorUsuarioTable from '../../../../components/Tables/Components/TomaPo
 const TomasUsuario = () => {
   return (
     <div>
-        <div className='w-full rounded-md border border-border h-[77vh] p-4 overflow-auto'>
+        <div className=''>
         {/*Formulario*/}
         <p>Selecciona una toma</p>
         <TomaPorUsuarioTable/>

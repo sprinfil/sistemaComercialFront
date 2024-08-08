@@ -124,19 +124,19 @@ const MenuLateralPoligonosGeograficos = () => {
 
     const export_geojson = () => {
         axiosClient.get("/ruta/export_geojson")
-        .then((response)=>{
-            const jsonData = JSON.stringify(response.data, null, 2);
-            const url = window.URL.createObjectURL(new Blob([jsonData], { type: 'application/json' }));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'libroslapaz.geojson'); // nombre del archivo
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        })
-        .catch((response)=>{
-            console.log(response)
-        })
+            .then((response) => {
+                const jsonData = JSON.stringify(response.data, null, 2);
+                const url = window.URL.createObjectURL(new Blob([jsonData], { type: 'application/json' }));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'libroslapaz.geojson'); // nombre del archivo
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch((response) => {
+                console.log(response)
+            })
     }
 
     return (
@@ -254,16 +254,17 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                 */
                                                             }
 
-                                                            <ModalEliminarRuta
-                                                                button={
-                                                                    <IconButton>
-                                                                        <TrashIcon className='w-[17px] h-[17px] text-red-500' />
-                                                                    </IconButton>
-                                                                }
-                                                                method={delete_ruta}
-                                                                delete_id={ruta.id}
-                                                            />
-
+                                                            {/*
+                                                                <ModalEliminarRuta
+                                                                    button={
+                                                                        <IconButton>
+                                                                            <TrashIcon className='w-[17px] h-[17px] text-red-500' />
+                                                                        </IconButton>
+                                                                    }
+                                                                    method={delete_ruta}
+                                                                    delete_id={ruta.id}
+                                                                />
+                                                            */}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -293,7 +294,9 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                     id_ruta={ruta.id}
                                                                     libro={libro}
                                                                 />
-                                                                <Modal
+
+                                                                {/*
+                                                                   <ModalEliminarRuta
                                                                     button={
                                                                         <IconButton>
                                                                             <TrashIcon className='w-[17px] h-[17px] text-red-500' />
@@ -302,6 +305,8 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                     method={delete_libro}
                                                                     delete_id={libro.id}
                                                                 />
+                                                                */}
+
                                                             </div>
                                                         </div>
                                                     )
