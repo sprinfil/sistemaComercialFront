@@ -253,8 +253,6 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                 */
                                                             }
 
-
-
                                                             <Modal
                                                                 button={
                                                                     <IconButton>
