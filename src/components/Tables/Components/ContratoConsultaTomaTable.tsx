@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario';
 import { Link } from 'react-router-dom';
 import { DataTableTomaUsuarios } from '../../ui/DataTableTomaUsuarios.tsx';
+import { TomaPorUsuario } from '../Columns/TomaPorUsuarioColumns.tsx';
 interface ConsultaUsuarioTableProps {
   nombreBuscado: string;
 }
@@ -17,7 +18,7 @@ interface ConsultaUsuarioTableProps {
 export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filtroSeleccionado}: ConsultaUsuarioTableProps) {
 
   console.log("este es el que recibeeee" + nombreBuscado)
-  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, setLoadingTable, loadingTable, setAccion, setUsuario, usuario, setUsuariosRecuperado, tomaUsuariosEncontrados, setTomaUsuariosEncontrados} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, setLoadingTable, loadingTable, setAccion, setUsuario, usuario, setUsuariosRecuperado, tomaUsuariosEncontrados, setTomaUsuariosEncontrados, setToma} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
 
   const tableRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -59,8 +60,8 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
     }
 }, [nombreBuscado, setUsuariosEncontrados, setLoadingTable]);
 
-  const handleRowClick = (contratobuscarUsuario: BuscarTomaUsuario) => {
-    setTomaUsuariosEncontrados([contratobuscarUsuario]);
+  const handleRowClick = (contratobuscarUsuario: TomaPorUsuario) => {
+    setToma(contratobuscarUsuario);
     if(accion2 == "verUsuarioDetalle")
     {
       navigate("/usuario/toma");

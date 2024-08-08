@@ -11,25 +11,28 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
 import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario.tsx';
-
+import { useLocation } from 'react-router-dom';
 export default function TomaPorUsuarioTable() {
 
 
 
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
+  const location = useLocation();
 
-  const {tomas, setTomas, loadingTable, setLoadingTable, setToma, setAccion, setTomasRuta, usuariosEncontrados, setUsuariosEncontrados, clearUsuariosEncontrado, setTomaUsuariosEncontrados} = ZustandGeneralUsuario();
+  const {obtenerIdUsuarioInDetalle,tomas, setTomas, toma, setToma, loadingTable, setLoadingTable, setAccion, setTomasRuta, usuariosEncontrados, setUsuariosEncontrados, clearUsuariosEncontrado, setTomaUsuariosEncontrados} = ZustandGeneralUsuario();
 
   const navigate = useNavigate();
+  const idUsuario = location.state?.idUsuario;
+  console.log("ESTE ES EL ID DEL USUARIO SELECCIONADO", toma?.id);
 
-
+  
   useEffect(() => {
-    if (usuariosEncontrados.length > 0) {
-      gettomaPorUsuario(usuariosEncontrados[0].id);
+    if (toma?.id) {
+      gettomaPorUsuario(toma?.id);
     }
     
-  }, [usuariosEncontrados]);
+  }, [setToma, toma, usuariosEncontrados]);
 
   const gettomaPorUsuario = async (idUsuario) => {
     setLoadingTable(true);

@@ -17,11 +17,12 @@ import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
 import { BuscarTomaUsuario, Usuario } from '../Tables/Columns/ContratoConsultaTomaColumns';
 import grifo from "../../img/grifo-de-agua.png"
 import { EyeIcon } from 'lucide-react';
+import { TomaPorUsuario } from '../Tables/Columns/TomaPorUsuarioColumns';
 import { useBreadcrumbStore } from "../../contexts/ZustandGeneralUsuario";
 
 export const Mapa3 = () => {
     const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
-    const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma} = ZustandGeneralUsuario();
+    const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma, setFindUserMapaGeo, setToma} = ZustandGeneralUsuario();
     const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas } = PoligonosZustand();
     const navigate = useNavigate();
     const { setRutas, rutas } = useStateContext();
@@ -267,31 +268,13 @@ export const Mapa3 = () => {
         set_editando(!editando);
     };
 
-    const handleViewDetails = (toma) => {
-        const usuario: Usuario = {
-            id: toma.usuario.id,
-            nombre: toma.usuario.nombre,
-            apellido_paterno: toma.usuario.apellido_paterno,
-            apellido_materno: toma.usuario.apellido_materno,
-            telefono: toma.usuario.telefono,
-            correo: toma.usuario.correo,
-            curp: toma.usuario.curp,
-        }
-        const tomaOb: BuscarTomaUsuario = {
-            id: toma.id,
-            clave_catastral: toma.clave_catastral,
-            numero_casa: toma.numero_casa,
-            colonia: toma.colonia,
-            entre_calle_1: toma.entre_calle_1,
-            entre_calle_2: toma.entre_calle_2,
-            codigo_postal: toma.codigo_postal,
-            localidad: toma.localidad,
-            usuario: usuario
-        };
-        setTomaUsuariosEncontrados([tomaOb]);
+    const handleViewDetails = (toma: TomaPorUsuario) => {
+        console.log(toma);
+        setToma(toma);
         console.log(tomaUsuariosEncontrados);
         setFindUserOrToma(true);
         setMostrarSiguiente(true);
+        setFindUserMapaGeo(true);
         navigate("/usuario/toma");
     };
 

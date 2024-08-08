@@ -27,6 +27,8 @@ export const useBreadcrumbStore = create<BreadcrumbState>((set) => ({
 interface GeneralUsuario {
   toma: TomaPorUsuario | null;
   setToma: (toma: TomaPorUsuario) => void;
+  obtenerIdUsuarioInDetalle: TomaPorUsuario | null;
+  setObtenerIdUsuarioInDetalle: (obtenerIdUsuarioInDetalle: TomaPorUsuario) => void;
   usuario: BuscarUsuario | null;
   setUsuario: (usuario: BuscarUsuario) => void;
   usuariosEncontrados: BuscarUsuario[];
@@ -52,12 +54,16 @@ interface GeneralUsuario {
   setUsuarioObtenido: (usuario: DatosUsuario | null) => void;
   findUserOrToma: boolean;
   setFindUserOrToma:(findUserOrToma: boolean) => void;
+  findUserMapaGeo: boolean;
+  setFindUserMapaGeo: (findUserMapaGeo: boolean) => void;
 
 }
 
 export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   toma: null,
   setToma: (toma) => set({ toma }),
+  obtenerIdUsuarioInDetalle: null,
+  setObtenerIdUsuarioInDetalle: (obtenerIdUsuarioInDetalle) => set({ obtenerIdUsuarioInDetalle }),
   usuario: null,
   setUsuario: (usuario) => set({usuario}),
   accion: '',
@@ -83,5 +89,7 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setUsuarioObtenido: (usuario) => set({ usuarioObtenido: usuario }),
   findUserOrToma: false,
   setFindUserOrToma:(findUserOrToma) => set({findUserOrToma}),
+  findUserMapaGeo: false,
+  setFindUserMapaGeo:(findUserOrToma) => set({findUserOrToma}),
 }));
 

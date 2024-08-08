@@ -14,9 +14,9 @@ export type Concepto = {
   descripcion: string
   prioridad_abono: string
   genera_iva: string
-  abonable: boolean,
-  tarifa_fija: boolean,
-  cargo_directo: boolean,
+  abonable: number,
+  tarifa_fija: number,
+  cargo_directo: number,
   estado: boolean,
   tarifas: Array<{}>
 }
