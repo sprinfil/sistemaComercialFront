@@ -34,9 +34,14 @@ const PuntoVentaForm = () => {
   };
   console.log("estoy fueron los usuarios encontrados", dataCajaUser);
 
-
+  useEffect(()=>{
+    setDataToma({});
+    console.log(dataToma);
+    console.log(dataCajaUser);
+  },[dataCajaUser])
 
   const fetchdataUser = async () => {
+    handleClear();
     setLoading(true);
     setError(null);
     try {
@@ -81,6 +86,7 @@ const PuntoVentaForm = () => {
 
   const handleSearch = () => {
     if (userInput.trim() !== "") {
+    
       fetchdataUser();
     }
   };
@@ -93,7 +99,7 @@ const PuntoVentaForm = () => {
     setPendingCargos([]);
     setSelectedCargos([]);
     setAmountsToPay({});
-    setError(null);
+    setDataCajaUser({});
   };
 
   const handleCargoSelect = (cargo) => {
@@ -249,7 +255,7 @@ const PuntoVentaForm = () => {
               </TabsList>
 
               <TabsContent value="general">
-                {dataToma && !dataCajaUser[0] ?
+                {dataToma && !  dataCajaUser[0] ?
                   (
                     <>
                       <div className="flex gap-5 mt-5 px-5">
@@ -267,11 +273,11 @@ const PuntoVentaForm = () => {
                                 <div className="font-semibold mb-2">Correo:</div>
                               </div>
                               <div className="px-4">
-                                <div className="mb-2">{(dataToma.usuario.nombre || "") + " " + (dataToma.usuario.apellido_paterno || "") + " " + (dataToma.usuario.apellido_materno || "")}</div>
-                                <div className="mb-2">{dataToma.usuario.telefono}</div>
-                                <div className="mb-2">{dataToma.usuario.rfc}</div>
-                                <div className="mb-2">{dataToma.usuario.curp}</div>
-                                <div className="mb-2">{dataToma.usuario.correo}</div>
+                                <div className="mb-2">{(dataToma.usuario?.nombre || "") + " " + (dataToma.usuario?.apellido_paterno || "") + " " + (dataToma.usuario?.apellido_materno || "")}</div>
+                                <div className="mb-2">{dataToma.usuario?.telefono}</div>
+                                <div className="mb-2">{dataToma.usuario?.rfc}</div>
+                                <div className="mb-2">{dataToma.usuario?.curp}</div>
+                                <div className="mb-2">{dataToma.usuario?.correo}</div>
                               </div>
                             </div>
                           </div>
@@ -321,7 +327,7 @@ const PuntoVentaForm = () => {
                     </>
                   )
                   :
-                  dataCajaUser &&
+                  dataCajaUser[0] && dataToma.id_codigo_toma != ""  &&
                   <div className="justify-center ml-5 mr-5 mt-5">
                     <div className="relative">
                       {
@@ -332,7 +338,7 @@ const PuntoVentaForm = () => {
                       <div className="border rounded-sm p-4">
                         <div className="grid grid-cols-2 gap-2 text-sm leading-tight">
                           <div className="font-semibold">Usuario:</div>
-                          <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                          <div> {dataCajaUser && dataCajaUser.length > 0  ? (
                             <div>{dataCajaUser[0].nombre}</div>
                           ) : (
                             <div></div>
@@ -352,7 +358,7 @@ const PuntoVentaForm = () => {
                             <div></div>
                           )}
                           </div>
-                          <div className="font-semibold">CURP::</div>
+                          <div className="font-semibold">CURP:</div>
                           <div> {dataCajaUser && dataCajaUser.length > 0 ? (
                             <div>{dataCajaUser[0].curp}</div>
                           ) : (

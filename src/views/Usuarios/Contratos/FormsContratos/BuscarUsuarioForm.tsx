@@ -253,7 +253,6 @@ function handleNavigationCrearUsuario ()
         {mostrarTablaTomaUsuario&&filtroSeleccionado == "5"&&<h1 className="mt-10 ml-6">Selecciona el codigo de la toma.</h1>}
 
         {
-            
         mostrarTablaUsuario &&  filtroSeleccionado == "1" && <ContratoConsultaUsuarioTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
         }
         {

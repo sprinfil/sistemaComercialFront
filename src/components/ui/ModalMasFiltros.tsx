@@ -57,6 +57,7 @@ export const ModalMasFiltros = ({trigger, setUserData, cerrarForm}) => {
                                     tipoAccion={"verDetalleEnCaja"}
                                     setUserData = {setUserData}
                                     />
+                                    
                              </div>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
