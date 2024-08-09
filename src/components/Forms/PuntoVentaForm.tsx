@@ -9,11 +9,13 @@ import IconButton from "../ui/IconButton.tsx"; // Asegúrate de que esta ruta se
 import Modal from "../ui/Modal.tsx";
 import { useStateContext } from "../../contexts/ContextConcepto.tsx";
 import { ModalMasFiltros } from "../ui/ModalMasFiltros.tsx";
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 
+import { BuscarUsuario } from "../Tables/Columns/ContratoConsultaUsuarioColumns.tsx";
 const PuntoVentaForm = () => {
   const [userInput, setUserInput] = useState("");
-  const [userData, setUserData] = useState(null);
   const [cargosData, setCargosData] = useState(null);
+  const [dataToma, setDataToma] = useState(null);
   const [pagosData, setPagosData] = useState(null);
   const [pendingCargos, setPendingCargos] = useState([]);
   const [selectedCargos, setSelectedCargos] = useState([]);
@@ -21,23 +23,27 @@ const PuntoVentaForm = () => {
   const [conceptos, setConceptos] = useState<Concepto[]>([]); // Define el tipo de estado
   const [loadingTable, setLoadingTable] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cerrarForm, setCerrarForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const { usuariosEncontrados, dataCajaUser, setDataCajaUser } = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
   // Estado para almacenar las cantidades a abonar
   const [amountsToPay, setAmountsToPay] = useState<{ [id: string]: number }>({});
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(event.target.value);
   };
+  console.log("estoy fueron los usuarios encontrados", dataCajaUser);
 
-  const fetchUserData = async () => {
+
+
+  const fetchdataUser = async () => {
     setLoading(true);
     setError(null);
     try {
       const userResponse = await axiosClient.get(`/Toma/codigo/${userInput}`);
       const cargosResponse = await axiosClient.get(`/Toma/cargos/${userInput}`);
       const pagosResponse = await axiosClient.get(`/Toma/pagos/${userInput}`);
-
+      console.log(userResponse);
       console.log(
         "Datos recibidos:",
         userResponse.data,
@@ -45,9 +51,12 @@ const PuntoVentaForm = () => {
         pagosResponse.data
       );
 
+
+
+
       if (userResponse.data) {
-        setUserData(userResponse.data);
-        console.log(userData);
+        setDataToma(userResponse.data);
+
       } else {
         setError("No se encontraron datos para el usuario.");
       }
@@ -72,13 +81,13 @@ const PuntoVentaForm = () => {
 
   const handleSearch = () => {
     if (userInput.trim() !== "") {
-      fetchUserData();
+      fetchdataUser();
     }
   };
 
   const handleClear = () => {
     setUserInput("");
-    setUserData(null);
+    setDataToma(null);
     setCargosData(null);
     setPagosData(null);
     setPendingCargos([]);
@@ -186,6 +195,20 @@ const PuntoVentaForm = () => {
   const totalRestante = totalAcumulado - totalAbonado;
 
 
+
+  useEffect(() => {
+    setLoading(true);
+
+    if (dataCajaUser) {
+      setLoading(false);
+    } else if (dataToma) {
+      setLoading(false);
+    } else {
+
+    }
+
+  }, [dataToma, dataCajaUser]);
+
   return (
     <div className="flex flex-col">
       <div className="h-10 justify-center flex items-center rounded-sm">
@@ -202,17 +225,20 @@ const PuntoVentaForm = () => {
         <IconButton onClick={handleClear} title="Limpiar">
           <UpdateIcon className="w-[20px] h-[20px]" />
         </IconButton>
+
         <ModalMasFiltros
           trigger={
             <IconButton title="Más Filtros">
               <HamburgerMenuIcon className="w-[20px] h-[20px]" />
             </IconButton>
           }
+          setdataUser={setDataToma}
+          cerrarForm={cerrarForm}
         />
       </div>
       {error && <p className="text-red-500">{error}</p>}
       {loading && <Loader />}
-      {!loading && userData && !error && (
+      {!loading && !error && (
         <div className="flex min-h-[78vh] max-h-[78vh] ">
           <div className="border rounded-sm w-2/3 ml-1 mr-1 mt-2 overflow-auto">
             <Tabs defaultValue="general">
@@ -223,73 +249,154 @@ const PuntoVentaForm = () => {
               </TabsList>
 
               <TabsContent value="general">
-                <div className="justify-center ml-5 mr-5 py-4 flex gap-3">
-                  <div className="relative w-[50%]">
-                    <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
-                      Usuario
-                    </div>
-                    <div className="border rounded-sm p-4">
-                      <div className="grid grid-cols-2 text-sm leading-tight overflow-auto max-h-[60vh] min-h-[60vh]">
-                        <div>
-                          <div className="font-semibold mb-2">Nombre:</div>
-                          <div className="font-semibold mb-2">Telefono:</div>
-                          <div className="font-semibold mb-2">RFC:</div>
-                          <div className="font-semibold mb-2">CURP:</div>
-                          <div className="font-semibold mb-2">Correo:</div>
+                {dataToma && !dataCajaUser[0] ?
+                  (
+                    <>
+                      <div className="flex gap-5 mt-5 px-5">
+                        <div className="relative w-[50%]">
+                          <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
+                            Usuario
+                          </div>
+                          <div className="border rounded-sm p-4">
+                            <div className="grid grid-cols-2 text-sm leading-tight overflow-auto max-h-[60vh] min-h-[60vh]">
+                              <div>
+                                <div className="font-semibold mb-2">Nombre:</div>
+                                <div className="font-semibold mb-2">Telefono:</div>
+                                <div className="font-semibold mb-2">RFC:</div>
+                                <div className="font-semibold mb-2">CURP:</div>
+                                <div className="font-semibold mb-2">Correo:</div>
+                              </div>
+                              <div className="px-4">
+                                <div className="mb-2">{(dataToma.usuario.nombre || "") + " " + (dataToma.usuario.apellido_paterno || "") + " " + (dataToma.usuario.apellido_materno || "")}</div>
+                                <div className="mb-2">{dataToma.usuario.telefono}</div>
+                                <div className="mb-2">{dataToma.usuario.rfc}</div>
+                                <div className="mb-2">{dataToma.usuario.curp}</div>
+                                <div className="mb-2">{dataToma.usuario.correo}</div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div className="px-4">
-                          <div className="mb-2">{(userData.usuario.nombre || "") + " " + (userData.usuario.apellido_paterno || "") + " " + (userData.usuario.apellido_materno || "")}</div>
-                          <div className="mb-2">{userData.usuario.telefono}</div>
-                          <div className="mb-2">{userData.usuario.rfc}</div>
-                          <div className="mb-2">{userData.usuario.curp}</div>
-                          <div className="mb-2">{userData.usuario.correo}</div>
+                        <div className="relative  w-[50%]">
+                          <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
+                            Toma
+                          </div>
+                          <div className="border rounded-sm p-4">
+                            <div className="grid grid-cols-2 text-sm leading-tight overflow-auto max-h-[60vh] min-h-[60vh]">
+                              <div>
+                                <div className="font-semibold mb-2">Toma:</div>
+                                <div className="font-semibold mb-2">Clave Catastral:</div>
+                                <div className="font-semibold mb-2">Estatus:</div>
+                                <div className="font-semibold mb-2">Calle:</div>
+                                <div className="font-semibold mb-2">Entre Calle 1:</div>
+                                <div className="font-semibold mb-2">Entre Calle 2:</div>
+                                <div className="font-semibold mb-2">Colonia:</div>
+                                <div className="font-semibold mb-2">Código Postal:</div>
+                                <div className="font-semibold mb-2">Localidad:</div>
+                                <div className="font-semibold mb-2">Tipo Servicio:</div>
+                                <div className="font-semibold mb-2">Tipo Toma:</div>
+                                <div className="font-semibold mb-2">Tipo Contratación:</div>
+                                <div className="font-semibold mb-2">Servicio de agua:</div>
+                                <div className="font-semibold mb-2">Servicio de agua y alcantarillado:</div>
+                              </div>
+                              <div className="px-4">
+                                <div className="mb-2">{dataToma.id_codigo_toma}</div>
+                                <div className="mb-2">{dataToma.clave_catastral}</div>
+                                <div className="mb-2">{dataToma.estatus}</div>
+                                <div className="mb-2">{dataToma.calle}</div>
+                                <div className="mb-2">{dataToma.entre_calle_1}</div>
+                                <div className="mb-2">{dataToma.entre_calle_2}</div>
+                                <div className="mb-2">{dataToma.colonia}</div>
+                                <div className="mb-2">{dataToma.codigo_postal}</div>
+                                <div className="mb-2">{dataToma.localidad}</div>
+                                <div className="mb-2">{dataToma.tipo_servicio}</div>
+                                <div className="mb-2">{dataToma.tipo_toma}</div>
+                                <div className="mb-2">{dataToma.tipo_contratacion}</div>
+                                <div className="mb-2">{formatYesNo(dataToma.c_agua)}</div>
+                                <div className="mb-2">{formatYesNo(dataToma.c_alc_san)}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )
+                  :
+                  dataCajaUser &&
+                  <div className="justify-center ml-5 mr-5 mt-5">
+                    <div className="relative">
+                      {
+                      }
+                      <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
+                        Información de Usuario/Toma
+                      </div>
+                      <div className="border rounded-sm p-4">
+                        <div className="grid grid-cols-2 gap-2 text-sm leading-tight">
+                          <div className="font-semibold">Usuario:</div>
+                          <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                            <div>{dataCajaUser[0].nombre}</div>
+                          ) : (
+                            <div></div>
+                          )}
+                          </div>
+                          <div className="font-semibold">Apellido paterno:</div>
+                          <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                            <div>{dataCajaUser[0].apellido_paterno}</div>
+                          ) : (
+                            <div></div>
+                          )}
+                          </div>
+                          <div className="font-semibold">Apellido materno:</div>
+                          <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                            <div>{dataCajaUser[0].apellido_materno}</div>
+                          ) : (
+                            <div></div>
+                          )}
+                          </div>
+                          <div className="font-semibold">CURP::</div>
+                          <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                            <div>{dataCajaUser[0].curp}</div>
+                          ) : (
+                            <div></div>
+                          )}
+                          </div>
+                          <div className="font-semibold">RFC:</div>
+                          <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                            <div>{dataCajaUser[0].rfc}</div>
+                          ) : (
+                            <div></div>
+                          )}
+                          </div>
+                          <div className="font-semibold">Nombre de contacto:</div>
+                          <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                            <div>{dataCajaUser[0].nombre_contacto}</div>
+                          ) : (
+                            <div></div>
+                          )}
+                          </div>
+                          <div className="font-semibold">Correo:</div>
+                          <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                            <div>{dataCajaUser[0].correo}</div>
+                          ) : (
+                            <div></div>
+                          )}
+                          </div>
+                          <div className="font-semibold">Telefono:</div>
+                          <div> {dataCajaUser && dataCajaUser.length > 0 ? (
+                            <div>{dataCajaUser[0].telefono}</div>
+                          ) : (
+                            <div></div>
+                          )}
+                          </div>
+
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="relative  w-[50%]">
-                    <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
-                      Toma
-                    </div>
-                    <div className="border rounded-sm p-4">
-                      <div className="grid grid-cols-2 text-sm leading-tight overflow-auto max-h-[60vh] min-h-[60vh]">
-                        <div>
-                          <div className="font-semibold mb-2">Toma:</div>
-                          <div className="font-semibold mb-2">Clave Catastral:</div>
-                          <div className="font-semibold mb-2">Estatus:</div>
-                          <div className="font-semibold mb-2">Calle:</div>
-                          <div className="font-semibold mb-2">Entre Calle 1:</div>
-                          <div className="font-semibold mb-2">Entre Calle 2:</div>
-                          <div className="font-semibold mb-2">Colonia:</div>
-                          <div className="font-semibold mb-2">Código Postal:</div>
-                          <div className="font-semibold mb-2">Localidad:</div>
-                          <div className="font-semibold mb-2">Tipo Servicio:</div>
-                          <div className="font-semibold mb-2">Tipo Toma:</div>
-                          <div className="font-semibold mb-2">Tipo Contratación:</div>
-                          <div className="font-semibold mb-2">Servicio de agua:</div>
-                          <div className="font-semibold mb-2">Servicio de agua y alcantarillado:</div>
-                        </div>
-                        <div className="px-4">
-                          <div className="mb-2">{userData.id_codigo_toma}</div>
-                          <div className="mb-2">{userData.clave_catastral}</div>
-                          <div className="mb-2">{userData.estatus}</div>
-                          <div className="mb-2">{userData.calle}</div>
-                          <div className="mb-2">{userData.entre_calle_1}</div>
-                          <div className="mb-2">{userData.entre_calle_2}</div>
-                          <div className="mb-2">{userData.colonia}</div>
-                          <div className="mb-2">{userData.codigo_postal}</div>
-                          <div className="mb-2">{userData.localidad}</div>
-                          <div className="mb-2">{userData.tipo_servicio}</div>
-                          <div className="mb-2">{userData.tipo_toma}</div>
-                          <div className="mb-2">{userData.tipo_contratacion}</div>
-                          <div className="mb-2">{formatYesNo(userData.c_agua)}</div>
-                          <div className="mb-2">{formatYesNo(userData.c_alc_san)}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                }
+
               </TabsContent>
+
+
 
               {cargosData && (
                 <TabsContent value="cargos">

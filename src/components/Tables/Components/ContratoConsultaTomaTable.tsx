@@ -34,6 +34,9 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
                   case "4":
                     endpoint = `/usuarios/consultaDireccion/${nombreBuscado}`;
                     break;
+                    case "5":
+                    endpoint = `/Toma/codigo/${nombreBuscado}`;
+                    break;
               default:
                   console.log("No jalo algo paso mal");
                   return;
@@ -80,7 +83,7 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
   return (
     <ContextProvider>
     <div ref={tableRef}>
-        <DataTableTomaUsuarios columns={columns} data={tomaUsuariosEncontrados} sorter='nombre' onRowClick={handleRowClick} />
+        <DataTableTomaUsuarios columns={columns} data={tomaUsuariosEncontrados}  onRowClick={handleRowClick} />
       </div>
     </ContextProvider>
   

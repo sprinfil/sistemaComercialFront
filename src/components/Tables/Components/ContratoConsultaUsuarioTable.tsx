@@ -14,10 +14,10 @@ interface ConsultaUsuarioTableProps {
   nombreBuscado: string;
 }
 
-export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, filtroSeleccionado}: ConsultaUsuarioTableProps) {
+export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, filtroSeleccionado, setUserData}: ConsultaUsuarioTableProps) {
 
   console.log("este es el que recibeeee" + nombreBuscado)
-  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, setLoadingTable, loadingTable, setAccion, setUsuario, usuario, setUsuariosRecuperado, setToma} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+  const {  dataCajaUser, setDataCajaUser, usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, setLoadingTable, loadingTable, setAccion, setUsuario, usuario, setUsuariosRecuperado, setToma} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
 
   const tableRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
             const response = await axiosClient.get(endpoint);
             const results = response.data.data;
             setUsuariosEncontrados(results);
-
+            setDataCajaUser(results);
           } catch (err) {
             console.log("Error en la consulta:", err);
           } finally {
@@ -68,6 +68,8 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
 
   const handleRowClick = (contratobuscarUsuario: BuscarUsuario) => {
     setUsuariosEncontrados([contratobuscarUsuario]);
+    setDataCajaUser([contratobuscarUsuario]);
+    console.log("ESTO RECIBIRA CAJAAA DESDE SELECCION DE FILA" + JSON.stringify(dataCajaUser)); 
     if(accion2 == "verUsuarioDetalle")
     {
       navigate("/usuario");
@@ -85,7 +87,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
 
   return (
     <ContextProvider>
-    <div ref={tableRef}>
+    <div ref={tableRef} className=''>
         <DataTableUsuarios columns={columns} data={usuariosEncontrados} sorter='nombre' onRowClick={handleRowClick} />
       </div>
     </ContextProvider>

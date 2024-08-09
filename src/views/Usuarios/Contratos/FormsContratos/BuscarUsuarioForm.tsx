@@ -117,6 +117,13 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                     setmostrarTablaUsuario(false);
                     setFindUserOrToma(true);
                     break;
+                    case "5":
+                    endpoint = `/Toma/codigo/${criterio}`;
+                    setFiltroSeleccionado("5");
+                    setMostrarTablaTomaUsuario(true);
+                    setmostrarTablaUsuario(false);
+                    setFindUserOrToma(true);
+                    break;
             default:
                 setLoading(false);
                 console.log("Filtro no válido");
@@ -130,6 +137,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                     .then(response => {
                         const results = response.data.data;
                         setUsuariosEncontrados(response.data.data);
+                        console.log(results);
                         if (results.length > 0) {
                             setNombreBuscado(values.nombre);
                             setUsuariosEncontrados(results);
@@ -211,9 +219,10 @@ function handleNavigationCrearUsuario ()
                             <FormItem>
                                 <FormLabel>
                                     {nombreSeleccionado === "Nombre" && "Escribe el nombre del usuario"}
-                                    {nombreSeleccionado === "Codigo de usuario" && "Escribe el código del usuario"}
+                                    {nombreSeleccionado === "Codigo usuario" && "Escribe el código del usuario"}
                                     {nombreSeleccionado === "Correo" && "Escribe el correo del usuario"}
                                     {nombreSeleccionado === "Dirección" && "Escribe la dirección de la toma"}
+                                    {nombreSeleccionado === "Codigo toma" && "Escribe el codigo de la toma"}
 
                                 </FormLabel>
                                 <FormControl>
@@ -241,6 +250,7 @@ function handleNavigationCrearUsuario ()
         {mostrarTablaUsuario&&filtroSeleccionado == "2" && <h1 className="mt-10 ml-6">Selecciona un usuario.</h1>}
         {mostrarTablaUsuario&&filtroSeleccionado == "3" && <h1 className="mt-10 ml-6">Selecciona un usuario.</h1>}
         {mostrarTablaTomaUsuario&&filtroSeleccionado == "4"&&<h1 className="mt-10 ml-6">Selecciona la toma del usuario.</h1>}
+        {mostrarTablaTomaUsuario&&filtroSeleccionado == "5"&&<h1 className="mt-10 ml-6">Selecciona el codigo de la toma.</h1>}
 
         {
             
@@ -257,6 +267,9 @@ function handleNavigationCrearUsuario ()
 
         {
         mostrarTablaTomaUsuario && filtroSeleccionado == "4" && <ContratoConsultaTomaTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
+        }
+         {
+        mostrarTablaTomaUsuario && filtroSeleccionado == "5" && <ContratoConsultaTomaTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
         }
             
         </div>
