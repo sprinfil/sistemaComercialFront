@@ -47,6 +47,8 @@ export const BuscarUsuarioComboBox = ({ field, form, name = "id_concepto", setCa
         {value: "2", label: "Codigo usuario"},
         {value: "3", label: "Correo"},
         {value: "4", label: "Dirección"},
+        {value: "5", label: "Codigo toma"},
+
 
 
 

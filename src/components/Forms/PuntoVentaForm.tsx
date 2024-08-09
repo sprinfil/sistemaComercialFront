@@ -43,7 +43,7 @@ const PuntoVentaForm = () => {
       const userResponse = await axiosClient.get(`/Toma/codigo/${userInput}`);
       const cargosResponse = await axiosClient.get(`/Toma/cargos/${userInput}`);
       const pagosResponse = await axiosClient.get(`/Toma/pagos/${userInput}`);
-
+      console.log(userResponse);
       console.log(
         "Datos recibidos:",
         userResponse.data,
