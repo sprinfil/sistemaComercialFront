@@ -136,8 +136,94 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                 axiosClient.get(endpoint)
                     .then(response => {
                         let results;
-                        if(values.filtro == "5")
-                        {
+                        switch(values.filtro)
+                        {   
+                            case "1":
+                                results = response.data.data;
+                                console.log(response.data.data);
+                                setUsuariosEncontrados(response.data.data);
+                                if (results.length > 0) {
+                                    setNombreBuscado(values.nombre);
+                                    setUsuariosEncontrados(results);
+                                    if (results.length === 1) {
+                                        if (tipoAccion === "verUsuarioDetalle") {
+                                            navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                        } else if (tipoAccion === "crearContratacionUsuario") {
+                                            navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                        }
+                                    } else {
+                                        setmostrarTablaUsuario(true);
+                                    }
+                                } else {
+                                    noUsuarioEncontrado();
+                                    setmostrarTablaUsuario(false);
+                                }
+                            break;
+                            case "2":
+                                const result = response.data;
+                                if (result) {
+                                    setNombreBuscado(values.nombre);
+                                    setUsuariosEncontrados([result]); 
+                                    if(usuariosEncontrados.length == 1){
+                                        if (tipoAccion === "verUsuarioDetalle") {
+                                            navigate("/usuario", { state: { contratoBuscarUsuario: result } });
+                                        } else if (tipoAccion === "crearContratacionUsuario") {
+                                            navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: result } });
+                                        }
+                                    }
+                                    
+                                } else {
+                                    noUsuarioEncontrado();
+                                    setmostrarTablaUsuario(false);
+                                }
+                                break;
+
+                            case "3":
+                                results = response.data.data;
+                                console.log(response.data.data);
+                                setUsuariosEncontrados(response.data.data);
+                                if (results.length > 0) {
+                                    setNombreBuscado(values.nombre);
+                                    setUsuariosEncontrados(results);
+                                    if (results.length === 1) {
+                                        if (tipoAccion === "verUsuarioDetalle") {
+                                            navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                        } else if (tipoAccion === "crearContratacionUsuario") {
+                                            navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                        }
+                                    } else {
+                                        setmostrarTablaUsuario(true);
+                                    }
+                                } else {
+                                    noUsuarioEncontrado();
+                                    setmostrarTablaUsuario(false);
+                                }
+                            break;
+
+                            case "4":
+                                results = response.data.data;
+                                console.log(response.data.data);
+                                setUsuariosEncontrados(response.data.data);
+                                if (results.length > 0) {
+                                    setNombreBuscado(values.nombre);
+                                    setUsuariosEncontrados(results);
+                                    if (results.length === 1) {
+                                        if (tipoAccion === "verUsuarioDetalle") {
+                                            navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                        } else if (tipoAccion === "crearContratacionUsuario") {
+                                            navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                        }
+                                    } else {
+                                        setmostrarTablaUsuario(true);
+                                    }
+                                } else {
+                                    noUsuarioEncontrado();
+                                    setmostrarTablaUsuario(false);
+                                }
+                            break;
+
+
+                            case "5":
                             console.log("entro al filtro 5");
                             results = response.data;
                             console.log("a esta enpoint entro",endpoint);
@@ -159,33 +245,19 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                                 noUsuarioEncontrado();
                                 setmostrarTablaUsuario(false);
                             }
-                        }
-                        else{
-                            results = response.data.data;
-                            setUsuariosEncontrados(response.data.data);
-                            if (results.length > 0) {
-                                setNombreBuscado(values.nombre);
-                                setUsuariosEncontrados(results);
-                                if (results.length === 1) {
-                                    if (tipoAccion === "verUsuarioDetalle") {
-                                        navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
-                                    } else if (tipoAccion === "crearContratacionUsuario") {
-                                        navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
-                                    }
-                                } else {
-                                    setmostrarTablaUsuario(true);
-                                }
-                            } else {
-                                noUsuarioEncontrado();
-                                setmostrarTablaUsuario(false);
-                            }
+                            break;
+
+                            default:
+                                setLoading(false);
+                                console.log("Filtro no válido");
+                                return;
                         }
                        
-                        
                         setAccion(tipoAccion);
                     })
                     .catch(err => {
                         setErrors(err);
+                        
                     })
                     .finally(() => {
                         setLoading(false);
