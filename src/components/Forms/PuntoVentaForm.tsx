@@ -28,18 +28,34 @@ const PuntoVentaForm = () => {
   const { usuariosEncontrados, dataCajaUser, setDataCajaUser } = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
   // Estado para almacenar las cantidades a abonar
   const [amountsToPay, setAmountsToPay] = useState<{ [id: string]: number }>({});
+  const [cargos_usuario, set_cargos_usuario] = useState(null);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(event.target.value);
   };
   console.log("estoy fueron los usuarios encontrados", dataCajaUser);
 
-  useEffect(()=>{
+  useEffect(() => {
     setDataToma({});
-    console.log(dataCajaUser);
-
+    setCargosData(null);
+    setPagosData(null);
     //const usuario_tomas = await axiosClient.get(`/o`)
-  },[dataCajaUser])
+    //console.log(dataCajaUser);
+    get_usuario_cargos();
+
+  }, [dataCajaUser])
+
+  const get_usuario_cargos = async () => {
+    const cargos_usuario_fetch = await axiosClient.get("/cargos/porModelo/pendientes", {
+      params: {
+        id_dueno: dataCajaUser[0].id,
+        modelo_dueno: "usuario"
+      }
+    });
+    set_cargos_usuario(cargos_usuario_fetch.data);
+    console.log(cargos_usuario);
+    console.log(cargos_usuario[0]?.id + "hola");
+  }
 
   const fetchdataUser = async () => {
     handleClear();
@@ -87,12 +103,13 @@ const PuntoVentaForm = () => {
 
   const handleSearch = () => {
     if (userInput.trim() !== "") {
-    
+
       fetchdataUser();
     }
   };
 
   const handleClear = () => {
+    set_cargos_usuario(null);
     setUserInput("");
     setDataToma(null);
     setCargosData(null);
@@ -237,7 +254,7 @@ const PuntoVentaForm = () => {
       </div>
       {error && <p className="text-red-500">{error}</p>}
       {loading && <Loader />}
-      {!loading && !error && (dataCajaUser?.length > 0 || dataToma?.id ) && (
+      {!loading && !error && (dataCajaUser?.length > 0 || dataToma?.id) && (
         <div className="flex min-h-[78vh] max-h-[78vh] ">
           <div className="border rounded-sm w-2/3 ml-1 mr-1 mt-2 overflow-auto">
             <Tabs defaultValue="general">
@@ -248,7 +265,7 @@ const PuntoVentaForm = () => {
               </TabsList>
 
               <TabsContent value="general">
-                {dataToma && !  dataCajaUser[0] ?
+                {dataToma && !dataCajaUser[0] ?
                   (
                     <>
                       <div className="flex gap-5 mt-5 px-5">
@@ -320,18 +337,16 @@ const PuntoVentaForm = () => {
                     </>
                   )
                   :
-                  dataCajaUser[0] && dataToma?.id_codigo_toma != ""  &&
+                  dataCajaUser[0] && dataToma?.id_codigo_toma != "" &&
                   <div className="justify-center ml-5 mr-5 mt-5">
                     <div className="relative">
-                      {
-                      }
                       <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
-                        Información de Usuario/Toma
+                        Información de Usuario
                       </div>
                       <div className="border rounded-sm p-4">
                         <div className="grid grid-cols-2 gap-2 text-sm leading-tight">
                           <div className="font-semibold">Usuario:</div>
-                          <div> {dataCajaUser && dataCajaUser.length > 0  ? (
+                          <div> {dataCajaUser && dataCajaUser.length > 0 ? (
                             <div>{dataCajaUser[0].nombre}</div>
                           ) : (
                             <div></div>
@@ -397,83 +412,166 @@ const PuntoVentaForm = () => {
 
 
 
-              {cargosData && (
-                <TabsContent value="cargos">
-                  <div className="relative ml-5 mr-5">
-                    <div className="absolute -top-4 left-4 bg-background px-2 text-sm font-semibold">
-                      Información de Cargos
-                    </div>
 
-                    <div className="mt-6 border rounded-sm p-4 max-h-96 overflow-y-auto bg-background">
-                      <div className="w-full flex items-center justify-end">
-                        <div className="w-[60px] mb-[10px]">
-                          <IconButton onClick={openModal} title="open">
-                            <PlusIcon className="w-[20px] h-[20px]" />
-                          </IconButton>
-                        </div>
+              <TabsContent value="cargos">
+                <div className="relative ml-5 mr-5">
+                  {cargosData && (
+                    <>
+                      <div className="absolute top-4 left-4 bg-background px-2 text-sm font-semibold">
+                        Información de Cargos
                       </div>
 
-                      <table className="w-full table-fixed">
-                        <thead className="bg-muted">
-                          <tr>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Seleccionar
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Concepto
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Monto
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Estado
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              ID Convenio
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Fecha de Cargo
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Fecha de Liquidación
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className=" divide-y divide-gray-200">
-                          {pendingCargos.map((cargo, index) => (
-                            <tr key={index} onClick={() => handleCargoSelect(cargo)} className="cursor-pointer ">
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
-                              </td>
-                              <td className="px-2 py-4 whitespace-normal text-sm  break-words">
-                                {cargo.concepto}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                ${parseFloat(cargo.monto)}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {cargo.estado}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {cargo.id_convenio}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {cargo.fecha_cargo}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {cargo.fecha_liquidacion}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                        <div>
-
+                      <div className="mt-6 border rounded-sm p-4 max-h-96 overflow-y-auto bg-background">
+                        <div className="w-full flex items-center justify-end">
+                          <div className="w-[60px] mb-[10px]">
+                            <IconButton onClick={openModal} title="open">
+                              <PlusIcon className="w-[20px] h-[20px]" />
+                            </IconButton>
+                          </div>
                         </div>
-                      </table>
-                    </div>
-                  </div>
-                </TabsContent>
-              )}
+
+                        <table className="w-full table-fixed">
+                          <thead className="bg-muted">
+                            <tr>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Seleccionar
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Concepto
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Monto
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Estado
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                ID Convenio
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Fecha de Cargo
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Fecha de Liquidación
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className=" divide-y divide-gray-200">
+                            {pendingCargos.map((cargo, index) => (
+                              <tr key={index} onClick={() => handleCargoSelect(cargo)} className="cursor-pointer ">
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
+                                </td>
+                                <td className="px-2 py-4 whitespace-normal text-sm  break-words">
+                                  {cargo.concepto}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  ${parseFloat(cargo.monto)}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.estado}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.id_convenio}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.fecha_cargo}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.fecha_liquidacion}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                          <div>
+
+                          </div>
+                        </table>
+                      </div>
+                    </>
+
+                  )}
+                </div>
+
+                <div className="relative ml-5 mr-5">
+                  {cargos_usuario[0]?.id &&
+                    <>
+                      <div className="absolute top-4 left-4 bg-background px-2 text-sm font-semibold">
+                        Información de Cargos de Usuario
+                      </div>
+
+                      <div className="mt-6 border rounded-sm p-4 max-h-96 overflow-y-auto bg-background">
+                        <div className="w-full flex items-center justify-end">
+                          <div className="w-[60px] mb-[10px]">
+                            <IconButton onClick={openModal} title="open">
+                              <PlusIcon className="w-[20px] h-[20px]" />
+                            </IconButton>
+                          </div>
+                        </div>
+
+                        <table className="w-full table-fixed">
+                          <thead className="bg-muted">
+                            <tr>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Seleccionar
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Concepto
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Monto
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Estado
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                ID Convenio
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Fecha de Cargo
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Fecha de Liquidación
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className=" divide-y divide-gray-200">
+                            {cargos_usuario?.map((cargo, index) => (
+                              <tr key={index} onClick={() => handleCargoSelect(cargo)} className="cursor-pointer ">
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
+                                </td>
+                                <td className="px-2 py-4 whitespace-normal text-sm  break-words">
+                                  {cargo.concepto}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  ${parseFloat(cargo.monto)}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.estado}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.id_convenio}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.fecha_cargo}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.fecha_liquidacion}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                          <div>
+
+                          </div>
+                        </table>
+                      </div>
+                    </>
+                  }
+                </div>
+              </TabsContent>
+
 
               {pagosData && (
                 <TabsContent value="pagos">
@@ -500,7 +598,7 @@ const PuntoVentaForm = () => {
                           </tr>
                         </thead>
                         <tbody className="bg-background">
-                          {pagosData.map((pago, index) => (
+                          {pagosData?.map((pago, index) => (
                             <tr key={index}>
                               <td className="px-2 py-4 whitespace-nowrap text-sm font-medium ">
                                 ${parseFloat(pago.total_pagado)}
