@@ -46,7 +46,9 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
     const {nombreBuscado, setNombreBuscado, 
         nombreSeleccionado, setNombreSeleccionado, 
         usuariosEncontrados, setUsuariosEncontrados, 
-        accion, setAccion, setFindUserOrToma, findUserOrToma,setToma, setBooleanCodigoDeToma, toma,setDataCajaUser
+        accion, setAccion, setFindUserOrToma, findUserOrToma,setToma, setBooleanCodigoDeToma, toma,setDataCajaUser,
+        setBooleanCerrarModalFiltros
+
     
     } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
 
@@ -147,6 +149,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                                     setUsuariosEncontrados(results);
                                     setDataCajaUser(results);
                                     if (results.length === 1) {
+                                        setBooleanCerrarModalFiltros(false);
                                         if (tipoAccion === "verUsuarioDetalle") {
                                             navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
                                         } else if (tipoAccion === "crearContratacionUsuario") {
@@ -169,6 +172,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                                     setDataCajaUser([result]); 
                                     
                                     if(usuariosEncontrados.length == 1){
+                                        setBooleanCerrarModalFiltros(false);
                                         if (tipoAccion === "verUsuarioDetalle") {
                                             navigate("/usuario", { state: { contratoBuscarUsuario: result } });
                                         } else if (tipoAccion === "crearContratacionUsuario") {
@@ -191,6 +195,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                                     setNombreBuscado(values.nombre);
                                     setUsuariosEncontrados(results);
                                     if (results.length === 1) {
+                                        setBooleanCerrarModalFiltros(false);
                                         if (tipoAccion === "verUsuarioDetalle") {
                                             navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
                                         } else if (tipoAccion === "crearContratacionUsuario") {
@@ -214,6 +219,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                                     setNombreBuscado(values.nombre);
                                     setUsuariosEncontrados(results);
                                     if (results.length === 1) {
+                                        setBooleanCerrarModalFiltros(false);
                                         if (tipoAccion === "verUsuarioDetalle") {
                                             navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
                                         } else if (tipoAccion === "crearContratacionUsuario") {
@@ -240,6 +246,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                                 setNombreBuscado(values.nombre);
                                 setUsuariosEncontrados(results);
                                 if (results.length === 1) {
+                                    setBooleanCerrarModalFiltros(false);
                                     if (tipoAccion === "verUsuarioDetalle") {
                                         navigate("/usuario/toma", { state: { contratoBuscarUsuario: results[0] } });
                                     } else if (tipoAccion === "crearContratacionUsuario") {
