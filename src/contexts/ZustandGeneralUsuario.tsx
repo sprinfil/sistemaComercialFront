@@ -25,8 +25,8 @@ export const useBreadcrumbStore = create<BreadcrumbState>((set) => ({
 }));
 
 interface GeneralUsuario {
-  toma: TomaPorUsuario | null;
-  setToma: (toma: TomaPorUsuario) => void;
+  toma: BuscarTomaUsuario | null;
+  setToma: (toma: BuscarTomaUsuario) => void;
   obtenerIdUsuarioInDetalle: TomaPorUsuario | null;
   setObtenerIdUsuarioInDetalle: (obtenerIdUsuarioInDetalle: TomaPorUsuario) => void;
   usuario: BuscarUsuario | null;
@@ -60,6 +60,8 @@ interface GeneralUsuario {
   setFindUserMapaGeo: (findUserMapaGeo: boolean) => void;
   controlDetalleCaja: string;
   setControlDetalleCaja: (controlDetalleCaja: string) => void;
+  booleanCodigoDeToma: boolean;
+  setBooleanCodigoDeToma: (booleanCodigoDeToma: boolean) => void;
 
 }
 
@@ -99,5 +101,7 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setControlDetalleCaja: (controlDetalleCaja) => set ({controlDetalleCaja}),
   dataCajaUser: [],
   setDataCajaUser:(dataCajaUser) => set ({dataCajaUser}),
+  booleanCodigoDeToma: false,
+  setBooleanCodigoDeToma:(booleanCodigoDeToma) => set({booleanCodigoDeToma}),
 }));
 
