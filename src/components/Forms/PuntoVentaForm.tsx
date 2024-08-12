@@ -25,7 +25,7 @@ const PuntoVentaForm = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cerrarForm, setCerrarForm] = useState(false);
   const [mostrarCodigoUsuario, setMostrarCodigoUsuario] = useState(false);
-
+  const [cargos_usuario, set_cargos_usuario] = useState(null);
   const [error, setError] = useState<string | null>(null);
   const { usuariosEncontrados, dataCajaUser, setDataCajaUser, booleanCerrarModalFiltros} = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
   // Estado para almacenar las cantidades a abonar
@@ -40,9 +40,24 @@ const PuntoVentaForm = () => {
   useEffect(()=>{
     setDataToma({});
     console.log(dataCajaUser);
-
+    setCargosData(null);
+    setPagosData(null);
     //const usuario_tomas = await axiosClient.get(`/o`)
+    get_usuario_cargos();
+    console.log(cargos_usuario);
   },[dataCajaUser])
+
+  const get_usuario_cargos = async () => {
+    const cargos_usuario_fetch = await axiosClient.get("/cargos/porModelo/pendientes", {
+      params: {
+        id_dueno: dataCajaUser[0].id,
+        modelo_dueno: "usuario"
+      }
+    });
+    set_cargos_usuario(cargos_usuario_fetch.data);
+    console.log(cargos_usuario);
+    console.log(cargos_usuario[0]?.id + "hola");
+  }
 
   const fetchdataUser = async () => {
     handleClear();
@@ -96,6 +111,7 @@ const PuntoVentaForm = () => {
   };
 
   const handleClear = () => {
+    set_cargos_usuario(null);
     setUserInput("");
     setDataToma(null);
     setCargosData(null);
