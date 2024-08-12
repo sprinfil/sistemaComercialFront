@@ -297,8 +297,8 @@ const ConceptoForm = () => {
         try {
             const response = await axiosClient.get("/Concepto");
             setLoadingTable(false);
-            setConceptos(response.data.data);
-            console.log(response.data.data);
+            setConceptos(response.data);
+            console.log(response.data);
         } catch (error) {
             setLoadingTable(false);
             console.error("Fallo la consulta del concepto:", error);
@@ -787,7 +787,7 @@ const ConceptoForm = () => {
                                             return (
                                                 <div>
                                                     <p className="mb-[10px]">{tipoToma.nombre}</p>
-                                                    <input defaultValue={ concepto.tarifas != null ? concepto.tarifas[index].monto : 0} readOnly={!abrirInput} type="number" placeholder={`Tarifa ${tipoToma.nombre}`} name={tipoToma.id} className="w-full bg-background border border-border p-2 rounded-md" />
+                                                    <input defaultValue={ concepto.tarifas != null ? concepto.tarifas[index]?.monto : 0} readOnly={!abrirInput} type="number" placeholder={`Tarifa ${tipoToma.nombre}`} name={tipoToma.id} className="w-full bg-background border border-border p-2 rounded-md" />
                                                 </div>
                                             )
                                         })

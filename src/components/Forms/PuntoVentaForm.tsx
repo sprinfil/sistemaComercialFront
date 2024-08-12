@@ -203,15 +203,7 @@ const PuntoVentaForm = () => {
 
 
   useEffect(() => {
-    setLoading(true);
-
-    if (dataCajaUser) {
-      setLoading(false);
-    } else if (dataToma) {
-      setLoading(false);
-    } else {
-
-    }
+    console.log(dataToma);
 
   }, [dataToma, dataCajaUser]);
 
@@ -244,7 +236,7 @@ const PuntoVentaForm = () => {
       </div>
       {error && <p className="text-red-500">{error}</p>}
       {loading && <Loader />}
-      {!loading && !error && (
+      {!loading && !error && (dataCajaUser?.length > 0 || dataToma?.id ) && (
         <div className="flex min-h-[78vh] max-h-[78vh] ">
           <div className="border rounded-sm w-2/3 ml-1 mr-1 mt-2 overflow-auto">
             <Tabs defaultValue="general">
@@ -273,11 +265,11 @@ const PuntoVentaForm = () => {
                                 <div className="font-semibold mb-2">Correo:</div>
                               </div>
                               <div className="px-4">
-                                <div className="mb-2">{(dataToma.usuario?.nombre || "") + " " + (dataToma.usuario?.apellido_paterno || "") + " " + (dataToma.usuario?.apellido_materno || "")}</div>
-                                <div className="mb-2">{dataToma.usuario?.telefono}</div>
-                                <div className="mb-2">{dataToma.usuario?.rfc}</div>
-                                <div className="mb-2">{dataToma.usuario?.curp}</div>
-                                <div className="mb-2">{dataToma.usuario?.correo}</div>
+                                <div className="mb-2">{(dataToma?.usuario?.nombre || "") + " " + (dataToma.usuario?.apellido_paterno || "") + " " + (dataToma.usuario?.apellido_materno || "")}</div>
+                                <div className="mb-2">{dataToma?.usuario?.telefono}</div>
+                                <div className="mb-2">{dataToma?.usuario?.rfc}</div>
+                                <div className="mb-2">{dataToma?.usuario?.curp}</div>
+                                <div className="mb-2">{dataToma?.usuario?.correo}</div>
                               </div>
                             </div>
                           </div>
@@ -305,20 +297,20 @@ const PuntoVentaForm = () => {
                                 <div className="font-semibold mb-2">Servicio de agua y alcantarillado:</div>
                               </div>
                               <div className="px-4">
-                                <div className="mb-2">{dataToma.id_codigo_toma}</div>
-                                <div className="mb-2">{dataToma.clave_catastral}</div>
-                                <div className="mb-2">{dataToma.estatus}</div>
-                                <div className="mb-2">{dataToma.calle}</div>
-                                <div className="mb-2">{dataToma.entre_calle_1}</div>
-                                <div className="mb-2">{dataToma.entre_calle_2}</div>
-                                <div className="mb-2">{dataToma.colonia}</div>
-                                <div className="mb-2">{dataToma.codigo_postal}</div>
-                                <div className="mb-2">{dataToma.localidad}</div>
-                                <div className="mb-2">{dataToma.tipo_servicio}</div>
-                                <div className="mb-2">{dataToma.tipo_toma}</div>
-                                <div className="mb-2">{dataToma.tipo_contratacion}</div>
-                                <div className="mb-2">{formatYesNo(dataToma.c_agua)}</div>
-                                <div className="mb-2">{formatYesNo(dataToma.c_alc_san)}</div>
+                                <div className="mb-2">{dataToma?.id_codigo_toma}</div>
+                                <div className="mb-2">{dataToma?.clave_catastral}</div>
+                                <div className="mb-2">{dataToma?.estatus}</div>
+                                <div className="mb-2">{dataToma?.calle}</div>
+                                <div className="mb-2">{dataToma?.entre_calle_1}</div>
+                                <div className="mb-2">{dataToma?.entre_calle_2}</div>
+                                <div className="mb-2">{dataToma?.colonia}</div>
+                                <div className="mb-2">{dataToma?.codigo_postal}</div>
+                                <div className="mb-2">{dataToma?.localidad}</div>
+                                <div className="mb-2">{dataToma?.tipo_servicio}</div>
+                                <div className="mb-2">{dataToma?.tipo_toma}</div>
+                                <div className="mb-2">{dataToma?.tipo_contratacion}</div>
+                                <div className="mb-2">{formatYesNo(dataToma?.c_agua)}</div>
+                                <div className="mb-2">{formatYesNo(dataToma?.c_alc_san)}</div>
                               </div>
                             </div>
                           </div>
@@ -327,7 +319,7 @@ const PuntoVentaForm = () => {
                     </>
                   )
                   :
-                  dataCajaUser[0] && dataToma.id_codigo_toma != ""  &&
+                  dataCajaUser[0] && dataToma?.id_codigo_toma != ""  &&
                   <div className="justify-center ml-5 mr-5 mt-5">
                     <div className="relative">
                       {
