@@ -36,8 +36,9 @@ const PuntoVentaForm = () => {
 
   useEffect(()=>{
     setDataToma({});
-    console.log(dataToma);
     console.log(dataCajaUser);
+
+    //const usuario_tomas = await axiosClient.get(`/o`)
   },[dataCajaUser])
 
   const fetchdataUser = async () => {
