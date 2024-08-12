@@ -34,6 +34,9 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
                   case "4":
                     endpoint = `/usuarios/consultaDireccion/${nombreBuscado}`;
                     break;
+                    case "5":
+                      endpoint = `/Tomas/codigo/${nombreBuscado}`;
+                      break;
               default:
                   console.log("No jalo algo paso mal");
                   return;
@@ -41,7 +44,16 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
 
           try {
             const response = await axiosClient.get(endpoint);
-            const results = response.data.data;
+            let results;
+            if(filtroSeleccionado == 5)
+            {
+              results = response.data
+            }
+            else
+            {
+              results = response.data.data
+
+            }
             setTomaUsuariosEncontrados(results);
             console.log(response);
 

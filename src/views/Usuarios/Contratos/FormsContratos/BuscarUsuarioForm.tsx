@@ -46,7 +46,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
     const {nombreBuscado, setNombreBuscado, 
         nombreSeleccionado, setNombreSeleccionado, 
         usuariosEncontrados, setUsuariosEncontrados, 
-        accion, setAccion, setFindUserOrToma, findUserOrToma
+        accion, setAccion, setFindUserOrToma, findUserOrToma,setToma, setBooleanCodigoDeToma
     
     } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
 
@@ -117,6 +117,13 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                     setmostrarTablaUsuario(false);
                     setFindUserOrToma(true);
                     break;
+                    case "5":
+                    endpoint = `/Tomas/codigo/${criterio}`;
+                    setFiltroSeleccionado("5");
+                    setMostrarTablaTomaUsuario(true);
+                    setmostrarTablaUsuario(false);
+                    setFindUserOrToma(true);
+                    break;
             default:
                 setLoading(false);
                 console.log("Filtro no válido");
@@ -128,24 +135,51 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                 // PARA EJECUTAR LA CONSULTA
                 axiosClient.get(endpoint)
                     .then(response => {
-                        const results = response.data.data;
-                        setUsuariosEncontrados(response.data.data);
-                        if (results.length > 0) {
-                            setNombreBuscado(values.nombre);
-                            setUsuariosEncontrados(results);
-                            if (results.length === 1) {
-                                if (tipoAccion === "verUsuarioDetalle") {
-                                    navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
-                                } else if (tipoAccion === "crearContratacionUsuario") {
-                                    navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
+                        let results;
+                        if(filtroSeleccionado == "5")
+                        {
+                            results = response.data;
+                            console.log("a esta enpoint entro",endpoint);
+                            setToma(response.data);
+                            setBooleanCodigoDeToma(true);
+                            if (results.length > 0) {
+                                setNombreBuscado(values.nombre);
+                                setUsuariosEncontrados(results);
+                                if (results.length === 1) {
+                                    if (tipoAccion === "verUsuarioDetalle") {
+                                        navigate("/usuario/toma", { state: { contratoBuscarUsuario: results[0] } });
+                                    } else if (tipoAccion === "crearContratacionUsuario") {
+                                        navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                    }
+                                } else {
+                                    setmostrarTablaUsuario(true);
                                 }
                             } else {
-                                setmostrarTablaUsuario(true);
+                                noUsuarioEncontrado();
+                                setmostrarTablaUsuario(false);
                             }
-                        } else {
-                            noUsuarioEncontrado();
-                            setmostrarTablaUsuario(false);
                         }
+                        else{
+                            results = response.data.data;
+                            setUsuariosEncontrados(response.data.data);
+                            if (results.length > 0) {
+                                setNombreBuscado(values.nombre);
+                                setUsuariosEncontrados(results);
+                                if (results.length === 1) {
+                                    if (tipoAccion === "verUsuarioDetalle") {
+                                        navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                    } else if (tipoAccion === "crearContratacionUsuario") {
+                                        navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                    }
+                                } else {
+                                    setmostrarTablaUsuario(true);
+                                }
+                            } else {
+                                noUsuarioEncontrado();
+                                setmostrarTablaUsuario(false);
+                            }
+                        }
+                       
                         
                         setAccion(tipoAccion);
                     })
@@ -241,6 +275,7 @@ function handleNavigationCrearUsuario ()
         {mostrarTablaUsuario&&filtroSeleccionado == "2" && <h1 className="mt-10 ml-6">Selecciona un usuario.</h1>}
         {mostrarTablaUsuario&&filtroSeleccionado == "3" && <h1 className="mt-10 ml-6">Selecciona un usuario.</h1>}
         {mostrarTablaTomaUsuario&&filtroSeleccionado == "4"&&<h1 className="mt-10 ml-6">Selecciona la toma del usuario.</h1>}
+        {mostrarTablaTomaUsuario&&filtroSeleccionado == "5"&&<h1 className="mt-10 ml-6">Selecciona la toma del usuario.</h1>}
 
         {
             
@@ -257,6 +292,10 @@ function handleNavigationCrearUsuario ()
 
         {
         mostrarTablaTomaUsuario && filtroSeleccionado == "4" && <ContratoConsultaTomaTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
+        }
+        
+        {
+        mostrarTablaTomaUsuario && filtroSeleccionado == "5" && <ContratoConsultaTomaTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
         }
             
         </div>

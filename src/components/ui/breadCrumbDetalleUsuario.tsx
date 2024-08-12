@@ -7,7 +7,7 @@ import { Usuario } from "../Tables/Columns/ContratoConsultaTomaColumns";
 
 export function BreadCrumbDetalleUsuario() {
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
-  const { usuariosEncontrados, tomaUsuariosEncontrados,findUserOrToma, findUserMapaGeo, toma, tomas} = ZustandGeneralUsuario();
+  const { usuariosEncontrados, tomaUsuariosEncontrados,findUserOrToma, findUserMapaGeo, toma, tomas, booleanCodigoDeToma} = ZustandGeneralUsuario();
   const [usuario, setUsuario] = useState<{ id: number; nombre: string } | null>(null);
   const [tomaSeleccionada, setTomaSeleccionada] = useState<{ id: number; calle?: string; usuario?: Usuario } | null>(null);
   
@@ -91,6 +91,33 @@ export function BreadCrumbDetalleUsuario() {
           </>
         )}
       </ol> }
+
+      {
+        booleanCodigoDeToma && 
+
+        <ol style={{ listStyle: 'none', display: 'flex', padding: 0 }}>
+        <li>
+          <Link to="/usuario" onClick={handleClick}>
+            <p className="text-[15px] font-medium">
+            {tomaSeleccionada?.usuario?.nombre ? tomaSeleccionada?.usuario?.nombre : 'Nombre no disponible'}
+            </p>
+          </Link>
+        </li>
+     
+        ( 
+          <>
+            <li className="w-[8px] h-[8px]"><ChevronRight /></li>
+            <li>
+              <Link to="/usuario/toma">
+                <p className="text-[15px] font-medium ml-4">
+                  Toma: {tomaSeleccionada && tomaSeleccionada?.calle  ? tomaSeleccionada?.calle  : 'Nombre no disponible'}
+                </p>
+              </Link>
+            </li>
+          </>
+        )
+      </ol> 
+        }
       
     </nav>
   );

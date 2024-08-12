@@ -56,6 +56,8 @@ interface GeneralUsuario {
   setFindUserOrToma:(findUserOrToma: boolean) => void;
   findUserMapaGeo: boolean;
   setFindUserMapaGeo: (findUserMapaGeo: boolean) => void;
+  booleanCodigoDeToma: boolean;
+  setBooleanCodigoDeToma: (booleanCodigoDeToma: boolean) => void;
 
 }
 
@@ -91,5 +93,7 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setFindUserOrToma:(findUserOrToma) => set({findUserOrToma}),
   findUserMapaGeo: false,
   setFindUserMapaGeo:(findUserOrToma) => set({findUserOrToma}),
+  booleanCodigoDeToma: false,
+  setBooleanCodigoDeToma:(booleanCodigoDeToma) => set({booleanCodigoDeToma}),
 }));
 
