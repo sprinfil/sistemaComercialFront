@@ -12,6 +12,7 @@ export type BuscarTomaUsuario = {
   clave_catastral: string
   numero_casa: string
   colonia: string
+  calle: string
   entre_calle_1: string
   entre_calle_2: string
   codigo_postal: string

@@ -13,7 +13,7 @@ import { BreadCrumbDetalleTomaUsuario } from '../../../components/ui/breadCrumbD
 import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
 export const TomaUsuarioDetalle = () => {
 
-  const {tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, setTomaUsuariosEncontrados, tomaUsuariosEncontrados}= ZustandGeneralUsuario()
+  const {toma, setToma,tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, setTomaUsuariosEncontrados, tomaUsuariosEncontrados}= ZustandGeneralUsuario()
   const [accion, setAccion] = useState<string | undefined>();
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
@@ -29,7 +29,7 @@ export const TomaUsuarioDetalle = () => {
     {
       console.log("no hay longitud");
     }
-  }, [usuariosEncontrados, setUsuariosRecuperado, tomaUsuariosEncontrados]);
+  }, [usuariosEncontrados, setUsuariosRecuperado, tomaUsuariosEncontrados,]);
 
   console.log("ESTE ES EL USUARIO RECUPERADO " + JSON.stringify(usuariosRecuperado));
 

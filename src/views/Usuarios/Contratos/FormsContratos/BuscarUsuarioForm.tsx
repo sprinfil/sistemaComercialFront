@@ -46,7 +46,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
     const {nombreBuscado, setNombreBuscado, 
         nombreSeleccionado, setNombreSeleccionado, 
         usuariosEncontrados, setUsuariosEncontrados, 
-        accion, setAccion, setFindUserOrToma, findUserOrToma,setToma, setBooleanCodigoDeToma
+        accion, setAccion, setFindUserOrToma, findUserOrToma,setToma, setBooleanCodigoDeToma, toma
     
     } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
 
@@ -136,8 +136,9 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                 axiosClient.get(endpoint)
                     .then(response => {
                         let results;
-                        if(filtroSeleccionado == "5")
+                        if(values.filtro == "5")
                         {
+                            console.log("entro al filtro 5");
                             results = response.data;
                             console.log("a esta enpoint entro",endpoint);
                             setToma(response.data);
@@ -207,7 +208,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
         }
 
 
-    }, [usuariosEncontrados, navigate, navegacion]);
+    }, [usuariosEncontrados, navigate, navegacion, toma]);
 
 
 function handleNavigationCrearUsuario ()
