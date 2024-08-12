@@ -46,7 +46,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
     const {nombreBuscado, setNombreBuscado, 
         nombreSeleccionado, setNombreSeleccionado, 
         usuariosEncontrados, setUsuariosEncontrados, 
-        accion, setAccion, setFindUserOrToma, findUserOrToma,setToma, setBooleanCodigoDeToma, toma
+        accion, setAccion, setFindUserOrToma, findUserOrToma,setToma, setBooleanCodigoDeToma, toma,setDataCajaUser
     
     } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
 
@@ -145,6 +145,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                                 if (results.length > 0) {
                                     setNombreBuscado(values.nombre);
                                     setUsuariosEncontrados(results);
+                                    setDataCajaUser(results);
                                     if (results.length === 1) {
                                         if (tipoAccion === "verUsuarioDetalle") {
                                             navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
@@ -162,8 +163,11 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                             case "2":
                                 const result = response.data;
                                 if (result) {
-                                    setNombreBuscado(values.nombre);
+                                    setNombreBuscado(values.nombre); 
+                                    console.log("este es el result", result);
                                     setUsuariosEncontrados([result]); 
+                                    setDataCajaUser([result]); 
+                                    
                                     if(usuariosEncontrados.length == 1){
                                         if (tipoAccion === "verUsuarioDetalle") {
                                             navigate("/usuario", { state: { contratoBuscarUsuario: result } });
@@ -182,6 +186,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                                 results = response.data.data;
                                 console.log(response.data.data);
                                 setUsuariosEncontrados(response.data.data);
+                                setDataCajaUser(results);
                                 if (results.length > 0) {
                                     setNombreBuscado(values.nombre);
                                     setUsuariosEncontrados(results);
@@ -203,6 +208,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                             case "4":
                                 results = response.data.data;
                                 console.log(response.data.data);
+                                setDataCajaUser(results);
                                 setUsuariosEncontrados(response.data.data);
                                 if (results.length > 0) {
                                     setNombreBuscado(values.nombre);
@@ -228,6 +234,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                             results = response.data;
                             console.log("a esta enpoint entro",endpoint);
                             setToma(response.data);
+                            setDataCajaUser(results);
                             setBooleanCodigoDeToma(true);
                             if (results.length > 0) {
                                 setNombreBuscado(values.nombre);
@@ -352,6 +359,7 @@ function handleNavigationCrearUsuario ()
         {mostrarTablaTomaUsuario&&filtroSeleccionado == "5"&&<h1 className="mt-10 ml-6">Selecciona la toma del usuario.</h1>}
 
         {
+            
         mostrarTablaUsuario &&  filtroSeleccionado == "1" && <ContratoConsultaUsuarioTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
         }
         {

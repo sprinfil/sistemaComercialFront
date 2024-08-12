@@ -24,15 +24,18 @@ const PuntoVentaForm = () => {
   const [loadingTable, setLoadingTable] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cerrarForm, setCerrarForm] = useState(false);
+  const [mostrarCodigoUsuario, setMostrarCodigoUsuario] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
-  const { usuariosEncontrados, dataCajaUser, setDataCajaUser } = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
+  const { usuariosEncontrados, dataCajaUser, setDataCajaUser} = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
   // Estado para almacenar las cantidades a abonar
   const [amountsToPay, setAmountsToPay] = useState<{ [id: string]: number }>({});
-
+  console.log("ESTO LLEGO XDDD", dataCajaUser);
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(event.target.value);
   };
-  console.log("estoy fueron los usuarios encontrados", dataCajaUser);
+  console.log('Nombre del primer elemento de dataCajaUser:', dataCajaUser[0]?.nombre || "USUARIO NO");
+  console.log("a ver si se deberia abrir el codgio", mostrarCodigoUsuario);
 
   useEffect(()=>{
     setDataToma({});
@@ -122,6 +125,11 @@ const PuntoVentaForm = () => {
       handleSearch(); // Llamar a la función de pago
     }
   };
+
+
+
+
+
 
   useEffect(() => {
     window.addEventListener('keydown', handleF5Press);
@@ -248,6 +256,7 @@ const PuntoVentaForm = () => {
               </TabsList>
 
               <TabsContent value="general">
+                
                 {dataToma && !  dataCajaUser[0] ?
                   (
                     <>
@@ -386,17 +395,19 @@ const PuntoVentaForm = () => {
                             <div></div>
                           )}
                           </div>
-
+                          
                         </div>
                       </div>
                     </div>
                   </div>
+                  
+                 
                 }
 
+                
+               
               </TabsContent>
-
-
-
+              
               {cargosData && (
                 <TabsContent value="cargos">
                   <div className="relative ml-5 mr-5">

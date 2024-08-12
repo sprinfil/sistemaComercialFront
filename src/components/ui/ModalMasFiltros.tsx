@@ -41,10 +41,10 @@ export const ModalMasFiltros = ({trigger, setUserData, cerrarForm}) => {
     
   return (
     <div>
-         <AlertDialog>
-                <AlertDialogTrigger>
-                    {trigger}
-                </AlertDialogTrigger>
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+      <AlertDialogTrigger asChild>
+          {trigger}
+        </AlertDialogTrigger>
                 <AlertDialogContent className="max-w-[80rem] ">
                     <AlertDialogHeader>
                         <AlertDialogTitle>Selecciona El Usuario/Toma</AlertDialogTitle>
@@ -62,8 +62,7 @@ export const ModalMasFiltros = ({trigger, setUserData, cerrarForm}) => {
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                    <AlertDialogAction onClick={() => setIsOpen(false)}>Close</AlertDialogAction>
-                    <AlertDialogAction>Aceptar</AlertDialogAction>
+                    <AlertDialogAction onClick={() => setIsOpen(false)}>Cerrar</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
