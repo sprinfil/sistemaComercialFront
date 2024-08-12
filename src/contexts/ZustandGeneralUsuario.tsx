@@ -25,8 +25,8 @@ export const useBreadcrumbStore = create<BreadcrumbState>((set) => ({
 }));
 
 interface GeneralUsuario {
-  toma: TomaPorUsuario | null;
-  setToma: (toma: TomaPorUsuario) => void;
+  toma: BuscarTomaUsuario | null;
+  setToma: (toma: BuscarTomaUsuario) => void;
   obtenerIdUsuarioInDetalle: TomaPorUsuario | null;
   setObtenerIdUsuarioInDetalle: (obtenerIdUsuarioInDetalle: TomaPorUsuario) => void;
   usuario: BuscarUsuario | null;
