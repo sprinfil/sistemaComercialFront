@@ -18,7 +18,7 @@ import { BuscarUsuarioForm } from '../../views/Usuarios/Contratos/FormsContratos
 import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
 export const ModalMasFiltros = ({trigger, setUserData, cerrarForm}) => {
 
-    const {controlDetalleCaja, setControlDetalleCaja} = ZustandGeneralUsuario();
+    const {controlDetalleCaja, setControlDetalleCaja, setBooleanCerrarModalFiltros, booleanCerrarModalFiltros} = ZustandGeneralUsuario();
     const [isOpen, setIsOpen] = useState(false);
     const [conditionMet, setConditionMet] = useState(false);
 
@@ -36,12 +36,15 @@ export const ModalMasFiltros = ({trigger, setUserData, cerrarForm}) => {
       setIsOpen(false);
     }
   }, [conditionMet]);
-
-    
+  
+      // Cierra el AlertDialog cuando se encuentra un usuario
+      useEffect(() => {
+       console.log(booleanCerrarModalFiltros)
+    }, [controlDetalleCaja, setBooleanCerrarModalFiltros]);
     
   return (
     <div>
-      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+      <AlertDialog open={booleanCerrarModalFiltros} onOpenChange={setBooleanCerrarModalFiltros}>
       <AlertDialogTrigger asChild>
           {trigger}
         </AlertDialogTrigger>

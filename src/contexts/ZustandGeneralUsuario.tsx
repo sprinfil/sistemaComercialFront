@@ -62,7 +62,8 @@ interface GeneralUsuario {
   setControlDetalleCaja: (controlDetalleCaja: string) => void;
   booleanCodigoDeToma: boolean;
   setBooleanCodigoDeToma: (booleanCodigoDeToma: boolean) => void;
-
+ booleanCerrarModalFiltros: boolean;
+ setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros: boolean) => void;
 }
 
 export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
@@ -103,6 +104,8 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setDataCajaUser:(dataCajaUser) => set ({dataCajaUser}),
   booleanCodigoDeToma: false,
   setBooleanCodigoDeToma:(booleanCodigoDeToma) => set({booleanCodigoDeToma}),
-  
+  booleanCerrarModalFiltros: true,
+  setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros) => set({booleanCerrarModalFiltros}),
+
 }));
 

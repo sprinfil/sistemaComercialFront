@@ -27,7 +27,7 @@ const PuntoVentaForm = () => {
   const [mostrarCodigoUsuario, setMostrarCodigoUsuario] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
-  const { usuariosEncontrados, dataCajaUser, setDataCajaUser} = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
+  const { usuariosEncontrados, dataCajaUser, setDataCajaUser, booleanCerrarModalFiltros} = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
   // Estado para almacenar las cantidades a abonar
   const [amountsToPay, setAmountsToPay] = useState<{ [id: string]: number }>({});
   console.log("ESTO LLEGO XDDD", dataCajaUser);
@@ -240,7 +240,7 @@ const PuntoVentaForm = () => {
             </IconButton>
           }
           setdataUser={setDataToma}
-          cerrarForm={cerrarForm}
+          cerrarForm={booleanCerrarModalFiltros}
         />
       </div>
       {error && <p className="text-red-500">{error}</p>}

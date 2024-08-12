@@ -20,7 +20,7 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
   console.log("este es el que recibeeee" + nombreBuscado)
   const {toma, usuarioObtenido, setUsuarioObtenido, 
     setUsuariosEncontrados, usuariosEncontrados, setLoadingTable, loadingTable, setAccion, setUsuario, usuario, setUsuariosRecuperado, 
-    tomaUsuariosEncontrados, setTomaUsuariosEncontrados, setToma} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+    tomaUsuariosEncontrados, setTomaUsuariosEncontrados, setToma,setBooleanCerrarModalFiltros} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
 
   const tableRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -77,6 +77,7 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
   const handleRowClick = (contratobuscarUsuario: TomaPorUsuario) => {
     setToma(null);
     setToma(contratobuscarUsuario);
+    setBooleanCerrarModalFiltros(false);
     if(accion2 == "verUsuarioDetalle")
     {
       navigate("/usuario/toma");
