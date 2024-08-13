@@ -10,6 +10,12 @@ import Modal from "../ui/Modal.tsx";
 import { useStateContext } from "../../contexts/ContextConcepto.tsx";
 import { ModalMasFiltros } from "../ui/ModalMasFiltros.tsx";
 import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 import { BuscarUsuario } from "../Tables/Columns/ContratoConsultaUsuarioColumns.tsx";
 const PuntoVentaForm = () => {
@@ -27,7 +33,7 @@ const PuntoVentaForm = () => {
   const [mostrarCodigoUsuario, setMostrarCodigoUsuario] = useState(false);
   const [cargos_usuario, set_cargos_usuario] = useState(null);
   const [error, setError] = useState<string | null>(null);
-  const { usuariosEncontrados, dataCajaUser, setDataCajaUser, booleanCerrarModalFiltros} = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
+  const { usuariosEncontrados, dataCajaUser, setDataCajaUser, booleanCerrarModalFiltros } = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
   // Estado para almacenar las cantidades a abonar
   const [amountsToPay, setAmountsToPay] = useState<{ [id: string]: number }>({});
   console.log("ESTO LLEGO XDDD", dataCajaUser);
@@ -39,15 +45,18 @@ const PuntoVentaForm = () => {
 
   useEffect(() => {
     setDataToma({});
+    //setSelectedCargos([]);
     console.log(dataCajaUser);
     setCargosData(null);
     setPagosData(null);
     //const usuario_tomas = await axiosClient.get(`/o`)
     get_usuario_cargos();
+
     console.log(cargos_usuario);
   }, [dataCajaUser])
 
-  const get_usuario_cargos = async () => {
+  /*
+    const get_usuario_cargos = async () => {
     const cargos_usuario_fetch = await axiosClient.get("/cargos/porModelo/pendientes", {
       params: {
         id_dueno: dataCajaUser[0].id,
@@ -55,8 +64,21 @@ const PuntoVentaForm = () => {
       }
     });
     set_cargos_usuario(cargos_usuario_fetch.data);
-    console.log(cargos_usuario);
-    console.log(cargos_usuario[0]?.id + "hola");
+  }
+  */
+
+  const get_usuario_cargos = async () => {
+    const cargos_usuario_fetch = await axiosClient.get(`/usuarios/consultar/cargos/${dataCajaUser[0].id}`);
+    set_cargos_usuario(cargos_usuario_fetch.data);
+
+    if (cargos_usuario_fetch?.data?.tomas?.length == 1) {
+        cargos_usuario_fetch.data.tomas.map((toma, index) => {
+        toma.cargos_vigentes.map((cargo, index) => {
+          handleCargoSelect(cargo, toma, true);
+        })
+      })
+    }
+
   }
 
   const fetchdataUser = async () => {
@@ -75,9 +97,6 @@ const PuntoVentaForm = () => {
         pagosResponse.data
       );
 
-
-
-
       if (userResponse.data) {
         setDataToma(userResponse.data);
 
@@ -88,8 +107,13 @@ const PuntoVentaForm = () => {
       if (cargosResponse.data) {
         setCargosData(cargosResponse.data);
         // Filtrar cargos pendientes
+
         const filteredCargos = cargosResponse.data.filter(cargo => cargo.estado === 'pendiente');
         setPendingCargos(filteredCargos);
+
+        filteredCargos.map((cargo, index) => {
+          handleCargoSelect(cargo, userResponse.data, true);
+        })
       }
 
       if (pagosResponse.data) {
@@ -117,20 +141,30 @@ const PuntoVentaForm = () => {
     setCargosData(null);
     setPagosData(null);
     setPendingCargos([]);
-    setSelectedCargos([]);
+    //setSelectedCargos([]);
     setAmountsToPay({});
     setDataCajaUser({});
   };
 
-  const handleCargoSelect = (cargo) => {
+  const handleCargoSelect = (cargo, entidad = null, busqueda = false) => {
     setSelectedCargos(prevSelectedCargos => {
+      let newCargo = {};
       const isAlreadySelected = prevSelectedCargos.some(c => c.id === cargo.id);
       if (isAlreadySelected) {
-        // Eliminar del array si ya está seleccionado
-        return prevSelectedCargos.filter(c => c.id !== cargo.id);
+        if (!busqueda) {
+          return prevSelectedCargos.filter(c => c.id !== cargo.id);
+        } else {
+          return [...prevSelectedCargos];
+        }
       } else {
-        // Agregar al array si no está seleccionado
-        return [...prevSelectedCargos, cargo];
+        let entidad_temp;
+        if (entidad.id_codigo_toma != null) {
+          entidad_temp = entidad?.id_codigo_toma;
+        } else {
+          entidad_temp = entidad?.nombre;
+        }
+        newCargo = { ...cargo, entidad: entidad_temp };
+        return [...prevSelectedCargos, newCargo];
       }
     });
   };
@@ -235,7 +269,7 @@ const PuntoVentaForm = () => {
   return (
     <div className="flex flex-col">
       <div className="h-10 justify-center flex items-center rounded-sm">
-        <p className="whitespace-nowrap">Número de toma o clave de usuario</p>
+        <p className="whitespace-nowrap">Número de toma</p>
         <Input
           className="h-8 ml-1 mr-1 w-96"
           value={userInput}
@@ -245,7 +279,7 @@ const PuntoVentaForm = () => {
         <IconButton onClick={handleSearch} title="Buscar">
           <MagnifyingGlassIcon className="w-[20px] h-[20px]" />
         </IconButton>
-        <IconButton onClick={handleClear} title="Limpiar">
+        <IconButton onClick={() => { handleClear(); setSelectedCargos([]); }} title="Limpiar">
           <UpdateIcon className="w-[20px] h-[20px]" />
         </IconButton>
 
@@ -263,7 +297,7 @@ const PuntoVentaForm = () => {
       {loading && <Loader />}
       {!loading && !error && (dataCajaUser?.length > 0 || dataToma?.id) && (
         <div className="flex min-h-[78vh] max-h-[78vh] ">
-          <div className="border rounded-sm w-2/3 ml-1 mr-1 mt-2 overflow-auto">
+          <div className="border rounded-sm w-[60%] ml-1 mr-1 mt-2 overflow-auto">
             <Tabs defaultValue="general">
               <TabsList>
                 <TabsTrigger value="general">General</TabsTrigger>
@@ -351,7 +385,7 @@ const PuntoVentaForm = () => {
                       {
                       }
                       <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
-                        Información de Usuario/Toma
+                        Información de Usuario
                       </div>
                       <div className="border rounded-sm p-4">
                         <div className="grid grid-cols-2 gap-2 text-sm leading-tight">
@@ -427,158 +461,222 @@ const PuntoVentaForm = () => {
 
 
               <TabsContent value="cargos">
-                {cargosData && (
-                  <div className="relative ml-5 mr-5">
-                    <div className="absolute top-4 left-4 bg-background px-2 text-sm font-semibold">
-                      Información de Cargos
-                    </div>
-
-                    <div className="mt-6 border rounded-sm p-4 max-h-96 overflow-y-auto bg-background">
-                      <div className="w-full flex items-center justify-end">
-                        <div className="w-[60px] mb-[10px]">
-                          <IconButton onClick={openModal} title="open">
-                            <PlusIcon className="w-[20px] h-[20px]" />
-                          </IconButton>
-                        </div>
+                <div className="px-5">
+                  {cargosData && (
+                    <div className="relative ml-5 mr-5">
+                      <div className="absolute top-4 left-4 bg-background px-2 text-sm font-semibold">
+                        Información de Cargos
                       </div>
 
-                      <table className="w-full table-fixed">
-                        <thead className="bg-muted">
-                          <tr>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Seleccionar
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Concepto
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Monto
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Estado
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              ID Convenio
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Fecha de Cargo
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Fecha de Liquidación
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className=" divide-y divide-gray-200">
-                          {pendingCargos.map((cargo, index) => (
-                            <tr key={index} onClick={() => handleCargoSelect(cargo)} className="cursor-pointer ">
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
-                              </td>
-                              <td className="px-2 py-4 whitespace-normal text-sm  break-words">
-                                {cargo.concepto}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                ${parseFloat(cargo.monto)}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {cargo.estado}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {cargo.id_convenio}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {cargo.fecha_cargo}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {cargo.fecha_liquidacion}
-                              </td>
+                      <div className="mt-6 border rounded-sm p-4 max-h-96 overflow-y-auto bg-background">
+                        <div className="w-full flex items-center justify-end">
+                          <div className="w-[60px] mb-[10px]">
+                            <IconButton onClick={openModal} title="open">
+                              <PlusIcon className="w-[20px] h-[20px]" />
+                            </IconButton>
+                          </div>
+                        </div>
+
+                        <table className="w-full table-fixed">
+                          <thead className="bg-muted">
+                            <tr>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Seleccionar
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Concepto
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Monto
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Estado
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                ID Convenio
+                              </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Fecha de Cargo
+                              </th>
                             </tr>
-                          ))}
-                        </tbody>
-                        <div>
+                          </thead>
+                          <tbody className=" divide-y divide-gray-200">
+                            {pendingCargos.map((cargo, index) => (
+                              <tr key={index} onClick={() => handleCargoSelect(cargo, dataToma)} className="cursor-pointer ">
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
+                                </td>
+                                <td className="px-2 py-4 whitespace-normal text-sm  break-words">
+                                  {cargo.concepto}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  ${parseFloat(cargo.monto)}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.estado}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.id_convenio}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.fecha_cargo}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                          <div>
 
-                        </div>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
-                {cargos_usuario && <>
-                  <div className="relative ml-5 mr-5">
-                    <div className="absolute top-4 left-4 bg-background px-2 text-sm font-semibold">
-                      Cargos Directos
-                    </div>
-
-                    <div className="mt-6 border rounded-sm p-4 max-h-96 overflow-y-auto bg-background">
-                      <div className="w-full flex items-center justify-end">
-                        <div className="w-[60px] mb-[10px]">
-                          <IconButton onClick={openModal} title="open">
-                            <PlusIcon className="w-[20px] h-[20px]" />
-                          </IconButton>
-                        </div>
+                          </div>
+                        </table>
                       </div>
-
-                      <table className="w-full table-fixed">
-                        <thead className="bg-muted">
-                          <tr>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Seleccionar
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Concepto
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Monto
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Estado
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              ID Convenio
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Fecha de Cargo
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Fecha de Liquidación
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className=" divide-y divide-gray-200">
-                          {cargos_usuario.map((cargo, index) => (
-                            <tr key={index} onClick={() => handleCargoSelect(cargo)} className="cursor-pointer ">
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
-                              </td>
-                              <td className="px-2 py-4 whitespace-normal text-sm  break-words">
-                                {cargo.concepto}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                ${parseFloat(cargo.monto)}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {cargo.estado}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {cargo.id_convenio}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {cargo.fecha_cargo}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {cargo.fecha_liquidacion}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                        <div>
-
-                        </div>
-                      </table>
                     </div>
-                  </div>
-                </>
-                }
+                  )}
+
+
+                  {cargos_usuario && <>
+                    <Accordion type="single" collapsible className="w-full" defaultValue="">
+                      <AccordionItem value="item-1">
+                        <AccordionTrigger>Cargos {dataCajaUser[0].nombre}</AccordionTrigger>
+                        <AccordionContent>
+                          <>
+                            <div className="relative">
+                              <div className="shadow-md border rounded-sm p-4 max-h-96 overflow-y-auto bg-background">
+                                <div className="w-full flex items-center justify-end">
+                                  <div className="w-[60px] mb-[10px]">
+                                    <IconButton onClick={openModal} title="open">
+                                      <PlusIcon className="w-[20px] h-[20px]" />
+                                    </IconButton>
+                                  </div>
+                                </div>
+
+                                <table className="w-full table-fixed">
+                                  <thead className="bg-muted">
+                                    <tr>
+                                      <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                        Seleccionar
+                                      </th>
+                                      <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                        Concepto
+                                      </th>
+                                      <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                        Monto
+                                      </th>
+                                      <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                        Estado
+                                      </th>
+                                      <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                        Fecha de Cargo
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className=" divide-y divide-gray-200">
+                                    {cargos_usuario.cargos_vigentes.map((cargo, index) => (
+                                      <tr key={index} onClick={() => handleCargoSelect(cargo, cargos_usuario)} className="cursor-pointer ">
+                                        <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                          <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
+                                        </td>
+                                        <td className="px-2 py-4 whitespace-normal text-sm  break-words">
+                                          {cargo.concepto}
+                                        </td>
+                                        <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                          ${parseFloat(cargo.monto)}
+                                        </td>
+                                        <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                          {cargo.estado}
+                                        </td>
+                                        <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                          {cargo.fecha_cargo}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                  <div>
+
+                                  </div>
+                                </table>
+                              </div>
+                            </div>
+                          </>
+                        </AccordionContent>
+                      </AccordionItem>
+                      {
+                        cargos_usuario.tomas.map((toma, index) => (
+                          <>
+                            <AccordionItem value={`toma-${toma.id_codigo_toma}`}>
+                              <AccordionTrigger>Cargos Toma {toma.id_codigo_toma} {toma.colonia} {toma.calle}</AccordionTrigger>
+                              <AccordionContent>
+                                <>
+                                  <div className="relative">
+                                    <div className="shadow-md border rounded-sm p-4 max-h-96 overflow-y-auto bg-background">
+                                      <div className="w-full flex items-center justify-end">
+                                        <div className="w-[60px] mb-[10px]">
+                                          <IconButton onClick={openModal} title="open">
+                                            <PlusIcon className="w-[20px] h-[20px]" />
+                                          </IconButton>
+                                        </div>
+                                      </div>
+
+                                      <table className="w-full table-fixed">
+                                        <thead className="bg-muted">
+                                          <tr>
+                                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                              Seleccionar
+                                            </th>
+                                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                              Concepto
+                                            </th>
+                                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                              Monto
+                                            </th>
+                                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                              Estado
+                                            </th>
+                                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                              Fecha de Cargo
+                                            </th>
+                                          </tr>
+                                        </thead>
+                                        <tbody className=" divide-y divide-gray-200">
+                                          {toma.cargos_vigentes.map((cargo, index) => (
+                                            <tr key={index} onClick={() => handleCargoSelect(cargo, toma)} className="cursor-pointer ">
+                                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                                <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
+                                              </td>
+                                              <td className="px-2 py-4 whitespace-normal text-sm  break-words">
+                                                {cargo.concepto}
+                                              </td>
+                                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                                ${parseFloat(cargo.monto)}
+                                              </td>
+                                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                                {cargo.estado}
+                                              </td>
+                                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                                {cargo.fecha_cargo}
+                                              </td>
+                                            </tr>
+                                          ))}
+                                        </tbody>
+                                        <div>
+
+                                        </div>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </>
+                              </AccordionContent>
+                            </AccordionItem>
+                          </>
+                        ))
+                      }
+
+
+                    </Accordion>
+
+                  </>
+                  }
+                </div>
+
               </TabsContent>
 
 
@@ -633,13 +731,13 @@ const PuntoVentaForm = () => {
             </Tabs>
           </div>
 
-          <div className="border rounded-sm w-1/3 ml-1 mr-1 mt-2 flex flex-col relative">
-            <div className="absolute left-4 bg-background px-2 text-sm font-semibold mt-2">
+          <div className="border rounded-sm w-[40%] ml-1 mr-1 mt-2 flex flex-col relative">
+            <div className="absolute left-2 bg-background px-2 text-sm font-semibold -top-3">
               Cargos Seleccionados
             </div>
-            <div className="flex-grow mt-4 ml-3 m-4">
+            <div className="flex-grow mt-1 ">
               {selectedCargos.length > 0 ? (
-                <div className="border rounded-sm p-4 max-h-96 overflow-y-auto">
+                <div className="mt-2 rounded-sm p-1 max-h-96 overflow-y-auto">
                   <table className="w-full table-fixed">
                     <thead className="bg-muted">
                       <tr>
@@ -647,10 +745,10 @@ const PuntoVentaForm = () => {
                           Concepto
                         </th>
                         <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                          Monto
+                          Usuario / Toma
                         </th>
                         <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                          Cantidad a Abonar
+                          Monto
                         </th>
                       </tr>
                     </thead>
@@ -660,16 +758,12 @@ const PuntoVentaForm = () => {
                           <td className="px-2 py-4 whitespace-normal text-sm  break-words">
                             {cargo.concepto}
                           </td>
-                          <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                            ${parseFloat(cargo.monto)}
+                          <td>
+
+                            {cargo?.entidad}
                           </td>
                           <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                            <input
-                              type="number"
-                              value={amountsToPay[cargo.id] || ""}
-                              onChange={(e) => handleAmountChange(cargo.id, parseFloat(e.target.value) || 0)}
-                              className="w-full border rounded-sm p-1 bg-background"
-                            />
+                            ${parseFloat(cargo.monto)}
                           </td>
                         </tr>
                       ))}
@@ -678,7 +772,7 @@ const PuntoVentaForm = () => {
                         <td className="px-2 py-4 text-xl font-semibold ">
                           ${totalRestante}
                         </td>
-                        <td></td>
+
                       </tr>
                     </tbody>
                   </table>
