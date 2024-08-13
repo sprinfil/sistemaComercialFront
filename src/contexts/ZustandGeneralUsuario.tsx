@@ -25,14 +25,16 @@ export const useBreadcrumbStore = create<BreadcrumbState>((set) => ({
 }));
 
 interface GeneralUsuario {
-  toma: TomaPorUsuario | null;
-  setToma: (toma: TomaPorUsuario) => void;
+  toma: BuscarTomaUsuario | null;
+  setToma: (toma: BuscarTomaUsuario) => void;
   obtenerIdUsuarioInDetalle: TomaPorUsuario | null;
   setObtenerIdUsuarioInDetalle: (obtenerIdUsuarioInDetalle: TomaPorUsuario) => void;
   usuario: BuscarUsuario | null;
   setUsuario: (usuario: BuscarUsuario) => void;
   usuariosEncontrados: BuscarUsuario[];
   setUsuariosEncontrados: (usuarios: BuscarUsuario[]) => void;
+  dataCajaUser: BuscarUsuario[];
+  setDataCajaUser: (dataCajaUser: BuscarUsuario[]) => void;
   clearUsuariosEncontrados: () => void;
   usuariosRecuperado: BuscarUsuario[];
   setUsuariosRecuperado: (usuarios: BuscarUsuario[]) => void; 
@@ -56,7 +58,12 @@ interface GeneralUsuario {
   setFindUserOrToma:(findUserOrToma: boolean) => void;
   findUserMapaGeo: boolean;
   setFindUserMapaGeo: (findUserMapaGeo: boolean) => void;
-
+  controlDetalleCaja: string;
+  setControlDetalleCaja: (controlDetalleCaja: string) => void;
+  booleanCodigoDeToma: boolean;
+  setBooleanCodigoDeToma: (booleanCodigoDeToma: boolean) => void;
+ booleanCerrarModalFiltros: boolean;
+ setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros: boolean) => void;
 }
 
 export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
@@ -91,5 +98,14 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setFindUserOrToma:(findUserOrToma) => set({findUserOrToma}),
   findUserMapaGeo: false,
   setFindUserMapaGeo:(findUserOrToma) => set({findUserOrToma}),
+  controlDetalleCaja: '',
+  setControlDetalleCaja: (controlDetalleCaja) => set ({controlDetalleCaja}),
+  dataCajaUser: [],
+  setDataCajaUser:(dataCajaUser) => set ({dataCajaUser}),
+  booleanCodigoDeToma: false,
+  setBooleanCodigoDeToma:(booleanCodigoDeToma) => set({booleanCodigoDeToma}),
+  booleanCerrarModalFiltros: true,
+  setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros) => set({booleanCerrarModalFiltros}),
+
 }));
 

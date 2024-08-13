@@ -34,7 +34,19 @@ export const conceptoSchema = z.object({
     abonable: z.number(),
     tarifa_fija:z.number(),
     cargo_directo: z.number(),
+    genera_orden: z.number(),
+    genera_recargo: z.number(),
+    concepto_rezago: z.number(),
+    pide_monto: z.number(),
+    bonificable: z.number(),
     genera_iva: z.string(),
+    recargo: z.string()
+    .transform((val) => parseFloat(val))
+    .refine((val) => !isNaN(val), "Debe ser un porcentaje válido")
+    .pipe(
+        z.number().min(1, "El porcentaje debe ser mayor o igual a 1")
+                .max(100, "El porcentaje debe ser menor o igual a 100")
+    ),
     estado: z.boolean(),
 })
 //VALIDACIONES DESCUENTOS

@@ -61,7 +61,7 @@ const MenuLateralPoligonosGeograficos = () => {
             new_visibility[ruta.id] = true;
         });
         set_ruta_visibility(new_visibility);
-        console.log(libro_visibility)
+
     }, [rutas]);
 
     //useEffect((()=>{console.log(libro_visibility)}),[libro_visibility])
@@ -97,6 +97,7 @@ const MenuLateralPoligonosGeograficos = () => {
         }
     }
 
+    //rutas
     const change_libro_visibility = (ruta) => {
 
         let new_visibility = { ...ruta_visibility };
@@ -112,6 +113,7 @@ const MenuLateralPoligonosGeograficos = () => {
 
     }
 
+    //libros
     const change_libro_visibility_by_libro_id = (libro_id) => {
         let new_visibility = { ...libro_visibility };
         new_visibility[libro_id] = !new_visibility[libro_id];
@@ -190,7 +192,7 @@ const MenuLateralPoligonosGeograficos = () => {
                     }
                     {
                         loading_import &&
-                        <p className='p-2 bg-blue-500 text-white sticky top-0 z-50'> Cargando Importanción ... </p>
+                        <p className='p-2 bg-blue-500 text-white sticky top-0 z-50'> Cargando Importación ... </p>
                     }
                     {
                         rutas.length == 0 && !loading_import && !loading_rutas &&

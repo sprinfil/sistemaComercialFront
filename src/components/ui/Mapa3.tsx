@@ -23,7 +23,7 @@ import { useBreadcrumbStore } from "../../contexts/ZustandGeneralUsuario";
 export const Mapa3 = () => {
     const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
     const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma, setFindUserMapaGeo, setToma} = ZustandGeneralUsuario();
-    const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas } = PoligonosZustand();
+    const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas, set_ruta_visibility, set_libro_visibility } = PoligonosZustand();
     const navigate = useNavigate();
     const { setRutas, rutas } = useStateContext();
     const [map, set_map] = useState(null);
@@ -38,6 +38,7 @@ export const Mapa3 = () => {
     const search_input = useRef(null);
     const [hide_all_polygons, set_hide_all_polygons] = useState(false);
     const [hide_all_tomas, set_hide_all_tomas] = useState(false);
+    const [hide_all_tomas_bool, set_hide_all_tomas_bool] = useState(false);
 
     const getRutas = async () => {
         set_loading_rutas(true);
@@ -128,11 +129,9 @@ export const Mapa3 = () => {
 
             return ruta.libros.map((libro) => {
 
+                console.log(libro_visibility)
 
-
-                if (libro.polygon && libro_visibility[libro.id] && libro.polygon.coordinates[0].length > 0 && !loading_rutas && !hide_all_polygons) {
-
-
+                if (libro.polygon && libro_visibility[libro.id] && libro.polygon.coordinates[0].length > 0 && !loading_rutas) {
 
                     let polygonCoordinates = libro.polygon.coordinates[0].map((punto) => (
                         {
@@ -269,7 +268,7 @@ export const Mapa3 = () => {
         setPolygons(newPolygons.map(p => p.polygon));
         setOverlays(newPolygons.map(p => p.labelOverlay));
 
-    }, [libro_visibility, hide_all_polygons]);
+    }, [libro_visibility, ruta_visibility]);
 
     const toggle_modo_edicion = () => {
         set_editando(!editando);
@@ -359,8 +358,32 @@ export const Mapa3 = () => {
     };
 
     const handle_hide_all_polygons = () => {
-        set_hide_all_polygons(!hide_all_polygons);
+  
+        let new_libro_visibility = {};
+        rutas.forEach(ruta => {
+            ruta.libros.forEach(libro => {
+                if(!hide_all_tomas_bool){
+                    new_libro_visibility[libro.id] = false;
+                }else{
+                    new_libro_visibility[libro.id] = true;
+                }
+            });
+        });
+        set_libro_visibility(new_libro_visibility);
+    
+        let new_ruta_visibility = {};
+        rutas.forEach(ruta => {
+            if(!hide_all_tomas_bool){
+                new_ruta_visibility[ruta.id] = false;
+            }else{
+                new_ruta_visibility[ruta.id] = true;
+            }
+        });
+        set_ruta_visibility(new_ruta_visibility);
+        set_hide_all_tomas_bool(!hide_all_tomas_bool);
+   
     }
+
     const handle_hide_all_tomas = () => {
         set_hide_all_tomas(!hide_all_tomas);
     }
@@ -401,8 +424,8 @@ export const Mapa3 = () => {
                                 <IconButton>
                                     <div className='flex gap-2 items-center text-[10px]'>
                                         Polígonos
-                                        {hide_all_polygons && <><EyeClosedIcon className='w-[15px] h-[15px]' /></>}
-                                        {!hide_all_polygons && <><EyeIcon className='w-[15px] h-[15px]' /></>}
+                                        {hide_all_tomas_bool && <><EyeClosedIcon className='w-[15px] h-[15px]' /></>}
+                                        {!hide_all_tomas_bool && <><EyeIcon className='w-[15px] h-[15px]' /></>}
                                     </div>
                                 </IconButton>
                             </div>

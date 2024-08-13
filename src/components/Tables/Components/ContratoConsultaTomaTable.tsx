@@ -18,7 +18,9 @@ interface ConsultaUsuarioTableProps {
 export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filtroSeleccionado}: ConsultaUsuarioTableProps) {
 
   console.log("este es el que recibeeee" + nombreBuscado)
-  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, setLoadingTable, loadingTable, setAccion, setUsuario, usuario, setUsuariosRecuperado, tomaUsuariosEncontrados, setTomaUsuariosEncontrados, setToma} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+  const {toma, usuarioObtenido, setUsuarioObtenido, 
+    setUsuariosEncontrados, usuariosEncontrados, setLoadingTable, loadingTable, setAccion, setUsuario, usuario, setUsuariosRecuperado, 
+    tomaUsuariosEncontrados, setTomaUsuariosEncontrados, setToma,setBooleanCerrarModalFiltros} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
 
   const tableRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -34,6 +36,9 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
                   case "4":
                     endpoint = `/usuarios/consultaDireccion/${nombreBuscado}`;
                     break;
+                    case "5":
+                      endpoint = `/Tomas/codigo/${nombreBuscado}`;
+                      break;
               default:
                   console.log("No jalo algo paso mal");
                   return;
@@ -41,7 +46,16 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
 
           try {
             const response = await axiosClient.get(endpoint);
-            const results = response.data.data;
+            let results;
+            if(filtroSeleccionado == 5)
+            {
+              results = response.data
+            }
+            else
+            {
+              results = response.data.data
+
+            }
             setTomaUsuariosEncontrados(results);
             console.log(response);
 
@@ -58,10 +72,12 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
 
         loadAndScroll();
     }
-}, [nombreBuscado, setUsuariosEncontrados, setLoadingTable]);
+}, [toma, setToma, filtroSeleccionado]);
 
   const handleRowClick = (contratobuscarUsuario: TomaPorUsuario) => {
+    setToma(null);
     setToma(contratobuscarUsuario);
+    setBooleanCerrarModalFiltros(false);
     if(accion2 == "verUsuarioDetalle")
     {
       navigate("/usuario/toma");
@@ -80,7 +96,7 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
   return (
     <ContextProvider>
     <div ref={tableRef}>
-        <DataTableTomaUsuarios columns={columns} data={tomaUsuariosEncontrados} sorter='nombre' onRowClick={handleRowClick} />
+        <DataTableTomaUsuarios columns={columns} data={tomaUsuariosEncontrados}  onRowClick={handleRowClick} />
       </div>
     </ContextProvider>
   
