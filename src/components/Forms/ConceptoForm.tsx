@@ -541,13 +541,13 @@ const ConceptoForm = () => {
                 pide_monto: concepto.pide_monto,
                 bonificable: concepto.bonificable,
                 recargo: concepto.recargo,
-                estado: Boolean(concepto.estado)
+                estado: valorConversionBool
               });
             setcontrol(true);
             console.log("este es el concepto al editar", concepto);
 
         }
-    }, [accion, form.reset, estado,valorConversionBool, concepto.estado]);
+    }, [accion, form.reset, concepto.estado, valorConversionBool]);
 
     const handleFormSubmit = () => {
         console.log(form.getValues());
@@ -578,11 +578,11 @@ const ConceptoForm = () => {
             pide_monto: concepto.pide_monto,
             bonificable: concepto.bonificable,
             recargo: concepto.recargo,
-            estado: Boolean(concepto.estado)
+            estado: valorConversionBool
           });
 
 
-      }, [concepto.estado]);
+      }, [valorConversionBool]);
     
     
 
