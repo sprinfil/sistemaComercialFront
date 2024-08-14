@@ -86,7 +86,7 @@ const Catalogos = () => {
 
         <TabsList>
           {opciones.map((opcion, index) => {
-            if (permissions.includes(opcion.permission) || user.id == 1) {
+            if (permissions.includes(opcion.permission) || user.id == 1|| user?.roles?.includes("Admin")) {
               return (
                 <>
                   <TabsTrigger value={opcion.titulo} key={index}>{opcion.titulo}</TabsTrigger>

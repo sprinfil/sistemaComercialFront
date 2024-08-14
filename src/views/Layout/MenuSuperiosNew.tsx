@@ -76,7 +76,11 @@ export const MenuSuperiosNew = () => {
     };
     //EN DESARROLLO
     const getUserRoles = async () => {
-
+        try{
+            const response = await axiosClient.get(`/Rol/get_all_rol_names_by_user_id/${user.id}`);
+        } catch(error){
+            console.log(error);
+        }
     };
 
     const handle_menu_trigger_click = (opcion, icono) => {
@@ -266,13 +270,13 @@ export const MenuSuperiosNew = () => {
                         !loading_permissions &&
                         <>
                             {opciones.map((opcionPadre, index) => {
-                                if (permissions.includes(opcionPadre.permission) || user.id == 1) {
+                                if (permissions.includes(opcionPadre.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
                                     return (
                                         <MenubarMenu>
                                             <MenubarTrigger ><div className='flex gap-2 items-center'> <span className='text-primary'> {opcionPadre.icon}</span>{opcionPadre.titulo}</div></MenubarTrigger>
                                             <MenubarContent>
                                                 {opcionPadre.opciones.map((opcion, key) => {
-                                                    if (permissions.includes(opcion.permission) || user.id == 1) {
+                                                    if (permissions.includes(opcion.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
                                                         return (
                                                             <>
                                                                 <Link to={opcion.route} key={index}>

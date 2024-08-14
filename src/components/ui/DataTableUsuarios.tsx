@@ -64,15 +64,34 @@ export function DataTableUsuarios<TData, TValue>({
   return (
     <div className="">
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Buscar..."
-          type="text"
-          value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
-          }
-          className="w-full"
-        />
+        <div className="flex gap-4">
+          <div>
+            <p>Nombre</p>
+            <Input
+              placeholder="Buscar..."
+              type="text"
+              value={(table.getColumn(`nombre`)?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn(`${`nombre`}`)?.setFilterValue(event.target.value)
+              }
+              className="w-full"
+            />
+          </div>
+          <div>
+            <p>Teléfono</p>
+            <Input
+              placeholder="Buscar..."
+              type="text"
+              value={(table.getColumn(`telefono`)?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn(`telefono`)?.setFilterValue(event.target.value)
+              }
+              className="w-full"
+            />
+          </div>
+
+        </div>
+
       </div>
       <div className="rounded-md border h-full overflow-auto">
         <Table>
@@ -85,9 +104,9 @@ export function DataTableUsuarios<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}
@@ -101,9 +120,8 @@ export function DataTableUsuarios<TData, TValue>({
                 <TableRow
                   key={row.id}
                   onClick={() => handleRowClick(row.id, row.original)}
-                  className={`cursor-pointer hover:bg-border ${
-                    selectedRow === row.id ? "bg-border" : ""
-                  }`}
+                  className={`cursor-pointer hover:bg-border ${selectedRow === row.id ? "bg-border" : ""
+                    }`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
