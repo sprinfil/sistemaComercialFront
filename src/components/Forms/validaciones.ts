@@ -30,7 +30,14 @@ export const conceptoSchema = z.object({
     id: z.number(),
     nombre: z.string().min(1, "El Nombre es requerido"),
     descripcion: z.string(),
-    prioridad_abono: z.string().min(1, "La prioridad debe ser minimo a 1").max(10, "La prioridad no puede ser mayor a 10"),
+    prioridad_abono: z.string()
+    .transform((val) => parseFloat(val)) // Transforma el string en número
+    .refine((val) => !isNaN(val), "Debe ser un numero valido") // Verifica que sea un número válido
+    .pipe(
+      z.number()
+        .min(1, "El numero debe ser mayor o igual a 1")
+        .max(10, "El numero debe ser menor o igual a 10")
+    ), 
     abonable: z.number(),
     tarifa_fija:z.number(),
     cargo_directo: z.number(),
