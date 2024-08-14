@@ -4,7 +4,7 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import Loader from "../../components/ui/Loader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UpdateIcon, MagnifyingGlassIcon, PlusIcon, HamburgerMenuIcon } from '@radix-ui/react-icons';
+import { UpdateIcon, MagnifyingGlassIcon, PlusIcon, HamburgerMenuIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx"; // Asegúrate de que esta ruta sea correcta
 import Modal from "../ui/Modal.tsx";
 import { useStateContext } from "../../contexts/ContextConcepto.tsx";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/accordion"
 
 import { BuscarUsuario } from "../Tables/Columns/ContratoConsultaUsuarioColumns.tsx";
+import { Skeleton } from "../ui/skeleton.tsx";
 const PuntoVentaForm = () => {
   const [userInput, setUserInput] = useState("");
   const [cargosData, setCargosData] = useState(null);
@@ -72,7 +73,7 @@ const PuntoVentaForm = () => {
     set_cargos_usuario(cargos_usuario_fetch.data);
 
     if (cargos_usuario_fetch?.data?.tomas?.length == 1) {
-        cargos_usuario_fetch.data.tomas.map((toma, index) => {
+      cargos_usuario_fetch.data.tomas.map((toma, index) => {
         toma.cargos_vigentes.map((cargo, index) => {
           handleCargoSelect(cargo, toma, true);
         })
@@ -294,9 +295,20 @@ const PuntoVentaForm = () => {
         />
       </div>
       {error && <p className="text-red-500">{error}</p>}
-      {loading && <Loader />}
-      {!loading && !error && (dataCajaUser?.length > 0 || dataToma?.id) && (
-        <div className="flex min-h-[78vh] max-h-[78vh] ">
+      <div className="flex min-h-[78vh] max-h-[78vh] px-2">
+        {loading && <div className="w-full h-full mt-2">
+          <div className="w-[60%]">
+            <div>
+              <Skeleton className="w-full h-[5vh]" />
+            </div>
+            <div className="w-full flex gap-2 mt-4">
+              <Skeleton className="h-[60vh] w-[50%]" />
+              <Skeleton className="h-[60vh] w-[50%]" />
+            </div>
+          </div>
+        </div>}
+        {!loading && !error && (dataCajaUser?.length > 0 || dataToma?.id) && (
+
           <div className="border rounded-sm w-[60%] ml-1 mr-1 mt-2 overflow-auto">
             <Tabs defaultValue="general">
               <TabsList>
@@ -731,62 +743,72 @@ const PuntoVentaForm = () => {
             </Tabs>
           </div>
 
-          <div className="border rounded-sm w-[40%] ml-1 mr-1 mt-2 flex flex-col relative">
-            <div className="absolute left-2 bg-background px-2 text-sm font-semibold -top-3">
-              Cargos Seleccionados
-            </div>
-            <div className="flex-grow mt-1 ">
-              {selectedCargos.length > 0 ? (
-                <div className="mt-2 rounded-sm p-1 max-h-96 overflow-y-auto">
-                  <table className="w-full table-fixed">
-                    <thead className="bg-muted">
-                      <tr>
-                        <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                          Concepto
-                        </th>
-                        <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                          Usuario / Toma
-                        </th>
-                        <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                          Monto
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-background divide-y ">
-                      {selectedCargos.map((cargo, index) => (
-                        <tr key={index}>
-                          <td className="px-2 py-4 whitespace-normal text-sm  break-words">
-                            {cargo.concepto}
-                          </td>
-                          <td>
-
-                            {cargo?.entidad}
-                          </td>
-                          <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                            ${parseFloat(cargo.monto)}
-                          </td>
-                        </tr>
-                      ))}
-                      <tr>
-                        <td className="px-2 py-4 text-xl font-semibold ">Total a pagar</td>
-                        <td className="px-2 py-4 text-xl font-semibold ">
-                          ${totalRestante}
-                        </td>
-
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p className="text-sm mt-5 ml-3">Seleccione uno o más cargos para mostrar la información aquí.</p>
-              )}
-            </div>
-            <Button onClick={() => alert('PAGAR(F5)')}>
-              PAGAR(F5)
-            </Button>
-          </div>
+        )}
+      </div>
+      <div className="border rounded-sm w-[38%] ml-1 mr-1 mt-2 flex flex-col absolute right-2 mt-[7vh] min-h-[75vh]">
+        <div className="absolute left-2 bg-background px-2 text-sm font-semibold -top-3">
+          Cargos Seleccionados
         </div>
-      )}
+        <div className="flex-grow mt-1 ">
+          {selectedCargos.length > 0 ? (
+            <div className="mt-2 rounded-sm p-1 max-h-96 overflow-y-auto">
+              <table className="w-full table-fixed">
+                <thead className="bg-muted">
+                  <tr>
+                    <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                      Concepto
+                    </th>
+                 
+                    <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                      Usuario / Toma
+                    </th>
+                    <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                      Monto
+                    </th>
+                    <th>
+
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-background divide-y ">
+                  {selectedCargos.map((cargo, index) => (
+                    <tr key={index}>
+                      <td className="px-2 py-4 whitespace-normal text-sm  break-words">
+                        {cargo.concepto}
+                      </td>
+                      <td>
+                        {cargo?.entidad}
+                      </td>
+                      <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                        ${parseFloat(cargo.monto)}
+                      </td>
+                      <td className="">
+                        <div className="max-w-[50px]" onClick={() => handleCargoSelect(cargo)}>
+                          <IconButton>
+                            <CrossCircledIcon className="text-red-500"/>
+                          </IconButton>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td className="px-2 py-4 text-xl font-semibold ">Total a pagar</td>
+                    <td className="px-2 py-4 text-xl font-semibold ">
+                      ${totalRestante}
+                    </td>
+
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-sm mt-5 ml-3">Seleccione uno o más cargos para mostrar la información aquí.</p>
+          )}
+        </div>
+        <Button onClick={() => alert('PAGAR(F5)')}>
+          PAGAR(F5)
+        </Button>
+      </div>
     </div>
   );
 };
