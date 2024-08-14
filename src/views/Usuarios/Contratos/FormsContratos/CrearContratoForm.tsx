@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import {
     Form,
@@ -30,6 +30,8 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { CallesComboBox } from '../../../../components/ui/CallesComboBox.tsx';
 import { ColoniaComboBox } from '../../../../components/ui/ColoniaComboBox.tsx';
 import { LocalidadComboBox } from '../../../../components/ui/LocalidadComboBox.tsx';
+import MarcoForm from '../../../../components/ui/MarcoForm.tsx';
+import MarcoFormServiciosAContratar from '../../../../components/ui/MarcoFormServiciosAContratar.tsx';
 export const CrearContratoForm = () => {
 
     const navigate = useNavigate();
@@ -38,10 +40,9 @@ export const CrearContratoForm = () => {
     const [errors, setErrors] = useState({});
     const [openModal, setOpenModal] = useState(false);
     const [calleSeleccionada, setCalleSeleccionada] = useState<string | null>(null);
-
-
-
-
+    const [coloniaSeleccionada, setColoniaSeleccionada] = useState<string | null>(null);
+    const [entreCalle1Seleccionada, setEntreCalle1Seleccionada] = useState<string | null>(null);
+    const [entreCalle2Seleccionada, setEntreCalle2Seleccionada] = useState<string | null>(null);
 
     const form = useForm<z.infer<typeof crearContratoSchema>>({
         resolver: zodResolver(crearContratoSchema),
@@ -94,8 +95,8 @@ export const CrearContratoForm = () => {
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end '>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        <p className="text-[20px] font-medium">Crear contrato</p>
-                        <p>Usuario:</p>
+                        <p className="text-[30px] font-medium ml-3">Crear contrato</p>
+                        <div className="text-[20px] font-medium mt-10 ml-5">Usuario:</div>
                     </div>
                 </div>
             </div>
@@ -103,8 +104,9 @@ export const CrearContratoForm = () => {
         {errors.general && <Error errors={errors.general} />}
     
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <div className="rounded-md border border-border p-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center mt-[10vh]">
+            <div className="rounded-md border border-border shadow-lg p-8 w-[210vh] ">
+            <div className="text-[20px] font-medium mb-5">No contrato. </div>
                     <div className="w-[full]">
                         <FormField
                             control={form.control}
@@ -231,7 +233,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Colonia</FormLabel>
                                         <FormControl>
-                                        <ColoniaComboBox form={form} field={field} name="colonia" setCargoSeleccionado={setCalleSeleccionada}/>
+                                        <ColoniaComboBox form={form} field={field} name="colonia" setCargoSeleccionado={setColoniaSeleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -265,7 +267,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Entre calle 1</FormLabel>
                                         <FormControl>
-                                        <CallesComboBox form={form} field={field} name="entre_calle_1" setCargoSeleccionado={setCalleSeleccionada}/>
+                                        <CallesComboBox form={form} field={field} name="entre_calle_1" setCargoSeleccionado={setEntreCalle1Seleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -281,7 +283,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Entre calle 2</FormLabel>
                                         <FormControl>
-                                        <CallesComboBox form={form} field={field} name="entre_calle_2" setCargoSeleccionado={setCalleSeleccionada}/>
+                                        <CallesComboBox form={form} field={field} name="entre_calle_2" setCargoSeleccionado={setEntreCalle2Seleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -312,11 +314,9 @@ export const CrearContratoForm = () => {
 
                     </div>
 
-
-                <p className="text-muted-foreground text-[20px] mt-5">Selecciona servicios a contratar</p>
+               
                 <div className='flex space-x-8 mt-2'>
-                
-                <div className='flex space-x-10 border rounded-md border-border p-5 w-[55vh]'>
+                <MarcoFormServiciosAContratar title={"Servicios a contratar"}>
                     <FormField
                         control={form.control}
                         name="c_agua"
@@ -368,8 +368,9 @@ export const CrearContratoForm = () => {
                             </FormItem>
                         )}
                     />
-                </div>
-                <div className='w-[40vh]'>
+                    </MarcoFormServiciosAContratar>
+              
+                <div className='w-[40vh] mt-4'>
                     <FormField
                         control={form.control}
                         name="tipo_contratacion"
@@ -398,7 +399,11 @@ export const CrearContratoForm = () => {
                             </FormItem>
                         )}
                     />
+                
+
                 </div>
+                <Button type="submit" className='mt-[50px] w-[20vh] h-[5vh] ml-[3vh]' onClick={handleAbrirModalNotificaciones}>Guardar</Button>
+
                         
             </div>
                             
@@ -406,7 +411,6 @@ export const CrearContratoForm = () => {
                 
                     {loading && <Loader />}
                     <div className="w-full flex justify-normal mt-4">
-                        <Button type="submit" className='ml-[195vh]' onClick={handleAbrirModalNotificaciones}>Guardar</Button>
                         
                         {
                            

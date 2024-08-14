@@ -47,14 +47,15 @@ export const CallesComboBox = ({ field, form, name = "id_concepto", setCargoSele
 
     React.useEffect(() => {
         getConcepto();
+        console.log(languages);
     }, []);
 
     const getConcepto = async () => {
         setLoading(true);
         try {
-            const response = await axiosClient.get("/Concepto");
+            const response = await axiosClient.get("/calle");
             let ctr = 0;
-            response.data.data.forEach(concepto => {
+            response.data.forEach(concepto => {
                 languages[ctr] = { value: concepto.id, label: concepto.nombre };
                 ctr = ctr + 1;
             });
@@ -64,6 +65,7 @@ export const CallesComboBox = ({ field, form, name = "id_concepto", setCargoSele
             console.error("Failed to fetch concepto:", error);
         }
     };
+
 
     const [open, setOpen] = React.useState(false)
 

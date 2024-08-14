@@ -20,6 +20,9 @@ import { Navigate, useNavigate } from 'react-router-dom';
 const DireccionNotificaciones = () => {
   const [errors, setErrors] = useState({});
   const [calleSeleccionada, setCalleSeleccionada] = useState<string | null>(null);
+  const [entreCalle1Seleccionada, setEntreCalle1Seleccionada] = useState<string | null>(null);
+  const [entreCalle2Seleccionada, setEntreCalle2Seleccionada] = useState<string | null>(null);
+  const [coloniaSeleccionada, setColoniaSeleccionada] = useState<string | null>(null);
 
  const navigate = useNavigate();
   const form = useForm<z.infer<typeof crearContratoSchema>>({
@@ -66,15 +69,8 @@ const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
                     <div className="mb-[10px] h-full w-full mx-4">
 
 
-                    <div className="flex items-center space-x-[150vh] mt-[2vh]">
-                        <div className="text-[20px] font-medium text-primary ml-[6vh]">
-                            Domicilio para notificaciones
-                        </div>
-                        <div className="text-[17px] font-medium">
-                            Usuario: 
-                            <p className="text-slate-500 mb-[5vh] inline"> Miguel</p>
-                        </div>
-                    </div>
+                 <p className="text-[30px] font-medium ml-3">Direccion para notificaciones</p>
+                        <div className="text-[20px] font-medium mt-10 ml-5">Usuario:</div>
 
                         
                     </div>
@@ -82,10 +78,13 @@ const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
             </div>
             <div className="py-[20px] px-[10px] mt-[5vh]">
         {errors.general && <Error errors={errors.general} />}
-    
+        <div>
+                
+                </div>
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center">
-                <div className="rounded-md border border-border p-8 w-[210vh] ">
+            
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center mt-10">
+                <div className="rounded-md border border-border shadow-lg p-8 w-[215vh] ">
                     <div className="text-[20px] font-medium">Toma:</div>
                         <div className='flex space-x-2 mt-[5vh] items-center'>
                         <div className='w-[160vh]'>
@@ -132,7 +131,7 @@ const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
                                     <FormItem>
                                         <FormLabel>Colonia o fraccionamiento</FormLabel>
                                         <FormControl>
-                                        <ColoniaComboBox form={form} field={field} name="colonia" setCargoSeleccionado={setCalleSeleccionada}/>
+                                        <ColoniaComboBox form={form} field={field} name="colonia" setCargoSeleccionado={setColoniaSeleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -166,7 +165,7 @@ const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
                                     <FormItem>
                                         <FormLabel>Entre calle 1</FormLabel>
                                         <FormControl>
-                                        <CallesComboBox form={form} field={field} name="entre_calle_1" setCargoSeleccionado={setCalleSeleccionada}/>
+                                        <CallesComboBox form={form} field={field} name="entre_calle_1" setCargoSeleccionado={setEntreCalle1Seleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -182,16 +181,21 @@ const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
                                     <FormItem>
                                         <FormLabel>Entre calle 2</FormLabel>
                                         <FormControl>
-                                        <CallesComboBox form={form} field={field} name="entre_calle_2" setCargoSeleccionado={setCalleSeleccionada}/>
+                                        <CallesComboBox form={form} field={field} name="entre_calle_2" setCargoSeleccionado={setEntreCalle2Seleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
+                            
                            </div>
                         </div>
-                        <Button type="button" className='flex justify-center items-center mt-[5vh]' onClick={handleNavigationMapaToma}>Guardar</Button>
+                        <div className="flex justify-end mt-[5vh]">
+                        <Button type="button" className='flex justify-center items-center' onClick={handleNavigationMapaToma}>
+                            Guardar
+                        </Button>
+                     </div>
 
                         </div>
 

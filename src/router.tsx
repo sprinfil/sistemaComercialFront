@@ -18,8 +18,7 @@ import BuscarUsuario from './views/Usuarios/Consultar/BuscarUsuario';
 import { CrearContratoForm } from './views/Usuarios/Contratos/FormsContratos/CrearContratoForm';
 import { TomaUsuarioDetalle } from './views/Usuarios/Consultar/TomaUsuarioDetalle';
 import DireccionNotificaciones from './views/Usuarios/Contratos/DireccionNotificaciones';
-import { EscogerPuntoToma } from './views/Usuarios/Consultar/VistasDetalleUsuario/EscogerPuntoToma';
-
+import { EscogerPuntoToma } from './views/Usuarios/Contratos/EscogerPuntoToma';
 const router = createBrowserRouter ([
     {
         path:'/',
