@@ -93,7 +93,7 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
   return (
     <ContextProvider>
     <div ref={tableRef}>
-        <DataTableTomaUsuarios columns={columns} data={tomaUsuariosEncontrados} sorter='nombre' onRowClick={handleRowClick} />
+        <DataTableTomaUsuarios columns={columns} data={tomaUsuariosEncontrados} onRowClick={handleRowClick} />
       </div>
     </ContextProvider>
   

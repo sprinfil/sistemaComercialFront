@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-
+import MarcoForm from "./MarcoForm";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -62,21 +62,82 @@ export function DataTableUsuarios<TData, TValue>({
   };
 
   return (
-    <div className="">
-      <div className="flex items-center py-4">
+    <div className="mt-5 p-10">
+      <MarcoForm title={"Filtros para buscar al usuario"}>
+      <div className="flex space-x-4 ">
+      <div className="flex flex-col space-y-2">
+        <p>Nombre</p>
         <Input
-          placeholder="Buscar..."
+          placeholder="Buscar nombre"
           type="text"
-          value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
+            table.getColumn("nombre")?.setFilterValue(event.target.value)
           }
-          className="w-full"
+          className="w-[40vh]"
         />
-      </div>
-      <div className="rounded-md border h-full overflow-auto">
+          </div>
+          <div className="flex flex-col space-y-2">
+          <p>Telefono</p>
+        <Input
+          placeholder="Buscar telefono"
+          type="text"
+          value={(table.getColumn("telefono")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("telefono")?.setFilterValue(event.target.value)
+          }
+          className="w-[40vh]"
+        />
+
+          </div>
+          <div className="flex flex-col space-y-2">
+          <p>CURP</p>
+        <Input
+          placeholder="Buscar CURP"
+          type="text"
+          value={(table.getColumn("curp")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("curp")?.setFilterValue(event.target.value)
+          }
+          className="w-[40vh]"
+        />
+          </div>
+
+          <div className="flex flex-col space-y-2">
+          <p>RFC</p>
+        <Input
+          placeholder="Buscar RFC"
+          type="text"
+          value={(table.getColumn("rfc")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("rfc")?.setFilterValue(event.target.value)
+          }
+          className="w-[40vh]"
+        />
+          </div>
+
+          <div className="flex flex-col space-y-2">
+          <p>Correo</p>
+        <Input
+          placeholder="Buscar correo"
+          type="text"
+          value={(table.getColumn("correo")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("correo")?.setFilterValue(event.target.value)
+          }
+          className="w-[40vh]"
+        />
+          </div>
+          </div>
+      </MarcoForm>
+     
+       
+       
+       
+      
+      <div className="rounded-md border h-full overflow-auto mt-10">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -143,4 +204,3 @@ export function DataTableUsuarios<TData, TValue>({
     </div>
   );
 }
-
