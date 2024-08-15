@@ -4,7 +4,7 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import Loader from "../../components/ui/Loader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UpdateIcon, MagnifyingGlassIcon, PlusIcon, HamburgerMenuIcon, CrossCircledIcon } from '@radix-ui/react-icons';
+import { UpdateIcon, MagnifyingGlassIcon, PlusIcon, HamburgerMenuIcon, CrossCircledIcon, ExternalLinkIcon, GearIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx"; // Asegúrate de que esta ruta sea correcta
 import Modal from "../ui/Modal.tsx";
 import { useStateContext } from "../../contexts/ContextConcepto.tsx";
@@ -16,6 +16,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import search_image from "../../img/search.svg"
 
 import { BuscarUsuario } from "../Tables/Columns/ContratoConsultaUsuarioColumns.tsx";
 import { Skeleton } from "../ui/skeleton.tsx";
@@ -268,8 +269,16 @@ const PuntoVentaForm = () => {
   }, [dataToma, dataCajaUser]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col relative">
       <div className="h-10 justify-center flex items-center rounded-sm">
+        <div className="left-4  h-[30px] bg-muted absolute p-3 rounded-md flex items-center">
+          <IconButton>
+            <ExternalLinkIcon />
+          </IconButton>
+          <IconButton>
+            <GearIcon />
+          </IconButton>
+        </div>
         <p className="whitespace-nowrap">Número de toma</p>
         <Input
           className="h-8 ml-1 mr-1 w-96"
@@ -296,6 +305,16 @@ const PuntoVentaForm = () => {
       </div>
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex min-h-[78vh] max-h-[78vh] px-2">
+      {!loading && !error && !dataCajaUser?.length && !dataToma?.id &&(
+        <>
+        <div className="w-full h-[full]">
+            <div className=" w-[60%] h-full flex flex-col gap-4 items-center justify-center">
+              <img src={search_image} alt="" className="h-[50vh]"/>
+              <p>Busca alguna toma o usuaio.</p>
+            </div>
+        </div>
+        </>
+      )}
         {loading && <div className="w-full h-full mt-2">
           <div className="w-[60%]">
             <div>
@@ -745,7 +764,7 @@ const PuntoVentaForm = () => {
 
         )}
       </div>
-      <div className="border rounded-sm w-[38%] ml-1 mr-1 mt-2 flex flex-col absolute right-2 mt-[7vh] min-h-[75vh]">
+      <div className="border rounded-sm w-[38%] ml-1 mr-1 mt-2 flex flex-col absolute right-2 min-h-[75vh] top-[48px]">
         <div className="absolute left-2 bg-background px-2 text-sm font-semibold -top-3">
           Cargos Seleccionados
         </div>
@@ -758,7 +777,7 @@ const PuntoVentaForm = () => {
                     <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                       Concepto
                     </th>
-                 
+
                     <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                       Usuario / Toma
                     </th>
@@ -785,7 +804,7 @@ const PuntoVentaForm = () => {
                       <td className="">
                         <div className="max-w-[50px]" onClick={() => handleCargoSelect(cargo)}>
                           <IconButton>
-                            <CrossCircledIcon className="text-red-500"/>
+                            <CrossCircledIcon className="text-red-500" />
                           </IconButton>
                         </div>
                       </td>

@@ -24,14 +24,7 @@ function App() {
           titulo: "Punto de Venta",
           componente: <PuntoVenta/>
         },
-        {
-          titulo: "Retiros de Caja",
-          componente: <RetirosCaja/>
-        },
-        {
-          titulo: "Configurar Caja",
-          componente: <ConfigurarCaja/>
-        },
+
         {
             titulo: "Cortes de Caja",
             componente: <CorteCaja/>
