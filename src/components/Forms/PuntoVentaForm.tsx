@@ -20,6 +20,7 @@ import search_image from "../../img/search.svg"
 
 import { BuscarUsuario } from "../Tables/Columns/ContratoConsultaUsuarioColumns.tsx";
 import { Skeleton } from "../ui/skeleton.tsx";
+import { ModalRetiroCaja } from "../ui/ModalRetiroCaja.tsx";
 const PuntoVentaForm = () => {
   const [userInput, setUserInput] = useState("");
   const [cargosData, setCargosData] = useState(null);
@@ -272,9 +273,15 @@ const PuntoVentaForm = () => {
     <div className="flex flex-col relative">
       <div className="h-10 justify-center flex items-center rounded-sm">
         <div className="left-4  h-[30px] bg-muted absolute p-3 rounded-md flex items-center">
-          <IconButton>
-            <ExternalLinkIcon />
-          </IconButton>
+        <ModalRetiroCaja
+          trigger={
+            <IconButton title="Más Filtros">
+              <ExternalLinkIcon />
+            </IconButton>
+          } 
+          setdataUser={setDataToma}
+          cerrarForm={booleanCerrarModalFiltros}
+        />
           <IconButton>
             <GearIcon />
           </IconButton>
