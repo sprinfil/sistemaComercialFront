@@ -33,7 +33,7 @@ const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
       setOrdenDeTrabajo(tipoDeToma);
     setAccion("ver");
     console.log(tipoDeToma);
-}
+  }
 
   if (loadingTable) {
     return <div><Loader /></div>;

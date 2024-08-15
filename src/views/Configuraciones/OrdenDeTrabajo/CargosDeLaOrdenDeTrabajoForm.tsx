@@ -3,7 +3,7 @@ import logo from '../../img/logo.png';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from '../../components/ui/button.tsx';
+import { Button } from '../../../components/ui/button.tsx';
 import {
     Form,
     FormControl,
@@ -12,27 +12,27 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "../../components/ui/form.tsx";
-import { Input } from '../../components/ui/input.tsx';
-import { OrdenDeTrabajoCrearSchema } from './OrdenDeTrabajoValidaciones.ts';
-import { ModeToggle } from '../../components/ui/mode-toggle.tsx';
-import axiosClient from '../../axios-client.ts';
-import Loader from "../../components/ui/Loader.tsx";
-import Error from "../../components/ui/Error.tsx";
-import { Textarea } from "../ui/textarea.tsx";
-import { useStateContext } from "../../contexts/ContextOrdenDeTrabajo.tsx";
+} from "../../../components/ui/form.tsx";
+import { Input } from '../../../components/ui/input.tsx';
+import { OrdenDeTrabajoCrearSchema } from "../../../components/Forms/OrdenDeTrabajoValidaciones.ts";
+import { ModeToggle } from '../../../components/ui/mode-toggle.tsx';
+import axiosClient from "../../../axios-client.ts";
+import Loader from "../../../components/ui/Loader.tsx";
+import Error from "../../../components/ui/Error.tsx";
+import { Textarea } from "../../../components/ui/textarea.tsx";
+import { useStateContext } from "../../../contexts/ContextOrdenDeTrabajo.tsx";
 import { useEffect } from "react";
 import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
-import IconButton from "../ui/IconButton.tsx";
-import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
-import Modal from "../ui/Modal.tsx";
-import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
-import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
-import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
-import { Switch } from "../ui/switch.tsx";
-import { ConceptosComboBoxNew } from "../ui/ConceptosComboBoxNew.tsx";
-import OrdenDeTrabajoCargosTable from "../Tables/Components/OrdenDeTrabajoCargosTable.tsx";
-import { OrdenDeTrabajoAplicacionComboBox } from "../ui/OrdenDeTrabajoAplicacionComboBox.tsx";
+import IconButton from "../../../components/ui/IconButton.tsx";
+import { ComboBoxActivoInactivo } from "../../../components/ui/ComboBox.tsx";
+import Modal from "../../../components/ui/Modal.tsx";
+import ModalReactivacion from "../../../components/ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
+import { useToast } from "../../../components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "../../../components/ui/toast"; //IMPORTACIONES TOAST
+import { Switch } from "../../../components/ui/switch.tsx";
+import { ConceptosComboBoxNew } from "../../../components/ui/ConceptosComboBoxNew.tsx";
+import OrdenDeTrabajoCargosTable from "../../../components/Tables/Components/OrdenDeTrabajoCargosTable.tsx";
+import { OrdenDeTrabajoAplicacionComboBox } from "../../../components/ui/OrdenDeTrabajoAplicacionComboBox.tsx";
 import {
     Select,
     SelectContent,
@@ -40,6 +40,10 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select";
+import { ConceptosComboBox } from "../../../components/ui/ConceptosComboBox.tsx";
+
+
+
 
 type OrdenDeTrabajo = {
     nombre: string;
@@ -47,7 +51,7 @@ type OrdenDeTrabajo = {
     // Otras propiedades relevantes
   };
   
-const OrdenDeTrabajoForm = () => {
+const CargosDeLaOrdenDeTrabajoForm = () => {
     const { toast } = useToast()
     const { ordenDeTrabajo, setOrdenDeTrabajo, loadingTable, setLoadingTable, setOrdenDeTrabajos, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
@@ -59,7 +63,28 @@ const OrdenDeTrabajoForm = () => {
     const [cargoSeleccionado, setCargoSeleccionado] = useState();
     const [nombreSeleccionado, setNombreSeleccionado] = useState<string | null>(null);
     const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
-    const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>([]);
+    const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>();
+    const [aumentarAcciones, setAumentarAcciones] = useState(1);
+    const [totalAccionesComponente, setTotalAccionesComponente] = useState([{ id: 0 }]);
+    const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
+
+
+
+    const handleAddComponent = () => {
+        setTotalAccionesComponente(prevAcciones => [
+            ...prevAcciones,
+            { id: aumentarAcciones } // Genera un nuevo id basado en el contador
+        ]);
+        setAumentarAcciones(aumentarAcciones + 1); // Incrementa el contador
+    };
+
+    const handleRemoveComponent = (idToRemove) => {
+        setTotalAccionesComponente(prevAcciones =>
+            prevAcciones.filter(({ id }) => id !== idToRemove) // Filtra el componente por id
+        );
+    };
+
+
      //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
@@ -122,44 +147,34 @@ const OrdenDeTrabajoForm = () => {
     const form = useForm<z.infer<typeof OrdenDeTrabajoCrearSchema>>({
         resolver: zodResolver(OrdenDeTrabajoCrearSchema),
         defaultValues: {
-            id: 0,
-            nombre: "",
-            descripcion: "",
-            vigencias: "",
-            momento_cargo: "0",
-            genera_masiva: false
+            id: ordenDeTrabajo.id,
+            nombre: ordenDeTrabajo.nombre,
+            estado: ordenDeTrabajo.estado,
+            cargos: ordenDeTrabajo.cargos,
+            momento: ordenDeTrabajo.momento
         },
     })
-    interface Orden_trabajo_catalogo{
-        id: number
-        nombre: string
-        descripcion: string
-        vigencias: string
-        momento_cargo: string
-        genera_masiva: boolean
-    }
+
+
 
     function onSubmit(values: z.infer<typeof OrdenDeTrabajoCrearSchema>) {
         setLoading(true);
 
-                
-            let orden_trabajo_catalogo: Orden_trabajo_catalogo = 
-            {
-            id: 0,
+        const transformedData = {
+            id: values.id,
             nombre: values.nombre,
-            descripcion: values.descripcion,
-            vigencias: values.vigencias,
-            momento_cargo: values.momento_cargo,
-            genera_masiva: values.genera_masiva
-            };
-
-        
-
-       
-        console.log(orden_trabajo_catalogo);
-
+            orden_trabajo_conf: {
+                id: 1, // Si necesitas un ID fijo o estático, puedes usar un valor por defecto
+                id_orden_trabajo_catalogo: values.id_orden_trabajo_catalogo || 5, // Usa un valor por defecto o extrae el valor correctamente
+                id_concepto_catalogo: values.id_concepto_catalogo || 1, // Usa un valor por defecto o extrae el valor correctamente
+                accion: values.accion || "modificar",
+                momento: values.aplicacion || "generar",
+                atributo: values.estado || "estatus",
+                valor: values.valor || "baja temporal",
+            },
+        };
         if (accion == "crear") {
-            axiosClient.post(`/OrdenTrabajoCatalogo/create`, orden_trabajo_catalogo )
+            axiosClient.post(`/OrdenTrabajoCatalogo/create`, transformedData )
                 .then((response) => {
                     const data = response.data;
                     if(data.restore)
@@ -192,7 +207,6 @@ const OrdenDeTrabajoForm = () => {
         }})
                 .catch((err) => {
                     const response = err.response;
-                    console.log(err);
                     errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
@@ -206,7 +220,7 @@ const OrdenDeTrabajoForm = () => {
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
-                    setAbrirInput(false);
+                    setAbrirInput(true);
                     setAccion("");
                     getAnomalias();
                     setOrdenDeTrabajo(data.data);
@@ -351,8 +365,12 @@ const OrdenDeTrabajoForm = () => {
     return (
         <>
             <div className="overflow-auto">
-                <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm '>
+         
+                <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+               
+             
                     <div className='h-[20px] w-full flex items-center justify-end'>
+                        
                         <div className="mb-[10px] h-full w-full mx-4">
                             {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
                             {ordenDeTrabajo.nombre != "" && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
@@ -368,6 +386,15 @@ const OrdenDeTrabajoForm = () => {
                                             </IconButton>
                                         </a>}
                                 />
+                                <div onClick={handleAddComponent}>
+                                    <a title="Agregar nueva acción">
+                                    <IconButton>
+            
+                                    <PlusCircledIcon className='w-[20px] h-[20px]'/>
+          
+                                    </IconButton>
+                                    </a>
+                                </div>
                                 <div onClick={() => setAccion("editar")}>
                                     <a title="Editar">
                                         <IconButton>
@@ -375,6 +402,8 @@ const OrdenDeTrabajoForm = () => {
                                         </IconButton>
                                     </a>
                                 </div>
+                                
+                                
                             </>
                         }
                         {// ESTE ES EL MODAL DE REACTIVACIÓN
@@ -391,140 +420,65 @@ const OrdenDeTrabajoForm = () => {
 
                     </div>
                 </div>
-                <div className="py-[20px] px-[10px]">
+              
+                           
+
+                <div className="py-[20px] px-[10px] ">
 
                     {errors && <Error errors={errors} />}
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                            <FormField
-                                control={form.control}
-                                name="nombre"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Nombre</FormLabel>
-                                        <FormControl>
-                                            <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la orden de trabajo" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            El nombre de la orden de trabajo.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                    
+                    {totalAccionesComponente.map((item,index) => (
+                        <Form key={item.id} {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-5">
+                            <div className="flex space-x-10">
+                                <div className="w-full">
+                                    <FormField
+                                        control={form.control}
+                                        name={`id_concepto_catalogo_${item.id}`} // Nombre único por índice
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Agregar concepto</FormLabel>
+                                                <FormControl>
+                                                    <>
+                                                    <div className="flex space-x-2">
+                                                       
+                                                 
+                                                    <div className="w-full">
+                                                    <ConceptosComboBox form={form} field={field} name={`accion_${item.id}`} setCargoSeleccionado={setConceptoSeleccionado} />
 
-                            <FormField
-                                control={form.control}
-                                name="descripcion"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Descripción</FormLabel>
-                                        <FormControl>
-                                            <Input readOnly={!abrirInput} placeholder="Escribe la descripción de la orden de trabajo." {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            La descripción de la orden de trabajo.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="vigencias"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Vigencia</FormLabel>
-                                        <FormControl>
-                                            <Input 
-                                            readOnly={!abrirInput} 
-                                            placeholder="Escribe la vigencia en dias de la orden de trabajo." 
-                                            type="number"
-                                            {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            La vigencia de la orden de trabajo.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                          <FormField
-                                control={form.control}
-                                name="momento_cargo"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Momento del cargo</FormLabel>
-                                        <Select
-                                        onValueChange={(value) => field.onChange(String(value))}
-                                    value={String(field.value)}
-                                        >
-                                              <FormControl>
-                                              <SelectTrigger>
-                                                  <SelectValue placeholder="Selecciona el momento del cargo" />
-                                              </SelectTrigger>
-                                              </FormControl>
-                                              <SelectContent>
-                                              <SelectItem value="Generar">Generar</SelectItem>
-                                              <SelectItem value="Asignar">Asignar</SelectItem>
-                                              <SelectItem value="Concluir">Concluir</SelectItem>
-                                              <SelectItem value="No genera">No genera</SelectItem>
-                                              </SelectContent>
-                                          </Select>
-                                        <FormDescription>
-                                            Selecciona el momento del cargo.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        
-                           
-                        
-                         <FormField
-                            control={form.control}
-                            name="genera_masiva"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="items-center">¿Genera carga masiva?</FormLabel>
-                                    <FormControl className="ml-4">
-                                        {
-                                            bloquear ? <Switch
-                                            checked={field.value}
-                                            onCheckedChange={(checked) => field.onChange(checked)
-                                            
-                                            }
-                                            disabled
-                                            /> :
-                                            <Switch
-                                            checked={field.value}
-                                            onCheckedChange={(checked) => field.onChange(checked)
-                                            
-                                            }
-                                            
-                                            />
-                                        }
+                                                    </div>
+                                                    <div className="flex items-center ml-10">
+                                                    <div onClick={() => handleRemoveComponent(item.id)}>  
+                                                    <IconButton>
+                                                            <TrashIcon className='w-[20px] h-[20px]'>
+                                                            </TrashIcon>
+                                                            </IconButton>
+                                                        </div>
+                                                           
+                                                       
+                                                        </div>
+                                                    </div>
+                                                   
+                                                    </>
+                          
+                                                </FormControl>
+                                                <FormDescription>
+                                                    Selecciona un concepto.
+                                                </FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                     
-                                    </FormControl>
-                                    <FormDescription>
-                                        Aquí puedes activar si tiene carga masiva.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                       
-                        {/*accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
-                        {/*accion == "editar" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
-
-                            {loading && <Loader />}
-                            <div className="flex justify-end">
-                            {abrirInput && <Button type="submit" className="w-[20vh] h-[6vh]">Guardar</Button>}
-
+                                </div>
                             </div>
-
                         </form>
+                        <hr className="my-4 border-t border-gray-300" />
                     </Form>
+                    ))}
+                    {loading && <Loader />}
+                        {abrirInput && <Button type="submit">Guardar</Button>}
+
                 </div>
 
             </div>
@@ -532,4 +486,4 @@ const OrdenDeTrabajoForm = () => {
     )
 }
 
-export default OrdenDeTrabajoForm
+export default CargosDeLaOrdenDeTrabajoForm

@@ -52,7 +52,7 @@ export function ConceptosComboBox({setValue}) {
 
 
             let ctr = 0;
-            response.data.data.forEach(concepto => {
+            response.data.forEach(concepto => {
                 statuses[ctr] = { value: concepto.id, label: concepto.nombre };
                 ctr = ctr + 1;
             });
