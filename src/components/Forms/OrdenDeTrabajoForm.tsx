@@ -39,14 +39,14 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-  } from "@/components/ui/select";
+} from "@/components/ui/select";
 
 type OrdenDeTrabajo = {
     nombre: string;
     aplicacion: string;
     // Otras propiedades relevantes
-  };
-  
+};
+
 const OrdenDeTrabajoForm = () => {
     const { toast } = useToast()
     const { ordenDeTrabajo, setOrdenDeTrabajo, loadingTable, setLoadingTable, setOrdenDeTrabajos, setAccion, accion } = useStateContext();
@@ -60,7 +60,7 @@ const OrdenDeTrabajoForm = () => {
     const [nombreSeleccionado, setNombreSeleccionado] = useState<string | null>(null);
     const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
     const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>([]);
-     //#region SUCCESSTOAST
+    //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
@@ -118,6 +118,8 @@ const OrdenDeTrabajoForm = () => {
         })
     }
 
+    
+
 
     const form = useForm<z.infer<typeof OrdenDeTrabajoCrearSchema>>({
         resolver: zodResolver(OrdenDeTrabajoCrearSchema),
@@ -130,99 +132,102 @@ const OrdenDeTrabajoForm = () => {
             genera_masiva: false
         },
     })
-    interface Orden_trabajo_catalogo{
-        id: number
-        nombre: string
-        descripcion: string
-        vigencias: string
-        momento_cargo: string
-        genera_masiva: boolean
-    }
-
+  
     function onSubmit(values: z.infer<typeof OrdenDeTrabajoCrearSchema>) {
         setLoading(true);
-
-                
-            let orden_trabajo_catalogo: Orden_trabajo_catalogo = 
-            {
+    
+        // Definición del tipo Orden_trabajo_catalogo
+         type Orden_trabajo_catalogo = {
+            id: number;
+            nombre: string;
+            descripcion: string;
+            vigencias: string;
+            momento_cargo: string;
+            genera_masiva: boolean;
+        };
+    
+        // Creación del objeto orden_trabajo_catalogo
+        let orden_trabajo_catalogo: Orden_trabajo_catalogo = {
             id: 0,
             nombre: values.nombre,
             descripcion: values.descripcion,
             vigencias: values.vigencias,
             momento_cargo: values.momento_cargo,
             genera_masiva: values.genera_masiva
-            };
+        };
 
-        
-
-       
-        console.log(orden_trabajo_catalogo);
-
-        if (accion == "crear") {
-            axiosClient.post(`/OrdenTrabajoCatalogo/create`, orden_trabajo_catalogo )
+        let data = {orden_trabajo_catalogo};
+    
+        console.log(data);
+    
+        // Acción de crear
+        if (accion === "crear") {
+            axiosClient.post(`/OrdenTrabajoCatalogo/create`,  data)
                 .then((response) => {
                     const data = response.data;
-                    if(data.restore)
-                    {
+    
+                    if (data.restore) {
                         setIdParaRestaurar(data.tipoToma_id);
                         setModalReactivacionOpen(true);
-                    }
-                    else if (data.restore == false) {
+                    } else if (data.restore === false) {
                         errorYaExisteToast();
                         setLoading(false);
+                    } else {
+                        setLoading(false);
+                        setOrdenDeTrabajo({
+                            id: 0,
+                            nombre: "",
+                            descripcion: "ninguna",
+                        });
+                        form.reset({
+                            id: 0,
+                            nombre: "",
+                            descripcion: "ninguna",
+                        });
+                        setAccion("creado");
+                        getAnomalias();
+                        successToastCreado();
+                        console.log(values);
                     }
-                    else
-                    {
-                    setLoading(false);
-                    setOrdenDeTrabajo({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    form.reset({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    setAccion("creado");
-                    getAnomalias();
-                    successToastCreado();
-                    console.log(values);
-                    //setNotification("usuario creado");
-        }})
+                })
                 .catch((err) => {
                     const response = err.response;
                     console.log(err);
                     errorToast();
+    
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
+    
                     setLoading(false);
-                })
-            console.log(abrirInput);
+                });
         }
-        if (accion == "editar") {
+    
+        // Acción de editar
+        if (accion === "editar") {
             axiosClient.put(`/TipoToma/update/${ordenDeTrabajo.id}`, values)
                 .then((data) => {
                     setLoading(false);
-                    //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
                     getAnomalias();
                     setOrdenDeTrabajo(data.data);
-                    //setNotification("usuario creado");
                     successToastEditado();
                 })
                 .catch((err) => {
                     const response = err.response;
                     errorToast();
+    
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
+    
                     setLoading(false);
-                })
+                });
         }
     }
+    
+    
 
     //con este metodo obtienes las anomalias de la bd
     const getAnomalias = async () => {
@@ -251,8 +256,8 @@ const OrdenDeTrabajoForm = () => {
             console.error("Failed to delete anomalia:", error);
         }
     };
-     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
-     const restaurarDato = (IdParaRestaurar: any) => {
+    //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
+    const restaurarDato = (IdParaRestaurar: any) => {
         axiosClient.put(`/TipoToma/restore/${IdParaRestaurar}`)
             .then(() => {
                 setLoading(false);
@@ -312,7 +317,7 @@ const OrdenDeTrabajoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                
+
             })
         }
         if (accion == "ver") {
@@ -339,7 +344,7 @@ const OrdenDeTrabajoForm = () => {
                 nombre: nombreSeleccionado,
                 aplicacion: aplicacionSeleccionada,
             };
-    
+
             setCargosAgregados((prev) => [...prev, nuevoCargo]);
             setNombreSeleccionado(null);
             setAplicacionSeleccionada(null);
@@ -378,16 +383,16 @@ const OrdenDeTrabajoForm = () => {
                             </>
                         }
                         {// ESTE ES EL MODAL DE REACTIVACIÓN
-                        //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
-                        //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
-                    }
-                    {ModalReactivacionOpen &&
-                        <ModalReactivacion
-                            isOpen={ModalReactivacionOpen}
-                            setIsOpen={setModalReactivacionOpen}
-                            method={() => restaurarDato(IdParaRestaurar)}
-                        />
-                    }
+                            //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
+                            //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
+                        }
+                        {ModalReactivacionOpen &&
+                            <ModalReactivacion
+                                isOpen={ModalReactivacionOpen}
+                                setIsOpen={setModalReactivacionOpen}
+                                method={() => restaurarDato(IdParaRestaurar)}
+                            />
+                        }
 
                     </div>
                 </div>
@@ -436,11 +441,11 @@ const OrdenDeTrabajoForm = () => {
                                     <FormItem>
                                         <FormLabel>Vigencia</FormLabel>
                                         <FormControl>
-                                            <Input 
-                                            readOnly={!abrirInput} 
-                                            placeholder="Escribe la vigencia en dias de la orden de trabajo." 
-                                            type="number"
-                                            {...field} />
+                                            <Input
+                                                readOnly={!abrirInput}
+                                                placeholder="Escribe la vigencia en dias de la orden de trabajo."
+                                                type="number"
+                                                {...field} />
                                         </FormControl>
                                         <FormDescription>
                                             La vigencia de la orden de trabajo.
@@ -449,28 +454,28 @@ const OrdenDeTrabajoForm = () => {
                                     </FormItem>
                                 )}
                             />
-                          <FormField
+                            <FormField
                                 control={form.control}
                                 name="momento_cargo"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Momento del cargo</FormLabel>
                                         <Select
-                                        onValueChange={(value) => field.onChange(String(value))}
-                                    value={String(field.value)}
+                                            onValueChange={(value) => field.onChange(String(value))}
+                                            value={String(field.value)}
                                         >
-                                              <FormControl>
-                                              <SelectTrigger>
-                                                  <SelectValue placeholder="Selecciona el momento del cargo" />
-                                              </SelectTrigger>
-                                              </FormControl>
-                                              <SelectContent>
-                                              <SelectItem value="Generar">Generar</SelectItem>
-                                              <SelectItem value="Asignar">Asignar</SelectItem>
-                                              <SelectItem value="Concluir">Concluir</SelectItem>
-                                              <SelectItem value="No genera">No genera</SelectItem>
-                                              </SelectContent>
-                                          </Select>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Selecciona el momento del cargo" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="generar">Generar</SelectItem>
+                                                <SelectItem value="asignar">Asignar</SelectItem>
+                                                <SelectItem value="concluir">Concluir</SelectItem>
+                                                <SelectItem value="no genera">No genera</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                         <FormDescription>
                                             Selecciona el momento del cargo.
                                         </FormDescription>
@@ -478,48 +483,48 @@ const OrdenDeTrabajoForm = () => {
                                     </FormItem>
                                 )}
                             />
-                        
-                           
-                        
-                         <FormField
-                            control={form.control}
-                            name="genera_masiva"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="items-center">¿Genera carga masiva?</FormLabel>
-                                    <FormControl className="ml-4">
-                                        {
-                                            bloquear ? <Switch
-                                            checked={field.value}
-                                            onCheckedChange={(checked) => field.onChange(checked)
-                                            
+
+
+
+                            <FormField
+                                control={form.control}
+                                name="genera_masiva"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="items-center">¿Genera carga masiva?</FormLabel>
+                                        <FormControl className="ml-4">
+                                            {
+                                                bloquear ? <Switch
+                                                    checked={field.value}
+                                                    onCheckedChange={(checked) => field.onChange(checked)
+
+                                                    }
+                                                    disabled
+                                                /> :
+                                                    <Switch
+                                                        checked={field.value}
+                                                        onCheckedChange={(checked) => field.onChange(checked)
+
+                                                        }
+
+                                                    />
                                             }
-                                            disabled
-                                            /> :
-                                            <Switch
-                                            checked={field.value}
-                                            onCheckedChange={(checked) => field.onChange(checked)
-                                            
-                                            }
-                                            
-                                            />
-                                        }
-                                    
-                                    </FormControl>
-                                    <FormDescription>
-                                        Aquí puedes activar si tiene carga masiva.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                       
-                        {/*accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
-                        {/*accion == "editar" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
+
+                                        </FormControl>
+                                        <FormDescription>
+                                            Aquí puedes activar si tiene carga masiva.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/*accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
+                            {/*accion == "editar" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
 
                             {loading && <Loader />}
                             <div className="flex justify-end">
-                            {abrirInput && <Button type="submit" className="w-[20vh] h-[6vh]">Guardar</Button>}
+                                {abrirInput && <Button type="submit" className="w-[20vh] h-[6vh]">Guardar</Button>}
 
                             </div>
 

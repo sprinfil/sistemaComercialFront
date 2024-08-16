@@ -82,7 +82,7 @@ export function ConceptosComboBox({setValue}) {
                         <Button
                             variant="outline"
                             size="sm"
-                            className="w-full justify-start"
+                            className="w-full justify-start text-muted-foreground"
                         >
                             {selectedStatus ? (
                                 <>
@@ -90,16 +90,16 @@ export function ConceptosComboBox({setValue}) {
                                     {selectedStatus.label}
                                 </>
                             ) : (
-                                <>Concepto</>
+                                <div className="">Selecciona un concepto</div>
                             )}
                         </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="p-0" side="right" align="start">
-                        <Command>
-                            <CommandInput placeholder="Change status..." />
+                    <PopoverContent className="w-full p-2 h-[300px]" side="bottom" align="start">
+                    <Command className="mb-[90vh]">
+                            <CommandInput placeholder="Buscar concepto..." />
                             <CommandList>
-                                <CommandEmpty>No results found.</CommandEmpty>
-                                <CommandGroup>
+                                <CommandEmpty>Conceptos no encontrados.</CommandEmpty>
+                                <CommandGroup className="">
                                     {
                                         loading &&
                                         <Loader />
@@ -117,8 +117,9 @@ export function ConceptosComboBox({setValue}) {
                                                     setOpen(false)
                                                     setValue(status.value)
                                                 }}
+                                                
                                             >
-                                                <span>{status.label}</span>
+                                                <span className="">{status.label}</span>
                                             </CommandItem>
                                         ))
                                     }

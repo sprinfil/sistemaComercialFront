@@ -477,7 +477,10 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
                     </Form>
                     ))}
                     {loading && <Loader />}
-                        {abrirInput && <Button type="submit">Guardar</Button>}
+                    <div className="flex justify-end mt-[5vh]">
+                    {abrirInput && <Button type="submit">Guardar</Button>}
+
+                    </div>
 
                 </div>
 

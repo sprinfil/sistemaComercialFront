@@ -428,7 +428,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                         <>
                         
                          <MarcoAccionesForm title={"Accion"}>
-                         <div className="ml-[132vh]">
+                         <div className="flex justify-end">
                             <a title="Eliminar esta acción">
                             <div onClick={() => handleRemoveComponent(item.id)}>  
                                         <IconButton>
@@ -442,10 +442,10 @@ const OrdenDeTrabajoAccionesForm = () => {
                                
                          <Form key={item.id}{...form}>
                            
-                           <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                           <form onSubmit={form.handleSubmit(onSubmit)} className=" ">
                       
                                  <div className="flex space-x-10">
-                                      <div className="w-[70vh]">
+                                      <div className="w-full">
                                        
                                       <FormField
                                       control={form.control}
@@ -476,7 +476,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                                   />
                                   </div>
       
-                                  <div className="w-[70vh]">
+                                  <div className="w-full">
                                   <FormField
                                       control={form.control}
                                       name="modelo"
@@ -510,7 +510,7 @@ const OrdenDeTrabajoAccionesForm = () => {
       
                                   <div className="flex space-x-10">
       
-                                  <div className="w-[70vh]">
+                                  <div className="w-full">
                                       <FormField
                                       control={form.control}
                                       name="campo"
@@ -541,7 +541,7 @@ const OrdenDeTrabajoAccionesForm = () => {
       
                                   </div>
       
-                                  <div className="w-[70vh]">
+                                  <div className="w-full">
                                   <FormField
                                       control={form.control}
                                       name="opcional"
@@ -582,7 +582,10 @@ const OrdenDeTrabajoAccionesForm = () => {
                            {/*accion == "editar" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
    
                                {loading && <Loader />}
+                               <div className="flex justify-end mt-4">
                                {abrirInput && <Button type="submit">Guardar</Button>}
+
+                               </div>
    
                            </form>
    
