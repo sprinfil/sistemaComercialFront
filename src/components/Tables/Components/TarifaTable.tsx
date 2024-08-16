@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState} from 'react';
 import { DataTable } from '../../../components/ui/DataTable';
 import { columns, Tarifa } from "../Columns/Tarifa-Columns/TarifaColumns.tsx";
 import axiosClient from '../../../axios-client.ts';
@@ -10,9 +10,13 @@ import { PlusCircledIcon } from '@radix-ui/react-icons';
 export default function TarifaTable() {
   const { tarifas, setTarifas, loadingTable, setLoadingTable, setAccion, setTarifa, accion } = useStateContext();
 
+  const [tarifaActiva, setTarifaActiva] = useState();
+
   useEffect(() => {
     getTarifa();
   }, []);
+
+ 
 
   const getTarifa = async () => {
     setLoadingTable(true);
@@ -20,16 +24,20 @@ export default function TarifaTable() {
       const response = await axiosClient.get("/tarifa");
       setLoadingTable(false);
       setTarifas(response.data.data);
-      //console.log(response.data.data);
+      console.log(response.data.data);
     } catch (error) {
       setLoadingTable(false);
-      console.error("Failed to fetch concepto:", error);
+      console.error("Failed to fetch anomalias:", error);
     }
   };
+  
+  
+  
 
   //Metodo para seleccionar las filas
   const handleRowClick = (tarifa: Tarifa) => {
     setTarifa(tarifa);
+    console.log(tarifa.estado); 
     setAccion("ver");
   };
 
