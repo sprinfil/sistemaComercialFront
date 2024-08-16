@@ -83,7 +83,7 @@ const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
                 </div>
         <Form {...form}>
             
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center mt-10">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center mt-10 mb-[15vh]">
                 <div className="rounded-md border border-border shadow-lg p-8 w-[215vh] ">
                     <div className="text-[20px] font-medium">Toma:</div>
                         <div className='flex space-x-2 mt-[5vh] items-center'>

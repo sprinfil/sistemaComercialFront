@@ -43,6 +43,7 @@ export const CrearContratoForm = () => {
     const [coloniaSeleccionada, setColoniaSeleccionada] = useState<string | null>(null);
     const [entreCalle1Seleccionada, setEntreCalle1Seleccionada] = useState<string | null>(null);
     const [entreCalle2Seleccionada, setEntreCalle2Seleccionada] = useState<string | null>(null);
+    const [items, setItems] = useState([]);
 
     const form = useForm<z.infer<typeof crearContratoSchema>>({
         resolver: zodResolver(crearContratoSchema),
@@ -53,6 +54,7 @@ export const CrearContratoForm = () => {
             id_codigo_toma: 1,
             clave_catastral: "",
             calle:"",
+            numero_casa:"",
             entre_calle_1: "",
             entre_calle_2:"",
             colonia: "",
@@ -61,7 +63,6 @@ export const CrearContratoForm = () => {
             diametro_toma:"" ,
             calle_notificaciones:"" ,
             entre_calle_notificaciones_2:"" ,
-            tipo_servicio: "",
             tipo_toma: "",
             tipo_contratacion:"" ,
             c_agua: false,
@@ -86,8 +87,35 @@ export const CrearContratoForm = () => {
             navigate("/mapa/toma");
         };
 
+
+       
+
     const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
-        // Handle form submission
+
+        const crearContrato = {
+                clave_catastral: values.clave_catastral,
+                tipo_toma:values.clave_catastral,
+                diametro_toma:values.diametro_toma,
+                calle:values.calle,
+                numero_casa: values.numero_casa,
+                colonia: values.colonia,
+                codigo_postal: values.codigo_postal,
+                entre_calle_1: values.entre_calle_1,
+                entre_calle_2: values.entre_calle_2,
+                localidad: values.localidad,
+                c_agua: values.clave_catastral,
+                c_alc:values.clave_catastral,
+                c_san: values.clave_catastral,
+                tipo_contratacion: values.clave_catastral,
+        };
+
+        const contratoString = JSON.stringify(crearContrato);
+        console.log("estos valores llegaron y se almacenaron en el localstorage", contratoString);
+
+        localStorage.setItem("contrato", contratoString);
+     
+
+
     };
 
     return (
@@ -132,10 +160,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Tipo de toma</FormLabel>
                                         <FormControl>
-                                        <Select
-                                        onValueChange={(value) => field.onChange(value === 'si')}
-                                        defaultValue={undefined}
-                                        >
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Selecciona tipo de toma" />
@@ -158,15 +183,12 @@ export const CrearContratoForm = () => {
                                 <div className='w-[120vh]'>
                                 <FormField
                                 control={form.control}
-                                name="tipo_toma"
+                                name="diametro_toma"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Diametro de la toma</FormLabel>
                                         <FormControl>
-                                        <Select
-                                        onValueChange={(value) => field.onChange(value === 'si')}
-                                        defaultValue={undefined}
-                                        >
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Selecciona el diametro de la toma" />
@@ -378,7 +400,7 @@ export const CrearContratoForm = () => {
                             <FormItem>
                                 <FormLabel>Tipo de contratación</FormLabel>
                                 <FormControl>
-                                    <Select
+                                <Select
                                         onValueChange={(value) => field.onChange(value)}
                                         defaultValue={undefined}
                                         >
@@ -402,7 +424,7 @@ export const CrearContratoForm = () => {
                 
 
                 </div>
-                <Button type="submit" className='mt-[50px] w-[20vh] h-[5vh] ml-[3vh]' onClick={handleAbrirModalNotificaciones}>Guardar</Button>
+                <Button type="submit" className='mt-[50px] w-[20vh] h-[5vh] ml-[3vh]'>Guardar</Button>
 
                         
             </div>

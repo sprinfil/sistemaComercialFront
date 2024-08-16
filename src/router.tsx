@@ -19,6 +19,9 @@ import { CrearContratoForm } from './views/Usuarios/Contratos/FormsContratos/Cre
 import { TomaUsuarioDetalle } from './views/Usuarios/Consultar/TomaUsuarioDetalle';
 import DireccionNotificaciones from './views/Usuarios/Contratos/DireccionNotificaciones';
 import { EscogerPuntoToma } from './views/Usuarios/Contratos/EscogerPuntoToma';
+import { Mapa3 } from './components/ui/Mapa3';
+
+
 const router = createBrowserRouter ([
     {
         path:'/',
