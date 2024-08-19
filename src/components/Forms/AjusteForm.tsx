@@ -29,6 +29,7 @@ import { useStateContext } from "../../contexts/ContextAjuste.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { Switch } from "../ui/switch.tsx";
 
 const AjusteForm = () => {
     const { toast } = useToast()
@@ -38,6 +39,8 @@ const AjusteForm = () => {
     const [abrirInput, setAbrirInput] = useState(false);
     const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
+    const [valorObtenidoBool, setValorObtenidoBool] = useState(false);
+    const [control, setControl] = useState(false);
 
     //#region SUCCESSTOAST
     function successToastCreado() {
@@ -101,10 +104,10 @@ const AjusteForm = () => {
     const form = useForm<z.infer<typeof ajusteSchema>>({
         resolver: zodResolver(ajusteSchema),
         defaultValues: {
-            id: ajuste.id,
-            nombre: ajuste.nombre,
-            descripcion: ajuste.descripcion,
-            estado: ajuste.estado,
+            id: 0,
+            nombre: "",
+            descripcion: "",
+            estado: false,
         },
     })
 
@@ -112,8 +115,12 @@ const AjusteForm = () => {
 
     function onSubmit(values: z.infer<typeof ajusteSchema>) {
         setLoading(true);
+        const boolConvetido = ajuste.estado ? "activo" : "inactivo"
+
+        let values2 = {...values, estado: boolConvetido}
+
         if (accion == "crear") {
-            axiosClient.post(`/AjustesCatalogo/create`, values)
+            axiosClient.post(`/AjustesCatalogo/create`, values2)
                 .then((response) => {
                     const data = response.data;
                     if(data.restore)
@@ -135,13 +142,13 @@ const AjusteForm = () => {
                         id: 0,
                         nombre: "",
                         descripcion: "ninguna",
-                        estado: "activo"
+                        estado: false
                     });
                     form.reset({
                         id: 0,
                         nombre: "",
                         descripcion: "ninguna",
-                        estado: "activo"
+                        estado: false
                     });
                     getAjustes();
                     console.log(values);
@@ -158,7 +165,11 @@ const AjusteForm = () => {
                 })
         }
         if (accion == "editar") {
-            axiosClient.put(`/AjustesCatalogo/update/${ajuste.id}`, values)
+            const boolConvetido = values.estado == true ? "activo" : "inactivo"
+
+            let values2 = {...values, estado: boolConvetido}
+
+            axiosClient.put(`/AjustesCatalogo/update/${ajuste.id}`, values2)
                 .then((data) => {
                     successToastEditado();
                     setLoading(false);
@@ -235,49 +246,57 @@ const AjusteForm = () => {
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            setControl(false);
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             });
             setAjuste({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
             setAbrirInput(true);
+            setControl(true);
             setErrors({});
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             });
             setAjuste({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             })
         }
         if (accion == "creado") {
+            setControl(false);
             setAbrirInput(true);
             setErrors({});
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             });
             setAjuste({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             })
         }
         
         if (accion == "ver") {
+            setControl(false);
+            const valorDesdeBaseDeDatos: string = ajuste.estado as unknown as string; 
+            const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
+            setValorObtenidoBool(valorBooleano);
+
             setAbrirInput(false);
             setErrors({});
             setAccion("");
@@ -285,15 +304,18 @@ const AjusteForm = () => {
                 id: ajuste.id,
                 nombre: ajuste.nombre,
                 descripcion: ajuste.descripcion,
-                estado: ajuste.estado
+                estado: Boolean(ajuste.estado)
             });
         }
         if (accion == "editar") {
+            setControl(true);
             setAbrirInput(true);
             setErrors({});
         }
         console.log(accion);
     }, [accion]);
+
+   
 
     return (
         <div className="overflow-auto">
@@ -373,6 +395,39 @@ const AjusteForm = () => {
                                     </FormControl>
                                     <FormDescription>
                                         Agrega una breve descripción.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Estado</FormLabel>
+                                    <FormControl>
+                                        {
+                                            control ?
+                                            <Switch
+                                            className="ml-3"
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            }
+                                            /> 
+                                            :
+                                            <Switch
+                                            disabled
+                                            className="ml-3"
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            }
+                                            /> 
+                                        }
+                       
+                                    </FormControl>
+                                    <FormDescription>
+                                    Aquí puedes cambiar el estado del ajuste.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

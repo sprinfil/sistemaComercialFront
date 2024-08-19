@@ -1053,7 +1053,7 @@ const ConceptoForm = () => {
                             name="estado"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="items-center">Activo</FormLabel>
+                                    <FormLabel className="items-center">Estado</FormLabel>
                                     <FormControl className="ml-4">
                                       {
                                         control ?  <Switch

@@ -18,7 +18,7 @@ export default function OrdenDeTrabajoTable() {
   const getOrdenDeTrabajo = async () => {
     setLoadingTable(true);
     try {
-      const response = await axiosClient.get("/OrdenTrabajoCatalogo");
+      const response = await axiosClient.get("/AnomaliasCatalogo");
       setLoadingTable(false);
       setOrdenDeTrabajos(response.data.data);
       console.log(response.data.data);
@@ -33,7 +33,7 @@ const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
       setOrdenDeTrabajo(tipoDeToma);
     setAccion("ver");
     console.log(tipoDeToma);
-}
+  }
 
   if (loadingTable) {
     return <div><Loader /></div>;

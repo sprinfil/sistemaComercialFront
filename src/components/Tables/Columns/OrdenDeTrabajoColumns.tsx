@@ -11,9 +11,10 @@ import { Checkbox } from "@/components/ui/checkbox"
 export type OrdenDeTrabajo = {
   id: number
   nombre: string
-  estado: boolean
-  cargos: BigInteger
-  momento: string
+  descripcion: string
+  vigencias: string
+  momento_cargo: string
+  genera_masiva: boolean
 }
 
 
