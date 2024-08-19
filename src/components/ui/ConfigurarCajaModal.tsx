@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -13,9 +13,20 @@ import {
 import { Button } from "../../components/ui/button";
 import axiosClient from '../../axios-client';
 import axios from 'axios';
+import { Barcode } from 'lucide-react';
+import { useToast } from "@/components/ui/use-toast"; 
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+
 
 export const ConfigurarCajaModal = ({ trigger }) => {
-
+    const { toast } = useToast()
     //funcion para alinear los conceptos
     function formatLine(concept, amount, totalWidth = 40) {
         const conceptLength = concept.length;
@@ -72,13 +83,58 @@ export const ConfigurarCajaModal = ({ trigger }) => {
     estructura_ticket.push([` `, `LT`])
     estructura_ticket.push([`pruebas.sapalapaz.gob.mx`, `CT`])
 
+    const [impresoras, set_impresoras] = useState();
+    const [impresora_seleccionada, set_impresora_seleccionada] = useState({});
+    const [error_plugin, set_error_plugin] = useState(false);
+
+    useEffect(() => {
+        let temp = {vendorId:localStorage.getItem("vendor_id"), productId:localStorage.getItem("product_id")}
+        set_impresora_seleccionada(temp);
+        get_impresoras();
+    }, [])
+
+    useEffect(() => {
+        console.log(impresora_seleccionada);
+    }, [impresora_seleccionada])
+
+    const guardar_impresora_local_storage = (impresora) => {
+        localStorage.setItem("vendor_id", impresora.vendorId);
+        localStorage.setItem("product_id", impresora.productId);
+    }
 
     const imprimir = () => {
-        axios.post("http://localhost:3001/print-ticket", { data: estructura_ticket })
+
+        axios.post("http://localhost:3001/print-ticket",
+            {
+                data: estructura_ticket,
+                vendor_id: impresora_seleccionada.vendorId ,
+                product_id: impresora_seleccionada.productId ,
+                barcode: "234523452345",
+                imagePath: "logosapa.png",
+                qr_url: ""
+            }
+        )
             .then((response) => {
                 console.log(response);
             }).catch((response) => {
-                console.log("Ocurrio un error" + response);
+                toast({
+                    variant: "destructive",
+                    title: "Oh, no. Error",
+                    description: "Algo salió mal.",
+                    action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                })
+            })
+    }
+
+    const get_impresoras = () => {
+        axios.get("http://localhost:3001/get-printers")
+            .then((response) => {
+                console.log(response)
+                set_impresoras(response.data.impresoras);
+                set_error_plugin(false);
+            })
+            .catch((response) => {
+                set_error_plugin(true);
             })
     }
 
@@ -88,11 +144,37 @@ export const ConfigurarCajaModal = ({ trigger }) => {
                 <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Configurar Impresora</AlertDialogTitle>
+                        <AlertDialogTitle>Configuración</AlertDialogTitle>
                         <AlertDialogDescription></AlertDialogDescription>
                     </AlertDialogHeader>
                     <>
-                        <Button onClick={imprimir}>Probar impresora</Button>
+                    <div>
+                        {error_plugin && 
+                        <>
+                            <p className='text-red-500'>El plugin no esta funcionando</p>
+                        </>
+                        }
+                    </div>
+                        <div>
+                            <div>
+                                <p>Impresora Seleccionada:</p>
+                                <p>VID: {impresora_seleccionada.vendorId}, PID: {impresora_seleccionada.productId}</p>
+                            </div>
+                        </div>
+                        <Select onValueChange={(value) => { set_impresora_seleccionada(value) }}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Selecciona una impresora" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {impresoras?.map((impresora, index) => (
+                                    <>
+                                        <SelectItem value={impresora}>VID: {impresora.vendorId}, PID: {impresora.productId}</SelectItem>
+                                    </>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <Button onClick={()=>{imprimir();guardar_impresora_local_storage(impresora_seleccionada);}}>Probar impresora</Button>
+
                     </>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Aceptar</AlertDialogCancel>
