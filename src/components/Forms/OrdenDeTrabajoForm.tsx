@@ -162,7 +162,7 @@ const OrdenDeTrabajoForm = () => {
     
         // Acción de crear
         if (accion === "crear") {
-            axiosClient.post(`/OrdenTrabajoCatalogo/create`,  data)
+            axiosClient.put(`/OrdenTrabajoCatalogo/create`,  data)
                 .then((response) => {
                     const data = response.data;
     
