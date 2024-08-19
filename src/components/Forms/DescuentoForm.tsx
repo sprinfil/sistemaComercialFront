@@ -40,6 +40,7 @@ const DescuentoForm = () => {
     const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
     const [valorObtenidoBool, setValorObtenidoBool] = useState(false);
+    const [control, setControl] = useState(false);
 
 
 
@@ -256,6 +257,7 @@ const DescuentoForm = () => {
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            setControl(false);
             form.reset({
                 id: 0,
                 nombre: "",
@@ -266,6 +268,7 @@ const DescuentoForm = () => {
             setAbrirInput(false);
         }
         if (accion == "crear") {
+            setControl(true);
             console.log("creando");
             setAbrirInput(true);
             setErrors({});
@@ -283,7 +286,7 @@ const DescuentoForm = () => {
             })
         }
         if (accion == "ver") {
-
+            setControl(false);
             setAbrirInput(false);
             setErrors({});
             setAccion("");
@@ -304,6 +307,7 @@ const DescuentoForm = () => {
         }
         if (accion == "editar") {
             setAbrirInput(true);
+            setControl(true);
             setErrors({});
         }
         console.log(accion);
@@ -409,12 +413,25 @@ const DescuentoForm = () => {
                                 <FormItem>
                                     <FormLabel>Estado</FormLabel>
                                     <FormControl>
-                                                 <Switch
+                                        {control 
+                                        ?
+                                        <Switch
                                                 className="ml-3"
                                                 checked={field.value}
                                                 onCheckedChange={(checked) => field.onChange(checked)
                                                 }
                                                 /> 
+
+                                        :
+                                        <Switch
+                                                className="ml-3"
+                                                disabled
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => field.onChange(checked)
+                                                }
+                                                /> 
+                                        }
+                                                 
                                     </FormControl>
                                     <FormDescription>
                                     Aquí puedes cambiar el estado del descuento.
