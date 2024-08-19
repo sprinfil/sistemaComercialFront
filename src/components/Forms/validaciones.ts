@@ -14,7 +14,9 @@ export const loginSchema = z.object({
 export const anomaliaSchema = z.object({
   id: z.number(),
   nombre: z.string().min(1, "El Nombre es requerido"),
-  descripcion: z.string()
+  descripcion: z.string(),
+  facturable: z.string(),
+  estado: z.boolean()
 })
 
 //VALIDACIONES AJUSTE
