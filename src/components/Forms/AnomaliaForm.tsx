@@ -116,7 +116,7 @@ const AnomaliaForm = () => {
             id: 0,
             nombre: "",
             descripcion: "",
-            facturable: "",
+            facturable: "0",
             estado: false,
         },
     })
@@ -149,14 +149,14 @@ const AnomaliaForm = () => {
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
-                            facturable:"",
+                            facturable: "0",
                             estado: false
                         });
                         form.reset({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
-                            facturable:"",
+                            facturable: "0",
                             estado: false
                         });
                         getAnomalias();
@@ -279,7 +279,7 @@ const AnomaliaForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                facturable:"",
+                facturable:"0",
                estado: false
             });
             setAnomalia({});
@@ -291,7 +291,8 @@ const AnomaliaForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                facturable:"",
+                facturable:"0",
+
                estado: false
             });
             setAnomalia({});
@@ -306,14 +307,16 @@ const AnomaliaForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                facturable:"",
+                facturable:"0",
+
                estado: false
             });
             setAnomalia({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                facturable:"",
+                facturable:"0",
+
                estado: false
             })
         }
@@ -335,7 +338,15 @@ const AnomaliaForm = () => {
             const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
             setValorObtenidoBool(valorBooleano);
             //COMPROBAR LA CONVERCIÓN
-            //console.log("Este es el valor booleano convertido:", valorBooleano);
+            console.log("Este es el valor booleano convertido:", valorBooleano);
+
+            const valorFacturableBaseDeDatos: number = anomalia.facturable as unknown as number; 
+            const valorStringFacturable: string = valorFacturableBaseDeDatos.toString();
+            console.log("Este es el valor convertido a string:", valorStringFacturable);
+            console.log("Tipo de valorStringFacturable:", typeof valorStringFacturable);
+            
+            
+
             if (!anomalia) {
                 return <div>Cargando...</div>;
             }
@@ -344,7 +355,7 @@ const AnomaliaForm = () => {
                 id: anomalia?.id || 0,
                 nombre: anomalia?.nombre || '',
                 descripcion: anomalia?.descripcion || '',
-                facturable: anomalia?.facturable || "",
+                facturable: String(anomalia.facturable), // Asegúrate de que este valor es un string
                 estado: valorObtenidoBool
             });
 
@@ -358,7 +369,7 @@ const AnomaliaForm = () => {
                 id: anomalia.id || 0,
                 nombre: anomalia?.nombre || '',
                 descripcion: anomalia.descripcion || '',
-                facturable: String(anomalia.facturable),
+                facturable: anomalia.facturable,
                 estado: valorObtenidoBool
             });
             setAbrirInput(true);
@@ -373,7 +384,7 @@ const AnomaliaForm = () => {
                 id: anomalia.id || 0,
                 nombre: anomalia?.nombre || '',
                 descripcion: anomalia.descripcion || '',
-                facturable: anomalia.facturable || "",
+                facturable: String(anomalia.facturable), // Asegúrate de que este valor es un string
                 estado: valorObtenidoBool
             });
         }
@@ -472,8 +483,8 @@ const AnomaliaForm = () => {
                                         {
                                             control ?
                                             <Select
-                                    onValueChange={(value) => field.onChange(String(value))}
-                                    value={String(field.value)}
+                                            onValueChange={(value) => field.onChange(value)}
+                                            value={field.value}
                                     >
                                         <FormControl>
                                         <SelectTrigger>
@@ -488,8 +499,8 @@ const AnomaliaForm = () => {
                                     :
                                     <Select
                                     disabled
-                                    onValueChange={(value) => field.onChange(String(value))}
-                                    value={String(field.value)}
+                                    onValueChange={(value) => field.onChange(value)}
+                                    value={field.value}
                                     >
                                         <FormControl>
                                         <SelectTrigger>
