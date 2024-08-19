@@ -20,6 +20,7 @@ import search_image from "../../img/search.svg"
 
 import { BuscarUsuario } from "../Tables/Columns/ContratoConsultaUsuarioColumns.tsx";
 import { Skeleton } from "../ui/skeleton.tsx";
+import { ConfigurarCajaModal } from "../ui/ConfigurarCajaModal.tsx";
 const PuntoVentaForm = () => {
   const [userInput, setUserInput] = useState("");
   const [cargosData, setCargosData] = useState(null);
@@ -275,9 +276,13 @@ const PuntoVentaForm = () => {
           <IconButton>
             <ExternalLinkIcon />
           </IconButton>
-          <IconButton>
-            <GearIcon />
-          </IconButton>
+          <ConfigurarCajaModal
+            trigger={<IconButton>
+              <GearIcon />
+            </IconButton>}
+          >
+          </ConfigurarCajaModal>
+
         </div>
         <p className="whitespace-nowrap">Número de toma</p>
         <Input
@@ -305,16 +310,16 @@ const PuntoVentaForm = () => {
       </div>
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex min-h-[78vh] max-h-[78vh] px-2">
-      {!loading && !error && !dataCajaUser?.length && !dataToma?.id &&(
-        <>
-        <div className="w-full h-[full]">
-            <div className=" w-[60%] h-full flex flex-col gap-4 items-center justify-center">
-              <img src={search_image} alt="" className="h-[50vh]"/>
-              <p>Busca alguna toma o usuaio.</p>
+        {!loading && !error && !dataCajaUser?.length && !dataToma?.id && (
+          <>
+            <div className="w-full h-[full]">
+              <div className=" w-[60%] h-full flex flex-col gap-4 items-center justify-center">
+                <img src={search_image} alt="" className="h-[50vh]" />
+                <p>Busca alguna toma o usuaio.</p>
+              </div>
             </div>
-        </div>
-        </>
-      )}
+          </>
+        )}
         {loading && <div className="w-full h-full mt-2">
           <div className="w-[60%]">
             <div>

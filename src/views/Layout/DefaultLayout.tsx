@@ -25,7 +25,8 @@ const DefaultLayout = () => {
         {/*  */}
         {/*<MenuSuperior />*/}
       </section>
-      <main className='overflow-auto h-full max-h-[84vh]'>
+      <main className='overflow-auto h-full max-h-[84vh] px-5'>
+     
         <Outlet />
       </main>
     </div>

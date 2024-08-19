@@ -63,18 +63,20 @@ const Login = () => {
 
   return (
     <div className='h-[100vh] w-[100%] flex justify-center items-center'>
-      <div className=' flex gap-5  w-[600px] bg-background rounded-xl shadow-lg px-[30px] py-[20px] border border-border'>
+      <div  className=" background_login absolute -z-[10]"></div>
+      <div className=' flex gap-5  w-[600px] bg-opacity-70 bg-white dark:bg-opacity-70  dark:bg-black rounded-md shadow-lg px-[30px] py-[20px]'>
 
-        {/*
-               <div className='w-[50%] h-[400px]  flex items-center justify-center '>
-          <img src={logo} alt="" className='w-[270px] h-[270px]' />
+      {/*
+        <div className='w-[100%] h-[400px]  flex items-center justify-center md:flex hidden'>
+          <img src={logo} alt="" className='w-[270px] h-[250px]' />
         </div>
-       */}
+        */}
+       
 
 
 
 
-        <div className='w-[100%] h-full py-[15px] overflow-auto px-1'>
+        <div className='w-[100%] h-full py-[15px] overflow-auto px-4  rounded-md '>
           <div className="">    {
             loading && <Loader />
           }</div>
