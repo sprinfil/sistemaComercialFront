@@ -13,6 +13,7 @@ import PuntoVenta from './PuntoVenta';
 import RetirosCaja from './RetirosCaja';
 import ConfigurarCaja from './ConfigurarCaja';
 import CorteCaja from './CorteCaja';
+import { FondoCajaProvider } from '../../contexts/FondoCajaContext';
 
 function App() {
 
