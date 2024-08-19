@@ -510,23 +510,28 @@ const AnomaliaForm = () => {
                                     </FormItem>
                                 )}
                             />
+                            
                              <FormField
                                 control={form.control}
                                 name="estado"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Estado</FormLabel>
+                                       
                                         <FormControl>
                                             {
                                                 control
                                                 ?
+                                                
                                                 <Switch
+                                                className="ml-3"
                                                 checked={field.value}
                                                 onCheckedChange={(checked) => field.onChange(checked)
                                                 }
                                                 /> 
                                                 :
                                                 <Switch
+                                                className="ml-3"
                                                 disabled
                                                 checked={field.value}
                                                 onCheckedChange={(checked) => field.onChange(checked)
