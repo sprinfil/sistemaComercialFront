@@ -22,6 +22,8 @@ import { BuscarUsuario } from "../Tables/Columns/ContratoConsultaUsuarioColumns.
 import { Skeleton } from "../ui/skeleton.tsx";
 import { ConfigurarCajaModal } from "../ui/ConfigurarCajaModal.tsx";
 const PuntoVentaForm = () => {
+
+
   const [userInput, setUserInput] = useState("");
   const [cargosData, setCargosData] = useState(null);
   const [dataToma, setDataToma] = useState(null);
@@ -43,11 +45,12 @@ const PuntoVentaForm = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(event.target.value);
   };
-  console.log('Nombre del primer elemento de dataCajaUser:', dataCajaUser[0]?.nombre || "USUARIO NO");
+  console.log('AVER QUE LE MANDA EN TOMA:', dataCajaUser[0]?.usuario?.nombre || "NO");
   console.log("a ver si se deberia abrir el codgio", mostrarCodigoUsuario);
 
   useEffect(() => {
     setDataToma({});
+    
     //setSelectedCargos([]);
     console.log(dataCajaUser);
     setCargosData(null);
@@ -415,7 +418,7 @@ const PuntoVentaForm = () => {
                     </>
                   )
                   :
-                  dataCajaUser[0] && dataToma?.id_codigo_toma != "" &&
+                  dataCajaUser[0] && dataToma?.id_codigo_toma != "" && !dataCajaUser[0]?.usuario?.nombre &&
                   <div className="justify-center ml-5 mr-5 mt-5">
                     <div className="relative">
                       {
@@ -485,10 +488,97 @@ const PuntoVentaForm = () => {
                         </div>
                       </div>
                     </div>
+
+
+
+                       
+
+
+
+
+
+
+
+
+
                   </div>
 
 
                 }
+
+        {dataCajaUser[0]?.usuario?.nombre  &&
+                            (
+                              <>
+                                <div className="flex gap-5 mt-5 px-5">
+                                  <div className="relative w-[50%]">
+                                    <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
+                                      Usuario
+                                    </div>
+                                    <div className="border rounded-sm p-4">
+                                      <div className="grid grid-cols-2 text-sm leading-tight overflow-auto max-h-[60vh] min-h-[60vh]">
+                                        <div>
+                                          <div className="font-semibold mb-2">Nombre:</div>
+                                          <div className="font-semibold mb-2">Telefono:</div>
+                                          <div className="font-semibold mb-2">RFC:</div>
+                                          <div className="font-semibold mb-2">CURP:</div>
+                                          <div className="font-semibold mb-2">Correo:</div>
+                                        </div>
+                                        <div className="px-4">
+                                          <div className="mb-2">{(dataCajaUser[0]?.usuario?.nombre || "") + " " + (dataCajaUser[0]?.usuario?.apellido_paterno || "") + " " + (dataCajaUser[0]?.usuario?.apellido_materno || "")}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.usuario?.telefono}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.usuario?.rfc}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.usuario?.curp}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.usuario?.correo}</div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="relative  w-[50%]">
+                                    <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
+                                      Toma
+                                    </div>
+                                    <div className="border rounded-sm p-4">
+                                      <div className="grid grid-cols-2 text-sm leading-tight overflow-auto max-h-[60vh] min-h-[60vh]">
+                                        <div>
+                                          <div className="font-semibold mb-2">Toma:</div>
+                                          <div className="font-semibold mb-2">Clave Catastral:</div>
+                                          <div className="font-semibold mb-2">Estatus:</div>
+                                          <div className="font-semibold mb-2">Calle:</div>
+                                          <div className="font-semibold mb-2">Entre Calle 1:</div>
+                                          <div className="font-semibold mb-2">Entre Calle 2:</div>
+                                          <div className="font-semibold mb-2">Colonia:</div>
+                                          <div className="font-semibold mb-2">Código Postal:</div>
+                                          <div className="font-semibold mb-2">Localidad:</div>
+                                          <div className="font-semibold mb-2">Tipo Servicio:</div>
+                                          <div className="font-semibold mb-2">Tipo Toma:</div>
+                                          <div className="font-semibold mb-2">Tipo Contratación:</div>
+                                          <div className="font-semibold mb-2">Servicio de agua:</div>
+                                          <div className="font-semibold mb-2">Servicio de agua y alcantarillado:</div>
+                                        </div>
+                                        <div className="px-4">
+                                          <div className="mb-2">{dataCajaUser[0]?.id_codigo_toma}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.clave_catastral}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.estatus}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.calle}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.entre_calle_1}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.entre_calle_2}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.colonia}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.codigo_postal}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.localidad}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.tipo_servicio}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.tipo_toma}</div>
+                                          <div className="mb-2">{dataCajaUser[0]?.tipo_contratacion}</div>
+                                          <div className="mb-2">{formatYesNo(dataCajaUser[0]?.c_agua)}</div>
+                                          <div className="mb-2">{formatYesNo(dataCajaUser[0]?.c_alc_san)}</div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
+                            )
+                          }
+
 
 
 

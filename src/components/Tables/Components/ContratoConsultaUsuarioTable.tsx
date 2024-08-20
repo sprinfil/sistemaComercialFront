@@ -69,7 +69,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
 
         loadAndScroll();
     }
-}, [nombreBuscado, setUsuariosEncontrados, setLoadingTable]);
+}, []);
 
   const handleRowClick = (contratobuscarUsuario: BuscarUsuario) => {
     setUsuariosEncontrados([contratobuscarUsuario]);
