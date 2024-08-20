@@ -18,6 +18,7 @@ export type OrdenDeTrabajo = {
 }
 
 
+
 export const columns: ColumnDef<OrdenDeTrabajo>[] = [
   {
     accessorKey: "nombre",

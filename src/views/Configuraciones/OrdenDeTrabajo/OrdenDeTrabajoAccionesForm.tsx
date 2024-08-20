@@ -1,92 +1,64 @@
-import { useState } from "react";
-import logo from '../../img/logo.png';
+import { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from '../../../components/ui/button.tsx';
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "../../../components/ui/form.tsx";
-import { Input } from '../../../components/ui/input.tsx';
-import { OrdenDeTrabajoCrearSchema } from "../../../components/Forms/OrdenDeTrabajoValidaciones.ts";
-import { ModeToggle } from '../../../components/ui/mode-toggle.tsx';
 import axiosClient from "../../../axios-client.ts";
-import Loader from "../../../components/ui/Loader.tsx";
-import Error from "../../../components/ui/Error.tsx";
-import { Textarea } from "../../../components/ui/textarea.tsx";
+import { Button } from '../../../components/ui/button.tsx';
+import { Input } from '../../../components/ui/input.tsx';
 import { useStateContext } from "../../../contexts/ContextOrdenDeTrabajo.tsx";
-import { useEffect } from "react";
+import { useToast } from "../../../components/ui/use-toast"; 
+import Modal from "../../../components/ui/Modal.tsx";
+import ModalReactivacion from "../../../components/ui/ModalReactivación.tsx";
+import Error from "../../../components/ui/Error.tsx";
 import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../../../components/ui/IconButton.tsx";
-import { ComboBoxActivoInactivo } from "../../../components/ui/ComboBox.tsx";
-import Modal from "../../../components/ui/Modal.tsx";
-import ModalReactivacion from "../../../components/ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
-import { useToast } from "../../../components/ui/use-toast"; //IMPORTACIONES TOAST
-import { ToastAction } from "../../../components/ui/toast"; //IMPORTACIONES TOAST
-import { Switch } from "../../../components/ui/switch.tsx";
-import { ConceptosComboBoxNew } from "../../../components/ui/ConceptosComboBoxNew.tsx";
-import OrdenDeTrabajoCargosTable from "../../../components/Tables/Components/OrdenDeTrabajoCargosTable.tsx";
-import { OrdenDeTrabajoAplicacionComboBox } from "../../../components/ui/OrdenDeTrabajoAplicacionComboBox.tsx";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-  } from "@/components/ui/select";
-
+  } from "@/components/ui/select"
 import MarcoForm from "../../../components/ui/MarcoForm.tsx";
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import MarcoAccionesForm from "../../../components/ui/MarcoAccionesForm.tsx";
 
-type OrdenDeTrabajo = {
-    nombre: string;
-    aplicacion: string;
-    // Otras propiedades relevantes
-  };
-  
+import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario.tsx";
+
+const OrdenDeTrabajoAccionesSchema = z.object({
+  acciones: z.array(
+    z.object({
+      id: z.number().min(0),
+      id_orden_trabajo_catalogo:  z.string(),
+      accion: z.string().nonempty("Acción es requerida"),
+      modelo: z.string().nonempty("Modelo es requerido"),
+      campo: z.string().nonempty("Campo es requerido"),
+    })
+  ),
+});
+
+type OrdenDeTrabajoAcciones = z.infer<typeof OrdenDeTrabajoAccionesSchema>;
+
 const OrdenDeTrabajoAccionesForm = () => {
-    const { toast } = useToast()
-    const { ordenDeTrabajo, setOrdenDeTrabajo, loadingTable, setLoadingTable, setOrdenDeTrabajos, setAccion, accion } = useStateContext();
-    const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState({});
-    const [abrirInput, setAbrirInput] = useState(false);
-    const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
-    const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
-    const [bloquear, setBloquear] = useState(false);
-    const [cargoSeleccionado, setCargoSeleccionado] = useState();
-    const [nombreSeleccionado, setNombreSeleccionado] = useState<string | null>(null);
-    const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
-    const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>();
-    const [aumentarAcciones, setAumentarAcciones] = useState(1);
-    const [totalAccionesComponente, setTotalAccionesComponente] = useState([{ id: 0 }]);
+  const { toast } = useToast();
+  const { ordenDeTrabajo, setOrdenDeTrabajo, loadingTable, setLoadingTable, setOrdenDeTrabajos, setAccion, accion } = useStateContext();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [abrirInput, setAbrirInput] = useState(false);
+  const [IdParaRestaurar, setIdParaRestaurar] = useState<number | null>(null);
+  const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
+  const [totalAccionesComponente, setTotalAccionesComponente] = useState<{ id: number }[]>([{ id: 0 }]);
+  const [aumentarAcciones, setAumentarAcciones] = useState(1);
+  const [control2, setControl2] = useState(false);
+  const {idSeleccionadoConfiguracionOrdenDeTrabajo} = ZustandGeneralUsuario();
 
 
-    const handleAddComponent = () => {
-        setTotalAccionesComponente(prevAcciones => [
-            ...prevAcciones,
-            { id: aumentarAcciones } // Genera un nuevo id basado en el contador
-        ]);
-        setAumentarAcciones(aumentarAcciones + 1); // Incrementa el contador
-    };
 
-    const handleRemoveComponent = (idToRemove) => {
-        setTotalAccionesComponente(prevAcciones =>
-            prevAcciones.filter(({ id }) => id !== idToRemove) // Filtra el componente por id
-        );
-    };
-
-
-     //#region SUCCESSTOAST
+    //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo se ha creado correctamente",
+            description: "La anomalía se ha creado correctamente",
             variant: "success",
 
         })
@@ -94,7 +66,7 @@ const OrdenDeTrabajoAccionesForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo se ha editado correctamente",
+            description: "La anomalía  se ha editado correctamente",
             variant: "success",
 
         })
@@ -102,7 +74,7 @@ const OrdenDeTrabajoAccionesForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo se ha eliminado correctamente",
+            description: "La anomalía  se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -110,7 +82,7 @@ const OrdenDeTrabajoAccionesForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo se ha restaurado correctamente",
+            description: "La anomalía  se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -135,472 +107,346 @@ const OrdenDeTrabajoAccionesForm = () => {
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
-            description: "El tipo de toma ya existe.",
+            description: "La anomalía ya existe.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }
 
 
-    const form = useForm<z.infer<typeof OrdenDeTrabajoCrearSchema>>({
-        resolver: zodResolver(OrdenDeTrabajoCrearSchema),
-        defaultValues: {
-            id: ordenDeTrabajo.id,
-            nombre: ordenDeTrabajo.nombre,
-            estado: ordenDeTrabajo.estado,
-            cargos: ordenDeTrabajo.cargos,
-            momento: ordenDeTrabajo.momento
-        },
-    })
 
 
 
-    function onSubmit(values: z.infer<typeof OrdenDeTrabajoCrearSchema>) {
-        setLoading(true);
 
-        const transformedData = {
-            id: values.id,
-            nombre: values.nombre,
-            orden_trabajo_conf: {
-                id: 1, // Si necesitas un ID fijo o estático, puedes usar un valor por defecto
-                id_orden_trabajo_catalogo: values.id_orden_trabajo_catalogo || 5, // Usa un valor por defecto o extrae el valor correctamente
-                id_concepto_catalogo: values.id_concepto_catalogo || 1, // Usa un valor por defecto o extrae el valor correctamente
-                accion: values.accion || "modificar",
-                momento: values.aplicacion || "generar",
-                atributo: values.estado || "estatus",
-                valor: values.valor || "baja temporal",
-            },
-        };
-        if (accion == "crear") {
-            axiosClient.post(`/OrdenTrabajoCatalogo/create`, transformedData )
-                .then((response) => {
-                    const data = response.data;
-                    if(data.restore)
-                    {
-                        setIdParaRestaurar(data.tipoToma_id);
-                        setModalReactivacionOpen(true);
-                    }
-                    else if (data.restore == false) {
-                        errorYaExisteToast();
-                        setLoading(false);
-                    }
-                    else
-                    {
-                    setLoading(false);
-                    setOrdenDeTrabajo({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    form.reset({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    setAccion("creado");
-                    getAnomalias();
-                    successToastCreado();
-                    console.log(values);
-                    //setNotification("usuario creado");
-        }})
-                .catch((err) => {
-                    const response = err.response;
-                    errorToast();
-                    if (response && response.status === 422) {
-                        setErrors(response.data.errors);
-                    }
-                    setLoading(false);
-                })
-            console.log(abrirInput);
+
+
+  const form = useForm<OrdenDeTrabajoAcciones>({
+    resolver: zodResolver(OrdenDeTrabajoAccionesSchema),
+    defaultValues: {
+      acciones: totalAccionesComponente.map(item => ({
+        id: item.id,
+        id_orden_trabajo_catalogo: "",
+        accion: "",
+        modelo: "",
+        campo: "",
+      })),
+    },
+  });
+
+  const { control, handleSubmit, reset } = form;
+
+  const onSubmit = async (values: OrdenDeTrabajoAcciones) => {
+    console.log('Datos del formulario:', values);
+
+    if (accion === "editar") {
+      try {
+        const response = await axiosClient.put(`/OrdenTrabajoCatalogo/create/acciones`, values);
+        const data = response.data;
+        if (data.restore) {
+          setIdParaRestaurar(data.tipoToma_id);
+          setModalReactivacionOpen(true);
+        } else if (data.restore === false) {
+          errorToast();
+          setLoading(false);
+        } else {
+          setLoading(false);
+          setOrdenDeTrabajo({
+            id: 0,
+            nombre: "",
+            descripcion: "ninguna",
+          });
+          reset({
+            acciones: totalAccionesComponente.map(item => ({
+              id: item.id,
+              accion: "",
+              modelo: "",
+              campo: "",
+            })),
+          });
+          setAccion("creado");
+          getAnomalias();
+          successToastCreado();
         }
-        if (accion == "editar") {
-            axiosClient.put(`/TipoToma/update/${ordenDeTrabajo.id}`, values)
-                .then((data) => {
-                    setLoading(false);
-                    //alert("anomalia creada");
-                    setAbrirInput(false);
-                    setAccion("");
-                    getAnomalias();
-                    setOrdenDeTrabajo(data.data);
-                    //setNotification("usuario creado");
-                    successToastEditado();
-                })
-                .catch((err) => {
-                    const response = err.response;
-                    errorToast();
-                    if (response && response.status === 422) {
-                        setErrors(response.data.errors);
-                    }
-                    setLoading(false);
-                })
-        }
+      } catch (err) {
+        errorToast();
+        console.log(err.response);
+        setLoading(false);
+      }
     }
 
-    //con este metodo obtienes las anomalias de la bd
-    const getAnomalias = async () => {
-        setLoadingTable(true);
-        try {
-            const response = await axiosClient.get("/OrdenTrabajoCatalogo");
-            setLoadingTable(false);
-            setOrdenDeTrabajos(response.data.data);
-            console.log(response.data.data);
-        } catch (error) {
-            setLoadingTable(false);
-            errorToast();
-            console.error("Failed to fetch anomalias:", error);
-        }
-    };
+    if (accion === "hola") {
+      try {
+        const response = await axiosClient.put(`/TipoToma/update/${ordenDeTrabajo.id}`, values);
+        setLoading(false);
+        setAbrirInput(false);
+        setAccion("");
+        getAnomalias();
+        setOrdenDeTrabajo(response.data);
+        successToastEditado();
+      } catch (err) {
+        errorToast();
 
-    //elimianar anomalia
-    const onDelete = async () => {
-        try {
-            await axiosClient.delete(`/TipoToma/log_delete/${ordenDeTrabajo.id}`);
-            getAnomalias();
-            setAccion("eliminar");
-            successToastEliminado();
-        } catch (error) {
-            errorToast();
-            console.error("Failed to delete anomalia:", error);
-        }
-    };
-     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
-     const restaurarDato = (IdParaRestaurar: any) => {
-        axiosClient.put(`/TipoToma/restore/${IdParaRestaurar}`)
-            .then(() => {
-                setLoading(false);
-                setAbrirInput(false);
-                setAccion("crear");
-                setOrdenDeTrabajo({
-                    id: 0,
-                    nombre: "",
-                    descripcion: "ninguna",
-                    estado: "activo"
-                });
-                getAnomalias();
-                setAccion("creado");
-                successToastRestaurado();
-                setModalReactivacionOpen(false);
-            })
-            .catch((err) => {
-                errorToast();
-                setLoading(false);
-            });
-    };
+        setLoading(false);
+      }
+    }
+  };
 
-    //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
-    useEffect(() => {
-        if (accion == "eliminar") {
-            form.reset({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            });
-            setOrdenDeTrabajo({});
-            setAbrirInput(false);
-        }
-        if (accion == "crear") {
-            setAbrirInput(true);
-            setErrors({});
-            form.reset({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            });
-            setOrdenDeTrabajo({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            })
-        }
-        if (accion == "creado") {
-            setAbrirInput(true);
-            setErrors({});
-            form.reset({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            });
-            setOrdenDeTrabajo({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
+  const getAnomalias = async () => {
+    setLoadingTable(true);
+    try {
+      const response = await axiosClient.get("/OrdenTrabajoCatalogo");
+      setLoadingTable(false);
+      setOrdenDeTrabajos(response.data.data);
+    } catch (error) {
+      setLoadingTable(false);
+      errorToast();
+
+    }
+  };
+
+  const onDelete = async () => {
+    try {
+      await axiosClient.delete(`/TipoToma/log_delete/${ordenDeTrabajo.id}`);
+      getAnomalias();
+      setAccion("eliminar");
+      successToastEliminado();
+    } catch (error) {
+        errorToast();
+
+    }
+  };
+
+  const restaurarDato = async (IdParaRestaurar: number) => {
+    try {
+      await axiosClient.put(`/TipoToma/restore/${IdParaRestaurar}`);
+      setLoading(false);
+      setAbrirInput(false);
+      setAccion("crear");
+      setOrdenDeTrabajo({
+        id: 0,
+        nombre: "",
+        descripcion: "ninguna",
+        estado: "activo"
+      });
+      getAnomalias();
+      setAccion("creado");
+      successToastRestaurado();
+      setModalReactivacionOpen(false);
+    } catch (err) {
+        errorToast();
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    reset({
+      acciones: totalAccionesComponente.map(item => ({
+        id: item.id,
+        id_orden_trabajo_catalogo: 0,
+        accion: "",
+        modelo: "",
+        campo: "",
+      })),
+    });
+  }, [totalAccionesComponente, reset]);
+
+  useEffect(() => {
+    if (accion === "eliminar") {
+      setControl2(false);
+      setAbrirInput(false);
+    }
+    if (accion === "crear" || accion === "creado") {
+      setControl2(false);
+      setAbrirInput(true);
+      setErrors({});
+      setOrdenDeTrabajo({
+        id: 0,
+        nombre: "",
+        descripcion: "ninguna",
+      });
+    }
+    if (accion === "ver") {
+      setControl2(false);
+      setAbrirInput(false);
+      setErrors({});
+      setAccion("");
+      reset({
+        acciones: totalAccionesComponente.map(item => ({
+          id: item.id,
+          accion: "",
+          modelo: "",
+          campo: "",
+        })),
+      });
+    }
+    if (accion === "editar") {
+      setAbrirInput(true);
+      setControl2(true);
+      setErrors({});
+    }
+  }, [accion, reset, totalAccionesComponente]);
+
+  const handleAddComponent = () => {
+    setTotalAccionesComponente(prevAcciones => [
+      ...prevAcciones,
+      { id: aumentarAcciones }
+    ]);
+    setAumentarAcciones(aumentarAcciones + 1);
+  };
+
+  const handleRemoveComponent = (idToRemove: number) => {
+    setTotalAccionesComponente(prevAcciones =>
+      prevAcciones.filter(({ id }) => id !== idToRemove)
+    );
+  };
+
+  const borderColor = accion == "editar" ? 'border-green-500' : 'border-gray-200';
+
+  return (
+    <div>
+      <div className="overflow-auto">
+        <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+          <div className='h-[20px] w-full flex items-center justify-end'>
+            <div className="mb-[10px] h-full w-full mx-4">
+              {accion === "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
+              {ordenDeTrabajo.nombre && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
+            </div>
+            {ordenDeTrabajo.nombre && (
+              <>
+                <Modal
+                  method={onDelete}
+                  button={
+                    <a title="Eliminar">
+                      <IconButton>
+                        <TrashIcon className="w-[20px] h-[20px]" />
+                      </IconButton>
+                    </a>}
+                />
+                {
+                  accion == "editar" &&
+                  <div onClick={handleAddComponent}>
+                  <a title="Agregar nueva acción">
+                    <IconButton>
+                      <PlusCircledIcon className='w-[20px] h-[20px]' />
+                    </IconButton>
+                  </a>
+                </div>
+                }
                 
-            })
-        }
-        if (accion == "ver") {
-            setAbrirInput(false);
-            setErrors({});
-            setAccion("");
-            setCargosAgregados([]);
-            form.reset({
-                id: ordenDeTrabajo.id,
-                nombre: ordenDeTrabajo.nombre,
-                cargos: ordenDeTrabajo.cargos,
-                aplicacion: ordenDeTrabajo.aplicacion,
-            });
-        }
-        if (accion == "editar") {
-            setAbrirInput(true);
-            setErrors({});
-        }
-    }, [accion]);
+                <div onClick={() => setAccion("editar")}>
+                  <a title="Editar">
+                    <IconButton>
+                      <Pencil2Icon className="w-[20px] h-[20px]" />
+                    </IconButton>
+                  </a>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+        
+          <div className=''>
+        
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+              {totalAccionesComponente.map((item, index) => (
+                
+                <div key={item.id}  className={`p-4 border ${borderColor} rounded-md`}>
+                
+                    <div className="flex justify-end mb-5">
+                    <button type="button" onClick={() => handleRemoveComponent(item.id)}><TrashIcon className="w-[2.5vh] h-[2.5vh]"/></button>
 
-    const handleAgregarCargo = () => {
-        if (nombreSeleccionado && aplicacionSeleccionada) {
-            const nuevoCargo: OrdenDeTrabajo = {
-                nombre: nombreSeleccionado,
-                aplicacion: aplicacionSeleccionada,
-            };
-    
-            setCargosAgregados((prev) => [...prev, nuevoCargo]);
-            setNombreSeleccionado(null);
-            setAplicacionSeleccionada(null);
-        } else {
-            console.log("Nombre o aplicación no seleccionados");
-        }
-    };
-
-    return (
-        <div>
-            <div className="overflow-auto">
-         
-                <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-               
-             
-                    <div className='h-[20px] w-full flex items-center justify-end'>
-                        
-                        <div className="mb-[10px] h-full w-full mx-4">
-                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
-                            {ordenDeTrabajo.nombre != "" && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
                         </div>
-                        {(ordenDeTrabajo.nombre != null && ordenDeTrabajo.nombre != "") &&
-                            <>
-                                <Modal
-                                    method={onDelete}
-                                    button={
-                                        <a title="Eliminar">
-                                            <IconButton>
-                                                <TrashIcon className="w-[20px] h-[20px]" />
-                                            </IconButton>
-                                        </a>}
-                                />
-                                <div onClick={handleAddComponent}>
-                                    <a title="Agregar nueva acción">
-                                    <IconButton>
-            
-                                    <PlusCircledIcon className='w-[20px] h-[20px]'/>
-          
-                                    </IconButton>
-                                    </a>
-                                </div>
-                                <div onClick={() => setAccion("editar")}>
-                                    <a title="Editar">
-                                        <IconButton>
-                                            <Pencil2Icon className="w-[20px] h-[20px]" />
-                                        </IconButton>
-                                    </a>
-                                </div>
-                                
-                                
-                            </>
-                        }
-                        {// ESTE ES EL MODAL DE REACTIVACIÓN
-                        //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
-                        //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
-                    }
-                    {ModalReactivacionOpen &&
-                        <ModalReactivacion
-                            isOpen={ModalReactivacionOpen}
-                            setIsOpen={setModalReactivacionOpen}
-                            method={() => restaurarDato(IdParaRestaurar)}
-                        />
-                    }
+                    
+                    <div className="w-full grid grid-cols-2 gap-10 mb-10">
+                    <Controller
+                    name={`acciones.${index}.accion`}
+                    control={control}
+                    render={({ field }) => (
 
+                      
+
+                      
+                                 <Select
+                                        onValueChange={(value) => field.onChange((value))}
+                                        value={(field.value)}
+                                        >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Selecciona una acción" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                        <SelectItem value="registrar">Registrar</SelectItem>
+                                        <SelectItem value="modificar">Modificar</SelectItem>
+                                        <SelectItem value="quitar">Quitar</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                    )}
+                  />
+                  <Controller
+                    name={`acciones.${index}.modelo`}
+                    control={control}
+                    render={({ field }) => (
+                        <Select
+                        onValueChange={(value) => field.onChange((value))}
+                        value={(field.value)}
+                        >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Selecciona un modelo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                        <SelectItem value="tomas">Tomas</SelectItem>
+                        <SelectItem value="medidor">Medidor</SelectItem>
+                        <SelectItem value="contratos">Contratos</SelectItem>
+                        <SelectItem value="usuario">Usuario</SelectItem>
+
+                        </SelectContent>
+                    </Select>
+                    )}
+                  />
+                    </div>
+                    <div className="w-full">
+                    <Controller
+                    name={`acciones.${index}.campo`}
+                    control={control}
+                    render={({ field }) => (
+                        <Select
+                        onValueChange={(value) => field.onChange((value))}
+                        value={(field.value)}
+                        >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Selecciona un campo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                        <SelectItem value="estatus">Estatus</SelectItem>
+                        <SelectItem value="tipo_contratacion">Tipo de contratación</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    )}
+                  />
                     </div>
                 </div>
+              ))}
+              <div className="col-span-full flex justify-end">
+                {accion == "editar" && 
+                <Button type="submit" isLoading={loading}>
+                  {accion === "crear" ? "Crear" : "Actualizar"}
+                </Button>}
+                
+              </div>
               
-                           
+            </form>
+           
+          </div>
+        
+        {ModalReactivacionOpen && (
+          <ModalReactivacion
+            isOpen={ModalReactivacionOpen}
+            onClose={() => setModalReactivacionOpen(false)}
+            onConfirm={() => restaurarDato(IdParaRestaurar!)}
+          />
+        )}
+        {errors && <Error errors={errors} />}
+      </div>
+    </div>
+  );
+};
 
-                <div className="py-[20px] px-[10px] ">
-
-                    {errors && <Error errors={errors} />}
-                    {totalAccionesComponente.map((item) => 
-                    (
-                        <>
-                        
-                         <MarcoAccionesForm title={"Accion"}>
-                         <div className="flex justify-end">
-                            <a title="Eliminar esta acción">
-                            <div onClick={() => handleRemoveComponent(item.id)}>  
-                                        <IconButton>
-                                             <TrashIcon className='w-[20px] h-[20px]'>
-                                                  </TrashIcon>
-                                      </IconButton>
-                                    </div>      
-                            </a>
-                                       
-                                </div>
-                               
-                         <Form key={item.id}{...form}>
-                           
-                           <form onSubmit={form.handleSubmit(onSubmit)} className=" ">
-                      
-                                 <div className="flex space-x-10">
-                                      <div className="w-full">
-                                       
-                                      <FormField
-                                      control={form.control}
-                                      name="accion"
-                                      render={({ field }) => (
-                                          <FormItem>
-                                              <FormLabel>Acciones</FormLabel>
-                                              <Select
-                                                 onValueChange={(value) => field.onChange(Number(value))}
-                                                 value={String(field.value)}
-                                                 >
-                                              <FormControl>
-                                              <SelectTrigger>
-                                                  <SelectValue placeholder="Selecciona una acción" />
-                                              </SelectTrigger>
-                                              </FormControl>
-                                              <SelectContent>
-                                              <SelectItem value="1">Si</SelectItem>
-                                              <SelectItem value="0">No</SelectItem>
-                                              </SelectContent>
-                                          </Select>
-                                              <FormDescription>
-                                                  Selecciona una accion.
-                                              </FormDescription>
-                                              <FormMessage />
-                                          </FormItem>
-                                      )}
-                                  />
-                                  </div>
-      
-                                  <div className="w-full">
-                                  <FormField
-                                      control={form.control}
-                                      name="modelo"
-                                      render={({ field }) => (
-                                          <FormItem>
-                                              <FormLabel>Modelo</FormLabel>
-                                              <Select
-                                                 onValueChange={(value) => field.onChange(Number(value))}
-                                                 value={String(field.value)}
-                                                 >
-                                              <FormControl>
-                                              <SelectTrigger>
-                                                  <SelectValue placeholder="Selecciona una acción" />
-                                              </SelectTrigger>
-                                              </FormControl>
-                                              <SelectContent>
-                                              <SelectItem value="1">Si</SelectItem>
-                                              <SelectItem value="0">No</SelectItem>
-                                              </SelectContent>
-                                          </Select>
-                                              <FormDescription>
-                                                  Descripción de la orden de trabajo.
-                                              </FormDescription>
-                                              <FormMessage />
-                                          </FormItem>
-                                      )}
-                                  />
-                                  </div>
-                               
-                                  </div>
-      
-                                  <div className="flex space-x-10">
-      
-                                  <div className="w-full">
-                                      <FormField
-                                      control={form.control}
-                                      name="campo"
-                                      render={({ field }) => (
-                                          <FormItem>
-                                              <FormLabel>Campo</FormLabel>
-                                              <Select
-                                                 onValueChange={(value) => field.onChange(Number(value))}
-                                                 value={String(field.value)}
-                                                 >
-                                              <FormControl>
-                                              <SelectTrigger>
-                                                  <SelectValue placeholder="Selecciona una acción" />
-                                              </SelectTrigger>
-                                              </FormControl>
-                                              <SelectContent>
-                                              <SelectItem value="1">Si</SelectItem>
-                                              <SelectItem value="0">No</SelectItem>
-                                              </SelectContent>
-                                          </Select>
-                                              <FormDescription>
-                                              Escribe los días de vigencia de la orden de trabajo
-                                              </FormDescription>
-                                              <FormMessage />
-                                          </FormItem>
-                                      )}
-                                  />
-      
-                                  </div>
-      
-                                  <div className="w-full">
-                                  <FormField
-                                      control={form.control}
-                                      name="opcional"
-                                      render={({ field }) => (
-                                          <FormItem>
-                                              <FormLabel>¿Es opcional?</FormLabel>
-                                              <Select
-                                                 onValueChange={(value) => field.onChange(Number(value))}
-                                                 value={String(field.value)}
-                                                 >
-                                              <FormControl>
-                                              <SelectTrigger>
-                                                  <SelectValue placeholder="¿Es opcional?" />
-                                              </SelectTrigger>
-                                              </FormControl>
-                                              <SelectContent>
-                                              <SelectItem value="1">Si</SelectItem>
-                                              <SelectItem value="0">No</SelectItem>
-                                              </SelectContent>
-                                          </Select>
-                                              <FormDescription>
-                                              Selecciona si es opcional.
-                                              </FormDescription>
-                                              <FormMessage />
-                                          </FormItem>
-                                      )}
-                                  />
-                                  </div>
-                                  </div>
-                                    
-   
-                               
-                   
-                                 
-                           
-                          
-                           {/*accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
-                           {/*accion == "editar" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
-   
-                               {loading && <Loader />}
-                               <div className="flex justify-end mt-4">
-                               {abrirInput && <Button type="submit">Guardar</Button>}
-
-                               </div>
-   
-                           </form>
-   
-                       </Form>
-                        </MarcoAccionesForm>
-                        
-                        </>
-                        
-                    ))}
-                   
-                </div>
-
-            </div>
-        </div>
-    )
-}
-
-export default OrdenDeTrabajoAccionesForm
+export default OrdenDeTrabajoAccionesForm;
