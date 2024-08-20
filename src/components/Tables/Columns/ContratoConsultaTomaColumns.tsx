@@ -33,7 +33,8 @@ export type Usuario = {
 
 export const columns: ColumnDef<BuscarTomaUsuario>[] = [
   {
-    accessorKey: "usuario.nombre",
+    accessorFn: (row) => row.usuario?.nombre,
+    id: "usuario.nombre",
     header: ({ column }) => {
       return (
         <Button
@@ -42,11 +43,12 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
         >
           Nombre
         </Button>
-      )
+      );
     },
   },
   {
-    accessorKey: "usuario.apellido_paterno",
+    accessorFn: (row) => row.usuario?.apellido_paterno,
+    id: "usuario.apellido_paterno",
     header: ({ column }) => {
       return (
         <Button
@@ -59,7 +61,8 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
     },
   },
   {
-    accessorKey: "usuario.apellido_materno",
+    accessorFn: (row) => row.usuario?.apellido_materno,
+    id: "usuario.apellido_materno",
     header: ({ column }) => {
       return (
         <Button
