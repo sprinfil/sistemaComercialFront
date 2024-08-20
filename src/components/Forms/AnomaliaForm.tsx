@@ -388,7 +388,7 @@ const AnomaliaForm = () => {
                 estado: valorObtenidoBool
             });
         }
-    }, [accion, anomalia]);
+    }, [valorObtenidoBool]);
 
     return (
         <>

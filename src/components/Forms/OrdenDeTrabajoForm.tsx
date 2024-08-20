@@ -60,6 +60,8 @@ const OrdenDeTrabajoForm = () => {
     const [nombreSeleccionado, setNombreSeleccionado] = useState<string | null>(null);
     const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
     const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>([]);
+
+
     //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
@@ -138,7 +140,6 @@ const OrdenDeTrabajoForm = () => {
     
         // Definición del tipo Orden_trabajo_catalogo
          type Orden_trabajo_catalogo = {
-            id: number;
             nombre: string;
             descripcion: string;
             vigencias: string;
@@ -148,7 +149,6 @@ const OrdenDeTrabajoForm = () => {
     
         // Creación del objeto orden_trabajo_catalogo
         let orden_trabajo_catalogo: Orden_trabajo_catalogo = {
-            id: 0,
             nombre: values.nombre,
             descripcion: values.descripcion,
             vigencias: values.vigencias,
@@ -178,11 +178,17 @@ const OrdenDeTrabajoForm = () => {
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            vigencias: "",
+                            momento_cargo: "",
+                            genera_masiva: false
                         });
                         form.reset({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            vigencias: "",
+                            momento_cargo: "",
+                            genera_masiva: false
                         });
                         setAccion("creado");
                         getAnomalias();
@@ -205,6 +211,9 @@ const OrdenDeTrabajoForm = () => {
     
         // Acción de editar
         if (accion === "editar") {
+
+          
+
             axiosClient.put(`/TipoToma/update/${ordenDeTrabajo.id}`, values)
                 .then((data) => {
                     setLoading(false);
@@ -267,7 +276,9 @@ const OrdenDeTrabajoForm = () => {
                     id: 0,
                     nombre: "",
                     descripcion: "ninguna",
-                    estado: "activo"
+                    vigencias: "",
+                    momento_cargo: "",
+                    genera_masiva: false
                 });
                 getAnomalias();
                 setAccion("creado");
@@ -283,6 +294,7 @@ const OrdenDeTrabajoForm = () => {
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            setBloquear(false);
             form.reset({
                 id: 0,
                 nombre: "",
@@ -293,34 +305,52 @@ const OrdenDeTrabajoForm = () => {
         }
         if (accion == "crear") {
             setAbrirInput(true);
+            setBloquear(true);
             setErrors({});
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                vigencias: "",
+                momento_cargo: "",
+                genera_masiva: false,
             });
             setOrdenDeTrabajo({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                vigencias: "",
+                momento_cargo: "",
+                genera_masiva: false
             })
         }
         if (accion == "creado") {
             setAbrirInput(true);
+            setBloquear(false);
             setErrors({});
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                vigencias: "",
+                momento_cargo: "",
+                genera_masiva: false
             });
             setOrdenDeTrabajo({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-
+                vigencias: "",
+                momento_cargo: "",
+                genera_masiva: false
             })
         }
         if (accion == "ver") {
+            setBloquear(false);
+
+            
+
+
             setAbrirInput(false);
             setErrors({});
             setAccion("");
@@ -328,15 +358,35 @@ const OrdenDeTrabajoForm = () => {
             form.reset({
                 id: ordenDeTrabajo.id,
                 nombre: ordenDeTrabajo.nombre,
-                cargos: ordenDeTrabajo.cargos,
-                aplicacion: ordenDeTrabajo.aplicacion,
+                descripcion: ordenDeTrabajo.descripcion,
+                vigencias: String(ordenDeTrabajo.vigencias),
+                momento_cargo: ordenDeTrabajo.momento_cargo,
+                genera_masiva: ordenDeTrabajo.genera_masiva
+              
             });
         }
         if (accion == "editar") {
             setAbrirInput(true);
+            setBloquear(true);
             setErrors({});
         }
     }, [accion]);
+
+
+
+
+    useEffect(() => {
+        form.reset({
+            id: ordenDeTrabajo.id,
+            nombre: ordenDeTrabajo.nombre,
+            descripcion: ordenDeTrabajo.descripcion,
+            vigencias: ordenDeTrabajo.vigencias,
+            momento_cargo: ordenDeTrabajo.momento_cargo,
+            genera_masiva: ordenDeTrabajo.genera_masiva
+          
+        });
+    },[])
+
 
     const handleAgregarCargo = () => {
         if (nombreSeleccionado && aplicacionSeleccionada) {
@@ -499,9 +549,10 @@ const OrdenDeTrabajoForm = () => {
                                                     onCheckedChange={(checked) => field.onChange(checked)
 
                                                     }
-                                                    disabled
+                                                    
                                                 /> :
                                                     <Switch
+                                                    disabled
                                                         checked={field.value}
                                                         onCheckedChange={(checked) => field.onChange(checked)
 
