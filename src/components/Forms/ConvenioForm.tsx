@@ -27,6 +27,7 @@ import Modal from "../ui/Modal.tsx";
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import ModalReactivacion from "../ui/ModalReactivación.tsx";
+import { Switch } from "../ui/switch.tsx";
 
 
 
@@ -40,14 +41,19 @@ const ConceptoForm = () => {
     const [abrirInput, setAbrirInput] = useState(false);
     const [conceptoIdParaRestaurar, setConceptoIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
+    const [valorObtenidoBool, setValorObtenidoBool] = useState(false);
+    const [control, setControl] = useState(false);
+
+
 
 
     const form = useForm<z.infer<typeof conveniosSchema>>({
         resolver: zodResolver(conveniosSchema),
         defaultValues: {
-            id: convenio.id,
-            nombre: convenio.nombre,
-            descripcion: convenio.descripcion,
+            id: 0,
+            nombre: "",
+            descripcion: "",
+            estado: false
         },
     })
 
@@ -112,17 +118,18 @@ const ConceptoForm = () => {
 
     function onSubmit(values: z.infer<typeof conveniosSchema>) {
         setLoading(true);
+        const boolConvetido = convenio.estado ? "activo" : "inactivo"
+
+        let values2 = { ...values, estado: boolConvetido }
         if (accion == "crear") {
-            axiosClient.post(`/Convenio/create`, values)
+            axiosClient.post(`/Convenio/create`, values2)
                 .then((response) => {
                     const data = response.data;
-                    if(data.restore)
-                    {
+                    if (data.restore) {
                         setConceptoIdParaRestaurar(data.convenio_id);
                         setModalReactivacionOpen(true);
                     }
-                    else if(data.restore == false)
-                    {
+                    else if (data.restore == false) {
                         errorYaExisteToast();
                         setLoading(false);
                     }
@@ -132,11 +139,15 @@ const ConceptoForm = () => {
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            estado: false
+
                         });
                         form.reset({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            estado: false
+
                         });
                         getConvenios();
                         console.log(values);
@@ -144,7 +155,7 @@ const ConceptoForm = () => {
                         setAccion("creado");
                         //setNotification("usuario creado");
                     }
-                    
+
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -157,7 +168,11 @@ const ConceptoForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/Convenio/update/${convenio.id}`, values)
+
+            const boolConvetido = values.estado == true ? "activo" : "inactivo"
+
+            let values2 = { ...values, estado: boolConvetido }
+            axiosClient.put(`/Convenio/update/${convenio.id}`, values2)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
@@ -205,7 +220,7 @@ const ConceptoForm = () => {
             console.error("Failed to delete anomalia:", error);
         }
     };
-    
+
     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
     const restaurarDato = (concepto_id: any) => {
         axiosClient.put(`/Convenio/restaurar/${concepto_id}`)
@@ -233,38 +248,57 @@ const ConceptoForm = () => {
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            setControl(false);
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
+
             });
             setConvenio({});
             setAbrirInput(false);
         }
         if (accion == "creado") {
+            setControl(false);
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
+
             });
             setConvenio({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
+            setControl(true);
             setAbrirInput(true);
             setErrors({});
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
+
             });
             setConvenio({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
+
             })
         }
         if (accion == "ver") {
+            setControl(false);
+
+
+
+            const valorDesdeBaseDeDatos: string = convenio.estado as unknown as string;
+            const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
+            setValorObtenidoBool(valorBooleano);
+
             setAbrirInput(false);
             setErrors({});
             setAccion("");
@@ -272,10 +306,13 @@ const ConceptoForm = () => {
                 id: convenio.id,
                 nombre: convenio.nombre,
                 descripcion: convenio.descripcion,
+                estado: valorBooleano
+
             });
         }
         if (accion == "editar") {
             setAbrirInput(true);
+            setControl(true);
             setErrors({});
         }
     }, [accion]);
@@ -293,17 +330,17 @@ const ConceptoForm = () => {
                             <Modal
                                 method={onDelete}
                                 button={
-                                    <a title = "Eliminar">
-                                    <IconButton>
-                                        <TrashIcon className="w-[20px] h-[20px]" />
-                                    </IconButton></a>}
+                                    <a title="Eliminar">
+                                        <IconButton>
+                                            <TrashIcon className="w-[20px] h-[20px]" />
+                                        </IconButton></a>}
                             />
                             <div onClick={() => setAccion("editar")}>
-                            <a title = "Editar">
-                                <IconButton>
-                                    <Pencil2Icon className="w-[20px] h-[20px]" />
-                                </IconButton>
-                            </a>
+                                <a title="Editar">
+                                    <IconButton>
+                                        <Pencil2Icon className="w-[20px] h-[20px]" />
+                                    </IconButton>
+                                </a>
                             </div>
                         </>
                     }
@@ -357,6 +394,40 @@ const ConceptoForm = () => {
                                     </FormControl>
                                     <FormDescription>
                                         Agrega una breve descripción.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Estado</FormLabel>
+                                    <FormControl>
+                                        {control
+                                            ?
+                                            <Switch
+                                                className="ml-3"
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => field.onChange(checked)
+                                                }
+                                            />
+                                            :
+                                            <Switch
+                                                disabled
+                                                className="ml-3"
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => field.onChange(checked)
+                                                }
+                                            />
+                                        }
+
+                                    </FormControl>
+                                    <FormDescription>
+                                    Aquí puedes cambiar el estado del convenio.
+
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
