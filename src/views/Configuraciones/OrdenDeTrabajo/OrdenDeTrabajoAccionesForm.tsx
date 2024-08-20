@@ -29,7 +29,7 @@ const OrdenDeTrabajoAccionesSchema = z.object({
   acciones: z.array(
     z.object({
       id: z.number().min(0),
-      id_orden_trabajo_catalogo:  z.string(),
+
       accion: z.string().nonempty("Acción es requerida"),
       modelo: z.string().nonempty("Modelo es requerido"),
       campo: z.string().nonempty("Campo es requerido"),
@@ -44,6 +44,7 @@ const OrdenDeTrabajoAccionesForm = () => {
   const { ordenDeTrabajo, setOrdenDeTrabajo, loadingTable, setLoadingTable, setOrdenDeTrabajos, setAccion, accion } = useStateContext();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  
   const [abrirInput, setAbrirInput] = useState(false);
   const [IdParaRestaurar, setIdParaRestaurar] = useState<number | null>(null);
   const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
@@ -124,7 +125,6 @@ const OrdenDeTrabajoAccionesForm = () => {
     defaultValues: {
       acciones: totalAccionesComponente.map(item => ({
         id: item.id,
-        id_orden_trabajo_catalogo: "",
         accion: "",
         modelo: "",
         campo: "",
@@ -135,11 +135,27 @@ const OrdenDeTrabajoAccionesForm = () => {
   const { control, handleSubmit, reset } = form;
 
   const onSubmit = async (values: OrdenDeTrabajoAcciones) => {
-    console.log('Datos del formulario:', values);
+    
+  // Construir un arreglo de objetos `values2`
+  const valoresAcciones = values.acciones.map(accion => ({
+    id: accion.id,
+    accion: accion.accion,
+    modelo: accion.modelo,
+    campo: accion.campo,
+    id_orden_trabajo_catalogo: ordenDeTrabajo.id
+  }));
+
+  // Crear el objeto `orden_trabajo_accion` que contiene el arreglo `valoresAcciones`
+  const orden_trabajo_accion = {
+    orden_trabajo_accion: valoresAcciones
+  };
+
+  console.log('Objeto para enviar:', orden_trabajo_accion);
+
 
     if (accion === "editar") {
       try {
-        const response = await axiosClient.put(`/OrdenTrabajoCatalogo/create/acciones`, values);
+        const response = await axiosClient.put(`/OrdenTrabajoCatalogo/create/acciones`, orden_trabajo_accion);
         const data = response.data;
         if (data.restore) {
           setIdParaRestaurar(data.tipoToma_id);
@@ -392,7 +408,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                             <SelectValue placeholder="Selecciona un modelo" />
                         </SelectTrigger>
                         <SelectContent>
-                        <SelectItem value="tomas">Tomas</SelectItem>
+                        <SelectItem value="toma">Tomas</SelectItem>
                         <SelectItem value="medidor">Medidor</SelectItem>
                         <SelectItem value="contratos">Contratos</SelectItem>
                         <SelectItem value="usuario">Usuario</SelectItem>
