@@ -27,7 +27,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 
 export const MenuSuperiosNew = () => {
-    const { setToken, setUser, user, permissions, setPermissions } = useStateContext();
+    const { setToken, setUser, user, permissions, setPermissions, setServerStatus } = useStateContext();
     const { set_titulo, set_icono, titulo } = subMenuZustand();
     const [loading_permissions, set_loading_permissions] = useState(false);
 
@@ -72,14 +72,7 @@ export const MenuSuperiosNew = () => {
             setUser(response.data);
         } catch (error) {
             console.error("Failed to fetch user:", error);
-        }
-    };
-    //EN DESARROLLO
-    const getUserRoles = async () => {
-        try{
-            const response = await axiosClient.get(`/Rol/get_all_rol_names_by_user_id/${user.id}`);
-        } catch(error){
-            console.log(error);
+            setServerStatus(false);
         }
     };
 

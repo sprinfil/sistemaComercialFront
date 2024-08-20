@@ -306,7 +306,7 @@ function handleNavigationCrearUsuario ()
     return (
         <ContextProvider>
             <div>
-            <div className='mt-5 ml-[5vh] w-[213vh] rounded-md border border-border  shadow-inherit p-10 h-[55vh]'>
+            <div className=' w-full rounded-md border border-border  shadow-inherit p-10 h-[55vh]'>
                 <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <div className="text-muted-foreground text-[20px]">Consultar al usuario</div>
