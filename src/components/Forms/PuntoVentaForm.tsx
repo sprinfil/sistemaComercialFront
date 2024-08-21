@@ -844,13 +844,11 @@ const PuntoVentaForm = () => {
 
         )}
       </div>
-      <div className="border rounded-sm w-[38%] ml-1 mr-1 mt-2 flex flex-col absolute right-2 min-h-[75vh] top-[48px]">
-        <div className="absolute left-2 bg-background px-2 text-sm font-semibold -top-3">
-          Cargos Seleccionados
-        </div>
-        <div className="flex-grow mt-1 ">
+      <div className="border rounded-sm w-[38%] ml-1 mr-1 mt-2 flex flex-col absolute right-2 min-h-[75vh] top-[44px]">
+      
+        <div className="flex-grow mt-1 relative -top-4">
           {selectedCargos.length > 0 ? (
-            <div className="mt-2 rounded-sm p-1 max-h-96 overflow-y-auto">
+            <div className="mt-2 rounded-sm max-h-96 overflow-y-auto">
               <table className="w-full table-fixed">
                 <thead className="bg-muted">
                   <tr>

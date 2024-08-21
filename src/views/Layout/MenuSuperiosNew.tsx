@@ -24,6 +24,7 @@ import { MouseEvent } from 'react';
 import axiosClient from '../../axios-client';
 import { subMenuZustand } from "../../contexts/ZustandSubmenu.tsx"
 import { Skeleton } from "@/components/ui/skeleton"
+import  logo_menu  from "../../img/logosapamenusuperiornew.png"
 
 
 export const MenuSuperiosNew = () => {
@@ -250,7 +251,6 @@ export const MenuSuperiosNew = () => {
         <>
             <p className='relative xl:hidden text-sm text-red-500 p-1 h-[9vh] flex items-center justify-center'>La resolucion no es compatible</p>
             <div className='relative hidden xl:block '>
-
                 <Menubar>
                     {
                         loading_permissions &&
@@ -262,9 +262,11 @@ export const MenuSuperiosNew = () => {
                     {
                         !loading_permissions &&
                         <>
+                        <img src={logo_menu} className='w-[40px] rounded-md shadow-md' alt=""/>
                             {opciones.map((opcionPadre, index) => {
                                 if (permissions.includes(opcionPadre.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
                                     return (
+                                        
                                         <MenubarMenu>
                                             <MenubarTrigger ><div className='flex gap-2 items-center'> <span className='text-primary'> {opcionPadre.icon}</span>{opcionPadre.titulo}</div></MenubarTrigger>
                                             <MenubarContent>
