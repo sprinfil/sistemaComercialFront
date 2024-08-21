@@ -1,32 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import PuntoVentaForm from '../../components/Forms/PuntoVentaForm';
+import { ModalCorteCaja } from '../../components/ui/ModalCorteCaja';
 import { ModalFondoCaja } from '../../components/ui/ModalFondoCaja';
 
 export default function PuntoVenta() {
   const [isFondoCajaRegistered, setIsFondoCajaRegistered] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(true); // El modal se abre automáticamente al inicio
-
-  const handleRegister = (amount) => {
-    console.log(`Monto registrado: ${amount}`);
-    setIsFondoCajaRegistered(true);
-    setIsModalOpen(false); // Cierra el modal después de registrar el fondo
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [initialFund, setInitialFund] = useState(0);
 
   useEffect(() => {
-    // Abre el modal automáticamente al montar el componente
-    setIsModalOpen(true);
+    const isRegistered = localStorage.getItem('isFondoCajaRegistered');
+    const amount = localStorage.getItem('fondoCajaAmount');
+
+    if (isRegistered === 'true') {
+      setIsFondoCajaRegistered(true);
+      setInitialFund(parseFloat(amount) || 0);
+      
+    } else {
+      setIsModalOpen(true);
+    }
   }, []);
 
+  const handleRegister = (amount) => {
+    setIsFondoCajaRegistered(true);
+    setInitialFund(parseFloat(amount) || 0);
+    setIsModalOpen(false);
+    localStorage.setItem('isFondoCajaRegistered', 'true');
+    localStorage.setItem('fondoCajaAmount', amount);
+    console.log(parseFloat(amount));
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <div className=''>
+    <div>
       {!isFondoCajaRegistered ? (
         <ModalFondoCaja 
           open={isModalOpen} 
-          onRegister={handleRegister} 
+          onRegister={handleRegister}
+          onCancel={handleModalClose}
         />
       ) : (
-        <PuntoVentaForm isFondoCajaRegistered={isFondoCajaRegistered} />
+        <PuntoVentaForm />
       )}
+      <ModalCorteCaja
+        trigger={<button className="btn-primary">Hacer Corte de Caja</button>}
+        onRegister={() => {}}
+        initialFund={initialFund}
+      />
     </div>
   );
 }

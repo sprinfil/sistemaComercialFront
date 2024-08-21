@@ -4,7 +4,7 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import Loader from "../../components/ui/Loader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UpdateIcon, MagnifyingGlassIcon, PlusIcon, HamburgerMenuIcon, CrossCircledIcon, ExternalLinkIcon, GearIcon } from '@radix-ui/react-icons';
+import { UpdateIcon, MagnifyingGlassIcon, PlusIcon, HamburgerMenuIcon, CrossCircledIcon, ExternalLinkIcon, GearIcon, ScissorsIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx"; // Asegúrate de que esta ruta sea correcta
 import Modal from "../ui/Modal.tsx";
 import { useStateContext } from "../../contexts/ContextConcepto.tsx";
@@ -21,6 +21,7 @@ import search_image from "../../img/search.svg"
 import { BuscarUsuario } from "../Tables/Columns/ContratoConsultaUsuarioColumns.tsx";
 import { Skeleton } from "../ui/skeleton.tsx";
 import { ModalRetiroCaja } from "../ui/ModalRetiroCaja.tsx";
+import { ModalCorteCaja } from "../ui/ModalCorteCaja.tsx";
 const PuntoVentaForm = () => {
   const [userInput, setUserInput] = useState("");
   const [cargosData, setCargosData] = useState(null);
@@ -275,13 +276,23 @@ const PuntoVentaForm = () => {
         <div className="left-4  h-[30px] bg-muted absolute p-3 rounded-md flex items-center">
         <ModalRetiroCaja
           trigger={
-            <IconButton title="Más Filtros">
+            <IconButton title="Retiro de caja">
               <ExternalLinkIcon />
             </IconButton>
           } 
           setdataUser={setDataToma}
           cerrarForm={booleanCerrarModalFiltros}
         />
+        <ModalCorteCaja
+          trigger={
+            <IconButton title="Corte de caja">
+              <ScissorsIcon />
+            </IconButton>
+          } 
+          setdataUser={setDataToma}
+          cerrarForm={booleanCerrarModalFiltros}
+        />
+        
           <IconButton>
             <GearIcon />
           </IconButton>
