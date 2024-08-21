@@ -31,7 +31,7 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void;
 };
 
-export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado }: ConceptosComboBoxNewProps) => {
+export const ConceptosOrdenDeTrabajoComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado }: ConceptosComboBoxNewProps) => {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([]);
     const [open, setOpen] = React.useState(false);
@@ -57,7 +57,6 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
     };
     
 
-    console.log("esto segunnnn se envia", form.getValues);
 
     return (
         <div>
@@ -81,7 +80,7 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0 h-[300px]">
+                <PopoverContent className="w-full p-0 h-[300px]" align="start">
                     <Command>
                         <CommandInput placeholder="Buscar un concepto.. " />
                         <CommandList>
@@ -94,7 +93,7 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
                                         key={language.value}
                                         onSelect={() => {
                                             form.setValue(name, language.value);
-                                            setCargoSeleccionado(language.label);
+                                            setCargoSeleccionado(language.value);
                                         }}
                                     >
                                         <Check

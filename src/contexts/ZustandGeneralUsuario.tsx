@@ -64,8 +64,8 @@ interface GeneralUsuario {
   setBooleanCodigoDeToma: (booleanCodigoDeToma: boolean) => void;
  booleanCerrarModalFiltros: boolean;
  setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros: boolean) => void;
- idSeleccionadoConfiguracionOrdenDeTrabajo: string;
- setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo: string) => void;
+ idSeleccionadoConfiguracionOrdenDeTrabajo: number | null;
+ setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo: number) => void;
 
 
 }
@@ -110,7 +110,7 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setBooleanCodigoDeToma:(booleanCodigoDeToma) => set({booleanCodigoDeToma}),
   booleanCerrarModalFiltros: true,
   setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros) => set({booleanCerrarModalFiltros}),
-  idSeleccionadoConfiguracionOrdenDeTrabajo: "",
+  idSeleccionadoConfiguracionOrdenDeTrabajo: null,
  setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo) => set({idSeleccionadoConfiguracionOrdenDeTrabajo}),
 
 }));

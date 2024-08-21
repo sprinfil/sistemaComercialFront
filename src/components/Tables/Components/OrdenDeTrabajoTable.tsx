@@ -10,7 +10,9 @@ import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.t
 export default function OrdenDeTrabajoTable() {
 
   const { ordenDeTrabajos, setOrdenDeTrabajos, loadingTable, setLoadingTable, setAccion, setOrdenDeTrabajo} = useStateContext();
- const {setIdSeleccionadoConfiguracionOrdenDeTrabajo} = ZustandGeneralUsuario();
+ const {setIdSeleccionadoConfiguracionOrdenDeTrabajo, idSeleccionadoConfiguracionOrdenDeTrabajo} = ZustandGeneralUsuario();
+ console.log("Actualizando ID a:", idSeleccionadoConfiguracionOrdenDeTrabajo);
+
   useEffect(() => {
     getOrdenDeTrabajo();
   }, []);
@@ -31,6 +33,7 @@ export default function OrdenDeTrabajoTable() {
 const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
     {
     setOrdenDeTrabajo(tipoDeToma);
+    setIdSeleccionadoConfiguracionOrdenDeTrabajo(tipoDeToma.id);
     setAccion("ver");
     console.log(tipoDeToma);
   }

@@ -26,7 +26,7 @@ import MarcoAccionesForm from "../../../components/ui/MarcoAccionesForm.tsx";
 import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario.tsx";
 
 const OrdenDeTrabajoAccionesSchema = z.object({
-  acciones: z.array(
+  orden_trabajo_accion: z.array(
     z.object({
       id: z.number().min(0),
 
@@ -48,10 +48,12 @@ const OrdenDeTrabajoAccionesForm = () => {
   const [abrirInput, setAbrirInput] = useState(false);
   const [IdParaRestaurar, setIdParaRestaurar] = useState<number | null>(null);
   const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
-  const [totalAccionesComponente, setTotalAccionesComponente] = useState<{ id: number }[]>([{ id: 0 }]);
+  const [totalAccionesComponente, setTotalAccionesComponente] = useState<{ id: number, accion: string, campo: string, modelo: string }[]>([{ id: 0, accion:"", campo: "", modelo: ""}]);
   const [aumentarAcciones, setAumentarAcciones] = useState(1);
   const [control2, setControl2] = useState(false);
   const {idSeleccionadoConfiguracionOrdenDeTrabajo} = ZustandGeneralUsuario();
+  const [longitudAcciones, setLongitudAcciones] = useState<number>(0);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
 
 
@@ -123,7 +125,7 @@ const OrdenDeTrabajoAccionesForm = () => {
   const form = useForm<OrdenDeTrabajoAcciones>({
     resolver: zodResolver(OrdenDeTrabajoAccionesSchema),
     defaultValues: {
-      acciones: totalAccionesComponente.map(item => ({
+      orden_trabajo_accion: totalAccionesComponente.map(item => ({
         id: item.id,
         accion: "",
         modelo: "",
@@ -136,22 +138,21 @@ const OrdenDeTrabajoAccionesForm = () => {
 
   const onSubmit = async (values: OrdenDeTrabajoAcciones) => {
     
-  // Construir un arreglo de objetos `values2`
-  const valoresAcciones = values.acciones.map(accion => ({
+  // Construir un arreglo de objetos 
+  const valoresAcciones = values.orden_trabajo_accion.map(accion => ({
     id: accion.id,
     accion: accion.accion,
     modelo: accion.modelo,
     campo: accion.campo,
-    id_orden_trabajo_catalogo: ordenDeTrabajo.id
+    id_orden_trabajo_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo
   }));
 
-  // Crear el objeto `orden_trabajo_accion` que contiene el arreglo `valoresAcciones`
+  // Crear el objeto 
   const orden_trabajo_accion = {
     orden_trabajo_accion: valoresAcciones
   };
 
   console.log('Objeto para enviar:', orden_trabajo_accion);
-
 
     if (accion === "editar") {
       try {
@@ -171,11 +172,11 @@ const OrdenDeTrabajoAccionesForm = () => {
             descripcion: "ninguna",
           });
           reset({
-            acciones: totalAccionesComponente.map(item => ({
+            orden_trabajo_accion: totalAccionesComponente.map(item => ({
               id: item.id,
-              accion: "",
-              modelo: "",
-              campo: "",
+              accion: item.accion,
+              modelo: item.modelo,
+              campo:  item.modelo,
             })),
           });
           setAccion("creado");
@@ -191,7 +192,7 @@ const OrdenDeTrabajoAccionesForm = () => {
 
     if (accion === "hola") {
       try {
-        const response = await axiosClient.put(`/TipoToma/update/${ordenDeTrabajo.id}`, values);
+        const response = await axiosClient.put(`/TipoToma/update/${idSeleccionadoConfiguracionOrdenDeTrabajo}`, values);
         setLoading(false);
         setAbrirInput(false);
         setAccion("");
@@ -221,7 +222,7 @@ const OrdenDeTrabajoAccionesForm = () => {
 
   const onDelete = async () => {
     try {
-      await axiosClient.delete(`/TipoToma/log_delete/${ordenDeTrabajo.id}`);
+      await axiosClient.delete(`/TipoToma/log_delete/${idSeleccionadoConfiguracionOrdenDeTrabajo}`);
       getAnomalias();
       setAccion("eliminar");
       successToastEliminado();
@@ -255,7 +256,7 @@ const OrdenDeTrabajoAccionesForm = () => {
 
   useEffect(() => {
     reset({
-      acciones: totalAccionesComponente.map(item => ({
+      orden_trabajo_accion: totalAccionesComponente.map(item => ({
         id: item.id,
         id_orden_trabajo_catalogo: 0,
         accion: "",
@@ -285,21 +286,40 @@ const OrdenDeTrabajoAccionesForm = () => {
       setAbrirInput(false);
       setErrors({});
       setAccion("");
-      reset({
-        acciones: totalAccionesComponente.map(item => ({
+    
+      // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
+      //SUS PROPIEDADDES
+      const ordenTrabajoAcciones = Array.isArray(ordenDeTrabajo.orden_trabajo_accion) ?
+        ordenDeTrabajo.orden_trabajo_accion.map(item => ({
+          
           id: item.id,
-          accion: "",
-          modelo: "",
-          campo: "",
-        })),
+          accion: item.accion,
+          modelo: item.modelo,
+          campo: item.campo,
+        })) : [];
+    
+      reset({
+        orden_trabajo_accion: ordenTrabajoAcciones,
+
       });
+      setIsDataLoaded(true); // Marca los datos como cargados
+
+      setTotalAccionesComponente(ordenTrabajoAcciones)
+      setLongitudAcciones(ordenTrabajoAcciones.length);
+      console.log("Valores del formulario después del reset:", form.getValues());
     }
+    
+
     if (accion === "editar") {
       setAbrirInput(true);
       setControl2(true);
       setErrors({});
     }
-  }, [accion, reset, totalAccionesComponente]);
+  }, [accion, reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
+
+
+  
+  
 
   const handleAddComponent = () => {
     setTotalAccionesComponente(prevAcciones => [
@@ -316,6 +336,14 @@ const OrdenDeTrabajoAccionesForm = () => {
   };
 
   const borderColor = accion == "editar" ? 'border-green-500' : 'border-gray-200';
+  console.log("esto se le mete al objeto total acciones", JSON.stringify(totalAccionesComponente));
+  console.log("esto es lo que recibe al final", form.getValues());
+
+  useEffect(() => {
+    if (totalAccionesComponente.length > 0) {
+      reset({ orden_trabajo_accion: totalAccionesComponente });
+    }
+  }, [totalAccionesComponente, reset,idSeleccionadoConfiguracionOrdenDeTrabajo]);
 
   return (
     <div>
@@ -371,16 +399,16 @@ const OrdenDeTrabajoAccionesForm = () => {
                     <button type="button" onClick={() => handleRemoveComponent(item.id)}><TrashIcon className="w-[2.5vh] h-[2.5vh]"/></button>
 
                         </div>
-                    
+                        <div className="text-muted-foreground text-[14px] mb-2"><b>¿Genera orden?</b></div>
                     <div className="w-full grid grid-cols-2 gap-10 mb-10">
                     <Controller
-                    name={`acciones.${index}.accion`}
-                    control={control}
+                  name={`orden_trabajo_accion.${index}.accion`}
+                  control={control}
                     render={({ field }) => (
 
                       
-
                       
+
                                  <Select
                                         onValueChange={(value) => field.onChange((value))}
                                         value={(field.value)}
@@ -397,8 +425,8 @@ const OrdenDeTrabajoAccionesForm = () => {
                     )}
                   />
                   <Controller
-                    name={`acciones.${index}.modelo`}
-                    control={control}
+                  name={`orden_trabajo_accion.${index}.modelo`}
+                  control={control}
                     render={({ field }) => (
                         <Select
                         onValueChange={(value) => field.onChange((value))}
@@ -420,8 +448,8 @@ const OrdenDeTrabajoAccionesForm = () => {
                     </div>
                     <div className="w-full">
                     <Controller
-                    name={`acciones.${index}.campo`}
-                    control={control}
+                  name={`orden_trabajo_accion.${index}.campo`}
+                  control={control}
                     render={({ field }) => (
                         <Select
                         onValueChange={(value) => field.onChange((value))}
@@ -448,8 +476,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                 
               </div>
               
-            </form>
-           
+           </form>
           </div>
         
         {ModalReactivacionOpen && (
