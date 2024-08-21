@@ -16,36 +16,48 @@ import axiosClient from '../../axios-client';
 import dayjs from 'dayjs';
 
 
-const ModalCargarConcepto = ({ trigger, dueño }) => {
+const ModalCargarConcepto = ({ trigger, dueño, setCargos, handleCargoSelect }) => {
 
     const [selected_concepto, set_selected_concepto] = useState({});
 
     const cargar_cargo_directo = () => {
 
         let tarifas = selected_concepto?.tarifas;
-        const monto = tarifas?.filter(tarifa => tarifa.id_tipo_toma == dueño.tipo_toma)[0];
-        const hoy = dayjs().format('YYYY-MM-DD');
-
+        const monto = parseFloat(tarifas?.filter(tarifa => tarifa.id_tipo_toma == dueño.tipo_toma)[0].monto);
+        //const hoy = dayjs().format('YYYY-MM-DD');
+        console.log(monto)
         let data = {
-            id_concepto: selected_concepto?.id,
-            concepto: selected_concepto?.nombre,
-            id_origen: 0,
-            modelo_origen: "",
-            id_dueño: dueño.id,
-            modelo_dueño: "toma",
-            monto: monto,
-            estado: "pendiente",
-            id_convenio: 0,
-            fecha_cargo: hoy,
-            fecha_liquidacion: null
+            cargos: [
+                {
+                    id_concepto: selected_concepto?.id,
+                    monto: monto
+                },
+            ],
+            id_dueno: dueño.id,
+            modelo_dueno: "toma",
+            id_origen: 1,
+            modelo_origen: "caja"
         }
 
-        axiosClient.post("/cargos/store",data)
-        .then((response)=>{
-            console.log(response)
-        }).catch((response)=>{
-            console.log(response)
-        })
+        axiosClient.post("/cargo/generarDirecto", data)
+            .then((response) => {
+                handleCargoSelect(response.data.data, dueño);
+                actualizar_cargos();
+            }).catch((response) => {
+                console.log(response)
+            })
+    }
+
+    const actualizar_cargos = async () => {
+        const cargosResponse = await axiosClient.get(`/cargos/porModelo/pendientes`, {
+            params: {
+                id_dueno: dueño.id,
+                modelo_dueno: "toma"
+            }
+        });
+        if (cargosResponse.data) {
+            setCargos(cargosResponse.data);
+        }
     }
 
     return (

@@ -62,79 +62,79 @@ export function DataTableUsuarios<TData, TValue>({
   };
 
   return (
-    <div className="mt-5 p-10">
+    <div className="mt-5 p-10 w-full">
       <MarcoForm title={"Filtros para buscar al usuario"}>
-      <div className="flex space-x-4 ">
-      <div className="flex flex-col space-y-2">
-        <p>Nombre</p>
-        <Input
-          placeholder="Buscar nombre"
-          type="text"
-          value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("nombre")?.setFilterValue(event.target.value)
-          }
-          className="w-[40vh]"
-        />
+        <div className="flex gap-2">
+          <div className="flex flex-col space-y-2">
+            <p>Nombre</p>
+            <Input
+              placeholder="Buscar nombre"
+              type="text"
+              value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn("nombre")?.setFilterValue(event.target.value)
+              }
+              className="w-[40vh]"
+            />
           </div>
           <div className="flex flex-col space-y-2">
-          <p>Telefono</p>
-        <Input
-          placeholder="Buscar telefono"
-          type="text"
-          value={(table.getColumn("telefono")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("telefono")?.setFilterValue(event.target.value)
-          }
-          className="w-[40vh]"
-        />
+            <p>Telefono</p>
+            <Input
+              placeholder="Buscar telefono"
+              type="text"
+              value={(table.getColumn("telefono")?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn("telefono")?.setFilterValue(event.target.value)
+              }
+              className="w-[40vh]"
+            />
 
           </div>
           <div className="flex flex-col space-y-2">
-          <p>CURP</p>
-        <Input
-          placeholder="Buscar CURP"
-          type="text"
-          value={(table.getColumn("curp")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("curp")?.setFilterValue(event.target.value)
-          }
-          className="w-[40vh]"
-        />
+            <p>CURP</p>
+            <Input
+              placeholder="Buscar CURP"
+              type="text"
+              value={(table.getColumn("curp")?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn("curp")?.setFilterValue(event.target.value)
+              }
+              className="w-[40vh]"
+            />
           </div>
 
           <div className="flex flex-col space-y-2">
-          <p>RFC</p>
-        <Input
-          placeholder="Buscar RFC"
-          type="text"
-          value={(table.getColumn("rfc")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("rfc")?.setFilterValue(event.target.value)
-          }
-          className="w-[40vh]"
-        />
+            <p>RFC</p>
+            <Input
+              placeholder="Buscar RFC"
+              type="text"
+              value={(table.getColumn("rfc")?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn("rfc")?.setFilterValue(event.target.value)
+              }
+              className="w-[40vh]"
+            />
           </div>
 
           <div className="flex flex-col space-y-2">
-          <p>Correo</p>
-        <Input
-          placeholder="Buscar correo"
-          type="text"
-          value={(table.getColumn("correo")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("correo")?.setFilterValue(event.target.value)
-          }
-          className="w-[40vh]"
-        />
+            <p>Correo</p>
+            <Input
+              placeholder="Buscar correo"
+              type="text"
+              value={(table.getColumn("correo")?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn("correo")?.setFilterValue(event.target.value)
+              }
+              className="w-[40vh]"
+            />
           </div>
-          </div>
+        </div>
       </MarcoForm>
-     
-       
-       
-       
-      
+
+
+
+
+
       <div className="rounded-md border h-full overflow-auto mt-10">
         <Table>
           <TableHeader className="bg-muted">
