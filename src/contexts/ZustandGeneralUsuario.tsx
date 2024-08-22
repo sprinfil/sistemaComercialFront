@@ -66,7 +66,8 @@ interface GeneralUsuario {
  setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros: boolean) => void;
  idSeleccionadoConfiguracionOrdenDeTrabajo: number | null;
  setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo: number) => void;
-
+ accionGeneradaEntreTabs: string,
+  setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs: string) => void;
 
 }
 
@@ -112,6 +113,7 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros) => set({booleanCerrarModalFiltros}),
   idSeleccionadoConfiguracionOrdenDeTrabajo: null,
  setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo) => set({idSeleccionadoConfiguracionOrdenDeTrabajo}),
-
+ accionGeneradaEntreTabs: '',
+ setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs) => set({accionGeneradaEntreTabs}),
 }));
 

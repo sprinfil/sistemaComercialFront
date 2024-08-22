@@ -5,6 +5,7 @@ import IconButton from "../../ui/IconButton"
 import {EyeOpenIcon } from '@radix-ui/react-icons';
 import { useStateContext } from "../../../contexts/ContextOrdenDeTrabajo"
 import { Checkbox } from "@/components/ui/checkbox"
+import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -61,11 +62,11 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const TipoDeToma = row.original
-      const { setTipoDeToma, setAccion } = useStateContext();
-
+      const OrdenDeTrabajo = row.original
+      const { setOrdenDeTrabajo, setAccion } = useStateContext();
+      const { setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
       return (
-        <div onClick={()=>{setTipoDeToma(TipoDeToma);setAccion("ver")}}>
+        <div onClick={()=>{setOrdenDeTrabajo(OrdenDeTrabajo);setAccion("ver");setAccionGeneradaEntreTabs("ver")}}>
           <IconButton>
             <EyeOpenIcon className="w-[20px] h-[20px]"/>
           </IconButton>

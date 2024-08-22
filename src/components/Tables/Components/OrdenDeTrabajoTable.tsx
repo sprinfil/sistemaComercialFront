@@ -33,7 +33,6 @@ export default function OrdenDeTrabajoTable() {
 const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
     {
     setOrdenDeTrabajo(tipoDeToma);
-    setIdSeleccionadoConfiguracionOrdenDeTrabajo(tipoDeToma.id);
     setAccion("ver");
     console.log(tipoDeToma);
   }

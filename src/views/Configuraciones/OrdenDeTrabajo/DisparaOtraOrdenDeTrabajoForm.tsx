@@ -76,7 +76,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     const [aumentarAcciones, setAumentarAcciones] = useState(1);
     const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_OT_Catalogo_encadenada:number}[]>([{ id: 0, id_OT_Catalogo_encadenada: 0}]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
-    const { idSeleccionadoConfiguracionOrdenDeTrabajo } = ZustandGeneralUsuario();
+    const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
     const handleAddComponent = () => {
         setTotalAccionesComponente(prevAcciones => [
@@ -95,7 +95,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo se ha creado correctamente",
+            description: "La orden de trabajo encadenada se ha creado correctamente",
             variant: "success",
         });
     }
@@ -103,7 +103,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo se ha editado correctamente",
+            description: "La orden de trabajo encadenada se ha editado correctamente",
             variant: "success",
         });
     }
@@ -111,7 +111,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo se ha eliminado correctamente",
+            description: "La orden de trabajo encadenada se ha eliminado correctamente",
             variant: "success",
         });
     }
@@ -119,7 +119,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo se ha restaurado correctamente",
+            description: "La orden de trabajo encadenada se ha restaurado correctamente",
             variant: "success",
         });
     }
@@ -271,7 +271,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
             descripcion: "ninguna",
           });
         }
-        if (accion === "ver") {
+        if (accionGeneradaEntreTabs === "ver") {
           setAbrirInput(false);
           setErrors({});
           setAccion("");
@@ -314,7 +314,6 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                 <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {accion === "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
                             {ordenDeTrabajo.nombre && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
                         </div>
                         {ordenDeTrabajo.nombre && (
@@ -350,7 +349,13 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                         )}
                     </div>
                 </div>
+                {totalAccionesComponente.length < 1 
+                && 
+                <div className="flex justify-center mt-[20vh]">
+                    <p className="text-muted-foreground text-[20px]">Sin encadenadas</p>
 
+                    </div>
+                }
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {totalAccionesComponente.map((accion, index) => {
@@ -358,6 +363,9 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                             console.log(index.id);
                             return (
                                 <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
+                                     <div className="text-sm font-medium mb-3">
+                                        Selecciona una orden de trabajo.
+                                        </div>
                                     <div className="flex items-center space-x-2">
                                         <div className="w-full">
                                          
@@ -381,7 +389,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                             )
                         })}
                         <div className="flex justify-end">
-                            <Button type="submit">Guardar</Button>
+                           {accion == "editar" && <Button type="submit">Guardar</Button>} 
 
                         </div>
                     </form>
