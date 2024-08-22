@@ -75,8 +75,9 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
     const [aumentarAcciones, setAumentarAcciones] = useState(1);
     const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_concepto_catalogo:number}[]>([{ id: 0, id_concepto_catalogo: 0}]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
-    const { idSeleccionadoConfiguracionOrdenDeTrabajo,accionGeneradaEntreTabs} = ZustandGeneralUsuario();
+    const { idSeleccionadoConfiguracionOrdenDeTrabajo,accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
     const [control, setControl] = useState(false);
+    const [selectedValue, setSelectedValue] = useState("");
 
 
 
@@ -188,7 +189,7 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
         console.log("valores enviados objeto", orden_trabajo_cargos);
 
 
-        if (accion === "editar") {
+        if (accionGeneradaEntreTabs === "editar") {
             try {
                 const response = await axiosClient.put(`/OrdenTrabajoCatalogo/create/cargos`, orden_trabajo_cargos);
                 const data = response.data;
@@ -263,11 +264,11 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
     
     
       useEffect(() => {
-        if (accion === "eliminar") {
+        if (accionGeneradaEntreTabs === "eliminar") {
           setAbrirInput(false);
           setControl(false);
         }
-        if (accion === "crear" || accion === "creado") {
+        if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
           setAbrirInput(true);
           setControl(true);
           setErrors({});
@@ -295,7 +296,7 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
                 form.reset({
                 orden_trabajo_cargos: ordenTrabajoCargos,
                 });
-
+                
                 // Actualización del estado y depuración
                 setTotalAccionesComponente(ordenTrabajoCargos);
                 console.log("Valores del cargo:", ordenTrabajoCargos);
@@ -311,7 +312,7 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
       }, [accion, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
 
 
-    const borderColor = accion == "editar" ? 'border-green-500' : 'border-gray-200';
+    const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
 
     //console.log("a ver que datos manda el form", form.getValues());
 
@@ -335,7 +336,7 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
                                         </a>}
                                 />
                                 {
-                                    accion == "editar" &&
+                                    accionGeneradaEntreTabs == "editar" &&
                                     <div onClick={handleAddComponent}>
                                         <a title="Agregar nueva acción">
                                             <IconButton>
@@ -345,7 +346,7 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
                                     </div>
                                 }
 
-                                <div onClick={() => setAccion("editar")}>
+                                <div onClick={() => setAccionGeneradaEntreTabs("editar")}>
                                     <a title="Editar">
                                         <IconButton>
                                             <Pencil2Icon className="w-[20px] h-[20px]" />
@@ -399,7 +400,7 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
                             )
                         })}
                         <div className="flex justify-end">
-                            {accion == "editar" &&  <Button type="submit">Guardar</Button>}
+                            {accionGeneradaEntreTabs == "editar" &&  <Button type="submit">Guardar</Button>}
 
                         </div>
                     </form>

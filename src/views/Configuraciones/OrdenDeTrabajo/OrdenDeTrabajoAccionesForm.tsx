@@ -24,7 +24,6 @@ import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import MarcoAccionesForm from "../../../components/ui/MarcoAccionesForm.tsx";
 
 import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario.tsx";
-import { Loader } from "lucide-react";
 
 
 //SE CREA EL SCHEMA. El schema tiene un nombre definido, para que funcione con el form se crea un array.
@@ -53,7 +52,7 @@ const OrdenDeTrabajoAccionesForm = () => {
   const [totalAccionesComponente, setTotalAccionesComponente] = useState<{ id: number, accion: string, campo: string, modelo: string }[]>([{ id: 0, accion: "", campo: "", modelo: "" }]);
   const [aumentarAcciones, setAumentarAcciones] = useState(1);
   const [control2, setControl2] = useState(false);
-  const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs } = ZustandGeneralUsuario();
+  const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
   const [longitudAcciones, setLongitudAcciones] = useState<number>(0);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
@@ -160,7 +159,7 @@ const OrdenDeTrabajoAccionesForm = () => {
 
     console.log('Objeto para enviar:', orden_trabajo_accion);
 
-    if (accion === "editar") {
+    if (accionGeneradaEntreTabs === "editar") {
       try {
         const response = await axiosClient.put(`/OrdenTrabajoCatalogo/create/acciones`, orden_trabajo_accion);
         const data = response.data;
@@ -189,9 +188,9 @@ const OrdenDeTrabajoAccionesForm = () => {
           getAnomalias();
           successToastCreado();
         }
-      } catch (err) {
+      } catch (response) {
         errorToast();
-        console.log(err.response);
+        console.log(response);
         setLoading(false);
       }
     }
@@ -248,11 +247,11 @@ const OrdenDeTrabajoAccionesForm = () => {
   
 
   useEffect(() => {
-    if (accion === "eliminar") {
+    if (accionGeneradaEntreTabs === "eliminar") {
       setControl2(false);
       setAbrirInput(false);
     }
-    if (accion === "crear" || accion === "creado") {
+    if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
       setControl2(false);
       setAbrirInput(true);
       setErrors({});
@@ -269,7 +268,7 @@ const OrdenDeTrabajoAccionesForm = () => {
       setAccion("");
 
       console.log("entro");
-      setLoading(true);
+
       //PARA DESPLEGAR LA INFORMACIÓN EXISTE UN OBJETO(ordenDeTrabajo), al seleccionar
       //LA FILA, CONSULTA LA INFORMACIÓN Y LA GUARDA EN ESE OBJETO, ese objeto de consulta
       //cuenta con varios objetos adentro, se le tienen que agregar.
@@ -300,11 +299,10 @@ const OrdenDeTrabajoAccionesForm = () => {
       setLongitudAcciones(ordenTrabajoAcciones.length);
       console.log("ESTLO DEBERIA OBNTENER AL RECORRER EL ARREGLO:", ordenTrabajoAcciones);
       console.log("Valores del formulario después del reset:", form.getValues());
-      setLoading(false);
     }
 
 
-    if (accion === "editar") {
+    if (accionGeneradaEntreTabs === "editar") {
       setAbrirInput(true);
       setControl2(true);
       setErrors({});
@@ -329,7 +327,7 @@ const OrdenDeTrabajoAccionesForm = () => {
     );
   };
 
-  const borderColor = accion == "editar" ? 'border-green-500' : 'border-gray-200';
+  const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
   console.log("esto se le mete al objeto total acciones", JSON.stringify(totalAccionesComponente));
   console.log("esto es lo que recibe al final", form.getValues());
 
@@ -359,7 +357,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                     </a>}
                 />
                 {
-                  accion == "editar" &&
+                  accionGeneradaEntreTabs == "editar" &&
                   <div onClick={handleAddComponent}>
                     <a title="Agregar nueva acción">
                       <IconButton>
@@ -369,7 +367,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                   </div>
                 }
 
-                <div onClick={() => setAccion("editar")}>
+                <div onClick={() => setAccionGeneradaEntreTabs("editar")}>
                   <a title="Modificar acciones">
                     <IconButton>
                       <Pencil2Icon className="w-[20px] h-[20px]" />
@@ -487,8 +485,7 @@ const OrdenDeTrabajoAccionesForm = () => {
               </div>
             ))}
             <div className="col-span-full flex justify-end">
-            {loading && <Loader />}
-              {accion == "editar" &&
+              {accionGeneradaEntreTabs == "editar" &&
                 <Button type="submit" isLoading={loading}>
                   {accion === "crear" ? "Crear" : "Actualizar"}
                 </Button>}

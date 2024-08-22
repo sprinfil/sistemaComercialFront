@@ -76,7 +76,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     const [aumentarAcciones, setAumentarAcciones] = useState(1);
     const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_OT_Catalogo_encadenada:number}[]>([{ id: 0, id_OT_Catalogo_encadenada: 0}]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
-    const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs} = ZustandGeneralUsuario();
+    const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
     const handleAddComponent = () => {
         setTotalAccionesComponente(prevAcciones => [
@@ -184,7 +184,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
         console.log("valores enviados objeto", orden_trabajo_encadenadas);
 
 
-        if (accion === "editar") {
+        if (accionGeneradaEntreTabs === "editar") {
             try {
                 const response = await axiosClient.put(`/OrdenTrabajoCatalogo/create/cargos`, orden_trabajo_encadenadas);
                 const data = response.data;
@@ -259,10 +259,10 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     
     
       useEffect(() => {
-        if (accion === "eliminar") {
+        if (accionGeneradaEntreTabs === "eliminar") {
           setAbrirInput(false);
         }
-        if (accion === "crear" || accion === "creado") {
+        if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
           setAbrirInput(true);
           setErrors({});
           setOrdenDeTrabajo({
@@ -304,7 +304,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
       }, [accion, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
 
 
-    const borderColor = accion == "editar" ? 'border-green-500' : 'border-gray-200';
+    const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
 
     //console.log("a ver que datos manda el form", form.getValues());
 
@@ -328,7 +328,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                                         </a>}
                                 />
                                 {
-                                    accion == "editar" &&
+                                    accionGeneradaEntreTabs == "editar" &&
                                     <div onClick={handleAddComponent}>
                                         <a title="Agregar nueva acción">
                                             <IconButton>
@@ -338,7 +338,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                                     </div>
                                 }
 
-                                <div onClick={() => setAccion("editar")}>
+                                <div onClick={() => setAccionGeneradaEntreTabs("editar")}>
                                     <a title="Editar">
                                         <IconButton>
                                             <Pencil2Icon className="w-[20px] h-[20px]" />
@@ -389,7 +389,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                             )
                         })}
                         <div className="flex justify-end">
-                           {accion == "editar" && <Button type="submit">Guardar</Button>} 
+                           {accionGeneradaEntreTabs == "editar" && <Button type="submit">Guardar</Button>} 
 
                         </div>
                     </form>
