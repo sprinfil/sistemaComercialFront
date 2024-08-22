@@ -259,6 +259,28 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
         if (accion === "editar") {
             form.setValue("orden_trabajo_cargos", totalAccionesComponente);
         }
+
+        if (accion === "ver") {
+            setAbrirInput(false);
+            setErrors({});
+            setAccion("");
+        
+    
+            // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
+            //SUS PROPIEDADDES
+            const ordenTrabajoCargos= Array.isArray(ordenDeTrabajo.orden_trabajo_cargos) ?
+              ordenDeTrabajo.orden_trabajo_cargos.map(item => ({
+                
+                id: item.id,
+                id_concepto_catalogo: item.id_concepto_catalogo
+               
+              })) : [];
+          
+            console.log(ordenTrabajoCargos);
+            //setTotalAccionesComponente(ordenTrabajoCargos)
+            //setLongitudAcciones(ordenTrabajoAcciones.length);
+            console.log("Valores del formulario después del reset:", form.getValues());
+          }
     }, [totalAccionesComponente, accion]);
 
 

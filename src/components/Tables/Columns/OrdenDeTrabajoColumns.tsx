@@ -16,7 +16,7 @@ export type OrdenDeTrabajo = {
   momento_cargo: string
   genera_masiva: boolean
   orden_trabajo_accion: orden_trabajo_accion[]
-  ordenes_trabajo_cargos: ordenes_trabajo_cargos[]
+  orden_trabajo_cargos: orden_trabajo_cargos[]
 
 }
 
@@ -27,7 +27,7 @@ export type orden_trabajo_accion = {
   campo:string
 }
 
-export type ordenes_trabajo_cargos = {
+export type orden_trabajo_cargos = {
   id: number
   id_concepto_catalogo: number
   id_orden_trabajo_catalogo: number
