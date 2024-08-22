@@ -15,6 +15,15 @@ export const ModalFondoCaja = ({ open, onRegister }) => {
   const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
   const navigate = useNavigate(); // Hook para navegar a otra ruta
 
+
+
+  const handleBlur = () => {
+    // Si el campo no está vacío y no contiene un punto decimal, añade ".00"
+    if (amount && !amount.includes('.')) {
+      setAmount(`${amount}.00`);
+    }
+  };
+
   const handleNextStep = () => {
     setIsSecondModalOpen(true); // Abre el segundo modal
   };
@@ -42,13 +51,14 @@ export const ModalFondoCaja = ({ open, onRegister }) => {
               Cantidad de dinero:
             </label>
             <input
-              type="number"
-              id="amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Ingrese la cantidad"
-            />
+            type="text"
+            id="amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            onBlur={handleBlur} // Formatea cuando el campo pierde el foco
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="Ingrese la cantidad"
+          />
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={handleCancel}>Cancelar</AlertDialogCancel>
