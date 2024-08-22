@@ -41,7 +41,9 @@ const ModalCargarConcepto = ({ trigger, dueño, setCargos, handleCargoSelect }) 
 
         axiosClient.post("/cargo/generarDirecto", data)
             .then((response) => {
+                console.log(response.data.data)
                 handleCargoSelect(response.data.data, dueño);
+              
                 actualizar_cargos();
             }).catch((response) => {
                 console.log(response)
