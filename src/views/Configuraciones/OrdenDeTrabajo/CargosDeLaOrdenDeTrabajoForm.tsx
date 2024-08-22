@@ -51,8 +51,8 @@ type OrdenDeTrabajo = {
 const OrdenDeTrabajoCargosSchema = z.object({
     orden_trabajo_cargos: z.array(
         z.object({
-            id: z.number().min(0),
-            id_concepto_catalogo: z.string().min(1, "El concepto es requerido"),
+            id: z.number(),
+            id_concepto_catalogo: z.number().min(1, "El concepto es requerido"),
         })
     ),
 });
@@ -73,14 +73,14 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
     const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
     const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>([]);
     const [aumentarAcciones, setAumentarAcciones] = useState(1);
-    const [totalAccionesComponente, setTotalAccionesComponente] = useState([{ id: 0, id_concepto_catalogo: "0", id_orden_trabajo_catalogo: "0" }]);
+    const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_concepto_catalogo:number}[]>([{ id: 0, id_concepto_catalogo: 0}]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
-    const {idSeleccionadoConfiguracionOrdenDeTrabajo} = ZustandGeneralUsuario();
+    const { idSeleccionadoConfiguracionOrdenDeTrabajo } = ZustandGeneralUsuario();
 
     const handleAddComponent = () => {
         setTotalAccionesComponente(prevAcciones => [
             ...prevAcciones,
-            { id: aumentarAcciones, id_concepto_catalogo: "0", id_orden_trabajo_catalogo: "0" }
+            { id: aumentarAcciones, id_concepto_catalogo: "0" }
         ]);
         setAumentarAcciones(aumentarAcciones + 1);
     };
@@ -141,34 +141,49 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
         });
     }
 
-    const form = useForm<OrdenDeTrabajoCargos>({
-        resolver: zodResolver(OrdenDeTrabajoCargosSchema),
-        defaultValues: {
-            orden_trabajo_cargos: totalAccionesComponente.map((item) => ({
-                id: 0,
-                id_concepto_catalogo: ""
+   
 
+    
+  const form = useForm<OrdenDeTrabajoCargos>({
+    resolver: zodResolver(OrdenDeTrabajoCargosSchema),
+    defaultValues: {
+        orden_trabajo_cargos: totalAccionesComponente.map(item => ({
+        id: item.id,
+        id_concepto_catalogo: "",
+      })),
+    },
+  });
+
+  useEffect(() => {
+    if (accion === "editar") {
+        form.reset({
+            orden_trabajo_cargos: totalAccionesComponente.map(item => ({
+                id: item.id,
+                id_concepto_catalogo: "", // O el valor predeterminado adecuado
             })),
-        },
-    });
+        });
+    }
+}, [totalAccionesComponente, accion]);
+
+console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
 
     const onSubmit = async (values: OrdenDeTrabajoCargos) => {
         console.log(values);
 
-        const cargos = (values.orden_trabajo_cargos || []).map((item) => ({
+        const cargos = values.orden_trabajo_cargos.map((item) => ({
             id: item.id,
-            id_concepto_catalogo: conceptoSeleccionado,
+            id_concepto_catalogo: item.id_concepto_catalogo,
             id_orden_trabajo_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo
         }));
         console.log("Cargos:", cargos);
-            
+
 
         const orden_trabajo_cargos = {
             orden_trabajo_cargos: cargos
         }
 
-        console.log("valores enviados objeto",orden_trabajo_cargos );
-        
+        console.log("valores enviados objeto", orden_trabajo_cargos);
+
 
         if (accion === "editar") {
             try {
@@ -201,20 +216,7 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
             }
         }
 
-        if (accion === "hola") {
-            try {
-                const response = await axiosClient.put(`/TipoToma/update/${idSeleccionadoConfiguracionOrdenDeTrabajo}`, values);
-                setLoading(false);
-                setAbrirInput(false);
-                setAccion("");
-                getAnomalias();
-                setOrdenDeTrabajo(response.data);
-                successToastEditado();
-            } catch (err) {
-                errorToast();
-                setLoading(false);
-            }
-        }
+        
     };
 
     const getAnomalias = async () => {
@@ -255,128 +257,151 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
             });
     };
 
-    useEffect(() => {
-        if (accion === "editar") {
-            form.setValue("orden_trabajo_cargos", totalAccionesComponente);
+    
+    
+      useEffect(() => {
+        if (accion === "eliminar") {
+          setAbrirInput(false);
         }
-
+        if (accion === "crear" || accion === "creado") {
+          setAbrirInput(true);
+          setErrors({});
+          setOrdenDeTrabajo({
+            id: 0,
+            nombre: "",
+            descripcion: "ninguna",
+          });
+        }
         if (accion === "ver") {
-            setAbrirInput(false);
-            setErrors({});
-            setAccion("");
+          setAbrirInput(false);
+          setErrors({});
+          setAccion("");
+        
+          // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
+          //SUS PROPIEDADDES
+          // Transformación de datos
+                const ordenTrabajoCargos = Array.isArray(ordenDeTrabajo.ordenes_trabajo_cargos) ?
+                ordenDeTrabajo.ordenes_trabajo_cargos.map(item => ({
+                id: item.id,
+                id_concepto_catalogo: item.id_concepto_catalogo,
+                })) : [];
+
+                // Reseteo del formulario
+                form.reset({
+                orden_trabajo_cargos: ordenTrabajoCargos,
+                });
+
+                // Actualización del estado y depuración
+                setTotalAccionesComponente(ordenTrabajoCargos);
+                console.log("Valores del cargo:", ordenTrabajoCargos);
+                console.log("Valores del formulario después del reset:", form.getValues());
+        }
         
     
-            // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
-            //SUS PROPIEDADDES
-            const ordenTrabajoCargos= Array.isArray(ordenDeTrabajo.orden_trabajo_cargos) ?
-              ordenDeTrabajo.orden_trabajo_cargos.map(item => ({
-                
-                id: item.id,
-                id_concepto_catalogo: item.id_concepto_catalogo
-               
-              })) : [];
-          
-            console.log(ordenTrabajoCargos);
-            //setTotalAccionesComponente(ordenTrabajoCargos)
-            //setLongitudAcciones(ordenTrabajoAcciones.length);
-            console.log("Valores del formulario después del reset:", form.getValues());
-          }
-    }, [totalAccionesComponente, accion]);
+        if (accion === "editar") {
+          setAbrirInput(true);
+          setErrors({});
+        }
+      }, [accion, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
 
 
     const borderColor = accion == "editar" ? 'border-green-500' : 'border-gray-200';
 
-    
+    //console.log("a ver que datos manda el form", form.getValues());
 
     return (
         <div>
             <div className="overflow-auto">
-        <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-          <div className='h-[20px] w-full flex items-center justify-end'>
-            <div className="mb-[10px] h-full w-full mx-4">
-              {accion === "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
-              {ordenDeTrabajo.nombre && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
+                <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+                    <div className='h-[20px] w-full flex items-center justify-end'>
+                        <div className="mb-[10px] h-full w-full mx-4">
+                            {accion === "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
+                            {ordenDeTrabajo.nombre && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
+                        </div>
+                        {ordenDeTrabajo.nombre && (
+                            <>
+                                <Modal
+                                    method={onDelete}
+                                    button={
+                                        <a title="Eliminar">
+                                            <IconButton>
+                                                <TrashIcon className="w-[20px] h-[20px]" />
+                                            </IconButton>
+                                        </a>}
+                                />
+                                {
+                                    accion == "editar" &&
+                                    <div onClick={handleAddComponent}>
+                                        <a title="Agregar nueva acción">
+                                            <IconButton>
+                                                <PlusCircledIcon className='w-[20px] h-[20px]' />
+                                            </IconButton>
+                                        </a>
+                                    </div>
+                                }
+
+                                <div onClick={() => setAccion("editar")}>
+                                    <a title="Editar">
+                                        <IconButton>
+                                            <Pencil2Icon className="w-[20px] h-[20px]" />
+                                        </IconButton>
+                                    </a>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        {totalAccionesComponente.map((accion, index) => {
+                            console.log(index);
+                            console.log(index.id);
+                            return (
+                                <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
+                                    <div className="flex items-center space-x-2">
+                                        <div className="w-full">
+                                         
+                                            <Controller
+                                                name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`}
+                                                control={form.control}
+                                                render={({ field }) => (
+
+                                                    
+                                                    <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado}/>
+
+                                                )}
+                                            />
+                                        </div>
+                                        <FormMessage />
+                                        <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
+                                            <TrashIcon className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                        <div className="flex justify-end">
+                            <Button type="submit">Guardar</Button>
+
+                        </div>
+                    </form>
+
+                    {ModalReactivacionOpen && (
+                        <Modal
+                            open={ModalReactivacionOpen}
+                            onOpenChange={setModalReactivacionOpen}
+                        >
+                            <ModalReactivacion
+                                id={IdParaRestaurar}
+                                onRestaurar={restaurarDato}
+                            />
+                        </Modal>
+                    )}
+                </Form>
             </div>
-            {ordenDeTrabajo.nombre && (
-              <>
-                <Modal
-                  method={onDelete}
-                  button={
-                    <a title="Eliminar">
-                      <IconButton>
-                        <TrashIcon className="w-[20px] h-[20px]" />
-                      </IconButton>
-                    </a>}
-                />
-                {
-                  accion == "editar" &&
-                  <div onClick={handleAddComponent}>
-                  <a title="Agregar nueva acción">
-                    <IconButton>
-                      <PlusCircledIcon className='w-[20px] h-[20px]' />
-                    </IconButton>
-                  </a>
-                </div>
-                }
-                
-                <div onClick={() => setAccion("editar")}>
-                  <a title="Editar">
-                    <IconButton>
-                      <Pencil2Icon className="w-[20px] h-[20px]" />
-                    </IconButton>
-                  </a>
-                </div>
-              </>
-            )}
-          </div>
         </div>
 
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                {totalAccionesComponente.map((accion, index) => (
-                  <div key={accion.id}  className={`p-4 border ${borderColor} rounded-md`}>
-
-                        <div className="flex items-center space-x-2">
-                           
-                           <div className="w-full">
-                           <Controller
-                                name={`orden_trabajo_cargos.${index.id}.id_concepto_catalogo`}
-                                control={form.control}
-                                render={({ field }) => (
-                                    <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index.id}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado}/>
-
-                                )}
-                            />
-                           </div>
-                           
-                            <FormMessage />
-                            <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
-                                <TrashIcon className="w-4 h-4" />
-                            </Button>
-                        </div>
-                    </div>
-                ))}
-                <div className="flex justify-end">
-                <Button type="submit">Guardar</Button>
-
-                </div>
-            </form>
-
-            {ModalReactivacionOpen && (
-                <Modal
-                    open={ModalReactivacionOpen}
-                    onOpenChange={setModalReactivacionOpen}
-                >
-                    <ModalReactivacion
-                        id={IdParaRestaurar}
-                        onRestaurar={restaurarDato}
-                    />
-                </Modal>
-            )}
-        </Form>
-            </div>
-            </div>
-        
     );
 };
 

@@ -25,11 +25,12 @@ import MarcoAccionesForm from "../../../components/ui/MarcoAccionesForm.tsx";
 
 import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario.tsx";
 
+
+//SE CREA EL SCHEMA. El schema tiene un nombre definido, para que funcione con el form se crea un array.
 const OrdenDeTrabajoAccionesSchema = z.object({
   orden_trabajo_accion: z.array(
     z.object({
       id: z.number().min(0),
-
       accion: z.string().nonempty("Acción es requerida"),
       modelo: z.string().nonempty("Modelo es requerido"),
       campo: z.string().nonempty("Campo es requerido"),
@@ -122,6 +123,8 @@ const OrdenDeTrabajoAccionesForm = () => {
 
 
 
+  //en los valores por default, utilizo una varible que recorre las propiedades, esta variable
+  //incrementa cuando le doy click al boton de agregar.
   const form = useForm<OrdenDeTrabajoAcciones>({
     resolver: zodResolver(OrdenDeTrabajoAccionesSchema),
     defaultValues: {
@@ -138,7 +141,9 @@ const OrdenDeTrabajoAccionesForm = () => {
 
   const onSubmit = async (values: OrdenDeTrabajoAcciones) => {
     
-  // Construir un arreglo de objetos 
+  // COMO OCUPO MANDARLE EL OBJETO orden_trabajo_accion
+  //Agarramos los valores del form, lo recorremos, y accedemos a sus propiedades
+  //COMO ES UN ARREGLO PUEDE SER 1 O MAS, y le metemos el id del catalogo(que es aparte del form)
   const valoresAcciones = values.orden_trabajo_accion.map(accion => ({
     id: accion.id,
     accion: accion.accion,
@@ -147,7 +152,7 @@ const OrdenDeTrabajoAccionesForm = () => {
     id_orden_trabajo_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo
   }));
 
-  // Crear el objeto 
+  // Crear el objeto que necesitamos enviarle y le metemos las acciones
   const orden_trabajo_accion = {
     orden_trabajo_accion: valoresAcciones
   };
@@ -190,21 +195,6 @@ const OrdenDeTrabajoAccionesForm = () => {
       }
     }
 
-    if (accion === "hola") {
-      try {
-        const response = await axiosClient.put(`/TipoToma/update/${idSeleccionadoConfiguracionOrdenDeTrabajo}`, values);
-        setLoading(false);
-        setAbrirInput(false);
-        setAccion("");
-        getAnomalias();
-        setOrdenDeTrabajo(response.data);
-        successToastEditado();
-      } catch (err) {
-        errorToast();
-
-        setLoading(false);
-      }
-    }
   };
 
   const getAnomalias = async () => {
@@ -287,8 +277,15 @@ const OrdenDeTrabajoAccionesForm = () => {
       setErrors({});
       setAccion("");
     
-      // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
-      //SUS PROPIEDADDES
+   
+
+      //PARA DESPLEGAR LA INFORMACIÓN EXISTE UN OBJETO(ordenDeTrabajo), al seleccionar
+      //LA FILA, CONSULTA LA INFORMACIÓN Y LA GUARDA EN ESE OBJETO, ese objeto de consulta
+      //cuenta con varios objetos adentro, se le tienen que agregar.
+      //validamos si es un array si no, lo devuelve como array vacío para que no nos de problemas el react
+
+      //recorremos el array, y le asignamos sus propiedades
+
       const ordenTrabajoAcciones = Array.isArray(ordenDeTrabajo.orden_trabajo_accion) ?
         ordenDeTrabajo.orden_trabajo_accion.map(item => ({
           
@@ -298,12 +295,15 @@ const OrdenDeTrabajoAccionesForm = () => {
           campo: item.campo,
         })) : [];
     
+        //una vez recorrido reseteamos el formulario. que viene siendo el objeto orden_trabajo_accion
+        //con sus propiedades.
       reset({
         orden_trabajo_accion: ordenTrabajoAcciones,
 
       });
       setIsDataLoaded(true); // Marca los datos como cargados
 
+      
       setTotalAccionesComponente(ordenTrabajoAcciones)
       setLongitudAcciones(ordenTrabajoAcciones.length);
       console.log("Valores del formulario después del reset:", form.getValues());

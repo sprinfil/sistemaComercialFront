@@ -16,7 +16,8 @@ export type OrdenDeTrabajo = {
   momento_cargo: string
   genera_masiva: boolean
   orden_trabajo_accion: orden_trabajo_accion[]
-  orden_trabajo_cargos: orden_trabajo_cargos[]
+  ordenes_trabajo_cargos: orden_trabajo_cargos[]
+  ordenes_trabajo_encadenadas: orden_trabajo_encadenadas[]
 
 }
 
@@ -31,6 +32,12 @@ export type orden_trabajo_cargos = {
   id: number
   id_concepto_catalogo: number
   id_orden_trabajo_catalogo: number
+}
+
+export type orden_trabajo_encadenadas = {
+  id: number
+  id_OT_Catalogo_padre: number
+  id_OT_Catalogo_encadenada: number
 }
 
 
