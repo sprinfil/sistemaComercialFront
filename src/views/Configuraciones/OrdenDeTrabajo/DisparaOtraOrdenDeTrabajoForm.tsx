@@ -79,11 +79,14 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
     const handleAddComponent = () => {
+        const newId = totalAccionesComponente.length > 0 
+            ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1 
+            : 1;
+    
         setTotalAccionesComponente(prevAcciones => [
             ...prevAcciones,
-            { id: aumentarAcciones, id_concepto_catalogo: "0" }
+            { id: newId, id_OT_Catalogo_encadenada: 0 }
         ]);
-        setAumentarAcciones(aumentarAcciones + 1);
     };
 
     const handleRemoveComponent = (idToRemove: number) => {
@@ -156,7 +159,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
   });
 
   useEffect(() => {
-    if (accion === "editar") {
+    if (accionGeneradaEntreTabs === "editar") {
         form.reset({
             orden_trabajo_encadenadas: totalAccionesComponente.map(item => ({
                 id: item.id,
@@ -186,7 +189,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
 
         if (accionGeneradaEntreTabs === "editar") {
             try {
-                const response = await axiosClient.put(`/OrdenTrabajoCatalogo/create/cargos`, orden_trabajo_encadenadas);
+                const response = await axiosClient.put(`/OrdenTrabajoCatalogo/create/encadenadas`, orden_trabajo_encadenadas);
                 const data = response.data;
                 if (data.restore) {
                     setIdParaRestaurar(data.tipoToma_id);
@@ -204,6 +207,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                     form.reset({
                         orden_trabajo_encadenadas: totalAccionesComponente,
                     });
+                    console.log(response);
                     setAccion("creado");
                     getAnomalias();
                     successToastCreado();
@@ -339,7 +343,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                                 }
 
                                 <div onClick={() => setAccionGeneradaEntreTabs("editar")}>
-                                    <a title="Editar">
+                                    <a title="Modificar ordenes">
                                         <IconButton>
                                             <Pencil2Icon className="w-[20px] h-[20px]" />
                                         </IconButton>
@@ -352,10 +356,15 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                 {totalAccionesComponente.length < 1 
                 && 
                 <div className="flex justify-center mt-[20vh]">
-                    <p className="text-muted-foreground text-[20px]">Sin encadenadas</p>
+                     {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega una o mas ordenes de trabajo encadenadas.</p> : 
+              <p className="text-muted-foreground text-[20px]">Sin encadenadas</p>
+             }
 
                     </div>
                 }
+
+
+
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {totalAccionesComponente.map((accion, index) => {

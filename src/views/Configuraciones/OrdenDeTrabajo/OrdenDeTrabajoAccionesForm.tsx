@@ -383,10 +383,13 @@ const OrdenDeTrabajoAccionesForm = () => {
           {totalAccionesComponente.length < 1
             &&
             <div className="flex justify-center mt-[20vh]">
-              <p className="text-muted-foreground text-[20px]">Sin acciones</p>
+             {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega una o mas acciones.</p> : 
+              <p className="text-muted-foreground text-[20px]">Sin acciones.</p>
+             }
 
             </div>
           }
+          
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
             {totalAccionesComponente.map((item, index) => (
 

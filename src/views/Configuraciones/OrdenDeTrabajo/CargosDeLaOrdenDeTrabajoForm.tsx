@@ -347,7 +347,7 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
                                 }
 
                                 <div onClick={() => setAccionGeneradaEntreTabs("editar")}>
-                                    <a title="Editar">
+                                    <a title="Modificar cargos">
                                         <IconButton>
                                             <Pencil2Icon className="w-[20px] h-[20px]" />
                                         </IconButton>
@@ -360,10 +360,14 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
                 {totalAccionesComponente.length < 1 
                 && 
                 <div className="flex justify-center mt-[20vh]">
-                    <p className="text-muted-foreground text-[20px]">Sin cargos</p>
+                    {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega una o mas cargos.</p> : 
+              <p className="text-muted-foreground text-[20px]">Sin cargos.</p>
+             }
 
                     </div>
                 }
+
+
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {totalAccionesComponente.map((accion, index) => {
