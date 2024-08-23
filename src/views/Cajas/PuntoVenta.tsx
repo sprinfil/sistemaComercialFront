@@ -10,6 +10,7 @@ export default function PuntoVenta() {
   const [initialFund, setInitialFund] = useState('');
   const [cajaCatalogoId, setCajaCatalogoId] = useState(null); // ID de la caja catalogada
 
+
   useEffect(() => {
     // Obtener los valores almacenados en localStorage
     const isRegistered = localStorage.getItem('isFondoCajaRegistered');
@@ -93,6 +94,7 @@ export default function PuntoVenta() {
       ) : (
         <PuntoVentaForm />
       )}
+      {}
       <ModalCorteCaja
         trigger={<button className="btn-primary"></button>}
         onRegister={() => {}}
