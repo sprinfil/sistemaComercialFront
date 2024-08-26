@@ -37,8 +37,6 @@ export const BuscarUsuarioComboBox = ({ field, form, name = "id_concepto", setCa
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([
         { value: "1", label: "Nombre" },
-        { value: "2", label: "Código usuario" },
-        { value: "3", label: "Correo" },
         { value: "4", label: "Dirección" },
         { value: "5", label: "Código toma" },
     ]);
@@ -47,7 +45,7 @@ export const BuscarUsuarioComboBox = ({ field, form, name = "id_concepto", setCa
 
     useEffect(() => {
         if (!field.value) {
-            const defaultFilter = languages[4]; 
+            const defaultFilter = languages[0]; 
             form.setValue(name, defaultFilter.value); 
             setCargoSeleccionado(defaultFilter.label); 
         }
@@ -55,7 +53,7 @@ export const BuscarUsuarioComboBox = ({ field, form, name = "id_concepto", setCa
 
     const selectedLabel = field.value
         ? languages.find((language) => language.value === field.value)?.label
-        : languages[4]?.label; 
+        : languages[0]?.label; 
     return (
         <div>
             <Popover>

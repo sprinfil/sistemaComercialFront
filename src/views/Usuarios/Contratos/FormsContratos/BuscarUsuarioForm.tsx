@@ -149,7 +149,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                             setUsuariosEncontrados(results);
                             if (results.length === 1) {
                                 if (tipoAccion === "verUsuarioDetalle") {
-                                    navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                    navigate("/usuario/toma", { state: { contratoBuscarUsuario: results[0] } });
                                 } else if (tipoAccion === "crearContratacionUsuario") {
                                     navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
                                 }
@@ -293,7 +293,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     return (
         <ContextProvider>
             <div>
-                <div className='mt-5 ml-[5vh] w-[213vh] rounded-md border border-border  shadow-inherit p-6 h-[29.5vh]'>
+                <div className='mt-5 ml-[5vh] w-[213vh] rounded-md border border-border  shadow-inherit p-6 h-[29.5vh] '>
                     <Form {...form}>
                         <div className="text-muted-foreground text-[20px] mb-5">Consultar al usuario</div>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="">
@@ -343,7 +343,6 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                                     
                                 </div>
                                 <div className="mt-8">
-                                <Button type="submit" className=""><MagnifyingGlassIcon/></Button>
                                 
                                 {
                                     botonCrearUsuario && <Button type="button" onClick={handleNavigationCrearUsuario} className="">Crear usuario</Button>
@@ -351,6 +350,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                             </div>
                             </div>
 
+                            <Button type="submit" className=""><MagnifyingGlassIcon/></Button>
 
 
                             

@@ -70,7 +70,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
     setUsuariosEncontrados([contratobuscarUsuario]);
     if(accion2 == "verUsuarioDetalle")
     {
-      navigate("/usuario");
+      navigate("/usuario/toma");
     }
     
     if(accion2 == "crearContratacionUsuario")
