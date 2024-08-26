@@ -9,7 +9,7 @@ import { PlusCircledIcon } from '@radix-ui/react-icons';
 
 export default function CajaTable() {
 
-  const { anomalias, setAnomalias, loadingTable, setLoadingTable, setAccion, setAnomalia} = useStateContext();
+  const { cajas, setCajas, loadingTable, setLoadingTable, setAccion, setCaja} = useStateContext();
 
   useEffect(() => {
     getCaja();
@@ -18,10 +18,10 @@ export default function CajaTable() {
   const getCaja = async () => {
     setLoadingTable(true);
     try {
-      const response = await axiosClient.get("/AnomaliasCatalogo");
+      const response = await axiosClient.get("/cajas/consultarCajas");
       setLoadingTable(false);
-      setAnomalias(response.data.data);
-      console.log(response.data.data);
+      setCajas(response.data);
+      console.log(response.data);
     } catch (error) {
       setLoadingTable(false);
       console.error("Failed to fetch anomalias:", error);
@@ -30,9 +30,9 @@ export default function CajaTable() {
 
   //metodo para las filas
 
-  const handleRowClick = (anomalia: Anomalia) =>
+  const handleRowClick = (caja: Caja) =>
   {
-    setAnomalia(anomalia);
+    setCaja(caja);
     setAccion("ver");
   };
 
@@ -49,7 +49,7 @@ export default function CajaTable() {
 
         <IconButton>
           <div className='flex gap-2 items-center'> 
-            Agregar nueva anomalía
+            Agregar nueva caja
             
             <PlusCircledIcon className='w-[20px] h-[20px]'/>
           
@@ -57,7 +57,7 @@ export default function CajaTable() {
         </IconButton>
         </div>
       
-      <DataTable columns={columns} data={anomalias} sorter='nombre' onRowClick={handleRowClick}/>
+      <DataTable columns={columns} data={cajas} sorter='nombre' onRowClick={handleRowClick}/>
     </div>
   );
 }

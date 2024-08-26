@@ -33,6 +33,7 @@ import { Switch } from "../ui/switch.tsx";
 import { ConceptosComboBoxNew } from "../ui/ConceptosComboBoxNew.tsx";
 import OrdenDeTrabajoCargosTable from "../Tables/Components/OrdenDeTrabajoCargosTable.tsx";
 import { OrdenDeTrabajoAplicacionComboBox } from "../ui/OrdenDeTrabajoAplicacionComboBox.tsx";
+import { CuentasContablesComboBox } from "../ui/CuentasContablesComboBox.tsx";
 type OrdenDeTrabajo = {
     nombre: string;
     aplicacion: string;
@@ -433,7 +434,7 @@ const OrdenDeTrabajoForm = () => {
                                 <FormItem className="flex items-center justify-center">
                                     <FormLabel className="mr-4">Cargos</FormLabel>
                                     <FormControl>
-                                        <ConceptosComboBoxNew form={form} field={field} name="cargos" setCargoSeleccionado={setNombreSeleccionado}/>
+                                        <CuentasContablesComboBox form={form} field={field} name="cargos" setCargoSeleccionado={setNombreSeleccionado}/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

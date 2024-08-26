@@ -94,3 +94,19 @@ export const coloniaSchema = z.object({
   nombre: z.string().min(1, "El Nombre es requerido"),
 
 })
+
+
+
+export const cajaCatalogoSchema = z.object({
+  id: z.number(),
+  id_cuenta_contable: z.number(),
+  nombre_caja: z.string().min(1, "El Nombre es requerido"),
+  hora_apertura: z.string().min(1, "La hora de apertura es requerida"),
+  hora_cierre: z.string().min(1, "La hora de cierre es requerida"),
+})
+
+
+export const cajaOperadorCatalogoSchema = z.object({
+  id: z.number(),
+  id_operador: z.number().min(1, "El Nombre es requerido"),
+})

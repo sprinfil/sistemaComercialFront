@@ -14,7 +14,7 @@ import {
     FormMessage,
 } from "../../components/ui/form.tsx";
 import { Input } from '../../components/ui/input.tsx';
-import { anomaliaSchema } from './validaciones.ts';
+import { cajaOperadorCatalogoSchema } from './validaciones.ts';
 import { ModeToggle } from '../../components/ui/mode-toggle.tsx';
 import axiosClient from '../../axios-client.ts';
 import Loader from "../../components/ui/Loader.tsx";
@@ -33,7 +33,7 @@ import { CajaComboBox } from "../ui/CajaComboBox.tsx";
 
 const CajaOperadoresForm = () => {
     const { toast } = useToast()
-    const { anomalia, setAnomalia, loadingTable, setLoadingTable, setAnomalias, setAccion, accion } = useStateContext();
+    const { caja, setCaja, loadingTable, setLoadingTable, setCajas, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
@@ -115,21 +115,20 @@ const CajaOperadoresForm = () => {
 
 
 
-    const form = useForm<z.infer<typeof anomaliaSchema>>({
-        resolver: zodResolver(anomaliaSchema),
+    const form = useForm<z.infer<typeof cajaOperadorCatalogoSchema>>({
+        resolver: zodResolver(cajaOperadorCatalogoSchema),
         defaultValues: {
-            id: anomalia.id,
-            nombre: anomalia.nombre,
-            descripcion: anomalia.descripcion,
+            id: 0,
+            id_operador: 0,
         },
     })
 
 
 
-    function onSubmit(values: z.infer<typeof anomaliaSchema>) {
+    function onSubmit(values: z.infer<typeof cajaOperadorCatalogoSchema>) {
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/AnomaliasCatalogo/create`, values)
+            axiosClient.post(`/cajas/asignarOperador`, values)
                 .then((response) => {
                     const data = response.data;
                     if (data.restore) {
@@ -142,7 +141,7 @@ const CajaOperadoresForm = () => {
                     }
                     else{
                         setLoading(false);
-                        setAnomalia({
+                        setCaja({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
@@ -169,7 +168,7 @@ const CajaOperadoresForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/AnomaliasCatalogo/update/${anomalia.id}`, values)
+            axiosClient.put(`/AnomaliasCatalogo/update/${caja.id}`, values)
                 .then((response) => {
                     const data = response.data;
                     if (data.confirmUpdate) {
@@ -180,7 +179,7 @@ const CajaOperadoresForm = () => {
                     setAbrirInput(false);
                     setAccion("");
                     getAnomalias();
-                    setAnomalia(data.data);
+                    setCaja(data.data);
                     //setNotification("usuario creado");
                     successToastEditado();
                     }
@@ -211,7 +210,7 @@ const CajaOperadoresForm = () => {
         try {
             const response = await axiosClient.get("/AnomaliasCatalogo");
             setLoadingTable(false);
-            setAnomalias(response.data.data);
+            setCajas(response.data.data);
             console.log(response.data.data);
         } catch (error) {
             setLoadingTable(false);
@@ -223,7 +222,7 @@ const CajaOperadoresForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${anomalia.id}`);
+            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${caja.id}`);
             getAnomalias();
             setAccion("eliminar");
             successToastEliminado();
@@ -240,7 +239,7 @@ const CajaOperadoresForm = () => {
                 setLoading(false);
                 setAbrirInput(false);
                 setAccion("crear");
-                setAnomalia({
+                setCaja({
                     id: 0,
                     nombre: "",
                     descripcion: "ninguna",
@@ -266,7 +265,7 @@ const CajaOperadoresForm = () => {
                 nombre: "",
                 descripcion: "ninguna",
             });
-            setAnomalia({});
+            setCaja({});
             setAbrirInput(false);
         }
         if (accion == "creado") {
@@ -275,7 +274,7 @@ const CajaOperadoresForm = () => {
                 nombre: "",
                 descripcion: "ninguna",
             });
-            setAnomalia({});
+            setCaja({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
@@ -287,7 +286,7 @@ const CajaOperadoresForm = () => {
                 nombre: "",
                 descripcion: "ninguna",
             });
-            setAnomalia({
+            setCaja({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
@@ -298,9 +297,9 @@ const CajaOperadoresForm = () => {
             setErrors({});
             setAccion("");
             form.reset({
-                id: anomalia.id,
-                nombre: anomalia.nombre,
-                descripcion: anomalia.descripcion,
+                id: caja.id,
+                nombre: caja.nombre,
+                descripcion: caja.descripcion,
             });
         }
         if (accion == "editar") {
@@ -316,9 +315,9 @@ const CajaOperadoresForm = () => {
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
                             {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva anomalía</p>}
-                            {anomalia.nombre != "" && <p className="text-muted-foreground text-[20px]">{anomalia.nombre}</p>}
+                            {caja.nombre_caja != "" && <p className="text-muted-foreground text-[20px]">{caja.nombre_caja}</p>}
                         </div>
-                        {(anomalia.nombre != null && anomalia.nombre != "") &&
+                        {(caja.nombre_caja != null && caja.nombre_caja != "") &&
                             <>
                                 <Modal
                                     method={onDelete}

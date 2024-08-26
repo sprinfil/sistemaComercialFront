@@ -3,25 +3,25 @@ import { Caja } from "../components/Tables/Columns/CajaColumns.tsx";
 
 // Define la interfaz para el estado del usuario y los métodos para actualizar el estado
 interface StateContextType {
-    anomalia: Caja;
+    caja: Caja;
     accion: string;
-    setAnomalia: (anomalia: Caja) => void;
-    anomalias: Caja[];
+    setCaja: (caja: Caja) => void;
+    cajas: Caja[];
     loadingTable: boolean;
-    setAnomalias: (anomalias: Caja[]) => void;
+    setCajas: (cajas: Caja[]) => void;
     setAccion: (accion: string) => void;
     setLoadingTable: (loading: boolean) => void;
 }
 
 // Crea el contexto con valores predeterminados adecuados según las interfaces
 const StateContext = createContext<StateContextType>({
-    anomalia: {} as Caja,
-    setAnomalia: () => {},
-    anomalias: [],
+    caja: {} as Caja,
+    setCaja: () => {},
+    cajas: [],
     loadingTable: false,
     accion: "",
     setAccion: () => {},
-    setAnomalias: () => {},
+    setCajas: () => {},
     setLoadingTable: () => {}
 });
 
@@ -31,17 +31,17 @@ interface ContextProviderProps {
 }
 
 export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
-    const [anomalia, setAnomalia] = useState<Caja>({} as Caja);
-    const [anomalias, setAnomalias] = useState<Caja[]>([]);
+    const [caja, setCaja] = useState<Caja>({} as Caja);
+    const [cajas, setCajas] = useState<Caja[]>([]);
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [accion, setAccion] = useState<string>("");
 
     return (
         <StateContext.Provider value={{
-            anomalia,
-            setAnomalia,
-            anomalias,
-            setAnomalias,
+            caja,
+            setCaja,
+            cajas,
+            setCajas,
             loadingTable,
             setLoadingTable,
             accion,

@@ -19,8 +19,10 @@ import { Checkbox } from "@/components/ui/checkbox"
 // You can use a Zod schema here if you want.
 export type Caja = {
   id: number
-  nombre: string
-  descripcion: string
+  id_cuenta_contable: number,
+  nombre_caja: string
+  hora_apertura: string
+  hora_cierre: string
 }
 
 
@@ -48,7 +50,7 @@ export const columns: ColumnDef<Caja>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "nombre",
+    accessorKey: "nombre_caja",
     header: ({ column }) => {
       return (
         <Button

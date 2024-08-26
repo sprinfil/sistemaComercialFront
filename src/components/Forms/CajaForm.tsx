@@ -14,7 +14,7 @@ import {
     FormMessage,
 } from "../../components/ui/form.tsx";
 import { Input } from '../../components/ui/input.tsx';
-import { anomaliaSchema } from './validaciones.ts';
+import { cajaCatalogoSchema } from './validaciones.ts';
 import { ModeToggle } from '../../components/ui/mode-toggle.tsx';
 import axiosClient from '../../axios-client.ts';
 import Loader from "../../components/ui/Loader.tsx";
@@ -29,22 +29,23 @@ import Modal from "../ui/Modal.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { CuentasContablesComboBox } from "../ui/CuentasContablesComboBox.tsx";
 
 
 const CajaForm = () => {
     const { toast } = useToast()
-    const { anomalia, setAnomalia, loadingTable, setLoadingTable, setAnomalias, setAccion, accion } = useStateContext();
+    const { caja, setCaja, loadingTable, setLoadingTable, setCajas, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
     const [anomaliaIdParaRestaurar, setAnomaliaIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
-
+    const [cuentaContableSeleccionada, setCuentaContableSeleccionada] = useState("");
      //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía se ha creado correctamente",
+            description: "La caja se ha creado correctamente",
             variant: "success",
 
         })
@@ -52,7 +53,7 @@ const CajaForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha editado correctamente",
+            description: "La caja se ha editado correctamente",
             variant: "success",
 
         })
@@ -60,7 +61,7 @@ const CajaForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha eliminado correctamente",
+            description: "La caja se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -68,7 +69,7 @@ const CajaForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha restaurado correctamente",
+            description: "La caja se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -93,28 +94,42 @@ const CajaForm = () => {
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
-            description: "La anomalía ya existe.",
+            description: "La caja ya existe.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }
 
 
 
-    const form = useForm<z.infer<typeof anomaliaSchema>>({
-        resolver: zodResolver(anomaliaSchema),
+    const form = useForm<z.infer<typeof cajaCatalogoSchema>>({
+        resolver: zodResolver(cajaCatalogoSchema),
         defaultValues: {
-            id: anomalia.id,
-            nombre: anomalia.nombre,
-            descripcion: anomalia.descripcion,
+            id: 0,
+            id_cuenta_contable: 0,
+            nombre_caja:"",
+            hora_apertura: "",
+            hora_cierre: ""
+
         },
     })
 
 
 
-    function onSubmit(values: z.infer<typeof anomaliaSchema>) {
+    function onSubmit(values: z.infer<typeof cajaCatalogoSchema>) {
         setLoading(true);
+       
+        const formattedTime = formatTimeToHIS(values.hora_apertura);
+        const formattedTime2 = formatTimeToHIS(values.hora_cierre);
+
+        const values2 = {
+            ...values,
+            hora_apertura: formattedTime,
+            hora_cierre: formattedTime2,
+        }
+
+
         if (accion == "crear") {
-            axiosClient.post(`/AnomaliasCatalogo/create`, values)
+            axiosClient.post(`/cajas/guardarCajaCatalogo`, values2)
                 .then((response) => {
                     const data = response.data;
                     if (data.restore) {
@@ -127,7 +142,7 @@ const CajaForm = () => {
                     }
                     else{
                         setLoading(false);
-                        setAnomalia({
+                        setCaja({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
@@ -137,7 +152,7 @@ const CajaForm = () => {
                             nombre: "",
                             descripcion: "ninguna",
                         });
-                        getAnomalias();
+                        getCajas();
                         successToastCreado();
                         setAccion("creado");
                     }
@@ -145,6 +160,7 @@ const CajaForm = () => {
                 })
                 .catch((err) => {
                     const response = err.response;
+                    console.log(response);
                     errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
@@ -154,7 +170,7 @@ const CajaForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/AnomaliasCatalogo/update/${anomalia.id}`, values)
+            axiosClient.put(`/cajas/modificarCajaCatalogo/${caja.id}`, values)
                 .then((response) => {
                     const data = response.data;
                     if (data.confirmUpdate) {
@@ -164,8 +180,8 @@ const CajaForm = () => {
                     //alert("anomalia creada");
                     setAbrirInput(false);
                     setAccion("");
-                    getAnomalias();
-                    setAnomalia(data.data);
+                    getCajas();
+                    setCaja(data.data);
                     //setNotification("usuario creado");
                     successToastEditado();
                     }
@@ -191,13 +207,13 @@ const CajaForm = () => {
     };
 
     //con este metodo obtienes las anomalias de la bd
-    const getAnomalias = async () => {
+    const getCajas = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/AnomaliasCatalogo");
+            const response = await axiosClient.get("/cajas/consultarCajas");
             setLoadingTable(false);
-            setAnomalias(response.data.data);
-            console.log(response.data.data);
+            setCajas(response.data);
+            console.log(response.data);
         } catch (error) {
             setLoadingTable(false);
             errorToast();
@@ -208,8 +224,8 @@ const CajaForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${anomalia.id}`);
-            getAnomalias();
+            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${caja.id}`);
+            getCajas();
             setAccion("eliminar");
             successToastEliminado();
         } catch (error) {
@@ -225,13 +241,14 @@ const CajaForm = () => {
                 setLoading(false);
                 setAbrirInput(false);
                 setAccion("crear");
-                setAnomalia({
+                setCaja({
                     id: 0,
-                    nombre: "",
-                    descripcion: "ninguna",
-                    estado: "activo"
+                    id_cuenta_contable: 0,
+                    nombre_caja: "",
+                    hora_apertura: "0",
+                    hora_cierre: "0",
                 });
-                getAnomalias();
+                getCajas();
                 successToastRestaurado();
                 setAccion("creado");
                 setModalReactivacionOpen(false);
@@ -248,19 +265,23 @@ const CajaForm = () => {
         if (accion == "eliminar") {
             form.reset({
                 id: 0,
-                nombre: "",
-                descripcion: "ninguna",
+                id_cuenta_contable: 0,
+                nombre_caja: "",
+                hora_apertura: "0",
+                hora_cierre: "0",
             });
-            setAnomalia({});
+            setCaja({});
             setAbrirInput(false);
         }
         if (accion == "creado") {
             form.reset({
                 id: 0,
-                nombre: "",
-                descripcion: "ninguna",
+                id_cuenta_contable: 0,
+                nombre_caja: "",
+                hora_apertura: "0",
+                hora_cierre: "0",
             });
-            setAnomalia({});
+            setCaja({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
@@ -269,13 +290,17 @@ const CajaForm = () => {
             setErrors({});
             form.reset({
                 id: 0,
-                nombre: "",
-                descripcion: "ninguna",
+                id_cuenta_contable: 0,
+                nombre_caja: "",
+                hora_apertura: "0",
+                hora_cierre: "0",
             });
-            setAnomalia({
+            setCaja({
                 id: 0,
-                nombre: "",
-                descripcion: "ninguna",
+                id_cuenta_contable: 0,
+                nombre_caja: "",
+                hora_apertura: "0",
+                hora_cierre: "0",
             })
         }
         if (accion == "ver") {
@@ -283,9 +308,11 @@ const CajaForm = () => {
             setErrors({});
             setAccion("");
             form.reset({
-                id: anomalia.id,
-                nombre: anomalia.nombre,
-                descripcion: anomalia.descripcion,
+                id: 0,
+                id_cuenta_contable: caja.id_cuenta_contable,
+                nombre_caja: caja.nombre_caja,
+                hora_apertura: caja.hora_apertura,
+                hora_cierre: caja.hora_cierre,
             });
         }
         if (accion == "editar") {
@@ -294,16 +321,24 @@ const CajaForm = () => {
         }
     }, [accion]);
 
+
+    //METODO PARA CONVERTIR DE H:i al formato que pide H:i:s
+    
+    const formatTimeToHIS = (time) => {
+        return `${time}:00`;
+      };
+
+     
     return (
         <>
             <div className="overflow-auto max-w-full max-h-full">
                 <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva anomalía</p>}
-                            {anomalia.nombre != "" && <p className="text-muted-foreground text-[20px]">{anomalia.nombre}</p>}
+                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva caja</p>}
+                            {caja.nombre_caja != "" && <p className="text-muted-foreground text-[20px]">{caja.nombre_caja}</p>}
                         </div>
-                        {(anomalia.nombre != null && anomalia.nombre != "") &&
+                        {(caja.nombre_caja != null && caja.nombre_caja != "") &&
                             <>
                                 <Modal
                                     method={onDelete}
@@ -344,15 +379,15 @@ const CajaForm = () => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                             <FormField
                                 control={form.control}
-                                name="nombre"
+                                name="nombre_caja"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Nombre</FormLabel>
                                         <FormControl>
-                                            <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la anomalía" {...field} />
+                                            <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la caja" {...field} />
                                         </FormControl>
                                         <FormDescription>
-                                            El nombre de la anomalía.
+                                            El nombre de la caja.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -360,24 +395,62 @@ const CajaForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="descripción"
+                                name="id_cuenta_contable"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Descripción</FormLabel>
+                                        <FormLabel>Cuenta contable</FormLabel>
                                         <FormControl>
-                                            <Textarea
-                                                readOnly={!abrirInput}
-                                                placeholder="Descripcion de la anomalía"
-                                                {...field}
-                                            />
+                                        <CuentasContablesComboBox form={form} field={field} name="id_cuenta_contable" setCargoSeleccionado={setCuentaContableSeleccionada}/>
                                         </FormControl>
                                         <FormDescription>
-                                            Agrega una breve descripción.
+                                            Selecciona una cuenta contable.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
+                            <div className="w-[18.9vh]">
+                            <FormField
+                                control={form.control}
+                                name="hora_apertura"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Apertura</FormLabel>
+                                        <FormControl>
+                                        <input {...field} readOnly={!abrirInput} type="time" name="hora_apertura" 
+                                          className="border border-border w-full rounded-md p-[4px] bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring disabled:opacity-50 disabled:cursor-not-allowed"/>
+                                        </FormControl>
+                                        <FormDescription>
+                                            Escoge el horario de apertura.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            </div>
+                            <div className="w-[18.9vh]">
+                            <FormField
+                                control={form.control}
+                                name="hora_cierre"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Cierre</FormLabel>
+                                        <FormControl>
+                                        <input {...field} 
+                                        readOnly={!abrirInput} 
+                                        type="time" name="hora_cierre" 
+                                     
+                                          className="border border-border w-full rounded-md p-[4px] bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring disabled:opacity-50 disabled:cursor-not-allowed"/>
+                                        </FormControl>
+                                        <FormDescription>
+                                            Escoge el horario de cierre.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            </div>
+                             
                             {loading && <Loader />}
                             {abrirInput && <Button type="submit">Guardar</Button>}
 
