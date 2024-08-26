@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import MarcoForm from "./MarcoForm";
+import { TbFilterPlus } from "react-icons/tb";
+import IconButton from "./IconButton";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -39,7 +41,7 @@ export function DataTableUsuarios<TData, TValue>({
     []
   );
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
-
+  const [mostrarMasFiltros, setMostrarMasFiltros] = React.useState(false);
   const table = useReactTable({
     data,
     columns,
@@ -61,9 +63,47 @@ export function DataTableUsuarios<TData, TValue>({
     onRowClick?.(rowData);
   };
 
+  const handleAbrirMasFiltros = () => {
+    if(mostrarMasFiltros == true)
+    {
+      setMostrarMasFiltros(false);
+
+    }
+    if(mostrarMasFiltros == false)
+      {
+        setMostrarMasFiltros(true);
+  
+      }
+  }
+
   return (
-    <div className="mt-5 p-10">
-      <MarcoForm title={"Filtros para buscar al usuario"}>
+    <div className="p-10">
+      <div className=" w-[5vh] h-[5vh]" title="Mostrar mas filtros" >
+        <div className="flex space-x-3">
+          <div onClick={handleAbrirMasFiltros}>
+          <IconButton>      
+          <TbFilterPlus className="w-[2.5vh] h-[2.5vh]"/>
+        </IconButton>
+          </div>
+     
+        <Input
+          placeholder="Buscar telefono"
+          type="text"
+          value={(table.getColumn("telefono")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("telefono")?.setFilterValue(event.target.value)
+          }
+          className="w-[60vh]"
+        />
+        </div>
+        
+
+      </div>
+      {
+        mostrarMasFiltros &&
+
+        <div className="mt-10"> 
+  <MarcoForm title={"Filtros para buscar al usuario"}>
       <div className="flex space-x-4 ">
       <div className="flex flex-col space-y-2">
         <p>Nombre</p>
@@ -130,7 +170,11 @@ export function DataTableUsuarios<TData, TValue>({
           </div>
           </div>
       </MarcoForm>
+        </div>
+       
      
+      }
+      
        
        
        

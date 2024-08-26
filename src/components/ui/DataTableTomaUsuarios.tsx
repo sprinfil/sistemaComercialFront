@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import MarcoForm from "./MarcoForm";
+import IconButton from "./IconButton";
+import { TbFilterPlus } from "react-icons/tb";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -39,6 +41,7 @@ export function DataTableTomaUsuarios<TData, TValue>({
     []
   );
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
+  const [mostrarMasFiltros, setMostrarMasFiltros] = React.useState(false);
 
   const table = useReactTable({
     data,
@@ -61,10 +64,45 @@ export function DataTableTomaUsuarios<TData, TValue>({
     onRowClick?.(rowData);
   };
 
+  const handleAbrirMasFiltros = () => {
+    if(mostrarMasFiltros == true)
+    {
+      setMostrarMasFiltros(false);
+
+    }
+    if(mostrarMasFiltros == false)
+      {
+        setMostrarMasFiltros(true);
+  
+      }
+  }
+
   return (
     <div className="mt-5 p-10">
-              <MarcoForm title={"Filtros para buscar al usuario"}>
-      <div className="flex space-x-4 mt-5 ">
+    <div className="flex space-x-3 mb-10">
+          <div onClick={handleAbrirMasFiltros}>
+          <IconButton>      
+          <TbFilterPlus className="w-[2.5vh] h-[2.5vh]"/>
+        </IconButton>
+          </div>
+     
+        <Input
+          placeholder="Buscar telefono"
+          type="text"
+          value={(table.getColumn("telefono")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("telefono")?.setFilterValue(event.target.value)
+          }
+          className="w-[60vh]"
+        />
+        </div>
+
+
+
+      {
+        mostrarMasFiltros && 
+        <MarcoForm title={"Filtros para buscar al usuario"}>
+      <div className="flex space-x-4 mt-5  ">
         <div className="flex flex-col space-y-2">
         <p className="mb-2 ml-2">Nombre</p>
         <Input
@@ -127,6 +165,8 @@ export function DataTableTomaUsuarios<TData, TValue>({
         
       </div>
       </MarcoForm>
+      }
+
 
       <div className="rounded-md border h-full overflow-auto mt-10">
         <Table>
