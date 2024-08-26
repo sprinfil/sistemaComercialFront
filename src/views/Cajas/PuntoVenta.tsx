@@ -15,7 +15,7 @@ export default function PuntoVenta() {
     // Obtener los valores almacenados en localStorage
     const isRegistered = localStorage.getItem('isFondoCajaRegistered');
     const amount = localStorage.getItem('fondoCajaAmount');
-    const cajaCatalogo = 7; // Obtener la caja
+    const cajaCatalogo = 3; // Obtener la caja
 
     setCajaCatalogoId(cajaCatalogo ? parseInt(cajaCatalogo, 10) : null);
 
