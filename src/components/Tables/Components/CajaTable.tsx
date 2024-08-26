@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { DataTable } from '../../../components/ui/DataTable';
-import { columns, Caja } from "../../../components/Tables/Columns/CajaColumns.tsx";
-import axiosClient from '../../../axios-client.ts';
-import { useStateContext } from '../../../contexts/ContextCaja.tsx';
-import Loader from '../../ui/Loader.tsx';
-import IconButton from '../../ui/IconButton.tsx';
+import { columns, Caja } from "../../../components/Tables/Columns/CajaColumns";
+import axiosClient from '../../../axios-client';
+import { useStateContext } from '../../../contexts/ContextCaja';
+import Loader from '../../ui/Loader';
+import IconButton from '../../ui/IconButton';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
+import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario';
 
 export default function CajaTable() {
-
-  const { cajas, setCajas, loadingTable, setLoadingTable, setAccion, setCaja} = useStateContext();
+  const { cajas, setCajas, loadingTable, setLoadingTable, setAccion, setCaja } = useStateContext();
+  const { setIdSeleccionadoConfiguracionOrdenDeTrabajo } = ZustandGeneralUsuario();
 
   useEffect(() => {
     getCaja();
@@ -24,40 +25,33 @@ export default function CajaTable() {
       console.log(response.data);
     } catch (error) {
       setLoadingTable(false);
-      console.error("Failed to fetch anomalias:", error);
+      console.error("Failed to fetch caja:", error);
     }
   };
 
-  //metodo para las filas
-
-  const handleRowClick = (caja: Caja) =>
-  {
+  // Método para las filas
+  const handleRowClick = (caja: Caja) => {
     setCaja(caja);
     setAccion("ver");
+    setIdSeleccionadoConfiguracionOrdenDeTrabajo(caja.id);
   };
-
 
   if (loadingTable) {
     return <div><Loader /></div>;
   }
 
   return (
-
     <div>
-      <div onClick={()=>{setAccion("crear")}}>
-
-
+      <div onClick={() => setAccion("crear")}>
         <IconButton>
           <div className='flex gap-2 items-center'> 
             Agregar nueva caja
-            
-            <PlusCircledIcon className='w-[20px] h-[20px]'/>
-          
+            <PlusCircledIcon className='w-[20px] h-[20px]' />
           </div>
         </IconButton>
-        </div>
+      </div>
       
-      <DataTable columns={columns} data={cajas} sorter='nombre' onRowClick={handleRowClick}/>
+      <DataTable columns={columns} data={cajas} sorter='nombre_caja' onRowClick={handleRowClick} />
     </div>
   );
 }

@@ -23,6 +23,13 @@ export type Caja = {
   nombre_caja: string
   hora_apertura: string
   hora_cierre: string
+  operadorAsignado: operadorAsignado[]
+}
+
+export type operadorAsignado = {
+  id: number,
+  id_operador: number,
+  id_caja_catalogo: number
 }
 
 

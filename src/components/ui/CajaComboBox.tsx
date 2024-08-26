@@ -52,9 +52,9 @@ export const CajaComboBox = ({ field, form, name = "id_concepto", setCargoSelecc
     const getConcepto = async () => {
         setLoading(true);
         try {
-            const response = await axiosClient.get("/Concepto");
+            const response = await axiosClient.get("/Operador");
             let ctr = 0;
-            response.data.data.forEach(concepto => {
+            response.data.forEach(concepto => {
                 languages[ctr] = { value: concepto.id, label: concepto.nombre };
                 ctr = ctr + 1;
             });
@@ -91,9 +91,9 @@ export const CajaComboBox = ({ field, form, name = "id_concepto", setCargoSelecc
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0 h-[300px]">
                     <Command>
-                        <CommandInput placeholder="Buscar Concepto ... " />
+                        <CommandInput placeholder="Buscar Operador ... " />
                         <CommandList>
-                            <CommandEmpty>Concepto no encontrado.</CommandEmpty>
+                            <CommandEmpty>Operador no encontrado.</CommandEmpty>
                             <CommandGroup>
                                 {
                                     loading &&

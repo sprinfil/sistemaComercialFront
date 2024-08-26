@@ -14,7 +14,7 @@ import {
     FormMessage,
 } from "../../components/ui/form.tsx";
 import { Input } from '../../components/ui/input.tsx';
-import { cajaOperadorCatalogoSchema } from './validaciones.ts';
+import { cajaOperadorCatalogoSchema } from "./validaciones.ts";
 import { ModeToggle } from '../../components/ui/mode-toggle.tsx';
 import axiosClient from '../../axios-client.ts';
 import Loader from "../../components/ui/Loader.tsx";
@@ -30,6 +30,8 @@ import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACT
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import { CajaComboBox } from "../ui/CajaComboBox.tsx";
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
+
 
 const CajaOperadoresForm = () => {
     const { toast } = useToast()
@@ -40,11 +42,13 @@ const CajaOperadoresForm = () => {
     const [anomaliaIdParaRestaurar, setAnomaliaIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
     const [operadorSeleccionado, setOperadorSeleccionado] = useState<string | null>(null);
-    const [nuevoOperador, setNuevoOperador] = useState<number[]>([1]); // Asegúrate de tipificar el estado correctamente
+    const [nuevoOperador, setNuevoOperador] = useState<{ id: number, id_operador: number, }[]>([{ id: 0, id_operador: 0,}]);
+    const {setIdSeleccionadoConfiguracionOrdenDeTrabajo, idSeleccionadoConfiguracionOrdenDeTrabajo} = ZustandGeneralUsuario();
+    type CajaOperadorCatalogoArray = z.infer<typeof cajaOperadorCatalogoArraySchema>;
 
 
-    function dinamicoOperador()
-    {
+
+    function dinamicoOperador() {
         // Determinar el nuevo valor a agregar
         var nuevoValor = 1;
         nuevoValor = nuevoOperador.length > 0 ? nuevoOperador[nuevoOperador.length - 1] + 1 : 1;
@@ -55,11 +59,11 @@ const CajaOperadoresForm = () => {
         console.log(nuevoOperador);
     }
 
-     //#region SUCCESSTOAST
+    //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía se ha creado correctamente",
+            description: "La caja se ha creado correctamente",
             variant: "success",
 
         })
@@ -67,7 +71,7 @@ const CajaOperadoresForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha editado correctamente",
+            description: "La caja  se ha editado correctamente",
             variant: "success",
 
         })
@@ -75,7 +79,7 @@ const CajaOperadoresForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha eliminado correctamente",
+            description: "La caja se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -83,7 +87,7 @@ const CajaOperadoresForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha restaurado correctamente",
+            description: "La caja se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -118,17 +122,23 @@ const CajaOperadoresForm = () => {
     const form = useForm<z.infer<typeof cajaOperadorCatalogoSchema>>({
         resolver: zodResolver(cajaOperadorCatalogoSchema),
         defaultValues: {
-            id: 0,
-            id_operador: 0,
-        },
+            operadorSeleccionado: []
+          } 
     })
 
 
 
     function onSubmit(values: z.infer<typeof cajaOperadorCatalogoSchema>) {
         setLoading(true);
+        console.log("valor de formulario 1", values);
+        
+        const values2 = {
+            ...values, id_caja_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo
+        }
+
+        console.log("valores enviado al back", values2);
         if (accion == "crear") {
-            axiosClient.post(`/cajas/asignarOperador`, values)
+            axiosClient.post(`/cajas/asignarOperador`, values2)
                 .then((response) => {
                     const data = response.data;
                     if (data.restore) {
@@ -139,11 +149,11 @@ const CajaOperadoresForm = () => {
                         errorYaExisteToast();
                         setLoading(false);
                     }
-                    else{
+                    else {
                         setLoading(false);
                         setCaja({
                             id: 0,
-                            nombre: "",
+                            id_operador: 0,
                             descripcion: "ninguna",
                         });
                         form.reset({
@@ -155,7 +165,7 @@ const CajaOperadoresForm = () => {
                         successToastCreado();
                         setAccion("creado");
                     }
-                
+
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -174,16 +184,16 @@ const CajaOperadoresForm = () => {
                     if (data.confirmUpdate) {
                         setModalReactivacionOpen(true);
                     } else {
-                    setLoading(false);
-                    //alert("anomalia creada");
-                    setAbrirInput(false);
-                    setAccion("");
-                    getAnomalias();
-                    setCaja(data.data);
-                    //setNotification("usuario creado");
-                    successToastEditado();
+                        setLoading(false);
+                        //alert("anomalia creada");
+                        setAbrirInput(false);
+                        setAccion("");
+                        getAnomalias();
+                        setCaja(data.data);
+                        //setNotification("usuario creado");
+                        successToastEditado();
                     }
-                    
+
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -232,7 +242,7 @@ const CajaOperadoresForm = () => {
         }
     };
 
-     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
+    //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
     const restaurarDato = (anomalia_id: any) => {
         axiosClient.put(`/AnomaliasCatalogo/restaurar/${anomalia_id}`)
             .then(() => {
@@ -292,21 +302,34 @@ const CajaOperadoresForm = () => {
                 descripcion: "ninguna",
             })
         }
-        if (accion == "ver") {
+        if (accion === "ver") {
             setAbrirInput(false);
             setErrors({});
             setAccion("");
+            
+            const operadorAsignado = Array.isArray(caja.operadorAsignado) 
+                ? caja.operadorAsignado.map(item => ({
+                    id: item.id,
+                    id_operador: item.id_operador
+                }))
+                
+                : [];
+        
+            // Resetea el formulario con los operadores asignados
             form.reset({
-                id: caja.id,
-                nombre: caja.nombre,
-                descripcion: caja.descripcion,
+                operadorSeleccionado: operadorAsignado,
             });
+            console.log(caja.operadorAsignado);
+            console.log("Formulario después del reset:", form.getValues());
+            setNuevoOperador(operadorAsignado);
+
         }
         if (accion == "editar") {
             setAbrirInput(true);
             setErrors({});
         }
     }, [accion]);
+
 
     return (
         <>
@@ -317,6 +340,16 @@ const CajaOperadoresForm = () => {
                             {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva anomalía</p>}
                             {caja.nombre_caja != "" && <p className="text-muted-foreground text-[20px]">{caja.nombre_caja}</p>}
                         </div>
+                        {
+                        accion == "editar" &&
+                        <div onClick={dinamicoOperador}>
+                            <a title="Agregar nueva acción">
+                            <IconButton>
+                                <PlusCircledIcon className='w-[20px] h-[20px]' />
+                            </IconButton>
+                            </a>
+                        </div>
+                        }
                         {(caja.nombre_caja != null && caja.nombre_caja != "") &&
                             <>
                                 <Modal
@@ -335,19 +368,24 @@ const CajaOperadoresForm = () => {
                                         </IconButton>
                                     </a>
                                 </div>
+
                             </>
                         }
+                            
+
+                       
+
                         {// ESTE ES EL MODAL DE REACTIVACIÓN
-                        //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
-                        //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
-                    }
-                    {ModalReactivacionOpen &&
-                        <ModalReactivacion
-                            isOpen={ModalReactivacionOpen}
-                            setIsOpen={setModalReactivacionOpen}
-                            method={() => restaurarDato(anomaliaIdParaRestaurar)}
-                        />
-                    }
+                            //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
+                            //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
+                        }
+                        {ModalReactivacionOpen &&
+                            <ModalReactivacion
+                                isOpen={ModalReactivacionOpen}
+                                setIsOpen={setModalReactivacionOpen}
+                                method={() => restaurarDato(anomaliaIdParaRestaurar)}
+                            />
+                        }
 
                     </div>
                 </div>
@@ -359,27 +397,26 @@ const CajaOperadoresForm = () => {
                             {
                                 nuevoOperador.map((operador, index) => (
                                     <FormField
-                                    control={form.control}
-                                    name={`operador${index}`}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Operador</FormLabel>
-                                            <CajaComboBox form={form} field={field} name={`operador${index}`} setCargoSeleccionado={setOperadorSeleccionado}/>
-                                            <FormDescription>
-                                                Asigna un operador a la caja.
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                        control={form.control}
+                                        name={`operadorSeleccionado.${index}.id_operador`}
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Operador</FormLabel>
+                                                <CajaComboBox form={form} field={field} name={`operadorSeleccionado.${index}.id_operador`} setCargoSeleccionado={setOperadorSeleccionado} />
+                                                <FormDescription>
+                                                    Asigna un operador a la caja.
+                                                </FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
                                 )
-                            )}
+                                )}
                             {loading && <Loader />}
-                            <div className="flex space-x-2">
-                            <Button type = "button" onClick={dinamicoOperador}>Agregar operador</Button>
-                            {abrirInput && <Button type="submit">Guardar</Button>}
+                            <div className="flex space-x-2 justify-end">
+                                {abrirInput && <Button type="submit">Guardar</Button>}
                             </div>
-                        
+
 
 
                         </form>
