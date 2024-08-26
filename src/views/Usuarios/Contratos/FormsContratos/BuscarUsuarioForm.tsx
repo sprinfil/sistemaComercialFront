@@ -316,7 +316,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                                 </div>
 
                                 <div className="w-[90vh]">
-                                    {nombreSeleccionado === "Nombre" && "Escribe el nombre del usuario"}
+                                    {nombreSeleccionado === "Nombre, Código de usuario, Código de toma" && "Escribe el nombre o código del usuario o código de la toma"}
                                     {nombreSeleccionado === "Código usuario" && "Escribe el código del usuario"}
                                     {nombreSeleccionado === "Correo" && "Escribe el correo del usuario"}
                                     {nombreSeleccionado === "Dirección" && "Escribe la dirección de la toma"}
@@ -343,14 +343,14 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                                     
                                 </div>
                                 <div className="mt-8">
-                                
+                                <Button type="submit" className=""><MagnifyingGlassIcon/></Button>
+
                                 {
                                     botonCrearUsuario && <Button type="button" onClick={handleNavigationCrearUsuario} className="">Crear usuario</Button>
                                 }
                             </div>
                             </div>
 
-                            <Button type="submit" className=""><MagnifyingGlassIcon/></Button>
 
 
                             

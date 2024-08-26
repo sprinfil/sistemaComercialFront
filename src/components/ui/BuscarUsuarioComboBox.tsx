@@ -36,7 +36,7 @@ export const BuscarUsuarioComboBox = ({ field, form, name = "id_concepto", setCa
 
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([
-        { value: "1", label: "Nombre" },
+        { value: "1", label: "Nombre, Código de usuario, Código de toma" },
         { value: "4", label: "Dirección" },
         { value: "5", label: "Código toma" },
     ]);

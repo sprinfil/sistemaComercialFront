@@ -18,7 +18,7 @@ export const TomaUsuarioDetalle = () => {
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
   useEffect(() => {
-    console.log("ESTE USUARIO LLEGA A LA TOMA DETALLE:", tomaUsuariosEncontrados[0]?.usuario);
+    //console.log("ESTE USUARIO LLEGA A LA TOMA DETALLE:", tomaUsuariosEncontrados[0]?.usuario);
 
     if (usuariosEncontrados.length > 0) {
       // Establece el estado global solo si hay usuarios encontrados
@@ -31,7 +31,7 @@ export const TomaUsuarioDetalle = () => {
     }
   }, [usuariosEncontrados, setUsuariosRecuperado, tomaUsuariosEncontrados]);
 
-  console.log("ESTE ES EL USUARIO RECUPERADO " + JSON.stringify(usuariosRecuperado));
+  //console.log("ESTE ES EL USUARIO RECUPERADO " + JSON.stringify(usuariosRecuperado));
 
   const options = [
     {

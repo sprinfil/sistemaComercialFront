@@ -33,7 +33,7 @@ export function BreadCrumbDetalleUsuario() {
 
 
   
-    console.log("esto llego al breadcrumb jeje",usuariosEncontrados);
+    //console.log("esto llego al breadcrumb jeje",usuariosEncontrados);
 
   useEffect(() => {
     if (usuariosEncontrados.length > 0) {
@@ -55,7 +55,7 @@ export function BreadCrumbDetalleUsuario() {
     setMostrarSiguiente(false);
   };
 
-  console.log(consultaNombreToma?.tomas[0]?.calle);
+  //console.log(consultaNombreToma?.tomas[0]?.calle);
 
   return (
     <nav className="ml-5 mt-5">
