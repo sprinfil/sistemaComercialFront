@@ -30,18 +30,20 @@ import { TarifaConceptoDetalleSchema } from "../../Forms/TarifaConceptoDetalleVa
 import { useEffect, useState } from "react";
 import axiosClient from "../../../axios-client.ts";
 import { nuevoServicioSchema } from "../../Forms/TarifaValidaciones.ts";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from '@radix-ui/react-toast'
 
 const SHEET_SIDES = ["bottom"] as const
 
 export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifaServicio, updateData }) {
 
   const [objeto, setObjeto] = useState({});
-
+  const { toast } = useToast()
   const form = useForm<z.infer<typeof nuevoServicioSchema>>({
     resolver: zodResolver(nuevoServicioSchema),
     defaultValues: {
-        id_tarifa: tarifaServicio.id,
-        id_tipo_toma: tarifaServicio.id_tipo_toma,
+        id_tarifa: String( tarifaServicio.id),
+        id_tipo_toma: String( tarifaServicio.id_tipo_toma),
         rango: tarifaServicio.rango,
         agua:  tarifaServicio.agua,
         alcantarillado: tarifaServicio,
@@ -61,8 +63,8 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
   
       setObjeto(tarifaServicio);
       reset({
-        id_tarifa: tarifaServicio.id_tarifa,
-        id_tipo_toma: tarifaServicio.id_tipo_toma,
+        id_tarifa: tarifaServicio.id_tarifa.toString(),
+        id_tipo_toma: tarifaServicio.id_tipo_toma.toString(),
         rango: rango.toString(),
         agua:  agua.toString(),
         alcantarillado: alcantarillado.toString(),
@@ -77,20 +79,32 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
   }
 
   const handleFormSubmit = () => {
+    const values = form.getValues();
+    
+    console.log("id_tarifa:", values.id_tarifa, typeof values.id_tarifa);
+    console.log("id_tipo_toma:", values.id_tipo_toma, typeof values.id_tipo_toma);
+    console.log("rango:", values.rango, typeof values.rango);
+    console.log("alcantarillado:", values.alcantarillado, typeof values.alcantarillado);
+    console.log("saneamiento:", values.saneamiento, typeof values.saneamiento);
+    console.log("agua:", values.agua, typeof values.agua);
+   
     form.handleSubmit(onSubmit)();
   };
 
   function onSubmit(values: z.infer<typeof TarifaConceptoDetalleSchema>) {
-
-
     axiosClient.put(`/tarifaServicioDetalle/update/${tarifaServicio.id}`, values)
       .then((response) => {
         console.log(response);
         updateData();
         setOpen(false);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((response) => {
+        toast({
+          title: "Error",
+          description: response.response.data.message,
+          variant: "destructive",
+          action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+      })
       })
 
   }
@@ -113,7 +127,7 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
                                 name="rango"
                                 render={({ field }) => (
                                     <FormItem className="w-[400px]">
-                                        <FormLabel>rango</FormLabel>
+                                        <FormLabel>Rango</FormLabel>
                                         <FormControl>
                                             <Input  className="col-span-3" {...field} />
                                         </FormControl>
@@ -129,7 +143,7 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
                                 name="agua"
                                 render={({ field }) => (
                                     <FormItem className="w-[400px]">
-                                        <FormLabel>agua</FormLabel>
+                                        <FormLabel>Agua</FormLabel>
                                         <FormControl>
                                             <Input  className="col-span-3" {...field} />
                                         </FormControl>
@@ -145,7 +159,7 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
                                 name="alcantarillado"
                                 render={({ field }) => (
                                     <FormItem className="w-[400px]">
-                                        <FormLabel>alcantarillado</FormLabel>
+                                        <FormLabel>Alcantarillado</FormLabel>
                                         <FormControl>
                                             <Input  className="col-span-3" {...field} />
                                         </FormControl>
@@ -161,7 +175,7 @@ export function EdicionTarifaServicioNew({ trigger = null, open, setOpen, tarifa
                                 name="saneamiento"
                                 render={({ field }) => (
                                     <FormItem className="w-[400px]">
-                                        <FormLabel>saneamiento</FormLabel>
+                                        <FormLabel>Saneamiento</FormLabel>
                                         <FormControl>
                                             <Input  className="col-span-3" {...field} />
                                         </FormControl>

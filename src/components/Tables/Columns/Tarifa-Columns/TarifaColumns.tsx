@@ -18,28 +18,7 @@ export type Tarifa = {
 
 
 export const columns: ColumnDef<Tarifa>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+
   {
     accessorKey: "nombre",
     header: ({ column }) => {
@@ -52,6 +31,12 @@ export const columns: ColumnDef<Tarifa>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
+    },
+    cell: ({ row }) => {
+      const estado = row.getValue("estado")
+     
+      const nombre = row.getValue("nombre")
+      return <div className="">{nombre}  <span className="bg-green-500"> {estado ? "Tarifa Activa":""}</span></div>
     },
   },
   {

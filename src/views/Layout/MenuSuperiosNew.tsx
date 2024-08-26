@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import ReactDOMServer from 'react-dom/server';
 import {
     Menubar,
     MenubarCheckboxItem,
@@ -21,9 +22,14 @@ import { ModeToggle } from '../../components/ui/mode-toggle'
 import { ContextProvider, useStateContext } from '../../contexts/ContextProvider';
 import { MouseEvent } from 'react';
 import axiosClient from '../../axios-client';
+import { subMenuZustand } from "../../contexts/ZustandSubmenu.tsx"
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 export const MenuSuperiosNew = () => {
     const { setToken, setUser, user, permissions, setPermissions } = useStateContext();
+    const { set_titulo, set_icono, titulo } = subMenuZustand();
+    const [loading_permissions, set_loading_permissions] = useState(false);
 
     const logout = (e: MouseEvent<SVGSVGElement>): void => {
         e.preventDefault();
@@ -45,15 +51,17 @@ export const MenuSuperiosNew = () => {
         getPermissions();
     }, [user]);
 
+
     //obtener los permisos del usuario
     const getPermissions = async () => {
+        set_loading_permissions(true);
         try {
             const response = await axiosClient.get(`/Rol/get_all_permissions_by_user_id/${user.id}`);
             setPermissions(response.data);
-            console.log(user.id)
-            console.log(response.data)
+            set_loading_permissions(false)
         } catch (error) {
             console.error("Failed to fetch anomalias:", error);
+            set_loading_permissions(false)
         }
     };
 
@@ -66,6 +74,25 @@ export const MenuSuperiosNew = () => {
             console.error("Failed to fetch user:", error);
         }
     };
+    //EN DESARROLLO
+    const getUserRoles = async () => {
+        try{
+            const response = await axiosClient.get(`/Rol/get_all_rol_names_by_user_id/${user.id}`);
+        } catch(error){
+            console.log(error);
+        }
+    };
+
+    const handle_menu_trigger_click = (opcion, icono) => {
+        set_titulo(opcion.titulo);
+        set_icono(icono);
+        const submenuIcono = ReactDOMServer.renderToString(icono);
+        localStorage.setItem("submenu_titulo", opcion.titulo);
+        localStorage.setItem("submenu_icono", submenuIcono);
+        console.log(opcion)
+    }
+
+    useEffect((() => { console.log(titulo + " hola") }), [titulo])
 
     const opciones = [
         {
@@ -95,7 +122,7 @@ export const MenuSuperiosNew = () => {
 
         },
         {
-            titulo: "Poligonos Geograficos",
+            titulo: "Polígonos Geográficos",
             permission: "",
             icon: <GlobeIcon />,
             opciones: [
@@ -147,7 +174,7 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Punto de venta",
                     descripcion: "Registra los pagos de los usuarios.",
-                    route: "/proximamente",
+                    route: "/cajas",
                     permission: ""
                 },
             ]
@@ -224,44 +251,60 @@ export const MenuSuperiosNew = () => {
 
     ]
 
+
+
     return (
         <>
             <p className='relative xl:hidden text-sm text-red-500 p-1 h-[9vh] flex items-center justify-center'>La resolucion no es compatible</p>
-            <div className='relative hidden xl:block'>
-                <Menubar>
-                    {opciones.map((opcion, index) => {
-                        if (permissions.includes(opcion.permission) || user.id == 1) {
-                            return (
-                                <MenubarMenu>
-                                    <MenubarTrigger><div className='flex gap-2 items-center'> <span className='text-primary'> {opcion.icon}</span>{opcion.titulo}</div></MenubarTrigger>
-                                    <MenubarContent>
-                                        {opcion.opciones.map((opcion, key) => {
-                                            if (permissions.includes(opcion.permission) || user.id == 1) {
-                                                return (
-                                                    <>
-                                                        <Link to={opcion.route} key={index}>
-                                                            <MenubarItem>
-                                                                <div key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
-                                                                    <div key={key} className="mb-1 text-[12px] font-medium">
-                                                                        {opcion.titulo}
-                                                                    </div>
-                                                                    <p key={key} className="text-[12px] leading-tight text-muted-foreground">
-                                                                        {opcion.descripcion}
-                                                                    </p>
-                                                                </div>
+            <div className='relative hidden xl:block '>
 
-                                                                {/*<MenubarShortcut>⌘T</MenubarShortcut>*/}
-                                                            </MenubarItem>
-                                                        </Link>
-                                                    </>
-                                                )
-                                            }
-                                        })}
-                                    </MenubarContent>
-                                </MenubarMenu>
-                            )
-                        }
-                    })}
+                <Menubar>
+                    {
+                        loading_permissions &&
+                        <>
+                            <Skeleton className="ml-3 w-[70rem] h-[20px]" />
+                        </>
+                    }
+
+                    {
+                        !loading_permissions &&
+                        <>
+                            {opciones.map((opcionPadre, index) => {
+                                if (permissions.includes(opcionPadre.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
+                                    return (
+                                        <MenubarMenu>
+                                            <MenubarTrigger ><div className='flex gap-2 items-center'> <span className='text-primary'> {opcionPadre.icon}</span>{opcionPadre.titulo}</div></MenubarTrigger>
+                                            <MenubarContent>
+                                                {opcionPadre.opciones.map((opcion, key) => {
+                                                    if (permissions.includes(opcion.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
+                                                        return (
+                                                            <>
+                                                                <Link to={opcion.route} key={index}>
+                                                                    <MenubarItem onClick={() => { handle_menu_trigger_click(opcion, opcionPadre.icon) }}>
+                                                                        <div key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
+                                                                            <div key={key} className="mb-1 text-[12px] font-medium">
+                                                                                {opcion.titulo}
+                                                                            </div>
+                                                                            <p key={key} className="text-[12px] leading-tight text-muted-foreground">
+                                                                                {opcion.descripcion}
+                                                                            </p>
+                                                                        </div>
+
+                                                                        {/*<MenubarShortcut>⌘T</MenubarShortcut>*/}
+                                                                    </MenubarItem>
+                                                                </Link>
+                                                            </>
+                                                        )
+                                                    }
+                                                })}
+                                            </MenubarContent>
+                                        </MenubarMenu>
+                                    )
+                                }
+                            })}
+                        </>
+                    }
+
 
                 </Menubar>
                 <div className=' h-full w-[200px] absolute right-5 flex items-center top-0  justify-center gap-3'>
@@ -273,7 +316,7 @@ export const MenuSuperiosNew = () => {
                         <AvatarImage src="https://github.com/shadcn.png" />
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
-                    <ModeToggle/>
+                    <ModeToggle />
                 </div>
             </div>
         </>

@@ -92,7 +92,7 @@ const Catalogos = () => {
 
         <TabsList>
           {opciones.map((opcion, index) => {
-            if (permissions.includes(opcion.permission) || user.id == 1) {
+            if (permissions.includes(opcion.permission) || user.id == 1|| user?.roles?.includes("Admin")) {
               return (
                 <>
                   <TabsTrigger value={opcion.titulo} key={index}>{opcion.titulo}</TabsTrigger>
@@ -111,7 +111,7 @@ const Catalogos = () => {
         seleccionarCatalogo &&
         <>
           <div className='w-full h-[70vh] mt-[20px] flex flex-col items-center justify-center gap-5'>
-            <p>Selecciona un catalogo.</p>
+            <p>Selecciona un catálogo.</p>
           </div>
         </>
       }

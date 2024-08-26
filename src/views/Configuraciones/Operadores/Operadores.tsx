@@ -17,17 +17,17 @@ const Roles = () => {
         <div>
             <ContextProvider>
                 <ContextRolProvider>
-                    <div className='w-full max-h-[75vh] mt-[10px]'>
+                    <div className='w-full '>
                         {/*Contenedor principal*/}
                         <div className='flex gap-2 '>
 
                             {/*Datatable*/}
-                            <div className='w-[35%] rounded-md border border-border p-4 overflow-auto h-[88vh]'>
+                            <div className='w-[35%] rounded-md border border-border p-4 overflow-auto h-[83vh]'>
                                 <OperadorTable />
                             </div>
 
                             {/*VISTAS DEL TAB*/}
-                            <div className='w-[65%] rounded-md border border-border h-[88vh] p-4 overflow-auto '>
+                            <div className='w-[65%] rounded-md border border-border h-[83vh] p-4 overflow-auto '>
                                 <TabsComponent />
                             </div>
 

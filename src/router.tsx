@@ -16,7 +16,7 @@ import App from './views/Cajas/Cajas';
 import { ContratacionBuscarUsuario } from './views/Usuarios/Contratos/ContratacionBuscarUsuario';
 import BuscarUsuario from './views/Usuarios/Consultar/BuscarUsuario';
 import { CrearContratoForm } from './views/Usuarios/Contratos/FormsContratos/CrearContratoForm';
-
+import { TomaUsuarioDetalle } from './views/Usuarios/Consultar/TomaUsuarioDetalle';
 const router = createBrowserRouter ([
     {
         path:'/',
@@ -63,10 +63,7 @@ const router = createBrowserRouter ([
                 path:'/Tarifa',
                 element: <Tarifa/>
             },
-            {
-                path:'/Cajas',
-                element: <App/>
-            },
+
             {
                 path:'/Contratacion',
                 element: <ContratacionBuscarUsuario/>
@@ -79,7 +76,15 @@ const router = createBrowserRouter ([
                 path:'/Crear/Contrato/Usuario',
                 element: <CrearContratoForm/>
             },
+            {
+                path:'/usuario/toma',
+                element: <TomaUsuarioDetalle/>
+            },
         ]
+    },
+    {
+        path:'/Cajas',
+        element: <App/>
     },
     {
         path:'/',

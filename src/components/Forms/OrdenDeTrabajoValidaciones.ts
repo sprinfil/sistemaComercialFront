@@ -5,8 +5,9 @@ import { z } from "zod";
 export const OrdenDeTrabajoCrearSchema = z.object({
     id: z.number(),
     nombre: z.string().min(1, "El Nombre es requerido"),
-    estado: z.boolean(),
-    cargos: z.number(),
-    aplicacion: z.string(),
+    descripcion: z.string(),
+    vigencias: z.string().min(1, "La vigencia es requerida"),
+    momento_cargo:  z.string().min(1, "El momento del cargo es requerido"),
+    genera_masiva: z.boolean(),
 })
 

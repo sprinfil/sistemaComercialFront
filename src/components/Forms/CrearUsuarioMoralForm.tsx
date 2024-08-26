@@ -74,7 +74,7 @@ const CrearUsuarioMoralForm = () => {
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end '>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        <p className="text-[20px] font-medium">Crear usuario moral</p>
+                        <p className="text-[20px] font-medium">Crear nuevo usuario moral</p>
                     </div>
                 </div>
             </div>
@@ -82,8 +82,8 @@ const CrearUsuarioMoralForm = () => {
                 {errors.general && <Error errors={errors.general} />}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <div className="py-[40px] px-[10px] flex gap-2 w-full mb-5 rounded-md border border-border  relative">
-                            <div className="w-[50%]">
+                        <div className="py-[40px] px-[10px]  w-full mb-5 rounded-md border border-border  relative">
+                            <div className="w-full p-5">
                                 <FormField
                                     control={form.control}
                                     name="nombre"
@@ -100,72 +100,9 @@ const CrearUsuarioMoralForm = () => {
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
-                                    control={form.control}
-                                    name="apellido_paterno"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Apellido paterno</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Escribe el apellido paterno" {...field} />
-                                            </FormControl>
-                                            <FormDescription>
-                                                
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="apellido_materno"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Apellido materno</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Escribe el apellido materno" {...field} />
-                                            </FormControl>
-                                            <FormDescription>
-                                               
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="telefono"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Telefono</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Escribe telefono del usuario" {...field} type='number' />
-                                            </FormControl>
-                                            <FormDescription>
-                                                
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-                            <div className="w-[50%]">
-                                <FormField
-                                    control={form.control}
-                                    name="curp"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>CURP</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Escribe la CURP" {...field} />
-                                            </FormControl>
-                                            <FormDescription>
-                                                
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            
+                               
+                               
                                 <FormField
                                     control={form.control}
                                     name="rfc"
@@ -173,7 +110,23 @@ const CrearUsuarioMoralForm = () => {
                                         <FormItem>
                                             <FormLabel>RFC</FormLabel>
                                             <FormControl>
-                                                <Input  placeholder="Escribe la RFC" {...field} />
+                                                <Input  placeholder="Escribe el RFC" {...field} />
+                                            </FormControl>
+                                            <FormDescription>
+                                                
+                                            </FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                 <FormField
+                                    control={form.control}
+                                    name="telefono"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Telefono</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Escribe telefono del usuario" {...field} type='number' />
                                             </FormControl>
                                             <FormDescription>
                                                 
@@ -198,11 +151,14 @@ const CrearUsuarioMoralForm = () => {
                                         </FormItem>
                                     )}
                                 />
-                            </div>
+
+                         </div>
+
                             {loading && <Loader />}
+                            <Button type="submit" className="ml-[187vh] w-[20vh]">Guardar</Button>
+
                         </div>
                         <div className=" w-full flex justify-normal mt-4">
-                            <Button type="submit">Guardar</Button>
                         </div>   
                     </form>
                 </Form>

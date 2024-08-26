@@ -1,12 +1,12 @@
 import React from 'react'
 import InformacionFiscalForm from '../../../../components/Forms/InformacionFiscalForm'
 
-const InformaciónFiscal = ({idUsuario}) => {
+const InformaciónFiscal = () => {
   return (
     <div>
-        <div className=' w-full rounded-md border border-border h-[88vh] p-4 overflow-auto'>
+        <div className=''>
         {/*Formulario*/}
-        <InformacionFiscalForm userId = {idUsuario}/>
+        <InformacionFiscalForm/>
     </div>
     </div>
   )
