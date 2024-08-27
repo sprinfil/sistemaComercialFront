@@ -42,7 +42,7 @@ const CajaForm = () => {
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
     const [cuentaContableSeleccionada, setCuentaContableSeleccionada] = useState("");
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
-
+    const [control, setControl] = useState(false);
 
     console.log(caja);
     console.log(accionGeneradaEntreTabs);
@@ -312,6 +312,7 @@ const CajaForm = () => {
         if ( accionGeneradaEntreTabs== "ver") {
             setAbrirInput(false);
             setErrors({});
+            setControl(true);
             form.reset({
                 id: 0,
                 id_cuenta_contable: caja.id_cuenta_contable,
@@ -412,7 +413,7 @@ const CajaForm = () => {
                                     <FormItem>
                                         <FormLabel>Cuenta contable</FormLabel>
                                         <FormControl>
-                                        <CuentasContablesComboBox form={form} field={field} name="id_cuenta_contable" setCargoSeleccionado={setCuentaContableSeleccionada}/>
+                                        <CuentasContablesComboBox form={form} field={field} name="id_cuenta_contable" setCargoSeleccionado={setCuentaContableSeleccionada} disabled={control}/>
                                         </FormControl>
                                         <FormDescription>
                                             Selecciona una cuenta contable.
