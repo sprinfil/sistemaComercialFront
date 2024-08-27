@@ -75,6 +75,18 @@ const CajaOperadoresForm = () => {
     const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_operador:number}[]>([{ id: 0, id_operador: 0}]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
+    const [control, setControl] = useState(false);
+
+
+
+    console.log(caja);
+    console.log(accionGeneradaEntreTabs);
+
+
+
+
+
+
 
 
     console.log(caja);
@@ -170,7 +182,7 @@ const CajaOperadoresForm = () => {
             })),
         });
     }
-}, [totalAccionesComponente, accion]);
+}, [totalAccionesComponente, accionGeneradaEntreTabs]);
 
     const onSubmit = async (values: CajaOperadores) => {
         console.log(values);
@@ -268,9 +280,11 @@ const CajaOperadoresForm = () => {
       useEffect(() => {
         if (accionGeneradaEntreTabs === "eliminar") {
           setAbrirInput(false);
+          setControl(false);
         }
         if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
           setAbrirInput(true);
+          setControl(false);
           setErrors({});
           setCaja({
             id: 0,
@@ -281,8 +295,7 @@ const CajaOperadoresForm = () => {
         if (accionGeneradaEntreTabs === "ver") {
           setAbrirInput(false);
           setErrors({});
-          setAccion("");
-        
+          setControl(true);
           // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
           //SUS PROPIEDADDES
           // Transformación de datos
@@ -307,10 +320,9 @@ const CajaOperadoresForm = () => {
         if (accionGeneradaEntreTabs === "editar") {
           setAbrirInput(true);
           setErrors({});
+          setControl(false);
         }
       }, [accionGeneradaEntreTabs, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
-
-     
 
 
     const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
@@ -389,7 +401,7 @@ const CajaOperadoresForm = () => {
                                                 render={({ field }) => (
 
                                             
-                                                    <CajaComboBox form={form} field={field} name={`operadores_asignados.${index}.id_operador`} setCargoSeleccionado={setConceptoSeleccionado}/>
+                                                    <CajaComboBox form={form} field={field} name={`operadores_asignados.${index}.id_operador`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control}/>
                                                 )}
                                             />
                                         </div>
