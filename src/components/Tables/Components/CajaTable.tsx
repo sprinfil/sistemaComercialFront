@@ -10,7 +10,7 @@ import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario';
 
 export default function CajaTable() {
   const { cajas, setCajas, loadingTable, setLoadingTable, setAccion, setCaja } = useStateContext();
-  const { setIdSeleccionadoConfiguracionOrdenDeTrabajo } = ZustandGeneralUsuario();
+  const { setIdSeleccionadoConfiguracionOrdenDeTrabajo, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
   useEffect(() => {
     getCaja();
@@ -33,6 +33,8 @@ export default function CajaTable() {
   const handleRowClick = (caja: Caja) => {
     setCaja(caja);
     setAccion("ver");
+    setAccionGeneradaEntreTabs("ver");
+    setAccion
     setIdSeleccionadoConfiguracionOrdenDeTrabajo(caja.id);
   };
 
@@ -42,7 +44,7 @@ export default function CajaTable() {
 
   return (
     <div>
-      <div onClick={() => setAccion("crear")}>
+      <div onClick={() => setAccionGeneradaEntreTabs("crear")}>
         <IconButton>
           <div className='flex gap-2 items-center'> 
             Agregar nueva caja

@@ -30,7 +30,7 @@ import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACT
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import { CuentasContablesComboBox } from "../ui/CuentasContablesComboBox.tsx";
-
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 
 const CajaForm = () => {
     const { toast } = useToast()
@@ -41,6 +41,8 @@ const CajaForm = () => {
     const [anomaliaIdParaRestaurar, setAnomaliaIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
     const [cuentaContableSeleccionada, setCuentaContableSeleccionada] = useState("");
+    const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
+
      //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
@@ -128,7 +130,7 @@ const CajaForm = () => {
         }
 
 
-        if (accion == "crear") {
+        if (accionGeneradaEntreTabs == "crear") {
             axiosClient.post(`/cajas/guardarCajaCatalogo`, values2)
                 .then((response) => {
                     const data = response.data;
@@ -154,7 +156,7 @@ const CajaForm = () => {
                         });
                         getCajas();
                         successToastCreado();
-                        setAccion("creado");
+                        setAccionGeneradaEntreTabs("creado");
                     }
                 
                 })
@@ -169,7 +171,7 @@ const CajaForm = () => {
                 })
             console.log(abrirInput);
         }
-        if (accion == "editar") {
+        if (accionGeneradaEntreTabs == "editar") {
             axiosClient.put(`/cajas/modificarCajaCatalogo/${caja.id}`, values)
                 .then((response) => {
                     const data = response.data;
@@ -179,7 +181,7 @@ const CajaForm = () => {
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
-                    setAccion("");
+                    setAccionGeneradaEntreTabs("");
                     getCajas();
                     setCaja(data.data);
                     //setNotification("usuario creado");
@@ -226,7 +228,7 @@ const CajaForm = () => {
         try {
             await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${caja.id}`);
             getCajas();
-            setAccion("eliminar");
+            setAccionGeneradaEntreTabs("eliminar");
             successToastEliminado();
         } catch (error) {
             errorToast();
@@ -240,7 +242,7 @@ const CajaForm = () => {
             .then(() => {
                 setLoading(false);
                 setAbrirInput(false);
-                setAccion("crear");
+                setAccionGeneradaEntreTabs("crear");
                 setCaja({
                     id: 0,
                     id_cuenta_contable: 0,
@@ -250,7 +252,7 @@ const CajaForm = () => {
                 });
                 getCajas();
                 successToastRestaurado();
-                setAccion("creado");
+                setAccionGeneradaEntreTabs("creado");
                 setModalReactivacionOpen(false);
 
             })
@@ -262,7 +264,7 @@ const CajaForm = () => {
 
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
-        if (accion == "eliminar") {
+        if (accionGeneradaEntreTabs == "eliminar") {
             form.reset({
                 id: 0,
                 id_cuenta_contable: 0,
@@ -273,7 +275,7 @@ const CajaForm = () => {
             setCaja({});
             setAbrirInput(false);
         }
-        if (accion == "creado") {
+        if (accionGeneradaEntreTabs == "creado") {
             form.reset({
                 id: 0,
                 id_cuenta_contable: 0,
@@ -284,7 +286,7 @@ const CajaForm = () => {
             setCaja({});
             setAbrirInput(false);
         }
-        if (accion == "crear") {
+        if (accionGeneradaEntreTabs == "crear") {
             console.log("creando");
             setAbrirInput(true);
             setErrors({});
@@ -303,10 +305,10 @@ const CajaForm = () => {
                 hora_cierre: "0",
             })
         }
-        if (accion == "ver") {
+        if (accionGeneradaEntreTabs == "ver") {
             setAbrirInput(false);
             setErrors({});
-            setAccion("");
+            setAccionGeneradaEntreTabs("");
             form.reset({
                 id: 0,
                 id_cuenta_contable: caja.id_cuenta_contable,
@@ -315,11 +317,11 @@ const CajaForm = () => {
                 hora_cierre: caja.hora_cierre,
             });
         }
-        if (accion == "editar") {
+        if (accionGeneradaEntreTabs == "editar") {
             setAbrirInput(true);
             setErrors({});
         }
-    }, [accion]);
+    }, [accionGeneradaEntreTabs]);
 
 
     //METODO PARA CONVERTIR DE H:i al formato que pide H:i:s
@@ -335,7 +337,8 @@ const CajaForm = () => {
                 <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva caja</p>}
+                            {accionGeneradaEntreTabs == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva caja</p>}
+                            {accionGeneradaEntreTabs == "creado" && <p className="text-muted-foreground text-[20px]"></p>}
                             {caja.nombre_caja != "" && <p className="text-muted-foreground text-[20px]">{caja.nombre_caja}</p>}
                         </div>
                         {(caja.nombre_caja != null && caja.nombre_caja != "") &&
@@ -349,7 +352,7 @@ const CajaForm = () => {
                                             </IconButton>
                                         </a>}
                                 />
-                                <div onClick={() => setAccion("editar")}>
+                                <div onClick={() => setAccionGeneradaEntreTabs("editar")}>
                                     <a title="Editar">
                                         <IconButton>
                                             <Pencil2Icon className="w-[20px] h-[20px]" />

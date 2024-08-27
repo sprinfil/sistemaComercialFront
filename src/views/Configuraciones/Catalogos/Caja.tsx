@@ -9,10 +9,10 @@ import { Icon } from 'lucide-react';
 import { OcultarTable } from '../../../components/Tables/Components/OcultarTable.tsx';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import CajaOperadoresForm from '../../../components/Forms/CajaOperadoresForm.tsx';
+import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
 export default function Caja() {
 
   const [activeTab, setActiveTab] = useState("Caja");
-
   const opciones = [
     {
       titulo: "Caja",
@@ -64,11 +64,12 @@ export default function Caja() {
 const CajaFormEdit = () => {
 
   const { accion } = useStateContext();
+  const {accionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
   return (
     <>
       {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
-      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[81vh] p-4 overflow-auto'>
+      {accionGeneradaEntreTabs == "editar" ? (<div className='w-full rounded-md border border-primary h-[81vh] p-4 overflow-auto'>
         <CajaForm />
       </div>) : (<div className='w-full rounded-md border border-border h-[81vh] p-4 overflow-auto '>
         <CajaForm />
@@ -80,12 +81,13 @@ const CajaFormEdit = () => {
 const MostrarTable = () => {
 
   const { accion } = useStateContext();
+  const {accionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
   return (
     <>
       {/*Datatable*/}
 
-      <OcultarTable accion={accion}>
+      <OcultarTable accion={accionGeneradaEntreTabs}>
         <CajaTable />
       </OcultarTable>
 
