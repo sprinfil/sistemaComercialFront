@@ -55,6 +55,8 @@ export const OrdenesDeTrabajoComboBox = ({ field, form, name = "id_concepto", se
             console.error("Failed to fetch concepto:", error);
         }
     };
+
+    console.log("av er si llegar", languages);
     
 
 
@@ -80,7 +82,7 @@ export const OrdenesDeTrabajoComboBox = ({ field, form, name = "id_concepto", se
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0 h-[300px]">
+                <PopoverContent className="w-full p-2 h-[300px]" side="bottom" align="start">
                     <Command>
                         <CommandInput placeholder="Buscar orden de trabajo.. " />
                         <CommandList>

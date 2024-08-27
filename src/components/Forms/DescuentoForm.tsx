@@ -29,6 +29,7 @@ import Modal from "../ui/Modal.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { Switch } from "../ui/switch.tsx";
 
 const DescuentoForm = () => {
     const { toast } = useToast()
@@ -38,6 +39,8 @@ const DescuentoForm = () => {
     const [abrirInput, setAbrirInput] = useState(false);
     const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
+    const [valorObtenidoBool, setValorObtenidoBool] = useState(false);
+    const [control, setControl] = useState(false);
 
 
 
@@ -109,9 +112,10 @@ const DescuentoForm = () => {
     const form = useForm<z.infer<typeof descuentoSchema>>({
         resolver: zodResolver(descuentoSchema),
         defaultValues: {
-            id: descuento.id,
-            nombre: descuento.nombre,
-            descripcion: descuento.descripcion,
+            id: 0,
+            nombre: "",
+            descripcion: "",
+            estado: false,
         },
     })
 
@@ -119,8 +123,11 @@ const DescuentoForm = () => {
 
     function onSubmit(values: z.infer<typeof descuentoSchema>) {
         setLoading(true);
+        const boolConvetido = descuento.estado ? "activo" : "inactivo"
+        
+        let values2 = {...values, estado: boolConvetido}
         if (accion == "crear") {
-            axiosClient.post(`/descuentos-catalogos`, values)
+            axiosClient.post(`/descuentos-catalogos`, values2)
                 .then((response) => {
                     const data = response.data;
                     if(data.restore)
@@ -140,11 +147,15 @@ const DescuentoForm = () => {
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            estado: false
+
                         });
                         form.reset({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            estado: false
+
                         });
                         getDescuentos();
                     }
@@ -160,7 +171,13 @@ const DescuentoForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/descuentos-catalogos/${descuento.id}`, values)
+
+            const boolConvetido = values.estado == true ? "activo" : "inactivo"
+
+            let values2 = {...values, estado: boolConvetido}
+
+
+            axiosClient.put(`/descuentos-catalogos/${descuento.id}`, values2)
                 .then((data) => {
                     successToastEditado();
                     setLoading(false);
@@ -223,7 +240,8 @@ const DescuentoForm = () => {
                     id: 0,
                     nombre: "",
                     descripcion: "ninguna",
-                    estado: "activo"
+                    estado: false
+
                 });
                 getDescuentos();
                 successToastRestaurado();
@@ -239,15 +257,18 @@ const DescuentoForm = () => {
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            setControl(false);
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
             });
             setDescuento({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
+            setControl(true);
             console.log("creando");
             setAbrirInput(true);
             setErrors({});
@@ -255,34 +276,58 @@ const DescuentoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
             });
             setDescuento({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
             })
         }
         if (accion == "ver") {
+            setControl(false);
             setAbrirInput(false);
             setErrors({});
             setAccion("");
+
+            const valorDesdeBaseDeDatos: string = descuento.estado as unknown as string; 
+            const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
+            setValorObtenidoBool(valorBooleano);
+
+
+
+
             form.reset({
                 id: descuento.id,
                 nombre: descuento.nombre,
                 descripcion: descuento.descripcion,
+                estado: valorObtenidoBool
             });
         }
         if (accion == "editar") {
             setAbrirInput(true);
+            setControl(true);
             setErrors({});
         }
         console.log(accion);
     }, [accion]);
 
+
+
+    useEffect(() => {
+        form.reset({
+            id: descuento.id,
+            nombre: descuento.nombre,
+            descripcion: descuento.descripcion,
+            estado: valorObtenidoBool
+        });
+    },[valorObtenidoBool])
+
     return (
         <div className="overflow-auto">
 
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+            <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
                         {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo descuento</p>}
@@ -356,6 +401,40 @@ const DescuentoForm = () => {
                                     </FormControl>
                                     <FormDescription>
                                         Agrega una breve descripción.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Estado</FormLabel>
+                                    <FormControl>
+                                        {control 
+                                        ?
+                                        <Switch
+                                                className="ml-3"
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => field.onChange(checked)
+                                                }
+                                                /> 
+
+                                        :
+                                        <Switch
+                                                className="ml-3"
+                                                disabled
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => field.onChange(checked)
+                                                }
+                                                /> 
+                                        }
+                                                 
+                                    </FormControl>
+                                    <FormDescription>
+                                    Aquí puedes cambiar el estado del descuento.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

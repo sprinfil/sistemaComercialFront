@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-
+import MarcoForm from "./MarcoForm";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -62,22 +62,76 @@ export function DataTableTomaUsuarios<TData, TValue>({
   };
 
   return (
-    <div className="">
-      <div className="flex items-center py-4">
+    <div className="mt-5 p-10">
+              <MarcoForm title={"Filtros para buscar al usuario"}>
+      <div className="flex space-x-4 mt-5 ">
+        <div className="flex flex-col space-y-2">
+        <p className="mb-2 ml-2">Nombre</p>
         <Input
-          placeholder="Buscar..."
-          type="text"
-          value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
-          }
-          className="w-full"
-        />
+        placeholder="Buscar por nombre"
+        type="text"
+        value={(table.getColumn("usuario.nombre")?.getFilterValue() as string) ?? ""}
+        onChange={(event) => {
+          const value = event.target.value;
+          table.getColumn("usuario.nombre")?.setFilterValue(value);
+        }}
+        className="w-[30vh]"
+      />
+        </div>
+        <div className="flex flex-col space-y-2">
+        <p className="mb-2 ml-2">Apellido paterno</p>
+        <Input
+        placeholder="Buscar por apellido paterno"
+        type="text"
+        value={(table.getColumn("usuario.apellido_paterno")?.getFilterValue() as string) ?? ""}
+        onChange={(event) => {
+          const value = event.target.value;
+          table.getColumn("usuario.apellido_paterno")?.setFilterValue(value);
+        }}
+        className="w-[30vh]"
+      />
+      
+        </div>
+
+        <div className="flex flex-col space-y-2">
+        <p className="mb-2 ml-2">Apellido materno</p>
+        <Input
+        placeholder="Buscar por apellido materno"
+        type="text"
+        value={(table.getColumn("usuario.apellido_materno")?.getFilterValue() as string) ?? ""}
+        onChange={(event) => {
+          const value = event.target.value;
+          table.getColumn("usuario.apellido_materno")?.setFilterValue(value);
+        }}
+        className="w-[30vh]"
+      />
+      
+        </div>
+
+
+
+        <div className="flex flex-col space-y-2">
+          <p className="mb-2 ml-2">Clave catastral</p>
+          <Input
+            placeholder="Buscar por clave catastral"
+            type="text"
+            value={(table.getColumn("clave_catastral")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("clave_catastral")?.setFilterValue(event.target.value)
+            }
+            className="w-[30vh]"
+          />
+          </div>
+         
+        
+        
       </div>
-      <div className="rounded-md border h-full overflow-auto">
+      </MarcoForm>
+
+      <div className="rounded-md border h-full overflow-auto mt-10">
         <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
+        <TableHeader className="bg-muted">
+        {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
@@ -95,7 +149,7 @@ export function DataTableTomaUsuarios<TData, TValue>({
             ))}
           </TableHeader>
 
-          <TableBody>
+          <TableBody >
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -115,7 +169,7 @@ export function DataTableTomaUsuarios<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No se encontró al.
+                  No se encontró ningún resultado.
                 </TableCell>
               </TableRow>
             )}
@@ -143,4 +197,3 @@ export function DataTableTomaUsuarios<TData, TValue>({
     </div>
   );
 }
-

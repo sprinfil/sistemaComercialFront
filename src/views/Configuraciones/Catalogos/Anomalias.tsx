@@ -16,7 +16,7 @@ export default function Anomalias() {
   return (
     <ContextProvider>
 
-      <div className='w-full max-h-[77vh] '>
+      <div className='w-full max-h-[77vh]'>
         {/*Contenedor principal*/}
         <div className='flex gap-2 '>
           {/*Datatable*/}

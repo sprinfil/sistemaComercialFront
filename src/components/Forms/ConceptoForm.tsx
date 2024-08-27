@@ -591,7 +591,7 @@ const ConceptoForm = () => {
 
         <div className="overflow-auto">
 
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+            <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
                         {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo concepto</p>}
@@ -1053,7 +1053,7 @@ const ConceptoForm = () => {
                             name="estado"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="items-center">Activo</FormLabel>
+                                    <FormLabel className="items-center">Estado</FormLabel>
                                     <FormControl className="ml-4">
                                       {
                                         control ?  <Switch

@@ -6,10 +6,12 @@ import { useStateContext } from '../../../contexts/ContextOrdenDeTrabajo.tsx';
 import Loader from '../../ui/Loader.tsx';
 import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
-
+import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
 export default function OrdenDeTrabajoTable() {
 
   const { ordenDeTrabajos, setOrdenDeTrabajos, loadingTable, setLoadingTable, setAccion, setOrdenDeTrabajo} = useStateContext();
+ const {setIdSeleccionadoConfiguracionOrdenDeTrabajo, idSeleccionadoConfiguracionOrdenDeTrabajo, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
+ console.log("Actualizando ID a:", idSeleccionadoConfiguracionOrdenDeTrabajo);
 
   useEffect(() => {
     getOrdenDeTrabajo();
@@ -30,10 +32,11 @@ export default function OrdenDeTrabajoTable() {
 
 const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
     {
-      setOrdenDeTrabajo(tipoDeToma);
-    setAccion("ver");
+    setOrdenDeTrabajo(tipoDeToma);
+    setAccionGeneradaEntreTabs("ver");
+    setIdSeleccionadoConfiguracionOrdenDeTrabajo(tipoDeToma.id);
     console.log(tipoDeToma);
-}
+  }
 
   if (loadingTable) {
     return <div><Loader /></div>;
@@ -42,7 +45,7 @@ const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
   return (
 
     <div>
-      <div onClick={()=>{setAccion("crear")}}>
+      <div onClick={()=>{setAccionGeneradaEntreTabs("crear")}}>
         <IconButton>
           <div className='flex gap-2 items-center'> Agregar nueva orden de trabajo <PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>

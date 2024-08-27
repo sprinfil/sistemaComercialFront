@@ -45,20 +45,17 @@ export const BuscarUsuarioComboBox = ({ field, form, name = "id_concepto", setCa
 
     const [open, setOpen] = React.useState(false);
 
-    // Establecer un filtro por defecto al cargar el componente
     useEffect(() => {
-        // Solo establece el valor predeterminado si no hay un valor en el campo
         if (!field.value) {
-            const defaultFilter = languages[4]; // Cambia aquí el filtro por defecto que deseas
-            form.setValue(name, defaultFilter.value); // Actualiza el valor del formulario
-            setCargoSeleccionado(defaultFilter.label); // Actualiza el estado del filtro seleccionado
+            const defaultFilter = languages[4]; 
+            form.setValue(name, defaultFilter.value); 
+            setCargoSeleccionado(defaultFilter.label); 
         }
     }, [form, name, languages, setCargoSeleccionado, field.value]);
 
     const selectedLabel = field.value
         ? languages.find((language) => language.value === field.value)?.label
-        : languages[4]?.label; // Mostrar el valor predeterminado
-
+        : languages[4]?.label; 
     return (
         <div>
             <Popover>

@@ -20,7 +20,7 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
   console.log("este es el que recibeeee" + nombreBuscado)
   const {toma, usuarioObtenido, setUsuarioObtenido, 
     setUsuariosEncontrados, usuariosEncontrados, setLoadingTable, loadingTable, setAccion, setUsuario, usuario, setUsuariosRecuperado, 
-    tomaUsuariosEncontrados, setTomaUsuariosEncontrados, setToma,setBooleanCerrarModalFiltros} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+    tomaUsuariosEncontrados, setTomaUsuariosEncontrados, setToma,setBooleanCerrarModalFiltros, dataCajaUser, setDataCajaUser} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
 
   const tableRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -57,6 +57,8 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
 
             }
             setTomaUsuariosEncontrados(results);
+            setDataCajaUser(results);
+            console.log("INFOMETIDA A DATACAJAUSER");
             console.log(response);
 
           } catch (err) {
@@ -72,11 +74,13 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
 
         loadAndScroll();
     }
-}, [toma, setToma, filtroSeleccionado]);
+}, []);
 
   const handleRowClick = (contratobuscarUsuario: TomaPorUsuario) => {
     setToma(null);
     setToma(contratobuscarUsuario);
+    console.log('Estado del usuario actual:', contratobuscarUsuario);
+    setDataCajaUser([contratobuscarUsuario]);
     setBooleanCerrarModalFiltros(false);
     if(accion2 == "verUsuarioDetalle")
     {
@@ -96,7 +100,7 @@ export default function ContratoConsultaTomaTable({ nombreBuscado, accion2, filt
   return (
     <ContextProvider>
     <div ref={tableRef}>
-        <DataTableTomaUsuarios columns={columns} data={tomaUsuariosEncontrados}  onRowClick={handleRowClick} />
+        <DataTableTomaUsuarios columns={columns} data={tomaUsuariosEncontrados} onRowClick={handleRowClick} />
       </div>
     </ContextProvider>
   

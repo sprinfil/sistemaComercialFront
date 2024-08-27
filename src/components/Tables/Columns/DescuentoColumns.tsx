@@ -21,6 +21,7 @@ export type Descuento = {
   id: number
   nombre: string
   descripcion: string
+  estado: boolean
 }
 
 

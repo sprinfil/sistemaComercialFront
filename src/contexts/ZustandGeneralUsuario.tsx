@@ -64,6 +64,11 @@ interface GeneralUsuario {
   setBooleanCodigoDeToma: (booleanCodigoDeToma: boolean) => void;
  booleanCerrarModalFiltros: boolean;
  setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros: boolean) => void;
+ idSeleccionadoConfiguracionOrdenDeTrabajo: number | null;
+ setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo: number) => void;
+ accionGeneradaEntreTabs: string,
+  setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs: string) => void;
+
 }
 
 export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
@@ -104,8 +109,11 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setDataCajaUser:(dataCajaUser) => set ({dataCajaUser}),
   booleanCodigoDeToma: false,
   setBooleanCodigoDeToma:(booleanCodigoDeToma) => set({booleanCodigoDeToma}),
-  booleanCerrarModalFiltros: true,
+  booleanCerrarModalFiltros: false,
   setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros) => set({booleanCerrarModalFiltros}),
-
+  idSeleccionadoConfiguracionOrdenDeTrabajo: null,
+ setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo) => set({idSeleccionadoConfiguracionOrdenDeTrabajo}),
+ accionGeneradaEntreTabs: '',
+ setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs) => set({accionGeneradaEntreTabs}),
 }));
 

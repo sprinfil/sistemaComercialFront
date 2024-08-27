@@ -4,7 +4,7 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import Loader from "../../components/ui/Loader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UpdateIcon, MagnifyingGlassIcon, PlusIcon, HamburgerMenuIcon, CrossCircledIcon, ExternalLinkIcon, GearIcon, ScissorsIcon } from '@radix-ui/react-icons';
+import { UpdateIcon, MagnifyingGlassIcon, PlusIcon, HamburgerMenuIcon, CrossCircledIcon, ExternalLinkIcon, GearIcon, ScissorsIcon, EraserIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx"; // Asegúrate de que esta ruta sea correcta
 import Modal from "../ui/Modal.tsx";
 import { useStateContext } from "../../contexts/ContextConcepto.tsx";
@@ -22,7 +22,13 @@ import { BuscarUsuario } from "../Tables/Columns/ContratoConsultaUsuarioColumns.
 import { Skeleton } from "../ui/skeleton.tsx";
 import { ModalRetiroCaja } from "../ui/ModalRetiroCaja.tsx";
 import { ModalCorteCaja } from "../ui/ModalCorteCaja.tsx";
+import { ConfigurarCajaModal } from "../ui/ConfigurarCajaModal.tsx";
+import ModalCargarConcepto from "../ui/ModalCargarConcepto.tsx";
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 const PuntoVentaForm = () => {
+
+  const { toast } = useToast()
   const [userInput, setUserInput] = useState("");
   const [cargosData, setCargosData] = useState(null);
   const [dataToma, setDataToma] = useState(null);
@@ -44,11 +50,12 @@ const PuntoVentaForm = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(event.target.value);
   };
-  console.log('Nombre del primer elemento de dataCajaUser:', dataCajaUser[0]?.nombre || "USUARIO NO");
+  console.log('AVER QUE LE MANDA EN TOMA:', dataCajaUser[0]?.usuario?.nombre || "NO");
   console.log("a ver si se deberia abrir el codgio", mostrarCodigoUsuario);
 
   useEffect(() => {
     setDataToma({});
+
     //setSelectedCargos([]);
     console.log(dataCajaUser);
     setCargosData(null);
@@ -97,7 +104,7 @@ const PuntoVentaForm = () => {
       console.log(
         "Datos recibidos:",
         userResponse.data,
-        cargosResponse.data,
+        cargosResponse.data.data,
         pagosResponse.data
       );
 
@@ -108,13 +115,14 @@ const PuntoVentaForm = () => {
         setError("No se encontraron datos para el usuario.");
       }
 
-      if (cargosResponse.data) {
-        setCargosData(cargosResponse.data);
+      if (cargosResponse.data.data) {
+        setCargosData(cargosResponse.data.data);
+        console.log(cargosResponse)
         // Filtrar cargos pendientes
 
-        const filteredCargos = cargosResponse.data.filter(cargo => cargo.estado === 'pendiente');
+        const filteredCargos = cargosResponse.data.data.filter(cargo => cargo.estado === 'pendiente');
         setPendingCargos(filteredCargos);
-
+        console.log("pending cargos: " + JSON.stringify(filteredCargos))
         filteredCargos.map((cargo, index) => {
           handleCargoSelect(cargo, userResponse.data, true);
         })
@@ -151,12 +159,24 @@ const PuntoVentaForm = () => {
   };
 
   const handleCargoSelect = (cargo, entidad = null, busqueda = false) => {
+    console.log(cargo);
     setSelectedCargos(prevSelectedCargos => {
       let newCargo = {};
       const isAlreadySelected = prevSelectedCargos.some(c => c.id === cargo.id);
       if (isAlreadySelected) {
         if (!busqueda) {
-          return prevSelectedCargos.filter(c => c.id !== cargo.id);
+          if (!cargo.concepto.prioridad_abono == 1) {
+            return prevSelectedCargos.filter(c => c.id !== cargo.id);
+          } else {
+            //ESTE CONCEPTO ES DE PRIORIDAD 1 NO SE PUEDE QUITAR
+            toast({
+              variant: "destructive",
+              title: "Concepto Obligatorio",
+              description: "Este concepto no se puede quitar",
+              action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+            })
+            return [...prevSelectedCargos];
+          }
         } else {
           return [...prevSelectedCargos];
         }
@@ -244,6 +264,12 @@ const PuntoVentaForm = () => {
     }
   };
 
+  const limpiar_cargos_seleccionados = (cargos) => {
+    cargos.map((cargo, index)=>{
+      handleCargoSelect(cargo);
+    })
+  }
+
   const openModal = async () => {
     console.log('Opening modal...');
     const conceptosList = await getConceptos(); // Llama a getConceptos cuando se abre el modal
@@ -293,9 +319,17 @@ const PuntoVentaForm = () => {
           cerrarForm={booleanCerrarModalFiltros}
         />
         
+          
           <IconButton>
-            <GearIcon />
+            <ExternalLinkIcon />
           </IconButton>
+          <ConfigurarCajaModal
+            trigger={<IconButton>
+              <GearIcon />
+            </IconButton>}
+          >
+          </ConfigurarCajaModal>
+
         </div>
         <p className="whitespace-nowrap">Número de toma</p>
         <Input
@@ -323,16 +357,16 @@ const PuntoVentaForm = () => {
       </div>
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex min-h-[78vh] max-h-[78vh] px-2">
-      {!loading && !error && !dataCajaUser?.length && !dataToma?.id &&(
-        <>
-        <div className="w-full h-[full]">
-            <div className=" w-[60%] h-full flex flex-col gap-4 items-center justify-center">
-              <img src={search_image} alt="" className="h-[50vh]"/>
-              <p>Busca alguna toma o usuaio.</p>
+        {!loading && !error && !dataCajaUser?.length && !dataToma?.id && (
+          <>
+            <div className="w-full h-[full]">
+              <div className=" w-[60%] h-full flex flex-col gap-4 items-center justify-center">
+                <img src={search_image} alt="" className="h-[50vh]" />
+                <p>Busca alguna toma o usuaio.</p>
+              </div>
             </div>
-        </div>
-        </>
-      )}
+          </>
+        )}
         {loading && <div className="w-full h-full mt-2">
           <div className="w-[60%]">
             <div>
@@ -345,8 +379,7 @@ const PuntoVentaForm = () => {
           </div>
         </div>}
         {!loading && !error && (dataCajaUser?.length > 0 || dataToma?.id) && (
-
-          <div className="border rounded-sm w-[60%] ml-1 mr-1 mt-2 overflow-auto">
+          <div className=" rounded-sm w-[60%] ml-1 mr-1 mt-2 overflow-auto">
             <Tabs defaultValue="general">
               <TabsList>
                 <TabsTrigger value="general">General</TabsTrigger>
@@ -359,7 +392,7 @@ const PuntoVentaForm = () => {
                 {dataToma && !dataCajaUser[0] ?
                   (
                     <>
-                      <div className="flex gap-5 mt-5 px-5">
+                      <div className="flex gap-5 mt-5">
                         <div className="relative w-[50%]">
                           <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
                             Usuario
@@ -428,7 +461,7 @@ const PuntoVentaForm = () => {
                     </>
                   )
                   :
-                  dataCajaUser[0] && dataToma?.id_codigo_toma != "" &&
+                  dataCajaUser[0] && dataToma?.id_codigo_toma != "" && !dataCajaUser[0]?.usuario?.nombre &&
                   <div className="justify-center ml-5 mr-5 mt-5">
                     <div className="relative">
                       {
@@ -499,9 +532,81 @@ const PuntoVentaForm = () => {
                       </div>
                     </div>
                   </div>
-
-
                 }
+
+                {dataCajaUser[0]?.usuario?.nombre &&
+                  (
+                    <>
+                      <div className="flex gap-5 mt-5 px-5">
+                        <div className="relative w-[50%]">
+                          <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
+                            Usuario
+                          </div>
+                          <div className="border rounded-sm p-4">
+                            <div className="grid grid-cols-2 text-sm leading-tight overflow-auto max-h-[60vh] min-h-[60vh]">
+                              <div>
+                                <div className="font-semibold mb-2">Nombre:</div>
+                                <div className="font-semibold mb-2">Telefono:</div>
+                                <div className="font-semibold mb-2">RFC:</div>
+                                <div className="font-semibold mb-2">CURP:</div>
+                                <div className="font-semibold mb-2">Correo:</div>
+                              </div>
+                              <div className="px-4">
+                                <div className="mb-2">{(dataCajaUser[0]?.usuario?.nombre || "") + " " + (dataCajaUser[0]?.usuario?.apellido_paterno || "") + " " + (dataCajaUser[0]?.usuario?.apellido_materno || "")}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.usuario?.telefono}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.usuario?.rfc}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.usuario?.curp}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.usuario?.correo}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="relative  w-[50%]">
+                          <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
+                            Toma
+                          </div>
+                          <div className="border rounded-sm p-4">
+                            <div className="grid grid-cols-2 text-sm leading-tight overflow-auto max-h-[60vh] min-h-[60vh]">
+                              <div>
+                                <div className="font-semibold mb-2">Toma:</div>
+                                <div className="font-semibold mb-2">Clave Catastral:</div>
+                                <div className="font-semibold mb-2">Estatus:</div>
+                                <div className="font-semibold mb-2">Calle:</div>
+                                <div className="font-semibold mb-2">Entre Calle 1:</div>
+                                <div className="font-semibold mb-2">Entre Calle 2:</div>
+                                <div className="font-semibold mb-2">Colonia:</div>
+                                <div className="font-semibold mb-2">Código Postal:</div>
+                                <div className="font-semibold mb-2">Localidad:</div>
+                                <div className="font-semibold mb-2">Tipo Servicio:</div>
+                                <div className="font-semibold mb-2">Tipo Toma:</div>
+                                <div className="font-semibold mb-2">Tipo Contratación:</div>
+                                <div className="font-semibold mb-2">Servicio de agua:</div>
+                                <div className="font-semibold mb-2">Servicio de agua y alcantarillado:</div>
+                              </div>
+                              <div className="px-4">
+                                <div className="mb-2">{dataCajaUser[0]?.id_codigo_toma}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.clave_catastral}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.estatus}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.calle}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.entre_calle_1}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.entre_calle_2}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.colonia}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.codigo_postal}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.localidad}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.tipo_servicio}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.tipo_toma}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.tipo_contratacion}</div>
+                                <div className="mb-2">{formatYesNo(dataCajaUser[0]?.c_agua)}</div>
+                                <div className="mb-2">{formatYesNo(dataCajaUser[0]?.c_alc_san)}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )
+                }
+
 
 
 
@@ -510,24 +615,29 @@ const PuntoVentaForm = () => {
 
 
               <TabsContent value="cargos">
-                <div className="px-5">
+                <div className="">
                   {cargosData && (
-                    <div className="relative ml-5 mr-5">
-                      <div className="absolute top-4 left-4 bg-background px-2 text-sm font-semibold">
-                        Información de Cargos
+                    <div className="relative mt-2">
+                      <div className="flex justify-between items-center h-[40px]">
+                        <div className=" bg-background text-sm font-semibold">
+                          Información de Cargos
+                        </div>
+                        <div>
+                          <ModalCargarConcepto
+                            trigger={
+                              <IconButton title="open">
+                                <PlusIcon className="w-[20px] h-[20px]" />
+                              </IconButton>}
+                            dueño={dataToma}
+                            setCargos={setPendingCargos}
+                            handleCargoSelect={handleCargoSelect}
+                          />
+                        </div>
                       </div>
 
-                      <div className="mt-6 border rounded-sm p-4 max-h-96 overflow-y-auto bg-background">
-                        <div className="w-full flex items-center justify-end">
-                          <div className="w-[60px] mb-[10px]">
-                            <IconButton onClick={openModal} title="open">
-                              <PlusIcon className="w-[20px] h-[20px]" />
-                            </IconButton>
-                          </div>
-                        </div>
-
+                      <div className="mt-6 select-none border rounded-sm h-[60vh] overflow-y-auto bg-background">
                         <table className="w-full table-fixed">
-                          <thead className="bg-muted">
+                          <thead className="bg-muted sticky top-0">
                             <tr>
                               <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Seleccionar
@@ -542,30 +652,24 @@ const PuntoVentaForm = () => {
                                 Estado
                               </th>
                               <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                ID Convenio
-                              </th>
-                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Fecha de Cargo
                               </th>
                             </tr>
                           </thead>
-                          <tbody className=" divide-y divide-gray-200">
+                          <tbody className=" divide-y divide-border">
                             {pendingCargos.map((cargo, index) => (
-                              <tr key={index} onClick={() => handleCargoSelect(cargo, dataToma)} className="cursor-pointer ">
+                              <tr key={index} onClick={() => handleCargoSelect(cargo, dataToma)} className="cursor-pointer transition-all duration-200 hover:bg-muted">
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                  <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
+                                  <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} className="w-[30px] h-[30px]"/>
                                 </td>
                                 <td className="px-2 py-4 whitespace-normal text-sm  break-words">
-                                  {cargo.concepto}
+                                  {cargo.nombre}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                  ${parseFloat(cargo.monto)}
+                                  ${cargo.monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                   {cargo.estado}
-                                </td>
-                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                  {cargo.id_convenio}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                   {cargo.fecha_cargo}
@@ -625,7 +729,7 @@ const PuntoVentaForm = () => {
                                           <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
                                         </td>
                                         <td className="px-2 py-4 whitespace-normal text-sm  break-words">
-                                          {cargo.concepto}
+                                          {cargo.nombre}
                                         </td>
                                         <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                           ${parseFloat(cargo.monto)}
@@ -692,7 +796,7 @@ const PuntoVentaForm = () => {
                                                 <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
                                               </td>
                                               <td className="px-2 py-4 whitespace-normal text-sm  break-words">
-                                                {cargo.concepto}
+                                                {cargo.nombre}
                                               </td>
                                               <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                                 ${parseFloat(cargo.monto)}
@@ -731,47 +835,47 @@ const PuntoVentaForm = () => {
 
               {pagosData && (
                 <TabsContent value="pagos">
-                  <div className="relative ml-5 mr-5">
-                    <div className="absolute -top-4 left-4 bg-background px-2 text-sm font-semibold">
-                      Información de Pagos
+                  <div className="relative mt-2">
+                    <div className="flex justify-between items-center  h-[40px]">
+                      <div className=" bg-background text-sm font-semibold">
+                        Información de Pagos
+                      </div>
+
                     </div>
-                    <div className="mt-6 border rounded-sm p-4 max-h-96 overflow-y-auto">
+
+                    <div className="mt-6 select-none border rounded-sm h-[60vh] overflow-y-auto bg-background">
                       <table className="w-full table-fixed">
-                        <thead className="bg-muted">
+                        <thead className="bg-muted sticky top-0">
                           <tr>
                             <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Total Pagado
+                              Fecha
                             </th>
                             <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Forma de Pago
+                              Método de pago
                             </th>
                             <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Fecha de Pago
-                            </th>
-                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                              Estado
+                              Total
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="bg-background">
+                        <tbody className=" divide-y divide-border">
                           {pagosData.map((pago, index) => (
-                            <tr key={index}>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm font-medium ">
-                                ${parseFloat(pago.total_pagado)}
+                            <tr key={index} className="cursor-pointer transition-all duration-200 hover:bg-muted">
+                              <td className="px-2 py-4 whitespace-normal text-sm  break-words">
+                                {pago.fecha_pago}
                               </td>
                               <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                 {pago.forma_pago}
                               </td>
                               <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {pago.fecha_pago}
-                              </td>
-                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                {pago.estado}
+                                ${pago.total_pagado.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                               </td>
                             </tr>
                           ))}
-
                         </tbody>
+                        <div>
+
+                        </div>
                       </table>
                     </div>
                   </div>
@@ -779,18 +883,15 @@ const PuntoVentaForm = () => {
               )}
             </Tabs>
           </div>
-
         )}
       </div>
-      <div className="border rounded-sm w-[38%] ml-1 mr-1 mt-2 flex flex-col absolute right-2 min-h-[75vh] top-[48px]">
-        <div className="absolute left-2 bg-background px-2 text-sm font-semibold -top-3">
-          Cargos Seleccionados
-        </div>
-        <div className="flex-grow mt-1 ">
+      <div className=" rounded-sm w-[38%] ml-1 mr-1 mt-2 flex flex-col absolute right-2 min-h-[75vh] top-[44px]">
+
+        <div className="flex-grow mt-1 relative -top-4">
           {selectedCargos.length > 0 ? (
-            <div className="mt-2 rounded-sm p-1 max-h-96 overflow-y-auto">
+            <div className="mt-2 rounded-sm max-h-[55vh] h-[55vh]  overflow-y-auto border">
               <table className="w-full table-fixed">
-                <thead className="bg-muted">
+                <thead className="bg-muted  sticky top-0">
                   <tr>
                     <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                       Concepto
@@ -803,7 +904,7 @@ const PuntoVentaForm = () => {
                       Monto
                     </th>
                     <th>
-
+                      <Button onClick={() => {limpiar_cargos_seleccionados(selectedCargos)}}><EraserIcon className="text-white" /></Button>
                     </th>
                   </tr>
                 </thead>
@@ -811,36 +912,36 @@ const PuntoVentaForm = () => {
                   {selectedCargos.map((cargo, index) => (
                     <tr key={index}>
                       <td className="px-2 py-4 whitespace-normal text-sm  break-words">
-                        {cargo.concepto}
+                        {cargo.nombre}
                       </td>
                       <td>
                         {cargo?.entidad}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                        ${parseFloat(cargo.monto)}
+                        ${cargo.monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                       <td className="">
                         <div className="max-w-[50px]" onClick={() => handleCargoSelect(cargo)}>
                           <IconButton>
-                            <CrossCircledIcon className="text-red-500" />
+                            <CrossCircledIcon className="text-red-500 w-[25px] h-[25px]" />
                           </IconButton>
                         </div>
                       </td>
                     </tr>
                   ))}
-                  <tr>
-                    <td className="px-2 py-4 text-xl font-semibold ">Total a pagar</td>
-                    <td className="px-2 py-4 text-xl font-semibold ">
-                      ${totalRestante}
-                    </td>
-
-                  </tr>
                 </tbody>
               </table>
             </div>
           ) : (
-            <p className="text-sm mt-5 ml-3">Seleccione uno o más cargos para mostrar la información aquí.</p>
+            <>
+              <div className="text-sm absolute top-[50%] flex justify-center items-center w-full">
+                <p>Seleccione uno o más cargos para mostrar la información aquí.</p>
+              </div>
+            </>
           )}
+        </div>
+        <div className="w-full h-[14vh] px-5 flex items-center justify-end bg-muted">
+          <div className="mr-[50px] text-[3vw]">TOTAL</div> <div className="text-[3vw]">${totalRestante.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
         </div>
         <Button onClick={() => alert('PAGAR(F5)')}>
           PAGAR(F5)
