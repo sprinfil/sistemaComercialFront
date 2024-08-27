@@ -187,8 +187,9 @@ const CajaForm = () => {
         }
         if (accionGeneradaEntreTabs == "editar") {
 
-            const timeWithSeconds1 = `${values.hora_apertura}:00`;
-            const timeWithSeconds2 = `${values.hora_cierre}:00`;
+            const timeWithSeconds1 = `${values.hora_apertura}`;
+            const timeWithSeconds2 = `${values.hora_cierre}`;
+
     
             
     
@@ -197,6 +198,9 @@ const CajaForm = () => {
                 hora_apertura: timeWithSeconds1,
                 hora_cierre: timeWithSeconds2,
             }
+
+
+
             axiosClient.put(`/cajas/modificarCajaCatalogo/${caja?.id}`, values2)
                 .then((response) => {
                     const data = response.data;
@@ -352,8 +356,8 @@ const CajaForm = () => {
                 id: 0,
                 id_cuenta_contable: caja?.id_cuenta_contable,
                 nombre_caja: caja?.nombre_caja,
-                hora_apertura: `${caja.hora_apertura}:00`,
-                hora_cierre: `${caja.hora_cierre}:00`,
+                hora_apertura: caja.hora_apertura,
+                hora_cierre: caja.hora_cierre,
             });
             setErrors({});
             setControl(false);
@@ -371,8 +375,8 @@ const CajaForm = () => {
                 id: 0,
                 id_cuenta_contable: caja?.id_cuenta_contable,
                 nombre_caja: caja?.nombre_caja,
-                hora_apertura: `${caja.hora_apertura}:00`,
-                hora_cierre: `${caja.hora_cierre}:00`,
+                hora_apertura: caja.hora_apertura,
+                hora_cierre: caja.hora_cierre,
             });
             setErrors({});
             setControl(false);
