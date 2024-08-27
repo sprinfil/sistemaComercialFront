@@ -24,6 +24,7 @@ import { ConfigurarCajaModal } from "../ui/ConfigurarCajaModal.tsx";
 import ModalCargarConcepto from "../ui/ModalCargarConcepto.tsx";
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { ModalMetodoPago } from "../ui/ModalMetodoPago.tsx";
 const PuntoVentaForm = () => {
 
   const { toast } = useToast()
@@ -42,6 +43,8 @@ const PuntoVentaForm = () => {
   const [cargos_usuario, set_cargos_usuario] = useState(null);
   const [error, setError] = useState<string | null>(null);
   const { usuariosEncontrados, dataCajaUser, setDataCajaUser, booleanCerrarModalFiltros } = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
+  const [open_metodo_pago_modal, set_open_metodo_pago_modal] = useState(false);
+
   // Estado para almacenar las cantidades a abonar
   const [amountsToPay, setAmountsToPay] = useState<{ [id: string]: number }>({});
   console.log("ESTO LLEGO XDDD", dataCajaUser);
@@ -90,21 +93,15 @@ const PuntoVentaForm = () => {
 
   }
 
-  const fetchdataUser = async () => {
+  const fetchdataUser = async (codigo_toma = null) => {
+    setSelectedCargos([]);
     handleClear();
     setLoading(true);
     setError(null);
     try {
-      const userResponse = await axiosClient.get(`/Toma/codigo/${userInput}`);
-      const cargosResponse = await axiosClient.get(`/Toma/cargos/${userInput}`);
-      const pagosResponse = await axiosClient.get(`/Toma/pagos/${userInput}`);
-      console.log(userResponse);
-      console.log(
-        "Datos recibidos:",
-        userResponse.data,
-        cargosResponse.data.data,
-        pagosResponse.data
-      );
+      const userResponse = await axiosClient.get(`/Toma/codigo/${codigo_toma || userInput}`);
+      const cargosResponse = await axiosClient.get(`/Toma/cargos/${codigo_toma ||userInput}`);
+      const pagosResponse = await axiosClient.get(`/Toma/pagos/${codigo_toma ||userInput}`);
 
       if (userResponse.data) {
         setDataToma(userResponse.data);
@@ -115,15 +112,17 @@ const PuntoVentaForm = () => {
 
       if (cargosResponse.data.data) {
         setCargosData(cargosResponse.data.data);
-        console.log(cargosResponse)
         // Filtrar cargos pendientes
 
-        const filteredCargos = cargosResponse.data.data.filter(cargo => cargo.estado === 'pendiente');
+        let filteredCargos = cargosResponse.data.data.filter(cargo => cargo.estado === 'pendiente');
+        filteredCargos = filteredCargos.sort((a, b) => a.concepto.prioridad_abono - b.concepto.prioridad_abono)
+
         setPendingCargos(filteredCargos);
-        console.log("pending cargos: " + JSON.stringify(filteredCargos))
+
         filteredCargos.map((cargo, index) => {
           handleCargoSelect(cargo, userResponse.data, true);
         })
+
       }
 
       if (pagosResponse.data) {
@@ -157,16 +156,31 @@ const PuntoVentaForm = () => {
   };
 
   const handleCargoSelect = (cargo, entidad = null, busqueda = false) => {
-    console.log(cargo);
+
+
     setSelectedCargos(prevSelectedCargos => {
       let newCargo = {};
+      let entidad_temp;
       const isAlreadySelected = prevSelectedCargos.some(c => c.id === cargo.id);
       if (isAlreadySelected) {
+
+        let prioridades = selectedCargos.map(cargo_temp => cargo_temp.concepto.prioridad_abono);
+
+        //prioridades = [...new Set(prioridades)];
+
+        //const minimo = Math.min(...prioridades);
+
+        const maximo = Math.max(...prioridades);
+        console.log(maximo)
+
         if (!busqueda) {
-          if (!cargo.concepto.prioridad_abono == 1) {
+          if (cargo.concepto.prioridad_abono > maximo || cargo.concepto.prioridad_abono == maximo) {
+
+            //ESTE CONCEPTO SI SE PUEDE QUITAR
             return prevSelectedCargos.filter(c => c.id !== cargo.id);
+
           } else {
-            //ESTE CONCEPTO ES DE PRIORIDAD 1 NO SE PUEDE QUITAR
+            //ESTE CONCEPTO NO SE PUEDE QUITAR
             toast({
               variant: "destructive",
               title: "Concepto Obligatorio",
@@ -179,22 +193,69 @@ const PuntoVentaForm = () => {
           return [...prevSelectedCargos];
         }
       } else {
-        let entidad_temp;
+
         if (entidad.id_codigo_toma != null) {
+
           entidad_temp = entidad?.id_codigo_toma;
+          newCargo = { ...cargo, entidad: entidad_temp };
+          let minimo;
+          // Obtener todas las prioridades y las seleccionadas
+          let todas_prioridades = pendingCargos?.map(cargo_temp => cargo_temp.concepto.prioridad_abono) || [];
+          let prioridades_seleccionadas = selectedCargos?.map(cargo_temp => cargo_temp.concepto.prioridad_abono) || [];
+
+          if (selectedCargos?.length == 0) {
+            minimo = Math.min(...todas_prioridades);
+          } else {
+            let nuevas_prioridades = quitarElementos(todas_prioridades, prioridades_seleccionadas);
+            minimo = Math.min(...nuevas_prioridades);
+          }
+
+          if (cargo.concepto.prioridad_abono == minimo || cargo.concepto.prioridad_abono < minimo) {
+            return [...prevSelectedCargos, newCargo];
+          } else {
+            //ESTE CONCEPTO NO SE PUEDE AGREGAR
+            //ESTE CONCEPTO NO SE PUEDE QUITAR
+            toast({
+              title: "Hay Conceptos de mayor prioridad",
+              description: "Selecciona todos los conceptos con mayor prioridad",
+              action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+            })
+            return [...prevSelectedCargos];
+          }
         } else {
+
           entidad_temp = entidad?.nombre;
+          newCargo = { ...cargo, entidad: entidad_temp };
+          return [...prevSelectedCargos, newCargo];
+
         }
-        newCargo = { ...cargo, entidad: entidad_temp };
-        return [...prevSelectedCargos, newCargo];
+
       }
     });
+
   };
+
+  function quitarElementos(arreglo, elementosAQuitar) {
+    // Creamos una copia del arreglo para no modificar el original
+    let resultado = [...arreglo];
+
+    // Iteramos sobre cada elemento en el arreglo de elementos a quitar
+    elementosAQuitar.forEach(elemento => {
+      // Encontramos el índice del primer elemento coincidente
+      const index = resultado.indexOf(elemento);
+      // Si existe, lo eliminamos
+      if (index !== -1) {
+        resultado.splice(index, 1);
+      }
+    });
+
+    return resultado;
+  }
 
   const handleF5Press = (event: KeyboardEvent) => {
     if (event.key === 'F5') {
       event.preventDefault(); // Prevenir recarga de página
-      handleSearch(); // Llamar a la función de pago
+      iniciar_proceso_pago();
     }
   };
 
@@ -232,6 +293,10 @@ const PuntoVentaForm = () => {
     return selectedCargos.reduce((acc, cargo) => acc + parseFloat(cargo.monto || 0), 0);
   };
 
+  const calculateTotalIva = () => {
+    return selectedCargos.reduce((acc, cargo) => acc + parseFloat(cargo.iva || 0), 0);
+  };
+
   const calculateTotalAbonado = () => {
     return selectedCargos.reduce((acc, cargo) => acc + (parseFloat(amountsToPay[cargo.id] || 0)), 0);
   };
@@ -263,7 +328,7 @@ const PuntoVentaForm = () => {
   };
 
   const limpiar_cargos_seleccionados = (cargos) => {
-    cargos.map((cargo, index)=>{
+    cargos.map((cargo, index) => {
       handleCargoSelect(cargo);
     })
   }
@@ -283,11 +348,14 @@ const PuntoVentaForm = () => {
     console.log('Modal state set to closed.');
   };
 
+  const iniciar_proceso_pago = () => {
+    set_open_metodo_pago_modal(true);
+  }
+
   const totalAcumulado = calculateTotal();
   const totalAbonado = calculateTotalAbonado();
   const totalRestante = totalAcumulado - totalAbonado;
-
-
+  const total_iva = calculateTotalIva();
 
   useEffect(() => {
     console.log(dataToma);
@@ -351,13 +419,22 @@ const PuntoVentaForm = () => {
               <Skeleton className="w-full h-[5vh]" />
             </div>
             <div className="w-full flex gap-2 mt-4">
-              <Skeleton className="h-[60vh] w-[50%]" />
-              <Skeleton className="h-[60vh] w-[50%]" />
+              <Skeleton className="h-[68vh] w-[50%]" />
+              <Skeleton className="h-[68vh] w-[50%]" />
             </div>
           </div>
         </div>}
         {!loading && !error && (dataCajaUser?.length > 0 || dataToma?.id) && (
           <div className=" rounded-sm w-[60%] ml-1 mr-1 mt-2 overflow-auto">
+            <ModalMetodoPago
+              open_modal={open_metodo_pago_modal}
+              set_open_modal={set_open_metodo_pago_modal}
+              total={totalRestante}
+              total_iva={total_iva}
+              cargos={selectedCargos}
+              dueno={dataToma}
+              update_data={fetchdataUser}
+            />
             <Tabs defaultValue="general">
               <TabsList>
                 <TabsTrigger value="general">General</TabsTrigger>
@@ -515,6 +592,7 @@ const PuntoVentaForm = () => {
                 {dataCajaUser[0]?.usuario?.nombre &&
                   (
                     <>
+
                       <div className="flex gap-5 mt-5 px-5">
                         <div className="relative w-[50%]">
                           <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
@@ -624,7 +702,7 @@ const PuntoVentaForm = () => {
                                 Concepto
                               </th>
                               <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                Monto
+                                Monto + IVA
                               </th>
                               <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Estado
@@ -632,25 +710,31 @@ const PuntoVentaForm = () => {
                               <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Fecha de Cargo
                               </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Prioridad
+                              </th>
                             </tr>
                           </thead>
                           <tbody className=" divide-y divide-border">
                             {pendingCargos.map((cargo, index) => (
                               <tr key={index} onClick={() => handleCargoSelect(cargo, dataToma)} className="cursor-pointer transition-all duration-200 hover:bg-muted">
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                  <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} className="w-[30px] h-[30px]"/>
+                                  <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} className="w-[30px] h-[30px]" />
                                 </td>
                                 <td className="px-2 py-4 whitespace-normal text-sm  break-words">
                                   {cargo.nombre}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                  ${cargo.monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                  ${(parseFloat(cargo.monto) + parseFloat(cargo.iva)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                   {cargo.estado}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                   {cargo.fecha_cargo}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.concepto.prioridad_abono}
                                 </td>
                               </tr>
                             ))}
@@ -867,7 +951,7 @@ const PuntoVentaForm = () => {
 
         <div className="flex-grow mt-1 relative -top-4">
           {selectedCargos.length > 0 ? (
-            <div className="mt-2 rounded-sm max-h-[55vh] h-[55vh]  overflow-y-auto border">
+            <div className="mt-2 rounded-sm max-h-[55vh] h-[55vh]  overflow-y-auto border no-scrollbar">
               <table className="w-full table-fixed">
                 <thead className="bg-muted  sticky top-0">
                   <tr>
@@ -879,10 +963,14 @@ const PuntoVentaForm = () => {
                       Usuario / Toma
                     </th>
                     <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                      Monto
+                      Monto + IVA
+                    </th>
+
+                    <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                      Prioridad
                     </th>
                     <th>
-                      <Button onClick={() => {limpiar_cargos_seleccionados(selectedCargos)}}><EraserIcon className="text-white" /></Button>
+                      <Button onClick={() => { limpiar_cargos_seleccionados(selectedCargos) }}><EraserIcon className="text-white" /></Button>
                     </th>
                   </tr>
                 </thead>
@@ -896,7 +984,10 @@ const PuntoVentaForm = () => {
                         {cargo?.entidad}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                        ${cargo.monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ${(parseFloat(cargo.monto) + parseFloat(cargo.iva)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                        {cargo.concepto.prioridad_abono}
                       </td>
                       <td className="">
                         <div className="max-w-[50px]" onClick={() => handleCargoSelect(cargo)}>
@@ -918,12 +1009,18 @@ const PuntoVentaForm = () => {
             </>
           )}
         </div>
-        <div className="w-full h-[14vh] px-5 flex items-center justify-end bg-muted">
-          <div className="mr-[50px] text-[3vw]">TOTAL</div> <div className="text-[3vw]">${totalRestante.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        <div className="w-full h-[14vh] text-[2vw] px-5 flex flex-col items-end justify-center bg-muted">
+
+          <div className=" flex gap-3">
+            <div className="">TOTAL</div>
+            ${(totalRestante + total_iva).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+
         </div>
-        <Button onClick={() => alert('PAGAR(F5)')}>
+        <Button onClick={() => { (iniciar_proceso_pago()) }}>
           PAGAR(F5)
         </Button>
+
       </div>
     </div>
   );
