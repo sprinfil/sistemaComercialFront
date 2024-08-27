@@ -265,8 +265,7 @@ const OrdenDeTrabajoAccionesForm = () => {
       setControl2(false);
       setAbrirInput(false);
       setErrors({});
-      setAccion("");
-
+      setAccionGeneradaEntreTabs("ver");
       console.log("entro");
 
       //PARA DESPLEGAR LA INFORMACIÓN EXISTE UN OBJETO(ordenDeTrabajo), al seleccionar
@@ -308,7 +307,7 @@ const OrdenDeTrabajoAccionesForm = () => {
       setErrors({});
     }
 
-  }, [accion, reset, idSeleccionadoConfiguracionOrdenDeTrabajo]);
+  }, [accionGeneradaEntreTabs, reset, idSeleccionadoConfiguracionOrdenDeTrabajo]);
 
 
 
@@ -389,7 +388,6 @@ const OrdenDeTrabajoAccionesForm = () => {
 
             </div>
           }
-          
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
             {totalAccionesComponente.map((item, index) => (
 
@@ -490,7 +488,7 @@ const OrdenDeTrabajoAccionesForm = () => {
             <div className="col-span-full flex justify-end">
               {accionGeneradaEntreTabs == "editar" &&
                 <Button type="submit" isLoading={loading}>
-                  {accion === "crear" ? "Crear" : "Actualizar"}
+                  {accionGeneradaEntreTabs === "crear" ? "Crear" : "Actualizar"}
                 </Button>}
 
             </div>

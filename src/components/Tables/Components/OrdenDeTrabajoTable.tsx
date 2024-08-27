@@ -45,7 +45,7 @@ const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
   return (
 
     <div>
-      <div onClick={()=>{setAccion("crear")}}>
+      <div onClick={()=>{setAccionGeneradaEntreTabs("crear")}}>
         <IconButton>
           <div className='flex gap-2 items-center'> Agregar nueva orden de trabajo <PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>

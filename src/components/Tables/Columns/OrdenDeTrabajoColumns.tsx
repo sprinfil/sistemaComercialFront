@@ -66,7 +66,7 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
       const { setOrdenDeTrabajo, setAccion } = useStateContext();
       const { setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
       return (
-        <div onClick={()=>{setOrdenDeTrabajo(OrdenDeTrabajo);}}>
+        <div onClick={()=>{setOrdenDeTrabajo(OrdenDeTrabajo);setAccionGeneradaEntreTabs("ver")}}>
           <IconButton>
             <EyeOpenIcon className="w-[20px] h-[20px]"/>
           </IconButton>

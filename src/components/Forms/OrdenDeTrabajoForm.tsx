@@ -40,12 +40,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
+import MarcoForm from "../ui/MarcoForm.tsx";
+
 type OrdenDeTrabajo = {
     nombre: string;
     aplicacion: string;
     // Otras propiedades relevantes
 };
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 
 const OrdenDeTrabajoForm = () => {
     const { toast } = useToast()
@@ -63,6 +65,8 @@ const OrdenDeTrabajoForm = () => {
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
 
+    console.log(accionGeneradaEntreTabs);
+    console.log(ordenDeTrabajo);
     //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
@@ -191,7 +195,7 @@ const OrdenDeTrabajoForm = () => {
                             momento_cargo: "",
                             genera_masiva: false
                         });
-                        setAccion("creado");
+                        setAccionGeneradaEntreTabs("creado");
                         getAnomalias();
                         successToastCreado();
                         console.log(values);
@@ -219,7 +223,7 @@ const OrdenDeTrabajoForm = () => {
                 .then((data) => {
                     setLoading(false);
                     setAbrirInput(false);
-                    setAccion("");
+                    setAccionGeneradaEntreTabs("");
                     getAnomalias();
                     setOrdenDeTrabajo(data.data);
                     successToastEditado();
@@ -259,7 +263,7 @@ const OrdenDeTrabajoForm = () => {
         try {
             await axiosClient.delete(`/TipoToma/log_delete/${ordenDeTrabajo.id}`);
             getAnomalias();
-            setAccion("eliminar");
+            setAccionGeneradaEntreTabs("eliminar");
             successToastEliminado();
         } catch (error) {
             errorToast();
@@ -272,7 +276,7 @@ const OrdenDeTrabajoForm = () => {
             .then(() => {
                 setLoading(false);
                 setAbrirInput(false);
-                setAccion("crear");
+                setAccionGeneradaEntreTabs("crear");
                 setOrdenDeTrabajo({
                     id: 0,
                     nombre: "",
@@ -282,7 +286,7 @@ const OrdenDeTrabajoForm = () => {
                     genera_masiva: false
                 });
                 getAnomalias();
-                setAccion("creado");
+                setAccionGeneradaEntreTabs("creado");
                 successToastRestaurado();
                 setModalReactivacionOpen(false);
             })
@@ -354,7 +358,6 @@ const OrdenDeTrabajoForm = () => {
 
             setAbrirInput(false);
             setErrors({});
-            setAccion("");
             setCargosAgregados([]);
             form.reset({
                 id: ordenDeTrabajo.id,
@@ -366,12 +369,12 @@ const OrdenDeTrabajoForm = () => {
               
             });
         }
-        if (accion == "editar") {
+        if (accionGeneradaEntreTabs == "editar") {
             setAbrirInput(true);
             setBloquear(true);
             setErrors({});
         }
-    }, [accion]);
+    }, [accionGeneradaEntreTabs]);
 
 
 
@@ -407,7 +410,7 @@ const OrdenDeTrabajoForm = () => {
     return (
         <>
             <div className="overflow-auto">
-                <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm '>
+                <div className='flex h-[40px] items-center bg-muted rounded-sm '>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
                             {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
@@ -451,7 +454,7 @@ const OrdenDeTrabajoForm = () => {
 
                     {errors && <Error errors={errors} />}
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
                             <FormField
                                 control={form.control}
                                 name="nombre"
@@ -570,6 +573,8 @@ const OrdenDeTrabajoForm = () => {
                                     </FormItem>
                                 )}
                             />
+
+                           
 
                             {/*accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
                             {/*accion == "editar" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
