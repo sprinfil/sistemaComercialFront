@@ -320,9 +320,7 @@ const PuntoVentaForm = () => {
         />
         
           
-          <IconButton>
-            <ExternalLinkIcon />
-          </IconButton>
+          
           <ConfigurarCajaModal
             trigger={<IconButton>
               <GearIcon />
