@@ -31,6 +31,7 @@ import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import { CuentasContablesComboBox } from "../ui/CuentasContablesComboBox.tsx";
 import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
+import dayjs from 'dayjs';
 
 const CajaForm = () => {
     const { toast } = useToast()
@@ -119,18 +120,27 @@ const CajaForm = () => {
         },
     })
 
+    useEffect(()=>
+    {
 
+    },[])
 
     function onSubmit(values: z.infer<typeof cajaCatalogoSchema>) {
         setLoading(true);
        
-        const formattedTime = formatTimeToHIS(values.hora_apertura);
-        const formattedTime2 = formatTimeToHIS(values.hora_cierre);
+       // Valores de hora en formato "HH:mm"
+        const timeWithoutSeconds1 = values.hora_apertura; // Ej. "14:30"
+        const timeWithoutSeconds2 = values.hora_cierre; // Ej. "15:45"
+
+        // Agregar segundos ":00" al final
+        const timeWithSeconds1 = `${timeWithoutSeconds1}:00`;
+        const timeWithSeconds2 = `${timeWithoutSeconds2}:00`;
+
 
         const values2 = {
             ...values,
-            hora_apertura: formattedTime,
-            hora_cierre: formattedTime2,
+            hora_apertura: timeWithSeconds1,
+            hora_cierre: timeWithSeconds2,
         }
 
 
@@ -176,7 +186,18 @@ const CajaForm = () => {
             console.log(abrirInput);
         }
         if (accionGeneradaEntreTabs == "editar") {
-            axiosClient.put(`/cajas/modificarCajaCatalogo/${caja.id}`, values)
+
+            const timeWithSeconds1 = `${values.hora_apertura}:00`;
+            const timeWithSeconds2 = `${values.hora_cierre}:00`;
+    
+            
+    
+            const values2 = {
+                ...values,
+                hora_apertura: timeWithSeconds1,
+                hora_cierre: timeWithSeconds2,
+            }
+            axiosClient.put(`/cajas/modificarCajaCatalogo/${caja?.id}`, values2)
                 .then((response) => {
                     const data = response.data;
                     if (data.confirmUpdate) {
@@ -230,7 +251,7 @@ const CajaForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${caja.id}`);
+            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${caja?.id}`);
             getCajas();
             setAccionGeneradaEntreTabs("eliminar");
             successToastEliminado();
@@ -265,6 +286,8 @@ const CajaForm = () => {
                 setLoading(false);
             });
     };
+
+
 
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
@@ -325,14 +348,36 @@ const CajaForm = () => {
         }
         if (accionGeneradaEntreTabs == "editar") {
             setAbrirInput(true);
+            form.reset({
+                id: 0,
+                id_cuenta_contable: caja?.id_cuenta_contable,
+                nombre_caja: caja?.nombre_caja,
+                hora_apertura: `${caja.hora_apertura}:00`,
+                hora_cierre: `${caja.hora_cierre}:00`,
+            });
             setErrors({});
+            setControl(false);
         }
    
 
-    }, [accionGeneradaEntreTabs,form.reset, caja.id]);
+    }, [accionGeneradaEntreTabs,form.reset, caja?.id]);
 
 
-  
+    useEffect(()=>
+    {
+        if (accionGeneradaEntreTabs == "editar") {
+            setAbrirInput(true);
+            form.reset({
+                id: 0,
+                id_cuenta_contable: caja?.id_cuenta_contable,
+                nombre_caja: caja?.nombre_caja,
+                hora_apertura: `${caja.hora_apertura}:00`,
+                hora_cierre: `${caja.hora_cierre}:00`,
+            });
+            setErrors({});
+            setControl(false);
+        }
+    },[accionGeneradaEntreTabs])
 
     //METODO PARA CONVERTIR DE H:i al formato que pide H:i:s
     
@@ -431,6 +476,7 @@ const CajaForm = () => {
                                         <FormLabel>Apertura</FormLabel>
                                         <FormControl>
                                         <input {...field} readOnly={!abrirInput} type="time" name="hora_apertura" 
+                                        placeholder="HH:mm:ss"
                                           className="border border-border w-full rounded-md p-[4px] bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring disabled:opacity-50 disabled:cursor-not-allowed"/>
                                         </FormControl>
                                         <FormDescription>
@@ -452,7 +498,7 @@ const CajaForm = () => {
                                         <input {...field} 
                                         readOnly={!abrirInput} 
                                         type="time" name="hora_cierre" 
-                                     
+                                        placeholder="HH:mm:ss"
                                           className="border border-border w-full rounded-md p-[4px] bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring disabled:opacity-50 disabled:cursor-not-allowed"/>
                                         </FormControl>
                                         <FormDescription>

@@ -280,9 +280,11 @@ const CajaOperadoresForm = () => {
       useEffect(() => {
         if (accionGeneradaEntreTabs === "eliminar") {
           setAbrirInput(false);
+          setControl(false);
         }
         if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
           setAbrirInput(true);
+          setControl(false);
           setErrors({});
           setCaja({
             id: 0,
@@ -318,6 +320,7 @@ const CajaOperadoresForm = () => {
         if (accionGeneradaEntreTabs === "editar") {
           setAbrirInput(true);
           setErrors({});
+          setControl(false);
         }
       }, [accionGeneradaEntreTabs, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
 
