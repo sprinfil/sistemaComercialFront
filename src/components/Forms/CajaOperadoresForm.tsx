@@ -76,6 +76,11 @@ const CajaOperadoresForm = () => {
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
+
+    console.log(caja);
+   
+
+    console.log(accionGeneradaEntreTabs);
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0 
             ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1 
@@ -299,11 +304,13 @@ const CajaOperadoresForm = () => {
         }
         
     
-        if (accion === "editar") {
+        if (accionGeneradaEntreTabs === "editar") {
           setAbrirInput(true);
           setErrors({});
         }
-      }, [accion, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
+      }, [accionGeneradaEntreTabs, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
+
+     
 
 
     const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
