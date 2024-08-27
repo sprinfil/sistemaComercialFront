@@ -88,6 +88,11 @@ const CajaOperadoresForm = () => {
 
 
 
+
+    console.log(caja);
+   
+
+    console.log(accionGeneradaEntreTabs);
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0 
             ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1 

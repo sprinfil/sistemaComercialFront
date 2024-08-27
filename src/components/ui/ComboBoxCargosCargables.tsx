@@ -93,7 +93,7 @@ const ComboBoxCargosCargables = ({set}) => {
             </PopoverTrigger>
             <PopoverContent className="w-[47rem] p-0 h-[30vh]">
                 <Command>
-                    <CommandInput placeholder="Search framework..." />
+                    <CommandInput placeholder="Busca un Cargo..." />
                     <CommandList>
                         <CommandEmpty>No framework found.</CommandEmpty>
                         <CommandGroup>

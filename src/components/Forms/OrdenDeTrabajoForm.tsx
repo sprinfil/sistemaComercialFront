@@ -41,7 +41,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import MarcoForm from "../ui/MarcoForm.tsx";
-
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 type OrdenDeTrabajo = {
     nombre: string;
     aplicacion: string;
