@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import logo from '../../img/logo.png';
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from '../../../components/ui/button.tsx';
 import {
@@ -21,14 +21,13 @@ import Loader from "../../../components/ui/Loader.tsx";
 import Error from "../../../components/ui/Error.tsx";
 import { Textarea } from "../../../components/ui/textarea.tsx";
 import { useStateContext } from "../../../contexts/ContextOrdenDeTrabajo.tsx";
-import { useEffect } from "react";
 import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../../../components/ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../../../components/ui/ComboBox.tsx";
 import Modal from "../../../components/ui/Modal.tsx";
-import ModalReactivacion from "../../../components/ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
-import { useToast } from "../../../components/ui/use-toast"; //IMPORTACIONES TOAST
-import { ToastAction } from "../../../components/ui/toast"; //IMPORTACIONES TOAST
+import ModalReactivacion from "../../../components/ui/ModalReactivación.tsx";
+import { useToast } from "../../../components/ui/use-toast";
+import { ToastAction } from "../../../components/ui/toast";
 import { Switch } from "../../../components/ui/switch.tsx";
 import { ConceptosComboBoxNew } from "../../../components/ui/ConceptosComboBoxNew.tsx";
 import OrdenDeTrabajoCargosTable from "../../../components/Tables/Components/OrdenDeTrabajoCargosTable.tsx";
@@ -39,155 +38,168 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-  } from "@/components/ui/select";
+} from "@/components/ui/select";
 import { ConceptosComboBox } from "../../../components/ui/ConceptosComboBox.tsx";
-
-
-
+import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario.tsx";
+import { ConceptosOrdenDeTrabajoComboBox } from "../../../components/ui/ConceptosOrdenDeTrabajoComboBox.tsx";
 
 type OrdenDeTrabajo = {
     nombre: string;
     aplicacion: string;
-    // Otras propiedades relevantes
-  };
-  
+};
+
+const OrdenDeTrabajoCargosSchema = z.object({
+    orden_trabajo_cargos: z.array(
+        z.object({
+            id: z.number(),
+            id_concepto_catalogo: z.number().min(1, "El concepto es requerido"),
+        })
+    ),
+});
+
+type OrdenDeTrabajoCargos = z.infer<typeof OrdenDeTrabajoCargosSchema>;
+
 const CargosDeLaOrdenDeTrabajoForm = () => {
-    const { toast } = useToast()
+    const { toast } = useToast();
     const { ordenDeTrabajo, setOrdenDeTrabajo, loadingTable, setLoadingTable, setOrdenDeTrabajos, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
-    const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
+    const [IdParaRestaurar, setIdParaRestaurar] = useState<number | null>(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
     const [bloquear, setBloquear] = useState(false);
-    const [cargoSeleccionado, setCargoSeleccionado] = useState();
+    const [cargoSeleccionado, setCargoSeleccionado] = useState<string | null>(null);
     const [nombreSeleccionado, setNombreSeleccionado] = useState<string | null>(null);
     const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
-    const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>();
+    const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>([]);
     const [aumentarAcciones, setAumentarAcciones] = useState(1);
-    const [totalAccionesComponente, setTotalAccionesComponente] = useState([{ id: 0 }]);
+    const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_concepto_catalogo:number}[]>([{ id: 0, id_concepto_catalogo: 0}]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
+    const { idSeleccionadoConfiguracionOrdenDeTrabajo,accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
+    const [control, setControl] = useState(false);
+    const [selectedValue, setSelectedValue] = useState("");
 
 
 
     const handleAddComponent = () => {
         setTotalAccionesComponente(prevAcciones => [
             ...prevAcciones,
-            { id: aumentarAcciones } // Genera un nuevo id basado en el contador
+            { id: aumentarAcciones, id_concepto_catalogo: "0" }
         ]);
-        setAumentarAcciones(aumentarAcciones + 1); // Incrementa el contador
+        setAumentarAcciones(aumentarAcciones + 1);
     };
 
-    const handleRemoveComponent = (idToRemove) => {
+    const handleRemoveComponent = (idToRemove: number) => {
         setTotalAccionesComponente(prevAcciones =>
-            prevAcciones.filter(({ id }) => id !== idToRemove) // Filtra el componente por id
+            prevAcciones.filter(({ id }) => id !== idToRemove)
         );
     };
 
-
-     //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo se ha creado correctamente",
+            description: "Los cargos se han agregado correctamente",
             variant: "success",
-
-        })
+        });
     }
+
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo se ha editado correctamente",
+            description: "Los cargos se han editado correctamente",
             variant: "success",
-
-        })
+        });
     }
+
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo se ha eliminado correctamente",
+            description: "Los cargos se han se ha eliminado correctamente",
             variant: "success",
-
-        })
+        });
     }
+
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo se ha restaurado correctamente",
+            description: "Los cargos se han se ha restaurado correctamente",
             variant: "success",
-
-        })
+        });
     }
-    //#endregion
 
-
-    //Funcion de errores para el Toast
     function errorToast() {
-
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
             description: "Algo salió mal.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-        })
-
-
+        });
     }
-    function errorYaExisteToast() {
 
+    function errorYaExisteToast() {
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
             description: "El tipo de toma ya existe.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-        })
+        });
     }
 
+   
 
-    const form = useForm<z.infer<typeof OrdenDeTrabajoCrearSchema>>({
-        resolver: zodResolver(OrdenDeTrabajoCrearSchema),
-        defaultValues: {
-            id: ordenDeTrabajo.id,
-            nombre: ordenDeTrabajo.nombre,
-            estado: ordenDeTrabajo.estado,
-            cargos: ordenDeTrabajo.cargos,
-            momento: ordenDeTrabajo.momento
-        },
-    })
+    
+  const form = useForm<OrdenDeTrabajoCargos>({
+    resolver: zodResolver(OrdenDeTrabajoCargosSchema),
+    defaultValues: {
+        orden_trabajo_cargos: totalAccionesComponente.map(item => ({
+        id: item.id,
+        id_concepto_catalogo: "",
+      })),
+    },
+  });
+
+  useEffect(() => {
+    if (accion === "editar") {
+        form.reset({
+            orden_trabajo_cargos: totalAccionesComponente.map(item => ({
+                id: item.id,
+                id_concepto_catalogo: "", // O el valor predeterminado adecuado
+            })),
+        });
+    }
+}, [totalAccionesComponente, accion]);
+
+console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
+
+    const onSubmit = async (values: OrdenDeTrabajoCargos) => {
+        console.log(values);
+
+        const cargos = values.orden_trabajo_cargos.map((item) => ({
+            id: item.id,
+            id_concepto_catalogo: item.id_concepto_catalogo,
+            id_orden_trabajo_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo
+        }));
+        console.log("Cargos:", cargos);
 
 
+        const orden_trabajo_cargos = {
+            orden_trabajo_cargos: cargos
+        }
 
-    function onSubmit(values: z.infer<typeof OrdenDeTrabajoCrearSchema>) {
-        setLoading(true);
+        console.log("valores enviados objeto", orden_trabajo_cargos);
 
-        const transformedData = {
-            id: values.id,
-            nombre: values.nombre,
-            orden_trabajo_conf: {
-                id: 1, // Si necesitas un ID fijo o estático, puedes usar un valor por defecto
-                id_orden_trabajo_catalogo: values.id_orden_trabajo_catalogo || 5, // Usa un valor por defecto o extrae el valor correctamente
-                id_concepto_catalogo: values.id_concepto_catalogo || 1, // Usa un valor por defecto o extrae el valor correctamente
-                accion: values.accion || "modificar",
-                momento: values.aplicacion || "generar",
-                atributo: values.estado || "estatus",
-                valor: values.valor || "baja temporal",
-            },
-        };
-        if (accion == "crear") {
-            axiosClient.post(`/OrdenTrabajoCatalogo/create`, transformedData )
-                .then((response) => {
-                    const data = response.data;
-                    if(data.restore)
-                    {
-                        setIdParaRestaurar(data.tipoToma_id);
-                        setModalReactivacionOpen(true);
-                    }
-                    else if (data.restore == false) {
-                        errorYaExisteToast();
-                        setLoading(false);
-                    }
-                    else
-                    {
+
+        if (accionGeneradaEntreTabs === "editar") {
+            try {
+                const response = await axiosClient.put(`/OrdenTrabajoCatalogo/create/cargos`, orden_trabajo_cargos);
+                const data = response.data;
+                if (data.restore) {
+                    setIdParaRestaurar(data.tipoToma_id);
+                    setModalReactivacionOpen(true);
+                } else if (data.restore === false) {
+                    errorToast();
+                    setLoading(false);
+                } else {
                     setLoading(false);
                     setOrdenDeTrabajo({
                         id: 0,
@@ -195,50 +207,22 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
                         descripcion: "ninguna",
                     });
                     form.reset({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
+                        orden_trabajo_cargos: totalAccionesComponente,
                     });
                     setAccion("creado");
                     getAnomalias();
                     successToastCreado();
-                    console.log(values);
-                    //setNotification("usuario creado");
-        }})
-                .catch((err) => {
-                    const response = err.response;
-                    errorToast();
-                    if (response && response.status === 422) {
-                        setErrors(response.data.errors);
-                    }
-                    setLoading(false);
-                })
-            console.log(abrirInput);
+                }
+            } catch (response) {
+                errorToast();
+                console.log(response);
+                setLoading(false);
+            }
         }
-        if (accion == "editar") {
-            axiosClient.put(`/TipoToma/update/${ordenDeTrabajo.id}`, values)
-                .then((data) => {
-                    setLoading(false);
-                    //alert("anomalia creada");
-                    setAbrirInput(true);
-                    setAccion("");
-                    getAnomalias();
-                    setOrdenDeTrabajo(data.data);
-                    //setNotification("usuario creado");
-                    successToastEditado();
-                })
-                .catch((err) => {
-                    const response = err.response;
-                    errorToast();
-                    if (response && response.status === 422) {
-                        setErrors(response.data.errors);
-                    }
-                    setLoading(false);
-                })
-        }
-    }
 
-    //con este metodo obtienes las anomalias de la bd
+        
+    };
+
     const getAnomalias = async () => {
         setLoadingTable(true);
         try {
@@ -253,7 +237,6 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
         }
     };
 
-    //elimianar anomalia
     const onDelete = async () => {
         try {
             await axiosClient.delete(`/TipoToma/log_delete/${ordenDeTrabajo.id}`);
@@ -265,117 +248,83 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
             console.error("Failed to delete anomalia:", error);
         }
     };
-     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
-     const restaurarDato = (IdParaRestaurar: any) => {
+
+    const restaurarDato = (IdParaRestaurar: number) => {
         axiosClient.put(`/TipoToma/restore/${IdParaRestaurar}`)
-            .then(() => {
-                setLoading(false);
-                setAbrirInput(false);
-                setAccion("crear");
-                setOrdenDeTrabajo({
-                    id: 0,
-                    nombre: "",
-                    descripcion: "ninguna",
-                    estado: "activo"
-                });
-                getAnomalias();
-                setAccion("creado");
+            .then(response => {
                 successToastRestaurado();
-                setModalReactivacionOpen(false);
+                getAnomalias();
             })
-            .catch((err) => {
+            .catch(error => {
                 errorToast();
-                setLoading(false);
+                console.error("Failed to restore dato:", error);
             });
     };
 
-    //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
-    useEffect(() => {
-        if (accion == "eliminar") {
-            form.reset({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            });
-            setOrdenDeTrabajo({});
-            setAbrirInput(false);
-        }
-        if (accion == "crear") {
-            setAbrirInput(true);
-            setErrors({});
-            form.reset({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            });
-            setOrdenDeTrabajo({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            })
-        }
-        if (accion == "creado") {
-            setAbrirInput(true);
-            setErrors({});
-            form.reset({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            });
-            setOrdenDeTrabajo({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-                
-            })
-        }
-        if (accion == "ver") {
-            setAbrirInput(false);
-            setErrors({});
-            setAccion("");
-            setCargosAgregados([]);
-            form.reset({
-                id: ordenDeTrabajo.id,
-                nombre: ordenDeTrabajo.nombre,
-                cargos: ordenDeTrabajo.cargos,
-                aplicacion: ordenDeTrabajo.aplicacion,
-            });
-        }
-        if (accion == "editar") {
-            setAbrirInput(true);
-            setErrors({});
-        }
-    }, [accion]);
-
-    const handleAgregarCargo = () => {
-        if (nombreSeleccionado && aplicacionSeleccionada) {
-            const nuevoCargo: OrdenDeTrabajo = {
-                nombre: nombreSeleccionado,
-                aplicacion: aplicacionSeleccionada,
-            };
     
-            setCargosAgregados((prev) => [...prev, nuevoCargo]);
-            setNombreSeleccionado(null);
-            setAplicacionSeleccionada(null);
-        } else {
-            console.log("Nombre o aplicación no seleccionados");
+    
+      useEffect(() => {
+        if (accionGeneradaEntreTabs === "eliminar") {
+          setAbrirInput(false);
+          setControl(false);
         }
-    };
+        if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
+          setAbrirInput(true);
+          setControl(true);
+          setErrors({});
+          setOrdenDeTrabajo({
+            id: 0,
+            nombre: "",
+            descripcion: "ninguna",
+          });
+        }
+        if (accionGeneradaEntreTabs === "ver") {
+          setAbrirInput(false);
+          setErrors({});
+          setAccion("");
+          setControl(false);
+          // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
+          //SUS PROPIEDADDES
+          // Transformación de datos
+                const ordenTrabajoCargos = Array.isArray(ordenDeTrabajo.ordenes_trabajo_cargos) ?
+                ordenDeTrabajo.ordenes_trabajo_cargos.map(item => ({
+                id: item.id,
+                id_concepto_catalogo: item.id_concepto_catalogo,
+                })) : [];
+
+                // Reseteo del formulario
+                form.reset({
+                orden_trabajo_cargos: ordenTrabajoCargos,
+                });
+                
+                // Actualización del estado y depuración
+                setTotalAccionesComponente(ordenTrabajoCargos);
+                console.log("Valores del cargo:", ordenTrabajoCargos);
+                console.log("Valores del formulario después del reset:", form.getValues());
+        }
+        
+    
+        if (accion === "editar") {
+          setAbrirInput(true);
+          setControl(true);
+          setErrors({});
+        }
+      }, [accion, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
+
+
+    const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
+
+    //console.log("a ver que datos manda el form", form.getValues());
 
     return (
-        <>
+        <div>
             <div className="overflow-auto">
-         
                 <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-               
-             
                     <div className='h-[20px] w-full flex items-center justify-end'>
-                        
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
-                            {ordenDeTrabajo.nombre != "" && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
+                            {ordenDeTrabajo.nombre && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
                         </div>
-                        {(ordenDeTrabajo.nombre != null && ordenDeTrabajo.nombre != "") &&
+                        {ordenDeTrabajo.nombre && (
                             <>
                                 <Modal
                                     method={onDelete}
@@ -386,107 +335,96 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
                                             </IconButton>
                                         </a>}
                                 />
-                                <div onClick={handleAddComponent}>
-                                    <a title="Agregar nueva acción">
-                                    <IconButton>
-            
-                                    <PlusCircledIcon className='w-[20px] h-[20px]'/>
-          
-                                    </IconButton>
-                                    </a>
-                                </div>
-                                <div onClick={() => setAccion("editar")}>
-                                    <a title="Editar">
+                                {
+                                    accionGeneradaEntreTabs == "editar" &&
+                                    <div onClick={handleAddComponent}>
+                                        <a title="Agregar nueva acción">
+                                            <IconButton>
+                                                <PlusCircledIcon className='w-[20px] h-[20px]' />
+                                            </IconButton>
+                                        </a>
+                                    </div>
+                                }
+
+                                <div onClick={() => setAccionGeneradaEntreTabs("editar")}>
+                                    <a title="Modificar cargos">
                                         <IconButton>
                                             <Pencil2Icon className="w-[20px] h-[20px]" />
                                         </IconButton>
                                     </a>
                                 </div>
-                                
-                                
                             </>
-                        }
-                        {// ESTE ES EL MODAL DE REACTIVACIÓN
-                        //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
-                        //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
-                    }
-                    {ModalReactivacionOpen &&
-                        <ModalReactivacion
-                            isOpen={ModalReactivacionOpen}
-                            setIsOpen={setModalReactivacionOpen}
-                            method={() => restaurarDato(IdParaRestaurar)}
-                        />
-                    }
-
+                        )}
                     </div>
                 </div>
-              
+                {totalAccionesComponente.length < 1 
+                && 
+                <div className="flex justify-center mt-[20vh]">
+                    {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega una o mas cargos.</p> : 
+              <p className="text-muted-foreground text-[20px]">Sin cargos.</p>
+             }
+
+                    </div>
+                }
+
+
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        {totalAccionesComponente.map((accion, index) => {
                            
+                            return (
+                                <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
+                                        <div className="text-sm font-medium mb-3">
+                                        Selecciona un concepto.
+                                        </div>
+                                    <div className="flex items-center space-x-2">
+                                
+                                        <div className="w-full">
+                                       
+                                            <Controller
+                                                name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`}
+                                                control={form.control}
+                                                render={({ field }) => (
 
-                <div className="py-[20px] px-[10px] ">
+                                                    
+                                                    <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado}/>
 
-                    {errors && <Error errors={errors} />}
-                    
-                    {totalAccionesComponente.map((item,index) => (
-                        <Form key={item.id} {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-5">
-                            <div className="flex space-x-10">
-                                <div className="w-full">
-                                    <FormField
-                                        control={form.control}
-                                        name={`id_concepto_catalogo_${item.id}`} // Nombre único por índice
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Agregar concepto</FormLabel>
-                                                <FormControl>
-                                                    <>
-                                                    <div className="flex space-x-2">
-                                                       
-                                                 
-                                                    <div className="w-full">
-                                                    <ConceptosComboBox form={form} field={field} name={`accion_${item.id}`} setCargoSeleccionado={setConceptoSeleccionado} />
-
-                                                    </div>
-                                                    <div className="flex items-center ml-10">
-                                                    <div onClick={() => handleRemoveComponent(item.id)}>  
-                                                    <IconButton>
-                                                            <TrashIcon className='w-[20px] h-[20px]'>
-                                                            </TrashIcon>
-                                                            </IconButton>
-                                                        </div>
-                                                           
-                                                       
-                                                        </div>
-                                                    </div>
-                                                   
-                                                    </>
-                          
-                                                </FormControl>
-                                                <FormDescription>
-                                                    Selecciona un concepto.
-                                                </FormDescription>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    
+                                                )}
+                                            />
+                                        </div>
+                                        <FormMessage />
+                                        <div className="flex justify-end">
+                                        <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
+                                            <TrashIcon className="w-4 h-4" />
+                                        </Button>
+                                        </div>
+                                      
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
-                        <hr className="my-4 border-t border-gray-300" />
-                    </Form>
-                    ))}
-                    {loading && <Loader />}
-                    <div className="flex justify-end mt-[5vh]">
-                    {abrirInput && <Button type="submit">Guardar</Button>}
+                            )
+                        })}
+                        <div className="flex justify-end">
+                            {accionGeneradaEntreTabs == "editar" &&  <Button type="submit">Guardar</Button>}
 
-                    </div>
+                        </div>
+                    </form>
 
-                </div>
-
+                    {ModalReactivacionOpen && (
+                        <Modal
+                            open={ModalReactivacionOpen}
+                            onOpenChange={setModalReactivacionOpen}
+                        >
+                            <ModalReactivacion
+                                id={IdParaRestaurar}
+                                onRestaurar={restaurarDato}
+                            />
+                        </Modal>
+                    )}
+                </Form>
             </div>
-        </>
-    )
-}
+        </div>
 
-export default CargosDeLaOrdenDeTrabajoForm
+    );
+};
+
+export default CargosDeLaOrdenDeTrabajoForm;

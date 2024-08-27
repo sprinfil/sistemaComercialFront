@@ -61,6 +61,7 @@ const OrdenDeTrabajoForm = () => {
     const [nombreSeleccionado, setNombreSeleccionado] = useState<string | null>(null);
     const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
     const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>([]);
+    const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
 
     //#region SUCCESSTOAST
@@ -162,7 +163,7 @@ const OrdenDeTrabajoForm = () => {
         console.log(data);
     
         // Acción de crear
-        if (accion === "crear") {
+        if (accionGeneradaEntreTabs === "crear") {
             axiosClient.put(`/OrdenTrabajoCatalogo/create`,  data)
                 .then((response) => {
                     const data = response.data;
@@ -211,7 +212,7 @@ const OrdenDeTrabajoForm = () => {
         }
     
         // Acción de editar
-        if (accion === "editar") {
+        if (accionGeneradaEntreTabs === "editar") {
 
           
 
@@ -294,7 +295,7 @@ const OrdenDeTrabajoForm = () => {
 
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
-        if (accion == "eliminar") {
+        if (accionGeneradaEntreTabs == "eliminar") {
             setBloquear(false);
             form.reset({
                 id: 0,
@@ -304,7 +305,7 @@ const OrdenDeTrabajoForm = () => {
             setOrdenDeTrabajo({});
             setAbrirInput(false);
         }
-        if (accion == "crear") {
+        if (accionGeneradaEntreTabs == "crear") {
             setAbrirInput(true);
             setBloquear(true);
             setErrors({});
@@ -325,7 +326,7 @@ const OrdenDeTrabajoForm = () => {
                 genera_masiva: false
             })
         }
-        if (accion == "creado") {
+        if (accionGeneradaEntreTabs == "creado") {
             setAbrirInput(true);
             setBloquear(false);
             setErrors({});
@@ -346,7 +347,7 @@ const OrdenDeTrabajoForm = () => {
                 genera_masiva: false
             })
         }
-        if (accion == "ver") {
+        if (accionGeneradaEntreTabs == "ver") {
             setBloquear(false);
 
             
@@ -386,7 +387,7 @@ const OrdenDeTrabajoForm = () => {
             genera_masiva: ordenDeTrabajo.genera_masiva
           
         });
-    },[])
+    },[ordenDeTrabajo.id])
 
 
     const handleAgregarCargo = () => {
@@ -424,7 +425,7 @@ const OrdenDeTrabajoForm = () => {
                                             </IconButton>
                                         </a>}
                                 />
-                                <div onClick={() => setAccion("editar")}>
+                                <div onClick={() => setAccionGeneradaEntreTabs("editar")}>
                                     <a title="Editar">
                                         <IconButton>
                                             <Pencil2Icon className="w-[20px] h-[20px]" />
