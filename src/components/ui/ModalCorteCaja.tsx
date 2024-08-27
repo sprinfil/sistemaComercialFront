@@ -217,6 +217,7 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
             </p>
           </div>
           <AlertDialogFooter>
+            <AlertDialogAction onClick={setIsFirstModalOpen}>Corregir</AlertDialogAction>
             <AlertDialogCancel onClick={() => setIsSecondModalOpen(false)}>No</AlertDialogCancel>
             <AlertDialogAction onClick={handleConfirmAndClose}>Sí</AlertDialogAction>
           </AlertDialogFooter>

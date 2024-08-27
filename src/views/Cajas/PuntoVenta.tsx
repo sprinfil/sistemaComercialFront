@@ -3,19 +3,20 @@ import PuntoVentaForm from '../../components/Forms/PuntoVentaForm';
 import { ModalCorteCaja } from '../../components/ui/ModalCorteCaja';
 import { ModalFondoCaja } from '../../components/ui/ModalFondoCaja';
 import axiosClient from '../../axios-client'; // Importa la instancia configurada de axiosClient
+import { useStateContext } from '../../contexts/ContextProvider'; // Importa el hook personalizado
 
 export default function PuntoVenta() {
+  const { user } = useStateContext(); // Accede al contexto para obtener el usuario
   const [isFondoCajaRegistered, setIsFondoCajaRegistered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initialFund, setInitialFund] = useState('');
   const [cajaCatalogoId, setCajaCatalogoId] = useState(null); // ID de la caja catalogada
 
-
   useEffect(() => {
     // Obtener los valores almacenados en localStorage
     const isRegistered = localStorage.getItem('isFondoCajaRegistered');
     const amount = localStorage.getItem('fondoCajaAmount');
-    const cajaCatalogo = 3; // Obtener la caja
+    const cajaCatalogo = 51; // Obtener la caja
 
     setCajaCatalogoId(cajaCatalogo ? parseInt(cajaCatalogo, 10) : null);
 
@@ -28,7 +29,8 @@ export default function PuntoVenta() {
   }, []);
 
   const handleRegister = async (amount) => {
-    const operatorId = localStorage.getItem('user_id'); // Obtener el operador logeado directamente antes de la solicitud
+    const operatorId = user?.operador?.id; // Obtén el id_user del usuario desde el contexto
+    console.log(operatorId); // Verifica que el id_user se obtenga correctamente
     const fechaApertura = formatDateTime(new Date()); // Formatear la fecha y hora actual como "YYYY-MM-DD HH:mm:ss"
 
     // Validar que el operador esté definido
@@ -94,7 +96,6 @@ export default function PuntoVenta() {
       ) : (
         <PuntoVentaForm />
       )}
-      {}
       <ModalCorteCaja
         trigger={<button className="btn-primary"></button>}
         onRegister={() => {}}
