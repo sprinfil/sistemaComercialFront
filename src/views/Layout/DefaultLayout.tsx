@@ -34,7 +34,7 @@ const DefaultLayout = () => {
         <>
           <div className='w-full h-full flex-col flex text-red-500 items-center justify-center'>
             <div className=" background_login absolute -z-[10]"></div>
-            <div className='bg-white p-5 rounded-md bg-opacity-40 w-[50rem] h-[50vh] flex items-center justify-center'>
+            <div className='bg-black p-5 rounded-md bg-opacity-40 w-[50rem] h-[50vh] flex items-center justify-center'>
                 <p className='text-lg'>Servidor Desconectado</p>
             </div>
           </div>
