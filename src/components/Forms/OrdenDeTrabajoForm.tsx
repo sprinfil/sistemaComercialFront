@@ -47,6 +47,7 @@ type OrdenDeTrabajo = {
     aplicacion: string;
     // Otras propiedades relevantes
 };
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 
 const OrdenDeTrabajoForm = () => {
     const { toast } = useToast()
@@ -64,6 +65,8 @@ const OrdenDeTrabajoForm = () => {
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
 
+    console.log(accionGeneradaEntreTabs);
+    console.log(ordenDeTrabajo);
     //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
@@ -192,7 +195,7 @@ const OrdenDeTrabajoForm = () => {
                             momento_cargo: "",
                             genera_masiva: false
                         });
-                        setAccion("creado");
+                        setAccionGeneradaEntreTabs("creado");
                         getAnomalias();
                         successToastCreado();
                         console.log(values);
@@ -220,7 +223,7 @@ const OrdenDeTrabajoForm = () => {
                 .then((data) => {
                     setLoading(false);
                     setAbrirInput(false);
-                    setAccion("");
+                    setAccionGeneradaEntreTabs("");
                     getAnomalias();
                     setOrdenDeTrabajo(data.data);
                     successToastEditado();
@@ -260,7 +263,7 @@ const OrdenDeTrabajoForm = () => {
         try {
             await axiosClient.delete(`/TipoToma/log_delete/${ordenDeTrabajo.id}`);
             getAnomalias();
-            setAccion("eliminar");
+            setAccionGeneradaEntreTabs("eliminar");
             successToastEliminado();
         } catch (error) {
             errorToast();
@@ -273,7 +276,7 @@ const OrdenDeTrabajoForm = () => {
             .then(() => {
                 setLoading(false);
                 setAbrirInput(false);
-                setAccion("crear");
+                setAccionGeneradaEntreTabs("crear");
                 setOrdenDeTrabajo({
                     id: 0,
                     nombre: "",
@@ -283,7 +286,7 @@ const OrdenDeTrabajoForm = () => {
                     genera_masiva: false
                 });
                 getAnomalias();
-                setAccion("creado");
+                setAccionGeneradaEntreTabs("creado");
                 successToastRestaurado();
                 setModalReactivacionOpen(false);
             })
@@ -355,7 +358,6 @@ const OrdenDeTrabajoForm = () => {
 
             setAbrirInput(false);
             setErrors({});
-            setAccion("");
             setCargosAgregados([]);
             form.reset({
                 id: ordenDeTrabajo.id,
@@ -367,12 +369,12 @@ const OrdenDeTrabajoForm = () => {
               
             });
         }
-        if (accion == "editar") {
+        if (accionGeneradaEntreTabs == "editar") {
             setAbrirInput(true);
             setBloquear(true);
             setErrors({});
         }
-    }, [accion]);
+    }, [accionGeneradaEntreTabs]);
 
 
 
@@ -453,9 +455,7 @@ const OrdenDeTrabajoForm = () => {
                     {errors && <Error errors={errors} />}
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                            <MarcoForm
-                            title={"Información General"}>
- <FormField
+                            <FormField
                                 control={form.control}
                                 name="nombre"
                                 render={({ field }) => (
@@ -574,7 +574,6 @@ const OrdenDeTrabajoForm = () => {
                                 )}
                             />
 
-                            </MarcoForm>
                            
 
                             {/*accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
