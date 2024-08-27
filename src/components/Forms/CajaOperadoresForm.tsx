@@ -76,6 +76,18 @@ const CajaOperadoresForm = () => {
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
     const [control, setControl] = useState(false);
+
+
+
+    console.log(caja);
+    console.log(accionGeneradaEntreTabs);
+
+
+
+
+
+
+
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0 
             ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1 
@@ -165,7 +177,7 @@ const CajaOperadoresForm = () => {
             })),
         });
     }
-}, [totalAccionesComponente, accion]);
+}, [totalAccionesComponente, accionGeneradaEntreTabs]);
 
     const onSubmit = async (values: CajaOperadores) => {
         console.log(values);
@@ -276,7 +288,6 @@ const CajaOperadoresForm = () => {
         if (accionGeneradaEntreTabs === "ver") {
           setAbrirInput(false);
           setErrors({});
-          setAccion("");
           setControl(true);
           // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
           //SUS PROPIEDADDES
@@ -299,11 +310,11 @@ const CajaOperadoresForm = () => {
         }
         
     
-        if (accion === "editar") {
+        if (accionGeneradaEntreTabs === "editar") {
           setAbrirInput(true);
           setErrors({});
         }
-      }, [accion, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
+      }, [accionGeneradaEntreTabs, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
 
 
     const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';

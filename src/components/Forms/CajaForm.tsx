@@ -43,6 +43,10 @@ const CajaForm = () => {
     const [cuentaContableSeleccionada, setCuentaContableSeleccionada] = useState("");
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
+
+    console.log(caja);
+    console.log(accionGeneradaEntreTabs);
+
      //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
@@ -305,10 +309,9 @@ const CajaForm = () => {
                 hora_cierre: "0",
             })
         }
-        if (accionGeneradaEntreTabs == "ver") {
+        if ( accionGeneradaEntreTabs== "ver") {
             setAbrirInput(false);
             setErrors({});
-            setAccionGeneradaEntreTabs("");
             form.reset({
                 id: 0,
                 id_cuenta_contable: caja.id_cuenta_contable,
@@ -316,13 +319,19 @@ const CajaForm = () => {
                 hora_apertura: caja.hora_apertura,
                 hora_cierre: caja.hora_cierre,
             });
+            
+
         }
         if (accionGeneradaEntreTabs == "editar") {
             setAbrirInput(true);
             setErrors({});
         }
-    }, [accionGeneradaEntreTabs]);
+   
 
+    }, [accionGeneradaEntreTabs,form.reset, caja.id]);
+
+
+  
 
     //METODO PARA CONVERTIR DE H:i al formato que pide H:i:s
     

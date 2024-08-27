@@ -12,9 +12,9 @@ import {
 import IconButton from "../../ui/IconButton"
 import { TrashIcon, Pencil2Icon, PlusCircledIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import { useState } from "react"
-import { useStateContext } from "../../../contexts/ContextAnomalias"
+import { useStateContext } from "../../../contexts/ContextCaja"
 import { Checkbox } from "@/components/ui/checkbox"
-
+import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Caja = {
@@ -73,11 +73,11 @@ export const columns: ColumnDef<Caja>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const anomalia = row.original
-      const { setAnomalia, setAccion } = useStateContext();
-      
+      const caja = row.original
+      const { setCaja, setAccion } = useStateContext();
+      const {accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
       return (
-        <div onClick={()=>{setAnomalia(anomalia);setAccion("ver")}}>
+        <div onClick={()=>{setCaja(caja);}}>
           <IconButton>
             <EyeOpenIcon className="w-[20px] h-[20px]"/>
           </IconButton>
