@@ -14,6 +14,8 @@ export type Tarifa = {
   descripcion: string
   fecha: string
   estado: boolean
+  nombreEstado: string
+
 }
 
 
@@ -33,10 +35,23 @@ export const columns: ColumnDef<Tarifa>[] = [
       )
     },
     cell: ({ row }) => {
-      const estado = row.getValue("estado")
-     
-      const nombre = row.getValue("nombre")
-      return <div className="">{nombre}  <span className="bg-green-500"> {estado ? "Tarifa Activa":""}</span></div>
+      const estado = row.original.estado; 
+      const nombre = row.original.nombre; 
+
+      return (
+
+        <div className="flex items-center w-full justify-between">
+        <span>{nombre}</span>
+        
+        <div className="flex items-center">
+          <span className="mr-2">{estado === "activo" ? 'Activo' : 'Inactivo'}</span>
+          <span
+            className={`flex justify-center items-center w-3 h-3 rounded-full text-white ${estado === "activo" ? 'bg-green-500' : 'bg-red-500'}`}
+          >
+          </span>
+        </div>
+      </div>
+      );
     },
   },
   {

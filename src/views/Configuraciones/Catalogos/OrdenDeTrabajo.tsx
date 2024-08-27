@@ -42,16 +42,14 @@ const OrdenDeTrabajo = () => {
 
   return (
     <ContextProvider>
-      <div className='w-full max-h-[50vh] mt-[15px]'>
+      <div className='w-full'>
         {/*Contenedor principal*/}
         <div className='flex gap-2 '>
-
-
             <MostrarTable />
           {/*Datatable*/}
 
           {/*Formulario*/}
-          <div className='w-full rounded-md border border-border h-[80vh] p-4 overflow-auto'>
+          <div className='w-full rounded-md border border-border h-[77vh] p-4 overflow-auto '>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList>
                 {opciones.map((opcion, index) => (
@@ -84,7 +82,7 @@ const OrdenDeTrabajoformEdit = () => {
         {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
       {accionGeneradaEntreTabs == "editar" ? (<div className='w-full rounded-md border border-primary h-full p-4'>
             <OrdenDeTrabajoForm />
-          </div>) : (<div className='w-full rounded-md border border-border h-full p-4'>
+          </div>) : (<div className='w-full rounded-md'>
             <OrdenDeTrabajoForm />
           </div>)}
     </>

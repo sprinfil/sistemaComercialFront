@@ -306,10 +306,10 @@ function handleNavigationCrearUsuario ()
     return (
         <ContextProvider>
             <div>
-            <div className='mt-5 w-full rounded-md border border-border p-4 h-[55vh] '>
+            <div className=' w-full rounded-md border border-border  shadow-inherit p-10 h-[55vh]'>
                 <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                    <div style={{ color: 'grey' }}>Consultar al usuario</div>
+                    <div className="text-muted-foreground text-[20px]">Consultar al usuario</div>
                 
                     <FormField
                         control={form.control}
@@ -335,7 +335,7 @@ function handleNavigationCrearUsuario ()
                                     {nombreSeleccionado === "Codigo usuario" && "Escribe el código del usuario"}
                                     {nombreSeleccionado === "Correo" && "Escribe el correo del usuario"}
                                     {nombreSeleccionado === "Dirección" && "Escribe la dirección de la toma"}
-                                    {nombreSeleccionado === "Codigo toma" && "Escribe el codigo de la toma"}
+                                    {nombreSeleccionado === "Codigo toma" && "Escribe el código de la toma"}
 
                                 </FormLabel>
                                 <FormControl>
@@ -359,11 +359,11 @@ function handleNavigationCrearUsuario ()
             </Form>
         </div>
 
-        {mostrarTablaUsuario&&filtroSeleccionado == "1" && <h1 className="mt-10 ml-6">Selecciona un usuario.</h1>}
-        {mostrarTablaUsuario&&filtroSeleccionado == "2" && <h1 className="mt-10 ml-6">Selecciona un usuario.</h1>}
-        {mostrarTablaUsuario&&filtroSeleccionado == "3" && <h1 className="mt-10 ml-6">Selecciona un usuario.</h1>}
-        {mostrarTablaTomaUsuario&&filtroSeleccionado == "4"&&<h1 className="mt-10 ml-6">Selecciona la toma del usuario.</h1>}
-        {mostrarTablaTomaUsuario&&filtroSeleccionado == "5"&&<h1 className="mt-10 ml-6">Selecciona la toma del usuario.</h1>}
+        {mostrarTablaUsuario&&filtroSeleccionado == "1" && <h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona un usuario.</h1>}
+        {mostrarTablaUsuario&&filtroSeleccionado == "2" && <h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona un usuario.</h1>}
+        {mostrarTablaUsuario&&filtroSeleccionado == "3" && <h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona un usuario.</h1>}
+        {mostrarTablaTomaUsuario&&filtroSeleccionado == "4"&&<h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona la toma del usuario.</h1>}
+        {mostrarTablaTomaUsuario&&filtroSeleccionado == "5"&&<h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona la toma del usuario.</h1>}
 
         {
             

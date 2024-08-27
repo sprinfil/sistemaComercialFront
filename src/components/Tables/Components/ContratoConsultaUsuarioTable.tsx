@@ -69,7 +69,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
 
         loadAndScroll();
     }
-}, [nombreBuscado, setUsuariosEncontrados, setLoadingTable]);
+}, []);
 
   const handleRowClick = (contratobuscarUsuario: BuscarUsuario) => {
     setUsuariosEncontrados([contratobuscarUsuario]);
@@ -94,8 +94,8 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
 
   return (
     <ContextProvider>
-    <div ref={tableRef} className=''>
-        <DataTableUsuarios columns={columns} data={usuariosEncontrados} sorter='nombre' onRowClick={handleRowClick} />
+    <div ref={tableRef}>
+        <DataTableUsuarios columns={columns} data={usuariosEncontrados} onRowClick={handleRowClick} />
       </div>
     </ContextProvider>
   

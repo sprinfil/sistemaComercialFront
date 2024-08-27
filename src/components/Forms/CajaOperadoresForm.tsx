@@ -3,7 +3,7 @@ import logo from '../../img/logo.png';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from '../../../components/ui/button.tsx';
+import { Button } from "../ui/button.tsx";
 import {
     Form,
     FormControl,
@@ -12,24 +12,24 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "../../../components/ui/form.tsx";
-import { Input } from '../../../components/ui/input.tsx';
+} from "../ui/form.tsx";
+import { Input } from '../ui/input.tsx';
 import { OrdenDeTrabajoCrearSchema } from "../../../components/Forms/OrdenDeTrabajoValidaciones.ts";
-import { ModeToggle } from '../../../components/ui/mode-toggle.tsx';
-import axiosClient from "../../../axios-client.ts";
-import Loader from "../../../components/ui/Loader.tsx";
-import Error from "../../../components/ui/Error.tsx";
-import { Textarea } from "../../../components/ui/textarea.tsx";
-import { useStateContext } from "../../../contexts/ContextOrdenDeTrabajo.tsx";
+import { ModeToggle } from '../ui/mode-toggle.tsx';
+import axiosClient from "../../axios-client.ts";
+import Loader from "../ui/Loader.tsx";
+import Error from "../ui/Error.tsx";
+import { Textarea } from "../ui/textarea.tsx";
+import { useStateContext } from "../../contexts/ContextCaja.tsx";
 import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
-import IconButton from "../../../components/ui/IconButton.tsx";
+import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../../../components/ui/ComboBox.tsx";
-import Modal from "../../../components/ui/Modal.tsx";
-import ModalReactivacion from "../../../components/ui/ModalReactivación.tsx";
-import { useToast } from "../../../components/ui/use-toast";
-import { ToastAction } from "../../../components/ui/toast";
-import { Switch } from "../../../components/ui/switch.tsx";
-import { ConceptosComboBoxNew } from "../../../components/ui/ConceptosComboBoxNew.tsx";
+import Modal from "../ui/Modal.tsx";
+import ModalReactivacion from "../ui/ModalReactivación.tsx";
+import { useToast } from "../ui/use-toast";
+import { ToastAction } from "../ui/toast";
+import { Switch } from "../ui/switch.tsx";
+import { ConceptosComboBoxNew } from "../ui/ConceptosComboBoxNew.tsx";
 import OrdenDeTrabajoCargosTable from "../../../components/Tables/Components/OrdenDeTrabajoCargosTable.tsx";
 import { OrdenDeTrabajoAplicacionComboBox } from "../../../components/ui/OrdenDeTrabajoAplicacionComboBox.tsx";
 import {
@@ -38,31 +38,29 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
-import { ConceptosComboBox } from "../../../components/ui/ConceptosComboBox.tsx";
-import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario.tsx";
+} from "../ui/select";
+import { ConceptosComboBox } from "../ui/ConceptosComboBox.tsx";
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 import { ConceptosOrdenDeTrabajoComboBox } from "../../../components/ui/ConceptosOrdenDeTrabajoComboBox.tsx";
-import { DisparaOtraOTComboBox } from "../../../components/ui/DisparaOtraOTComboBox.tsx";
+import { DisparaOtraOTComboBox } from "../ui/DisparaOtraOTComboBox.tsx";
+import { Caja } from "../Tables/Columns/CajaColumns.tsx";
+import { CajaComboBox } from "../ui/CajaComboBox.tsx";
 
-type OrdenDeTrabajo = {
-    nombre: string;
-    aplicacion: string;
-};
 
-const OrdenDeTrabajoEncadenadasSchema = z.object({
-    orden_trabajo_encadenadas: z.array(
+const CajaOperadoresSchema = z.object({
+    operadores_asignados: z.array(
         z.object({
             id: z.number(),
-            id_OT_Catalogo_encadenada: z.number().min(1, "La OT es requerida"),
+            id_operador: z.number().min(1, "El operador es requetido"),
         })
     ),
 });
 
-type OrdenDeTrabajoEncadenadas = z.infer<typeof OrdenDeTrabajoEncadenadasSchema>;
+type CajaOperadores = z.infer<typeof CajaOperadoresSchema>;
 
-const DisparaOtraOrdenDeTrabajoForm = () => {
+const CajaOperadoresForm = () => {
     const { toast } = useToast();
-    const { ordenDeTrabajo, setOrdenDeTrabajo, loadingTable, setLoadingTable, setOrdenDeTrabajos, setAccion, accion } = useStateContext();
+    const { caja, setCaja, loadingTable, setLoadingTable, setCajas, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
@@ -72,9 +70,9 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     const [cargoSeleccionado, setCargoSeleccionado] = useState<string | null>(null);
     const [nombreSeleccionado, setNombreSeleccionado] = useState<string | null>(null);
     const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
-    const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>([]);
+    const [cargosAgregados, setCargosAgregados] = useState<Caja[]>([]);
     const [aumentarAcciones, setAumentarAcciones] = useState(1);
-    const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_OT_Catalogo_encadenada:number}[]>([{ id: 0, id_OT_Catalogo_encadenada: 0}]);
+    const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_operador:number}[]>([{ id: 0, id_operador: 0}]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
@@ -98,7 +96,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo encadenada se ha creado correctamente",
+            description: "Se ha actualizado correctamente",
             variant: "success",
         });
     }
@@ -148,12 +146,12 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
    
 
     
-  const form = useForm<OrdenDeTrabajoEncadenadas>({
-    resolver: zodResolver(OrdenDeTrabajoEncadenadasSchema),
+  const form = useForm<CajaOperadores>({
+    resolver: zodResolver(CajaOperadoresSchema),
     defaultValues: {
-        orden_trabajo_encadenadas: totalAccionesComponente.map(item => ({
+        operadores_asignados: totalAccionesComponente.map(item => ({
         id: item.id,
-        id_OT_Catalogo_encadenada: 0,
+        id_operador: 0,
       })),
     },
   });
@@ -161,35 +159,35 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
   useEffect(() => {
     if (accionGeneradaEntreTabs === "editar") {
         form.reset({
-            orden_trabajo_encadenadas: totalAccionesComponente.map(item => ({
+            operadores_asignados: totalAccionesComponente.map(item => ({
                 id: item.id,
-                id_OT_Catalogo_encadenada: 0, // O el valor predeterminado adecuado
+                id_operador: 0, // O el valor predeterminado adecuado
             })),
         });
     }
 }, [totalAccionesComponente, accion]);
 
-    const onSubmit = async (values: OrdenDeTrabajoEncadenadas) => {
+    const onSubmit = async (values: CajaOperadores) => {
         console.log(values);
 
-        const encadenadas = values.orden_trabajo_encadenadas.map((item) => ({
+        const operadoresaEnviar = values.operadores_asignados.map((item) => ({
             id: item.id,
-            id_OT_Catalogo_padre: idSeleccionadoConfiguracionOrdenDeTrabajo,
-            id_OT_Catalogo_encadenada: item.id_OT_Catalogo_encadenada
+            id_caja_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo,
+            id_operador: item.id_operador
         }));
-        console.log("Cargos:", encadenadas);
+        console.log("Cargos:", operadoresaEnviar);
 
 
-        const orden_trabajo_encadenadas = {
-            orden_trabajo_encadenadas: encadenadas
+        const operadores_asignados = {
+            operadores_asignados: operadoresaEnviar
         }
 
-        console.log("valores enviados objeto", orden_trabajo_encadenadas);
+        console.log("valores enviados objeto", operadores_asignados);
 
 
         if (accionGeneradaEntreTabs === "editar") {
             try {
-                const response = await axiosClient.put(`/OrdenTrabajoCatalogo/create/encadenadas`, orden_trabajo_encadenadas);
+                const response = await axiosClient.post(`/cajas/asignarOperador`, operadores_asignados);
                 const data = response.data;
                 if (data.restore) {
                     setIdParaRestaurar(data.tipoToma_id);
@@ -199,13 +197,13 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                     setLoading(false);
                 } else {
                     setLoading(false);
-                    setOrdenDeTrabajo({
+                    setCaja({
                         id: 0,
                         nombre: "",
                         descripcion: "ninguna",
                     });
                     form.reset({
-                        orden_trabajo_encadenadas: totalAccionesComponente,
+                        operadores_asignados: totalAccionesComponente,
                     });
                     console.log(response);
                     setAccion("creado");
@@ -225,10 +223,10 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     const getAnomalias = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/OrdenTrabajoCatalogo");
+            const response = await axiosClient.get("/cajas/consultarCajas");
             setLoadingTable(false);
-            setOrdenDeTrabajos(response.data.data);
-            console.log(response.data.data);
+            setCajas(response.data);
+            console.log(response.data);
         } catch (error) {
             setLoadingTable(false);
             errorToast();
@@ -238,7 +236,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
 
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/TipoToma/log_delete/${ordenDeTrabajo.id}`);
+            await axiosClient.delete(`/TipoToma/log_delete/${caja.id}`);
             getAnomalias();
             setAccion("eliminar");
             successToastEliminado();
@@ -269,7 +267,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
         if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
           setAbrirInput(true);
           setErrors({});
-          setOrdenDeTrabajo({
+          setCaja({
             id: 0,
             nombre: "",
             descripcion: "ninguna",
@@ -283,20 +281,20 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
           // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
           //SUS PROPIEDADDES
           // Transformación de datos
-                const ordenTrabajoEncadenadas = Array.isArray(ordenDeTrabajo.ordenes_trabajo_encadenadas) ?
-                ordenDeTrabajo.ordenes_trabajo_encadenadas.map(item => ({
+                const verOperadores = Array.isArray(caja.operadorAsignado) ?
+                caja.operadorAsignado.map(item => ({
                 id: item.id,
-                id_OT_Catalogo_encadenada: item.id_OT_Catalogo_encadenada,
+                id_operador: item.id_operador,
                 })) : [];
 
                 // Reseteo del formulario
                 form.reset({
-                    orden_trabajo_encadenadas: ordenTrabajoEncadenadas,
+                    operadores_asignados: verOperadores,
                 });
 
                 // Actualización del estado y depuración
-                setTotalAccionesComponente(ordenTrabajoEncadenadas);
-                console.log("Valores del cargo:", ordenTrabajoEncadenadas);
+                setTotalAccionesComponente(verOperadores);
+                console.log("Estos son los operadores:", verOperadores);
                 console.log("Valores del formulario después del reset:", form.getValues());
         }
         
@@ -318,9 +316,9 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                 <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {ordenDeTrabajo.nombre && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
+                            {caja.nombre_caja && <p className="text-muted-foreground text-[20px]">{caja.nombre_caja}</p>}
                         </div>
-                        {ordenDeTrabajo.nombre && (
+                        {caja.nombre_caja && (
                             <>
                                 <Modal
                                     method={onDelete}
@@ -373,19 +371,18 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                             return (
                                 <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
                                      <div className="text-sm font-medium mb-3">
-                                        Selecciona una orden de trabajo.
+                                        Selecciona un operador
                                         </div>
                                     <div className="flex items-center space-x-2">
                                         <div className="w-full">
                                          
                                             <Controller
-                                                name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`}
+                                                name={`operadores_asignados.${index}.id_operador`}
                                                 control={form.control}
                                                 render={({ field }) => (
 
-                                                    
-                                                    <DisparaOtraOTComboBox form={form} field={field} name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`} setCargoSeleccionado={setConceptoSeleccionado}/>
-
+                                            
+                                                    <CajaComboBox form={form} field={field} name={`operadores_asignados.${index}.id_operador`} setCargoSeleccionado={setConceptoSeleccionado}/>
                                                 )}
                                             />
                                         </div>
@@ -421,4 +418,4 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     );
 };
 
-export default DisparaOtraOrdenDeTrabajoForm;
+export default CajaOperadoresForm;

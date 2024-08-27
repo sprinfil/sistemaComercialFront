@@ -43,6 +43,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "dayjs": "^1.11.13",
     "embla-carousel-react": "^8.1.6",
     "escpos": "^3.0.0-alpha.6",
     "express": "^4.19.2",

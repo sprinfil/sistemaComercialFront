@@ -53,7 +53,6 @@ export const ModalMasFiltros = ({trigger, setUserData, cerrarForm}) => {
                         <AlertDialogTitle>Selecciona El Usuario/Toma</AlertDialogTitle>
                         <AlertDialogDescription>
                              <div className='h-[70vh] overflow-auto p-4 max-w-[75rem]'>
-                  
                                     <BuscarUsuarioForm 
                                     navegacion={""} 
                                     botonCrearUsuario={false}  
@@ -65,7 +64,8 @@ export const ModalMasFiltros = ({trigger, setUserData, cerrarForm}) => {
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                    <AlertDialogAction onClick={() => setIsOpen(false)}>Cerrar</AlertDialogAction>
+
+                    <AlertDialogCancel>Cerrar</AlertDialogCancel>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

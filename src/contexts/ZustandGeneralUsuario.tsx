@@ -109,7 +109,7 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setDataCajaUser:(dataCajaUser) => set ({dataCajaUser}),
   booleanCodigoDeToma: false,
   setBooleanCodigoDeToma:(booleanCodigoDeToma) => set({booleanCodigoDeToma}),
-  booleanCerrarModalFiltros: true,
+  booleanCerrarModalFiltros: false,
   setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros) => set({booleanCerrarModalFiltros}),
   idSeleccionadoConfiguracionOrdenDeTrabajo: null,
  setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo) => set({idSeleccionadoConfiguracionOrdenDeTrabajo}),

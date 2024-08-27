@@ -14,13 +14,13 @@ import {
     FormMessage,
 } from "../../components/ui/form.tsx";
 import { Input } from '../../components/ui/input.tsx';
-import { anomaliaSchema } from './validaciones.ts';
+import { cajaCatalogoSchema } from './validaciones.ts';
 import { ModeToggle } from '../../components/ui/mode-toggle.tsx';
 import axiosClient from '../../axios-client.ts';
 import Loader from "../../components/ui/Loader.tsx";
 import Error from "../../components/ui/Error.tsx";
 import { Textarea } from "../ui/textarea.tsx";
-import { useStateContext } from "../../contexts/ContextAnomalias.tsx";
+import { useStateContext } from "../../contexts/ContextCaja.tsx";
 import { useEffect } from "react";
 import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
@@ -29,32 +29,25 @@ import Modal from "../ui/Modal.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
-  import { Switch } from "../ui/switch.tsx";
-import { faGaugeSimpleMed } from "@fortawesome/free-solid-svg-icons";
+import { CuentasContablesComboBox } from "../ui/CuentasContablesComboBox.tsx";
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 
-const AnomaliaForm = () => {
+const CajaForm = () => {
     const { toast } = useToast()
-    const { anomalia, setAnomalia, loadingTable, setLoadingTable, setAnomalias, setAccion, accion } = useStateContext();
+    const { caja, setCaja, loadingTable, setLoadingTable, setCajas, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
     const [anomaliaIdParaRestaurar, setAnomaliaIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
-    const [valorObtenidoBool, setValorObtenidoBool] = useState(false);
-    const [control, setControl] = useState(false);
+    const [cuentaContableSeleccionada, setCuentaContableSeleccionada] = useState("");
+    const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
      //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía se ha creado correctamente",
+            description: "La caja se ha creado correctamente",
             variant: "success",
 
         })
@@ -62,7 +55,7 @@ const AnomaliaForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha editado correctamente",
+            description: "La caja se ha editado correctamente",
             variant: "success",
 
         })
@@ -70,7 +63,7 @@ const AnomaliaForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha eliminado correctamente",
+            description: "La caja se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -78,7 +71,7 @@ const AnomaliaForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La anomalía  se ha restaurado correctamente",
+            description: "La caja se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -103,36 +96,42 @@ const AnomaliaForm = () => {
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
-            description: "La anomalía ya existe.",
+            description: "La caja ya existe.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }
 
 
 
-    const form = useForm<z.infer<typeof anomaliaSchema>>({
-        resolver: zodResolver(anomaliaSchema),
+    const form = useForm<z.infer<typeof cajaCatalogoSchema>>({
+        resolver: zodResolver(cajaCatalogoSchema),
         defaultValues: {
             id: 0,
-            nombre: "",
-            descripcion: "",
-            facturable: "0",
-            estado: false,
+            id_cuenta_contable: 0,
+            nombre_caja:"",
+            hora_apertura: "",
+            hora_cierre: ""
+
         },
     })
 
 
 
-    function onSubmit(values: z.infer<typeof anomaliaSchema>) {
+    function onSubmit(values: z.infer<typeof cajaCatalogoSchema>) {
         setLoading(true);
-        
-        const boolConvetido = anomalia.estado ? "activo" : "inactivo"
+       
+        const formattedTime = formatTimeToHIS(values.hora_apertura);
+        const formattedTime2 = formatTimeToHIS(values.hora_cierre);
 
-        let values2 = {...values, estado: boolConvetido}
-        console.log("valores ingresados", values2);
+        const values2 = {
+            ...values,
+            hora_apertura: formattedTime,
+            hora_cierre: formattedTime2,
+        }
 
-        if (accion == "crear") {
-            axiosClient.post(`/AnomaliasCatalogo/create`, values2)
+
+        if (accionGeneradaEntreTabs == "crear") {
+            axiosClient.post(`/cajas/guardarCajaCatalogo`, values2)
                 .then((response) => {
                     const data = response.data;
                     if (data.restore) {
@@ -145,28 +144,25 @@ const AnomaliaForm = () => {
                     }
                     else{
                         setLoading(false);
-                        setAnomalia({
+                        setCaja({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
-                            facturable: "0",
-                            estado: false
                         });
                         form.reset({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
-                            facturable: "0",
-                            estado: false
                         });
-                        getAnomalias();
+                        getCajas();
                         successToastCreado();
-                        setAccion("creado");
+                        setAccionGeneradaEntreTabs("creado");
                     }
                 
                 })
                 .catch((err) => {
                     const response = err.response;
+                    console.log(response);
                     errorToast();
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
@@ -175,13 +171,8 @@ const AnomaliaForm = () => {
                 })
             console.log(abrirInput);
         }
-        if (accion == "editar") {
-            const boolConvetido = values.estado == true ? "activo" : "inactivo"
-
-            let values2 = {...values, estado: boolConvetido}
-            console.log("valores ingresados PARA EDITAR", values2);
-    
-            axiosClient.put(`/AnomaliasCatalogo/update/${anomalia.id}`, values2)
+        if (accionGeneradaEntreTabs == "editar") {
+            axiosClient.put(`/cajas/modificarCajaCatalogo/${caja.id}`, values)
                 .then((response) => {
                     const data = response.data;
                     if (data.confirmUpdate) {
@@ -190,9 +181,9 @@ const AnomaliaForm = () => {
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
-                    setAccion("");
-                    getAnomalias();
-                    setAnomalia(data.data);
+                    setAccionGeneradaEntreTabs("");
+                    getCajas();
+                    setCaja(data.data);
                     //setNotification("usuario creado");
                     successToastEditado();
                     }
@@ -218,13 +209,13 @@ const AnomaliaForm = () => {
     };
 
     //con este metodo obtienes las anomalias de la bd
-    const getAnomalias = async () => {
+    const getCajas = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/AnomaliasCatalogo");
+            const response = await axiosClient.get("/cajas/consultarCajas");
             setLoadingTable(false);
-            setAnomalias(response.data.data);
-            console.log(response.data.data);
+            setCajas(response.data);
+            console.log(response.data);
         } catch (error) {
             setLoadingTable(false);
             errorToast();
@@ -235,9 +226,9 @@ const AnomaliaForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${anomalia.id}`);
-            getAnomalias();
-            setAccion("eliminar");
+            await axiosClient.delete(`/AnomaliasCatalogo/log_delete/${caja.id}`);
+            getCajas();
+            setAccionGeneradaEntreTabs("eliminar");
             successToastEliminado();
         } catch (error) {
             errorToast();
@@ -251,17 +242,17 @@ const AnomaliaForm = () => {
             .then(() => {
                 setLoading(false);
                 setAbrirInput(false);
-                setAccion("crear");
-                setAnomalia({
+                setAccionGeneradaEntreTabs("crear");
+                setCaja({
                     id: 0,
-                    nombre: "",
-                    descripcion: "ninguna",
-                    facturable:"",
-                    estado: false
+                    id_cuenta_contable: 0,
+                    nombre_caja: "",
+                    hora_apertura: "0",
+                    hora_cierre: "0",
                 });
-                getAnomalias();
+                getCajas();
                 successToastRestaurado();
-                setAccion("creado");
+                setAccionGeneradaEntreTabs("creado");
                 setModalReactivacionOpen(false);
 
             })
@@ -273,133 +264,84 @@ const AnomaliaForm = () => {
 
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
-        if (accion == "eliminar") {
-            setControl(false);
+        if (accionGeneradaEntreTabs == "eliminar") {
             form.reset({
                 id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-                facturable:"0",
-               estado: false
+                id_cuenta_contable: 0,
+                nombre_caja: "",
+                hora_apertura: "0",
+                hora_cierre: "0",
             });
-            setAnomalia({});
+            setCaja({});
             setAbrirInput(false);
         }
-        if (accion == "creado") {
-            setControl(false);
+        if (accionGeneradaEntreTabs == "creado") {
             form.reset({
                 id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-                facturable:"0",
-
-               estado: false
+                id_cuenta_contable: 0,
+                nombre_caja: "",
+                hora_apertura: "0",
+                hora_cierre: "0",
             });
-            setAnomalia({});
+            setCaja({});
             setAbrirInput(false);
         }
-        if (accion == "crear") {
-            setControl(true);
+        if (accionGeneradaEntreTabs == "crear") {
             console.log("creando");
             setAbrirInput(true);
             setErrors({});
             form.reset({
                 id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-                facturable:"0",
-
-               estado: false
+                id_cuenta_contable: 0,
+                nombre_caja: "",
+                hora_apertura: "0",
+                hora_cierre: "0",
             });
-            setAnomalia({
+            setCaja({
                 id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-                facturable:"0",
-
-               estado: false
+                id_cuenta_contable: 0,
+                nombre_caja: "",
+                hora_apertura: "0",
+                hora_cierre: "0",
             })
         }
-        console.log({ accion });
-        if (accion == "ver") {
+        if (accionGeneradaEntreTabs == "ver") {
             setAbrirInput(false);
-            setControl(false);
             setErrors({});
-            setAccion("");
-            if (!anomalia?.nombre) {
-                return <div>Nombre no encontrado</div>;
-            }
-
-            // VER QUE LLEGA DE LA BASE DE DATOSs
-            //console.log("Este es el estado recibido desde la base de datos:", anomalia.estado);
-
-            // CONVERTIR STRING A BOOLEANO
-            const valorDesdeBaseDeDatos: string = anomalia.estado as unknown as string; 
-            const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
-            setValorObtenidoBool(valorBooleano);
-            //COMPROBAR LA CONVERCIÓN
-            console.log("Este es el valor booleano convertido:", valorBooleano);
-
-            const valorFacturableBaseDeDatos: number = anomalia.facturable as unknown as number; 
-            const valorStringFacturable: string = valorFacturableBaseDeDatos.toString();
-            console.log("Este es el valor convertido a string:", valorStringFacturable);
-            console.log("Tipo de valorStringFacturable:", typeof valorStringFacturable);
-            
-            
-
-            if (!anomalia) {
-                return <div>Cargando...</div>;
-            }
-
+            setAccionGeneradaEntreTabs("");
             form.reset({
-                id: anomalia?.id || 0,
-                nombre: anomalia?.nombre || '',
-                descripcion: anomalia?.descripcion || '',
-                facturable: String(anomalia.facturable), // Asegúrate de que este valor es un string
-                estado: valorObtenidoBool
+                id: 0,
+                id_cuenta_contable: caja.id_cuenta_contable,
+                nombre_caja: caja.nombre_caja,
+                hora_apertura: caja.hora_apertura,
+                hora_cierre: caja.hora_cierre,
             });
-
         }
-        if (accion == "editar") {
-            setControl(true);
-            if (!anomalia?.nombre) {
-                return <div>Nombre no encontrado</div>;
-            }
-            form.reset({
-                id: anomalia.id || 0,
-                nombre: anomalia?.nombre || '',
-                descripcion: anomalia.descripcion || '',
-                facturable: anomalia.facturable,
-                estado: valorObtenidoBool
-            });
+        if (accionGeneradaEntreTabs == "editar") {
             setAbrirInput(true);
             setErrors({});
-            
         }
-    }, [accion]);
+    }, [accionGeneradaEntreTabs]);
 
-    useEffect(() => {
-        if (accion === "ver" && anomalia) {
-            form.reset({
-                id: anomalia.id || 0,
-                nombre: anomalia?.nombre || '',
-                descripcion: anomalia.descripcion || '',
-                facturable: String(anomalia.facturable), // Asegúrate de que este valor es un string
-                estado: valorObtenidoBool
-            });
-        }
-    }, [valorObtenidoBool]);
 
+    //METODO PARA CONVERTIR DE H:i al formato que pide H:i:s
+    
+    const formatTimeToHIS = (time) => {
+        return `${time}:00`;
+      };
+
+     
     return (
         <>
             <div className="overflow-auto max-w-full max-h-full">
-                <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
+                <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva anomalía</p>}
-                            {anomalia?.nombre != "" && <p className="text-muted-foreground text-[20px]">{anomalia?.nombre}</p>}
+                            {accionGeneradaEntreTabs == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva caja</p>}
+                            {accionGeneradaEntreTabs == "creado" && <p className="text-muted-foreground text-[20px]"></p>}
+                            {caja.nombre_caja != "" && <p className="text-muted-foreground text-[20px]">{caja.nombre_caja}</p>}
                         </div>
-                        {(anomalia?.nombre != null && anomalia?.nombre != "") &&
+                        {(caja.nombre_caja != null && caja.nombre_caja != "") &&
                             <>
                                 <Modal
                                     method={onDelete}
@@ -410,7 +352,7 @@ const AnomaliaForm = () => {
                                             </IconButton>
                                         </a>}
                                 />
-                                <div onClick={() => setAccion("editar")}>
+                                <div onClick={() => setAccionGeneradaEntreTabs("editar")}>
                                     <a title="Editar">
                                         <IconButton>
                                             <Pencil2Icon className="w-[20px] h-[20px]" />
@@ -440,15 +382,15 @@ const AnomaliaForm = () => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                             <FormField
                                 control={form.control}
-                                name="nombre"
+                                name="nombre_caja"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Nombre</FormLabel>
                                         <FormControl>
-                                            <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la anomalía" {...field} />
+                                            <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la caja" {...field} />
                                         </FormControl>
                                         <FormDescription>
-                                            El nombre de la anomalía.
+                                            El nombre de la caja.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -456,109 +398,62 @@ const AnomaliaForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="descripcion"
+                                name="id_cuenta_contable"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Descripción</FormLabel>
+                                        <FormLabel>Cuenta contable</FormLabel>
                                         <FormControl>
-                                            <Textarea
-                                                readOnly={!abrirInput}
-                                                placeholder="Descripcion de la anomalía"
-                                                {...field}
-                                            />
+                                        <CuentasContablesComboBox form={form} field={field} name="id_cuenta_contable" setCargoSeleccionado={setCuentaContableSeleccionada}/>
                                         </FormControl>
                                         <FormDescription>
-                                            Agrega una breve descripción.
+                                            Selecciona una cuenta contable.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                             <FormField
+                            <div className="w-[18.9vh]">
+                            <FormField
                                 control={form.control}
-                                name="facturable"
+                                name="hora_apertura"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>¿Es facturable?</FormLabel>
-                                        {
-                                            control ?
-                                            <Select
-                                            onValueChange={(value) => field.onChange(value)}
-                                            value={field.value}
-                                    >
+                                        <FormLabel>Apertura</FormLabel>
                                         <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="¿Es facturable?" />
-                                        </SelectTrigger>
+                                        <input {...field} readOnly={!abrirInput} type="time" name="hora_apertura" 
+                                          className="border border-border w-full rounded-md p-[4px] bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring disabled:opacity-50 disabled:cursor-not-allowed"/>
                                         </FormControl>
-                                        <SelectContent>
-                                        <SelectItem value="1">Si</SelectItem>
-                                        <SelectItem value="0">No</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    :
-                                    <Select
-                                    disabled
-                                    onValueChange={(value) => field.onChange(value)}
-                                    value={field.value}
-                                    >
-                                        <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="¿Es facturable?" />
-                                        </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                        <SelectItem value="1">Si</SelectItem>
-                                        <SelectItem value="0">No</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-
-                                        }
                                         <FormDescription>
-                                            Selecciona si es facturable o no.
+                                            Escoge el horario de apertura.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            
-                             <FormField
+                            </div>
+                            <div className="w-[18.9vh]">
+                            <FormField
                                 control={form.control}
-                                name="estado"
+                                name="hora_cierre"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Estado</FormLabel>
-                                       
+                                        <FormLabel>Cierre</FormLabel>
                                         <FormControl>
-                                            {
-                                                control
-                                                ?
-                                                
-                                                <Switch
-                                                className="ml-3"
-                                                checked={field.value}
-                                                onCheckedChange={(checked) => field.onChange(checked)
-                                                }
-                                                /> 
-                                                :
-                                                <Switch
-                                                className="ml-3"
-                                                disabled
-                                                checked={field.value}
-                                                onCheckedChange={(checked) => field.onChange(checked)
-                                                }
-                                                /> 
-
-                                            }
-                                       
+                                        <input {...field} 
+                                        readOnly={!abrirInput} 
+                                        type="time" name="hora_cierre" 
+                                     
+                                          className="border border-border w-full rounded-md p-[4px] bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring disabled:opacity-50 disabled:cursor-not-allowed"/>
                                         </FormControl>
                                         <FormDescription>
-                                            Aquí puedes cambiar el estado de la anomalía.
+                                            Escoge el horario de cierre.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
+                            </div>
+                             
                             {loading && <Loader />}
                             {abrirInput && <Button type="submit">Guardar</Button>}
 
@@ -571,4 +466,4 @@ const AnomaliaForm = () => {
     )
 }
 
-export default AnomaliaForm
+export default CajaForm
