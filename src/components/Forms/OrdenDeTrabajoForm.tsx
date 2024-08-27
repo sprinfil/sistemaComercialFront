@@ -413,7 +413,7 @@ const OrdenDeTrabajoForm = () => {
                 <div className='flex h-[40px] items-center bg-muted rounded-sm '>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
+                            {accionGeneradaEntreTabs == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
                             {ordenDeTrabajo.nombre != "" && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
                         </div>
                         {(ordenDeTrabajo.nombre != null && ordenDeTrabajo.nombre != "") &&
@@ -514,7 +514,10 @@ const OrdenDeTrabajoForm = () => {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Momento del cargo</FormLabel>
-                                        <Select
+                                        {
+                                            accionGeneradaEntreTabs == "ver" ?
+                                            <Select
+                                            disabled
                                             onValueChange={(value) => field.onChange(String(value))}
                                             value={String(field.value)}
                                         >
@@ -530,6 +533,25 @@ const OrdenDeTrabajoForm = () => {
                                                 <SelectItem value="no genera">No genera</SelectItem>
                                             </SelectContent>
                                         </Select>
+                                        :
+                                        <Select
+                                        onValueChange={(value) => field.onChange(String(value))}
+                                        value={String(field.value)}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecciona el momento del cargo" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="generar">Generar</SelectItem>
+                                            <SelectItem value="asignar">Asignar</SelectItem>
+                                            <SelectItem value="concluir">Concluir</SelectItem>
+                                            <SelectItem value="no genera">No genera</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                        }
+                                       
                                         <FormDescription>
                                             Selecciona el momento del cargo.
                                         </FormDescription>

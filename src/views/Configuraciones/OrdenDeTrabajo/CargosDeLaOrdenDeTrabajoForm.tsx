@@ -77,6 +77,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
     const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_concepto_catalogo:number}[]>([{ id: 0, id_concepto_catalogo: 0}]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
+    const [control, setControl] = useState(false);
 
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0 
@@ -281,7 +282,8 @@ const CargosDeLaOrdenTrabajoForm = () => {
           setAbrirInput(false);
           setErrors({});
           setAccion("");
-        
+          setControl(true);
+          console.log(accionGeneradaEntreTabs);
           // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
           //SUS PROPIEDADDES
           // Transformación de datos
@@ -370,8 +372,6 @@ const CargosDeLaOrdenTrabajoForm = () => {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {totalAccionesComponente.map((accion, index) => {
-                            console.log(index);
-                            console.log(index.id);
                             return (
                                 <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
                                      <div className="text-sm font-medium mb-3">
@@ -386,7 +386,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
                                                 render={({ field }) => (
 
                                                     
-                                                    <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado}/>
+                                                    <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control}/>
 
                                                 )}
                                             />

@@ -75,7 +75,7 @@ const CajaOperadoresForm = () => {
     const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_operador:number}[]>([{ id: 0, id_operador: 0}]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
-
+    const [control, setControl] = useState(false);
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0 
             ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1 
@@ -277,7 +277,7 @@ const CajaOperadoresForm = () => {
           setAbrirInput(false);
           setErrors({});
           setAccion("");
-        
+          setControl(true);
           // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
           //SUS PROPIEDADDES
           // Transformación de datos
@@ -382,7 +382,7 @@ const CajaOperadoresForm = () => {
                                                 render={({ field }) => (
 
                                             
-                                                    <CajaComboBox form={form} field={field} name={`operadores_asignados.${index}.id_operador`} setCargoSeleccionado={setConceptoSeleccionado}/>
+                                                    <CajaComboBox form={form} field={field} name={`operadores_asignados.${index}.id_operador`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control}/>
                                                 )}
                                             />
                                         </div>
