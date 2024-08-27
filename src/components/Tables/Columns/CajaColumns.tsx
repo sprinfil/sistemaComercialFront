@@ -12,8 +12,9 @@ import {
 import IconButton from "../../ui/IconButton"
 import { TrashIcon, Pencil2Icon, PlusCircledIcon, EyeOpenIcon } from '@radix-ui/react-icons';
 import { useState } from "react"
-import { useStateContext } from "../../../contexts/ContextAnomalias"
+import { useStateContext } from "../../../contexts/ContextCaja"
 import { Checkbox } from "@/components/ui/checkbox"
+import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -31,6 +32,7 @@ export type operadorAsignado = {
   id_operador: number,
   id_caja_catalogo: number
 }
+const { setIdSeleccionadoConfiguracionOrdenDeTrabajo, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
 
 export const columns: ColumnDef<Caja>[] = [
@@ -73,11 +75,12 @@ export const columns: ColumnDef<Caja>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const anomalia = row.original
-      const { setAnomalia, setAccion } = useStateContext();
+      const caja = row.original
+      const { setCaja, setAccion } = useStateContext();
       
       return (
-        <div onClick={()=>{setAnomalia(anomalia);setAccion("ver")}}>
+        <div onClick={()=>{setCaja(caja);setAccionGeneradaEntreTabs("ver");
+        }}>
           <IconButton>
             <EyeOpenIcon className="w-[20px] h-[20px]"/>
           </IconButton>

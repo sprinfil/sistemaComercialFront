@@ -308,13 +308,13 @@ const CajaForm = () => {
         if (accionGeneradaEntreTabs == "ver") {
             setAbrirInput(false);
             setErrors({});
-            setAccionGeneradaEntreTabs("");
+            setAccionGeneradaEntreTabs("ver");
             form.reset({
                 id: 0,
-                id_cuenta_contable: caja.id_cuenta_contable,
-                nombre_caja: caja.nombre_caja,
-                hora_apertura: caja.hora_apertura,
-                hora_cierre: caja.hora_cierre,
+                id_cuenta_contable: caja?.id_cuenta_contable,
+                nombre_caja: caja?.nombre_caja,
+                hora_apertura: caja?.hora_apertura,
+                hora_cierre: caja?.hora_cierre,
             });
         }
         if (accionGeneradaEntreTabs == "editar") {
@@ -339,9 +339,9 @@ const CajaForm = () => {
                         <div className="mb-[10px] h-full w-full mx-4">
                             {accionGeneradaEntreTabs == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva caja</p>}
                             {accionGeneradaEntreTabs == "creado" && <p className="text-muted-foreground text-[20px]"></p>}
-                            {caja.nombre_caja != "" && <p className="text-muted-foreground text-[20px]">{caja.nombre_caja}</p>}
+                            {caja?.nombre_caja != "" && <p className="text-muted-foreground text-[20px]">{caja?.nombre_caja}</p>}
                         </div>
-                        {(caja.nombre_caja != null && caja.nombre_caja != "") &&
+                        {(caja?.nombre_caja != null && caja?.nombre_caja != "") &&
                             <>
                                 <Modal
                                     method={onDelete}
