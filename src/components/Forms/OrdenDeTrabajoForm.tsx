@@ -41,7 +41,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import MarcoForm from "../ui/MarcoForm.tsx";
-
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 type OrdenDeTrabajo = {
     nombre: string;
     aplicacion: string;
@@ -455,7 +455,7 @@ const OrdenDeTrabajoForm = () => {
                         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
                             <MarcoForm
                             title={"Información General"}>
- <FormField
+                            <FormField
                                 control={form.control}
                                 name="nombre"
                                 render={({ field }) => (
