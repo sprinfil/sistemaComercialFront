@@ -1,65 +1,61 @@
-import React from 'react'
+    function formatLine(concept, amount, totalWidth = 40) {
+        const conceptLength = concept.length;
+        const amountLength = amount.length;
+        const spacesNeeded = totalWidth - (conceptLength + amountLength);
+        const paddedConcept = concept + ' '.repeat(spacesNeeded > 0 ? spacesNeeded : 0);
+        return paddedConcept + amount;
+    }
 
-const TicketPagoEnCaja = (
-    nombre_caja:string,
-    consecutivo:string,
-    nombre_cajero:string,
-    folio:string,
-    fecha_pago:string,
-    original:boolean,
-    usuario:string,
-    cuenta:string,
-    calle:string, 
-    codigo_postal:string, 
-    colonia:string, 
-    rfc:string, 
-    conceptos:Array,
-    
-) => {
-    let estructura_ticket = []
-    estructura_ticket.push([`FELIX ORTEGA 2330, CENTRO, LA PAZ .C.S`, `CT`, `B`])
-    estructura_ticket.push([`(612) 123 8600`, `CT`, `B`])
-    estructura_ticket.push([`_________________________________________`, `LT`, `B`])
-    estructura_ticket.push([` `, `CT`])
-    estructura_ticket.push([`Caja: Caja 10`, `LT`])
-    estructura_ticket.push([`Consecutivo: 101`, `LT`])
-    estructura_ticket.push([`Cajero: MIGUEL ANGEL MURILLO JAIMES`, `LT`])
-    estructura_ticket.push([`Recibo: 42353546023450`, `LT`])
-    estructura_ticket.push([`Fecha de Pago: 15/08/2024 13:19`, `LT`, `B`])
-    estructura_ticket.push([`_________________________________________`, `LT`, `B`])
-    estructura_ticket.push([` `, `CT`])
-    estructura_ticket.push([`***COPIA***`, `CT`, `B`])
-    estructura_ticket.push([`_________________________________________`, `LT`, `B`])
-    estructura_ticket.push([` `, `CT`])
-    estructura_ticket.push([`Usuario: PUBLICO EN GENERAL`, `LT`, `B`])
-    estructura_ticket.push([`Cuenta: 00002026`, `LT`, `B`])
-    estructura_ticket.push([` `, `CT`])
-    estructura_ticket.push([`Direccion`, `CT`, `B`])
-    estructura_ticket.push([` `, `CT`])
-    estructura_ticket.push([`Calle: BAHIA DE LA PAZ #120`, `LT`])
-    estructura_ticket.push([`Codigo Postal: 23080`, `LT`])
-    estructura_ticket.push([`COLONIA: FOVISSTE`, `LT`])
-    estructura_ticket.push([`RFC: XAXXX010101010010`, `LT`])
-    estructura_ticket.push([`_________________________________________`, `LT`, `B`])
-    estructura_ticket.push([` `, `LT`])
-    estructura_ticket.push([`CONCEPTO(S)`, `CT`, `B`])
-    estructura_ticket.push([`_________________________________________`, `LT`, `B`])
-    estructura_ticket.push([formatLine(`CONSTANCIA DE NO SERVICIO`, `$329`), `LT`, `B`])
-    estructura_ticket.push([formatLine(`IVA`, `$20`), `LT`, `B`])
-    estructura_ticket.push([`_________________________________________`, `LT`, `B`])
-    estructura_ticket.push([` `, `LT`])
-    estructura_ticket.push([`Detalle del pago`, `CT`, `B`])
-    estructura_ticket.push([`_________________________________________`, `LT`, `B`])
-    estructura_ticket.push([formatLine(`SALDO ANTERIOR`, `$329`), `LT`])
-    estructura_ticket.push([`TARJETA`, `LT`, `B`])
-    estructura_ticket.push([formatLine(`RECIBIDIO`, `$329`), `LT`])
-    estructura_ticket.push([formatLine(`CAMBIO`, `$329`), `LT`])
-    estructura_ticket.push([` `, `LT`])
-    estructura_ticket.push([formatLine(`PAGO NETO`, `$329`), `LT`])
-    estructura_ticket.push([formatLine(`SALDO PENDIENTE`, `$0`), `LT`])
-    estructura_ticket.push([` `, `LT`])
-    estructura_ticket.push([` `, `LT`])
-    estructura_ticket.push([`pruebas.sapalapaz.gob.mx`, `CT`])
-}
+    export default function estructura_ticket(data){
+        let estructura_ticket = []
+        estructura_ticket.push([`FELIX ORTEGA 2330, CENTRO, LA PAZ .C.S`, `CT`, `B`])
+        estructura_ticket.push([`(612) 123 8600`, `CT`, `B`])
+        estructura_ticket.push([`_________________________________________`, `LT`, `B`])
+        estructura_ticket.push([` `, `CT`])
+        estructura_ticket.push([`Caja: ${data?.nombre_caja}`, `LT`])
+        estructura_ticket.push([`Consecutivo: ${data?.consecutivo}`, `LT`])
+        estructura_ticket.push([`Cajero: ${data?.nombre_cajero}`, `LT`])
+        estructura_ticket.push([`Recibo: ${data?.pago_folio}`, `LT`])
+        estructura_ticket.push([`Fecha de Pago: ${data?.fecha_pago}`, `LT`, `B`])
+        estructura_ticket.push([`_________________________________________`, `LT`, `B`])
+        if (data?.copia == true) {
+            estructura_ticket.push([` `, `CT`])
+            estructura_ticket.push([`***COPIA***`, `CT`, `B`])
+            estructura_ticket.push([`_________________________________________`, `LT`, `B`])
+        }
+        estructura_ticket.push([` `, `CT`])
+        estructura_ticket.push([`Usuario: ${data?.usuario_nombre}`, `LT`, `B`])
+        estructura_ticket.push([`Cuenta: ${data?.numero_cuenta}`, `LT`, `B`])
+        estructura_ticket.push([` `, `CT`])
+        estructura_ticket.push([`Direccion`, `CT`, `B`])
+        estructura_ticket.push([` `, `CT`])
+        estructura_ticket.push([`Calle: ${data?.calle} ${data?.numero}`, `LT`])
+        estructura_ticket.push([`Codigo Postal: ${data?.codigo_postal}`, `LT`])
+        estructura_ticket.push([`COLONIA: ${data?.colonia}`, `LT`])
+        estructura_ticket.push([`RFC: ${data?.rfc}`, `LT`])
+        estructura_ticket.push([`_________________________________________`, `LT`, `B`])
+        estructura_ticket.push([` `, `LT`])
+        estructura_ticket.push([`CONCEPTO(S)`, `CT`, `B`])
+        estructura_ticket.push([`_________________________________________`, `LT`, `B`])
+        estructura_ticket.push([` `, `CT`])
+        // data.conceptos.map((concepto) => {
+        //     estructura_ticket.push([formatLine(`${concepto.nombre}`, `${concepto.monto}`), `LT`, `B`])
+        //  })
+        estructura_ticket.push([`_________________________________________`, `LT`, `B`])
+        estructura_ticket.push([` `, `LT`])
+        estructura_ticket.push([`Detalle del pago`, `CT`, `B`])
+        estructura_ticket.push([`_________________________________________`, `LT`, `B`])
+        estructura_ticket.push([formatLine(`SALDO ANTERIOR`, `$ ${data?.saldo_anterior}`), `LT`])
+        estructura_ticket.push([`${data?.metodo_pago}`, `LT`, `B`])
+        estructura_ticket.push([formatLine(`RECIBIDIO`, `$ ${data?.recibido}`), `LT`])
+        estructura_ticket.push([formatLine(`CAMBIO`, `$ ${data?.cambio}`), `LT`])
+        estructura_ticket.push([` `, `LT`])
+        estructura_ticket.push([formatLine(`PAGO NETO`, `$ ${data?.pago_neto}`), `LT`])
+        estructura_ticket.push([formatLine(`SALDO PENDIENTE`, `$ ${data?.saldo_pendiente}`), `LT`])
+        estructura_ticket.push([` `, `LT`])
+        estructura_ticket.push([` `, `LT`])
+        estructura_ticket.push([`pruebas.sapalapaz.gob.mx`, `CT`])
+        return estructura_ticket;
+    }
+  
 
-export default TicketPagoEnCaja

@@ -379,6 +379,7 @@ const PuntoVentaForm = () => {
         </div>
         <p className="whitespace-nowrap">Número de toma</p>
         <Input
+        type="number"
           className="h-8 ml-1 mr-1 w-96"
           value={userInput}
           onChange={handleInputChange}
