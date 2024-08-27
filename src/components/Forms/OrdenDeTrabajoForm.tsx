@@ -40,7 +40,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
+import MarcoForm from "../ui/MarcoForm.tsx";
+
 type OrdenDeTrabajo = {
     nombre: string;
     aplicacion: string;
@@ -407,7 +408,7 @@ const OrdenDeTrabajoForm = () => {
     return (
         <>
             <div className="overflow-auto">
-                <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm '>
+                <div className='flex h-[40px] items-center bg-muted rounded-sm '>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
                             {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
@@ -451,8 +452,10 @@ const OrdenDeTrabajoForm = () => {
 
                     {errors && <Error errors={errors} />}
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                            <FormField
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+                            <MarcoForm
+                            title={"Información General"}>
+ <FormField
                                 control={form.control}
                                 name="nombre"
                                 render={({ field }) => (
@@ -570,6 +573,9 @@ const OrdenDeTrabajoForm = () => {
                                     </FormItem>
                                 )}
                             />
+
+                            </MarcoForm>
+                           
 
                             {/*accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
                             {/*accion == "editar" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
