@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -19,13 +19,11 @@ import dayjs from 'dayjs';
 const ModalCargarConcepto = ({ trigger, dueño, setCargos, handleCargoSelect }) => {
 
     const [selected_concepto, set_selected_concepto] = useState({});
+    const monto_input = useRef();
 
     const cargar_cargo_directo = () => {
+        const monto = parseFloat(monto_input.current.value);
 
-        let tarifas = selected_concepto?.tarifas;
-        const monto = parseFloat(tarifas?.filter(tarifa => tarifa.id_tipo_toma == dueño.tipo_toma)[0].monto);
-        //const hoy = dayjs().format('YYYY-MM-DD');
-        console.log(monto)
         let data = {
             cargos: [
                 {
@@ -41,7 +39,9 @@ const ModalCargarConcepto = ({ trigger, dueño, setCargos, handleCargoSelect }) 
 
         axiosClient.post("/cargo/generarDirecto", data)
             .then((response) => {
+                console.log(response.data.data)
                 handleCargoSelect(response.data.data, dueño);
+
                 actualizar_cargos();
             }).catch((response) => {
                 console.log(response)
@@ -60,6 +60,16 @@ const ModalCargarConcepto = ({ trigger, dueño, setCargos, handleCargoSelect }) 
         }
     }
 
+    useEffect(() => {
+
+        let tarifas = selected_concepto?.tarifas;
+        const monto = parseFloat(tarifas?.filter(tarifa => tarifa.id_tipo_toma == dueño.id_tipo_toma)[0].monto);
+        if (monto_input.current) {
+            monto_input.current.value = monto;
+            selected_concepto.pide_monto == 1 ? monto_input.current.disabled = false : monto_input.current.disabled = true;
+        }
+    }, [selected_concepto])
+
     return (
         <div>
             <AlertDialog>
@@ -72,6 +82,19 @@ const ModalCargarConcepto = ({ trigger, dueño, setCargos, handleCargoSelect }) 
                     <>
                         <div >
                             <ComboBoxCargosCargables set={set_selected_concepto} />
+                            <p className='text-[14px] mt-5'>Monto (No Incluye IVA)</p>
+                            <input ref={monto_input} type="number" className='bg-background border p-2 mt-2 w-full rounded-md outline-none' placeholder='Monto' />
+                            {
+                                selected_concepto?.pide_monto == 1 ?
+                                    <>
+                                        <p className='text-[14px] m-1 text-blue-500'>Monto Variable</p>
+                                    </>
+                                    :
+                                    <>
+                                        <p className='text-[14px] m-1 text-yellow-500'>Monto Fijo</p>
+                                    </>
+                            }
+
                         </div>
                     </>
                     <AlertDialogFooter>
