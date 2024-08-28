@@ -379,7 +379,8 @@ const OrdenDeTrabajoForm = () => {
 
 
     useEffect(() => {
-        form.reset({
+      
+             form.reset({
             id: ordenDeTrabajo.id,
             nombre: ordenDeTrabajo.nombre,
             descripcion: ordenDeTrabajo.descripcion,
@@ -388,7 +389,26 @@ const OrdenDeTrabajoForm = () => {
             genera_masiva: ordenDeTrabajo.genera_masiva
           
         });
+        
+       
     },[ordenDeTrabajo.id])
+
+
+    useEffect(() => {
+        if(accionGeneradaEntreTabs == "editar")
+        {
+             form.reset({
+            id: ordenDeTrabajo.id,
+            nombre: ordenDeTrabajo.nombre,
+            descripcion: ordenDeTrabajo.descripcion,
+            vigencias: String(ordenDeTrabajo.vigencias),
+            momento_cargo: ordenDeTrabajo.momento_cargo,
+            genera_masiva: Boolean(ordenDeTrabajo.genera_masiva)
+          
+        });
+        }
+       
+    },[accionGeneradaEntreTabs])
 
 
     const handleAgregarCargo = () => {

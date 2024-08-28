@@ -274,50 +274,57 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
 
     
     
-      useEffect(() => {
+    useEffect(() => {
         if (accionGeneradaEntreTabs === "eliminar") {
-          setAbrirInput(false);
+            setAbrirInput(false);
         }
+    
         if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
-          setAbrirInput(true);
-          setErrors({});
-          setOrdenDeTrabajo({
-            id: 0,
-            nombre: "",
-            descripcion: "ninguna",
-          });
+            setAbrirInput(true);
+            setErrors({});
+            setOrdenDeTrabajo({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
         }
-        if (accionGeneradaEntreTabs === "ver") {
-          setAbrirInput(false);
-          setErrors({});
-          setAccion("");
-          setControl(true);
-          // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
-          //SUS PROPIEDADDES
-          // Transformación de datos
-                const ordenTrabajoEncadenadas = Array.isArray(ordenDeTrabajo.ordenes_trabajo_encadenadas) ?
+    
+        if (accionGeneradaEntreTabs === "ver" || accionGeneradaEntreTabs === "editar") {
+            setAbrirInput(true);
+            setErrors({});
+    
+            // Transformación de datos para el formulario
+            const ordenTrabajoEncadenadas = Array.isArray(ordenDeTrabajo.ordenes_trabajo_encadenadas) ?
                 ordenDeTrabajo.ordenes_trabajo_encadenadas.map(item => ({
-                id: item.id,
-                id_OT_Catalogo_encadenada: item.id_OT_Catalogo_encadenada,
+                    id: item.id,
+                    id_OT_Catalogo_encadenada: item.id_OT_Catalogo_encadenada,
                 })) : [];
-
-                // Reseteo del formulario
+    
+            // Manejo de la acción "ver"
+            if (accionGeneradaEntreTabs === "ver") {
+                setControl(true);
                 form.reset({
                     orden_trabajo_encadenadas: ordenTrabajoEncadenadas,
                 });
-
-                // Actualización del estado y depuración
-                setTotalAccionesComponente(ordenTrabajoEncadenadas);
-                console.log("Valores del cargo:", ordenTrabajoEncadenadas);
-                console.log("Valores del formulario después del reset:", form.getValues());
-        }
-        
+            }
     
-        if (accion === "editar") {
-          setAbrirInput(true);
-          setErrors({});
+            // Manejo de la acción "editar"
+            if (accionGeneradaEntreTabs === "editar") {
+                setControl(false);
+                form.reset({
+                    orden_trabajo_encadenadas: ordenTrabajoEncadenadas,
+                });
+            }
+    
+            // Actualización del estado si los datos cambiaron
+            if (JSON.stringify(ordenTrabajoEncadenadas) !== JSON.stringify(totalAccionesComponente)) {
+                setTotalAccionesComponente(ordenTrabajoEncadenadas);
+            }
+    
+            console.log("Valores del cargo:", ordenTrabajoEncadenadas);
+            console.log("Valores del formulario después del reset:", form.getValues());
         }
-      }, [accion, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
+    }, [accionGeneradaEntreTabs, ordenDeTrabajo, idSeleccionadoConfiguracionOrdenDeTrabajo]);
 
 
     const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';

@@ -74,16 +74,16 @@ const CargosDeLaOrdenTrabajoForm = () => {
     const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
     const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>([]);
     const [aumentarAcciones, setAumentarAcciones] = useState(1);
-    const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_concepto_catalogo:number}[]>([{ id: 0, id_concepto_catalogo: 0}]);
+    const [totalAccionesComponente, setTotalAccionesComponente] = useState<{ id: number, id_concepto_catalogo: number }[]>([{ id: 0, id_concepto_catalogo: 0 }]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
-    const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
+    const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
     const [control, setControl] = useState(false);
 
     const handleAddComponent = () => {
-        const newId = totalAccionesComponente.length > 0 
-            ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1 
+        const newId = totalAccionesComponente.length > 0
+            ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1
             : 1;
-    
+
         setTotalAccionesComponente(prevAcciones => [
             ...prevAcciones,
             { id: newId, id_concepto_catalogo: 0 }
@@ -99,7 +99,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo encadenada se ha creado correctamente",
+            description: "El cargo o los cargos de la orden de trabajo se han creado correctamente",
             variant: "success",
         });
     }
@@ -146,29 +146,29 @@ const CargosDeLaOrdenTrabajoForm = () => {
         });
     }
 
-   
 
-    
-  const form = useForm<OrdenTrabajoCargo>({
-    resolver: zodResolver(OrdenTrabajoCargosSchema),
-    defaultValues: {
-        orden_trabajo_cargos: totalAccionesComponente.map(item => ({
-        id: item.id,
-        id_concepto_catalogo: 0,
-      })),
-    },
-  });
 
-  useEffect(() => {
-    if (accionGeneradaEntreTabs === "editar") {
-        form.reset({
+
+    const form = useForm<OrdenTrabajoCargo>({
+        resolver: zodResolver(OrdenTrabajoCargosSchema),
+        defaultValues: {
             orden_trabajo_cargos: totalAccionesComponente.map(item => ({
                 id: item.id,
-                id_concepto_catalogo: 0, 
+                id_concepto_catalogo: 0,
             })),
-        });
-    }
-}, [totalAccionesComponente, accion]);
+        },
+    });
+
+    useEffect(() => {
+        if (accionGeneradaEntreTabs === "editar") {
+            form.reset({
+                orden_trabajo_cargos: totalAccionesComponente.map(item => ({
+                    id: item.id,
+                    id_concepto_catalogo: 0,
+                })),
+            });
+        }
+    }, [totalAccionesComponente, accionGeneradaEntreTabs]);
 
     const onSubmit = async (values: OrdenTrabajoCargo) => {
         console.log(values);
@@ -179,7 +179,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
             id_concepto_catalogo: item.id_concepto_catalogo
         }));
 
-        
+
         console.log("Cargos:", cargos);
 
 
@@ -211,7 +211,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
                         orden_trabajo_cargos: totalAccionesComponente,
                     });
                     console.log(response);
-                    setAccion("creado");
+                    setAccionGeneradaEntreTabs("creado");
                     getAnomalias();
                     successToastCreado();
                 }
@@ -222,7 +222,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
             }
         }
 
-        
+
     };
 
     const getAnomalias = async () => {
@@ -263,58 +263,90 @@ const CargosDeLaOrdenTrabajoForm = () => {
             });
     };
 
-    
-    
-      useEffect(() => {
+
+
+    useEffect(() => {
         if (accionGeneradaEntreTabs === "eliminar") {
-          setAbrirInput(false);
+            setAbrirInput(false);
         }
         if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
-          setAbrirInput(true);
-          setErrors({});
-          setOrdenDeTrabajo({
-            id: 0,
-            nombre: "",
-            descripcion: "ninguna",
-          });
+            setAbrirInput(true);
+            setErrors({});
+            setOrdenDeTrabajo({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
         }
-        if (accionGeneradaEntreTabs === "ver") {
-          setAbrirInput(false);
-          setErrors({});
-          setAccion("");
-          setControl(true);
-          console.log(accionGeneradaEntreTabs);
-          // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
-          //SUS PROPIEDADDES
-          // Transformación de datos
-                const ordenTrabajoCargos = Array.isArray(ordenDeTrabajo.ordenes_trabajo_cargos) ?
-                ordenDeTrabajo.ordenes_trabajo_cargos.map(item => ({
-                id: item.id,
-                id_concepto_catalogo: item.id_concepto_catalogo,
-                })) : [];
 
-                // Reseteo del formulario
+
+    }, [accion, form.reset, totalAccionesComponente, idSeleccionadoConfiguracionOrdenDeTrabajo]);
+
+    useEffect(() => {
+   
+        if (accionGeneradaEntreTabs && ordenDeTrabajo) {
+            const ordenTrabajoCargos = Array.isArray(ordenDeTrabajo.ordenes_trabajo_cargos)
+                ? ordenDeTrabajo.ordenes_trabajo_cargos.map(item => ({
+                    id: item.id,
+                    id_concepto_catalogo: item.id_concepto_catalogo,
+                }))
+                : [];
+    
+            if (accionGeneradaEntreTabs === "ver") {
                 form.reset({
                     orden_trabajo_cargos: ordenTrabajoCargos,
                 });
-
-                // Actualización del estado y depuración
-                setTotalAccionesComponente(ordenTrabajoCargos);
-                console.log("Valores del cargo:", ordenTrabajoCargos);
-                console.log("Valores del formulario después del reset:", form.getValues());
-        }
-        
+                setControl(true);
+                setAbrirInput(true);
+            }
     
-        if (accion === "editar") {
-          setAbrirInput(true);
-          setErrors({});
+            if (accionGeneradaEntreTabs === "editar") {
+                form.reset({
+                    orden_trabajo_cargos: ordenTrabajoCargos,
+                });
+                setControl(false);
+                setAbrirInput(true);
+            }
+    
+          
+            if (JSON.stringify(ordenTrabajoCargos) !== JSON.stringify(totalAccionesComponente)) {
+                setTotalAccionesComponente(ordenTrabajoCargos);
+            }
+    
+            console.log("Valores del cargo:", ordenTrabajoCargos);
+            console.log("Valores del formulario después del reset:", form.getValues());
         }
-      }, [accion, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
+    }, [accionGeneradaEntreTabs, ordenDeTrabajo]);
 
+    useEffect(() => {
+        if (accionGeneradaEntreTabs === "creado" && ordenDeTrabajo) {
+            const ordenTrabajoCargos = Array.isArray(ordenDeTrabajo.ordenes_trabajo_cargos)
+                ? ordenDeTrabajo.ordenes_trabajo_cargos.map(item => ({
+                    id: item.id,
+                    id_concepto_catalogo: item.id_concepto_catalogo,
+                }))
+                : [];
+    
+            form.reset({
+                orden_trabajo_cargos: ordenTrabajoCargos,
+               
+            });
+    
+            setControl(false);
+            setAbrirInput(true);
+    
+            if (JSON.stringify(ordenTrabajoCargos) !== JSON.stringify(totalAccionesComponente)) {
+                setTotalAccionesComponente(ordenTrabajoCargos);
+            }
+    
+            console.log("Formulario cargado con valores actuales:", form.getValues());
+        }
+    }, [accionGeneradaEntreTabs, ordenDeTrabajo]);
+ 
 
+    
     const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
-
-    //console.log("a ver que datos manda el form", form.getValues());
+    console.log(accionGeneradaEntreTabs);
 
     return (
         <div>
@@ -357,12 +389,12 @@ const CargosDeLaOrdenTrabajoForm = () => {
                         )}
                     </div>
                 </div>
-                {totalAccionesComponente.length < 1 
-                && 
-                <div className="flex justify-center mt-[20vh]">
-                     {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o mas ordenes de trabajo.</p> : 
-              <p className="text-muted-foreground text-[20px]">Sin cargos.</p>
-             }
+                {totalAccionesComponente.length < 1
+                    &&
+                    <div className="flex justify-center mt-[20vh]">
+                        {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o mas ordenes de trabajo.</p> :
+                            <p className="text-muted-foreground text-[20px]">Sin cargos.</p>
+                        }
 
                     </div>
                 }
@@ -374,19 +406,19 @@ const CargosDeLaOrdenTrabajoForm = () => {
                         {totalAccionesComponente.map((accion, index) => {
                             return (
                                 <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
-                                     <div className="text-sm font-medium mb-3">
+                                    <div className="text-sm font-medium mb-3">
                                         Selecciona una orden de trabajo.
-                                        </div>
+                                    </div>
                                     <div className="flex items-center space-x-2">
                                         <div className="w-full">
-                                         
+
                                             <Controller
                                                 name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`}
                                                 control={form.control}
                                                 render={({ field }) => (
 
-                                                    
-                                                    <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control}/>
+
+                                                    <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control} />
 
                                                 )}
                                             />
@@ -400,7 +432,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
                             )
                         })}
                         <div className="flex justify-end">
-                           {accionGeneradaEntreTabs == "editar" && <Button type="submit">Guardar</Button>} 
+                            {accionGeneradaEntreTabs == "editar" && <Button type="submit">Guardar</Button>}
 
                         </div>
                     </form>
