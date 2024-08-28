@@ -99,7 +99,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La orden de trabajo encadenada se ha creado correctamente",
+            description: "El cargo o los cargos de la orden de trabajo se han creado correctamente",
             variant: "success",
         });
     }
