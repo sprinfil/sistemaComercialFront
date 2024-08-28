@@ -384,8 +384,8 @@ const CajaOperadoresForm = () => {
                 {totalAccionesComponente.length < 1 
                 && 
                 <div className="flex justify-center mt-[20vh]">
-                     {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o mas operadores.</p> : 
-              <p className="text-muted-foreground text-[20px]">Sin operadores</p>
+                     {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o más operadores.</p> : 
+              <p className="text-muted-foreground text-[20px]">Sin operadores.</p>
              }
 
                     </div>
