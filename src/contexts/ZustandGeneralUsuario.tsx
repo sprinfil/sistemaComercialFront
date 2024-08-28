@@ -68,6 +68,8 @@ interface GeneralUsuario {
  setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo: number) => void;
  accionGeneradaEntreTabs: string,
   setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs: string) => void;
+  idSeleccionadoGenerarOrdenDETrabajoToma: number | null;
+  setIdSeleccionadoGenerarOrdenDETrabajoToma: (idSeleccionadoGenerarOrdenDETrabajoToma: number) => void;
 
 }
 
@@ -115,5 +117,7 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
  setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo) => set({idSeleccionadoConfiguracionOrdenDeTrabajo}),
  accionGeneradaEntreTabs: '',
  setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs) => set({accionGeneradaEntreTabs}),
+ idSeleccionadoGenerarOrdenDETrabajoToma: null,
+ setIdSeleccionadoGenerarOrdenDETrabajoToma: (idSeleccionadoGenerarOrdenDETrabajoToma: number) => set({idSeleccionadoGenerarOrdenDETrabajoToma}),
 }));
 

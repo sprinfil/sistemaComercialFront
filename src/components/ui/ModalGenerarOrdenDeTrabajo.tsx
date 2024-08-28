@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -9,14 +9,21 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import EscogerOrdenDeTrabajoTable from '../Tables/Components/EscogerOrdenDeTrabajoTable';
 import axiosClient from '../../axios-client';
-
+import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
 const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method }) => {
+    
+    const { toast } = useToast()
 
 
 
+    const {usuariosEncontrados, setUsuariosEncontrados, idSeleccionadoGenerarOrdenDETrabajoToma} = ZustandGeneralUsuario();
+
+   // console.log(JSON.stringify(usuariosEncontrados));
+   //console.log(idSeleccionadoGenerarOrdenDETrabajoToma);
 
 
     const action = () => {
@@ -24,24 +31,64 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method }) => {
         setIsOpen(false);
     }
 
+    const [consultaIdToma, setConsultaIdToma] = useState<Usuario| null>(null);
+    const [idDeLaTomaParametro, setIdDeLaTomaParametro] = useState(0)
+
+    //SE DECLARA EL OBJETO USUARIO Y TOMAS
+    //USUARIO ES UN OBJETO PERO TOMAS ES UN ARRAY DENTRO DEL OBJETO XD
+    type Usuario = {
+      id: number
+      nombre: string
+      apellido_paterno: string
+      apellido_materno: string
+      telefono: string
+      correo: string
+      curp: string
+      tomas?: tomas;
+    }
+  
+    type tomas = {
+      id: number
+      id_codigo_toma: string
+      
+    }
+
+    //SETEAMOS CADA QUE SE ENCUENTRE USUARIOS
+
+    useEffect(() => {
+
+          setConsultaIdToma(usuariosEncontrados[0]);
+        
+      }, [usuariosEncontrados]);
+
+      //console.log("Tomas ID:", consultaIdToma?.tomas[0].id_codigo_toma); 
 
 
 
+
+      //GENERA ORDEN DE TRABAJO A UNA TOMA
     const GenerarOrdenDeTrabajoToma = async () => {
+      
 
-
-        const values = [
-            {id_toma: 7,},
-            {id_orden_trabajo_catalogo: 2}
-        ]
         const values2 = {
-            ordenes_trabajo: values,
-        }
+            ordenes_trabajo: [
+                {
+                    id_toma: consultaIdToma?.tomas[0]?.id_codigo_toma,
+                    id_orden_trabajo_catalogo: idSeleccionadoGenerarOrdenDETrabajoToma
+                }
+            ]
+        };
         console.log(values2);
         try{
             const response = await axiosClient.post(`OrdenTrabajo/create`, values2)
             setIsOpen(false);
             console.log(response);
+            toast({
+                title: "¡Éxito!",
+                description: "Se ha creado la orden de trabajo.",
+                variant: "success",
+    
+            })
 
         }
         catch(response){

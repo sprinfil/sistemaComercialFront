@@ -7,9 +7,10 @@ import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { EscogerOrdenDeTrabajoDataTable } from '../../ui/EscogerOrdenDeTrabajoDataTable.tsx';
 import { zustandOrdenTrabajoStore } from '../../../contexts/ZustandOrdenesDeTrabajoUsuario.tsx';
-
+import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
 export default function EscogerOrdenDeTrabajoTable() {
 
+  const {idSeleccionadoConfiguracionOrdenDeTrabajo, setIdSeleccionadoGenerarOrdenDETrabajoToma, idSeleccionadoGenerarOrdenDETrabajoToma} = ZustandGeneralUsuario();
   const {
     ordenDeTrabajos,
     setOrdenDeTrabajos,
@@ -34,11 +35,13 @@ export default function EscogerOrdenDeTrabajoTable() {
     }
   };
 
-const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
+const HandleClickRow = (ordenTrabajo: OrdenDeTrabajo) =>
     {
-      setOrdenDeTrabajo(tipoDeToma);
+    setOrdenDeTrabajo(ordenTrabajo);
     setAccion("ver");
-    console.log(tipoDeToma);
+    setIdSeleccionadoGenerarOrdenDETrabajoToma(ordenTrabajo.id);
+    console.log("entro");
+    console.log(idSeleccionadoGenerarOrdenDETrabajoToma);
 }
 
   if (loadingTable) {

@@ -10,11 +10,15 @@ const CrearOrdenDeTrabajo = () => {
 
   const {usuariosEncontrados, setUsuariosEncontrados} = ZustandGeneralUsuario();
 
-
+  //console.log(JSON.stringify(usuariosEncontrados));
   function handleGenerarOrdenDeTrabajo()
   {
       setAbrirModal(true);
   }
+
+
+
+
  
   return (
     <div>

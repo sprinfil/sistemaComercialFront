@@ -3,7 +3,7 @@ import { Button } from '../../components/ui/button';
 import ModalGenerarOrdenDeTrabajo from '../../components/ui/ModalGenerarOrdenDeTrabajo';
 import { MdContentPasteSearch } from "react-icons/md";
 import IconButton from '../../components/ui/IconButton';
-
+import OrdenDeTrabajoCrearTomasTable from '../../components/Tables/Components/OrdenDeTrabajoCrearTomasTable';
 export const GenerarOtMasiva = () => {
 
   const [abrirModal, setAbrirModal] = useState(false);
@@ -20,8 +20,13 @@ export const GenerarOtMasiva = () => {
     <p className="text-muted-foreground text-[20px]">Generar ordenes de trabajo masivas</p>
     <p className="text-gray-500 text-[20px] mt-5">Selecciona las tomas</p>
 
-        <div className='w-[9vh] h-[9vh]'>
+        <div className='ml-[195vh] w-[8.5vh] h-[8.5vh]'>
+          
           <IconButton onClick={handleGenerarOrdenDeTrabajo}><MdContentPasteSearch className='w-[9vh] h-[9vh]'/></IconButton>
+        </div>
+
+        <div>
+        <OrdenDeTrabajoCrearTomasTable/>
         </div>
 
         <ModalGenerarOrdenDeTrabajo
