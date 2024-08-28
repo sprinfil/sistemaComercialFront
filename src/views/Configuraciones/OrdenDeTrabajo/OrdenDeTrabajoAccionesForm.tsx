@@ -382,7 +382,7 @@ const OrdenDeTrabajoAccionesForm = () => {
           {totalAccionesComponente.length < 1
             &&
             <div className="flex justify-center mt-[20vh]">
-             {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega una o mas acciones.</p> : 
+             {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega una o más acciones.</p> : 
               <p className="text-muted-foreground text-[20px]">Sin acciones.</p>
              }
 
@@ -392,7 +392,7 @@ const OrdenDeTrabajoAccionesForm = () => {
             {totalAccionesComponente.map((item, index) => (
 
               <div key={item.id} className={`p-4 border ${borderColor} rounded-md`}>
-
+                <p>Acción {index + 1}</p>
                 <div className="flex justify-end mb-5">
                   <button type="button" onClick={() => handleRemoveComponent(item.id)}>
                     <a title="Borrar acción">
@@ -459,7 +459,7 @@ const OrdenDeTrabajoAccionesForm = () => {
 
                   <div className="w-full">
                     <div className="text-sm font-medium mb-2">
-                      Selecciona un modelo.
+                      Selecciona una entidad.
                     </div>
                     {accionGeneradaEntreTabs == "ver" ?
                      <Controller
@@ -472,7 +472,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                          value={(field.value)}
                        >
                          <SelectTrigger>
-                           <SelectValue placeholder="Selecciona un modelo" />
+                           <SelectValue placeholder="Selecciona una entidad" />
                          </SelectTrigger>
                          <SelectContent>
                            <SelectItem value="toma">Tomas</SelectItem>
