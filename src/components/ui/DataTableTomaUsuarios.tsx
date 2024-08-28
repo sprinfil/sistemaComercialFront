@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import MarcoForm from "./MarcoForm";
+import IconButton from "./IconButton";
+import { TbFilterPlus } from "react-icons/tb";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -39,6 +41,7 @@ export function DataTableTomaUsuarios<TData, TValue>({
     []
   );
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
+  const [mostrarMasFiltros, setMostrarMasFiltros] = React.useState(false);
 
   const table = useReactTable({
     data,
@@ -61,10 +64,46 @@ export function DataTableTomaUsuarios<TData, TValue>({
     onRowClick?.(rowData);
   };
 
+  const handleAbrirMasFiltros = () => {
+    if(mostrarMasFiltros == true)
+    {
+      setMostrarMasFiltros(false);
+
+    }
+    if(mostrarMasFiltros == false)
+      {
+        setMostrarMasFiltros(true);
+  
+      }
+  }
+
   return (
-    <div className="mt-5 p-10">
-              <MarcoForm title={"Filtros para buscar al usuario"}>
-      <div className="flex space-x-4 mt-5 ">
+    <div className="p-2 ml-6 ">
+    <div className=" w-[5vh] h-[5vh] " title="Mostrar mas filtros"  >
+      <div className="flex space-x-3 w-[50vh]">
+        <div onClick={handleAbrirMasFiltros}>
+        <IconButton>      
+        <TbFilterPlus className="w-[2.5vh] h-[2.5vh]"/>
+      </IconButton>
+        </div>
+
+        <div className="mt-2 ml-10 text-muted-foreground text-[2vh]">Ver más filtros.</div>
+   
+      
+      </div>
+      
+
+    </div>
+      {
+        mostrarMasFiltros && 
+        <div className="mt-6">
+  <MarcoForm title={"Filtros para buscar al usuario"}>
+
+
+      <div className="">
+        <div className="flex space-x-5">
+          
+
         <div className="flex flex-col space-y-2">
         <p className="mb-2 ml-2">Nombre</p>
         <Input
@@ -75,7 +114,7 @@ export function DataTableTomaUsuarios<TData, TValue>({
           const value = event.target.value;
           table.getColumn("usuario.nombre")?.setFilterValue(value);
         }}
-        className="w-[30vh]"
+        className="w-[68vh]"
       />
         </div>
         <div className="flex flex-col space-y-2">
@@ -88,7 +127,7 @@ export function DataTableTomaUsuarios<TData, TValue>({
           const value = event.target.value;
           table.getColumn("usuario.apellido_paterno")?.setFilterValue(value);
         }}
-        className="w-[30vh]"
+        className="w-[68vh]"
       />
       
         </div>
@@ -103,32 +142,61 @@ export function DataTableTomaUsuarios<TData, TValue>({
           const value = event.target.value;
           table.getColumn("usuario.apellido_materno")?.setFilterValue(value);
         }}
-        className="w-[30vh]"
+        className="w-[68vh]"
       />
       
         </div>
 
 
+        </div>
+       
+        <div className="flex space-x-[30vh]">
+        <div className="">
+        <p className="mb-2 ml-2 mt-2">Correo</p>
+        <Input
+        placeholder="Buscar por apellido materno"
+        type="text"
+        value={(table.getColumn("usuario.correo")?.getFilterValue() as string) ?? ""}
+        onChange={(event) => {
+          const value = event.target.value;
+          table.getColumn("usuario.correo")?.setFilterValue(value);
+        }}
+        className="w-[90vh]"
+      />
+      
+        </div>
 
-        <div className="flex flex-col space-y-2">
-          <p className="mb-2 ml-2">Clave catastral</p>
-          <Input
-            placeholder="Buscar por clave catastral"
-            type="text"
-            value={(table.getColumn("clave_catastral")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("clave_catastral")?.setFilterValue(event.target.value)
-            }
-            className="w-[30vh]"
-          />
-          </div>
-         
+        <div className="">
+        <p className="mb-2 ml-2 mt-2">Telefono</p>
+        <Input
+        placeholder="Buscar por telefono"
+        type="text"
+        value={(table.getColumn("usuario.telefono")?.getFilterValue() as string) ?? ""}
+        onChange={(event) => {
+          const value = event.target.value;
+          table.getColumn("usuario.telefono")?.setFilterValue(value);
+        }}
+        className="w-[90vh]"
+      />
+      
+        </div>
+
+        </div>
+
+       
+        
         
         
       </div>
+      
       </MarcoForm>
+      
+          </div>
+      
+      }
 
-      <div className="rounded-md border h-full overflow-auto mt-10">
+
+      <div className="rounded-md border h-full overflow-auto mt-1 w-[214vh]">
         <Table>
         <TableHeader className="bg-muted">
         {table.getHeaderGroups().map((headerGroup) => (
