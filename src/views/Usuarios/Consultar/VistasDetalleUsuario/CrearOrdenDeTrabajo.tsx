@@ -25,7 +25,7 @@ const CrearOrdenDeTrabajo = () => {
         
         <br></br>
 
-        <h2 className='ml-4 mt-14 text-gray-500'>Ordenes de trabajo del usuario</h2>
+        <h2 className='ml-4 mt-14 text-gray-500'>Ordenes de trabajo de la toma.</h2>
         <div className='mt-10'>
 
         <OrdenDeTrabajoUsuarioTable/>
