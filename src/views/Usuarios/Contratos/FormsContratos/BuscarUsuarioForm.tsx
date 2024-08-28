@@ -298,13 +298,18 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                 <div className='mt-5 ml-[5vh] w-[213vh] rounded-md border border-border  shadow-inherit p-6 h-[29.5vh] '>
                     <Form {...form}>
                         <div className="justify-center items-center">
+                            <div className="flex space-x-2">
+                                <div className="w-[200vh] mr-[180]">
                                 <div className="text-muted-foreground text-[20px] mb-5">Consultar al usuario </div>
+                                </div>
                                 {
                                     botonCrearUsuario &&
-                                    <div className="flex justify-end" onClick={handleNavigationCrearUsuario}>
-                                    <IconButton><TiUserAdd className="h-[2.5vh]" /></IconButton>
+                                    <div className="flex items-center mb-5 w-[3.5] h-[3.5vh]" onClick={handleNavigationCrearUsuario}>
+                                    <IconButton><TiUserAdd className="w-[3.5] h-[3.5vh]" /></IconButton>
                                     </div>
                                 }
+                            </div>
+                                
                         </div>
                    
                        

@@ -3,6 +3,8 @@ import { Button } from '../../../../components/ui/button'
 import ModalGenerarOrdenDeTrabajo from '../../../../components/ui/ModalGenerarOrdenDeTrabajo'
 import OrdenDeTrabajoUsuarioTable from '../../../../components/Tables/Components/OrdenDeTrabajoUsuarioTable'
 import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario'
+import { MdOutlinePostAdd } from "react-icons/md";
+import IconButton from '../../../../components/ui/IconButton'
 
 const CrearOrdenDeTrabajo = () => {
 
@@ -25,21 +27,27 @@ const CrearOrdenDeTrabajo = () => {
         <div className=''>
         {/*Formulario*/}
 
-        <p className="text-[20px] font-medium mx-4">Ordenes de trabajo</p>
+        <div className='flex space-x-2 w-full'>
+          <div className='w-full'>
+          <p className="text-[20px] font-medium mt-4">Ordenes de trabajo</p>
+          </div>
+        <div className='flex justify-end ml-[80vh]'>
+        <IconButton onClick={handleGenerarOrdenDeTrabajo}><MdOutlinePostAdd className='w-[5vh] h-[5vh]'/></IconButton>
+          </div>
+        </div>
         
-        <br></br>
-
-        <h2 className='ml-4 mt-14 text-gray-500'>Ordenes de trabajo de la toma.</h2>
+        <h2 className='mt-5 text-gray-500'>Ordenes de trabajo de la toma.</h2>
         <div className='mt-10'>
-
+        
         <OrdenDeTrabajoUsuarioTable/>
         </div>
-          <Button onClick={handleGenerarOrdenDeTrabajo}>Generar orden de trabajo</Button>
+       
         </div>
         <ModalGenerarOrdenDeTrabajo
           isOpen={abrirModal}
           setIsOpen={setAbrirModal}
           method={""}
+          tipoOperacion={"indidual"}
         />
     
     </div>

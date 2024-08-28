@@ -14,11 +14,11 @@ import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import EscogerOrdenDeTrabajoTable from '../Tables/Components/EscogerOrdenDeTrabajoTable';
 import axiosClient from '../../axios-client';
 import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
-const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method }) => {
+const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }) => {
     
     const { toast } = useToast()
 
-
+console.log(tipoOperacion);
 
     const {usuariosEncontrados, setUsuariosEncontrados, idSeleccionadoGenerarOrdenDETrabajoToma} = ZustandGeneralUsuario();
 
@@ -108,8 +108,22 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method }) => {
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Generar orden de trabajo</AlertDialogTitle>
-                    <AlertDialogTitle><div className='text-xs text-gray-600'>Selecciona una orden de trabajo para el usuario.</div></AlertDialogTitle>
+
+                    {tipoOperacion=="masiva" ?
+                    <AlertDialogTitle>
+                    
+                    Crear nueva orden de trabajo masiva
+
+                    </AlertDialogTitle>
+                    :
+                    <AlertDialogTitle>
+                    
+                    Crear nueva orden de trabajo
+
+                    </AlertDialogTitle>
+                    }
+                    
+                    <AlertDialogTitle><div className='text-xs text-gray-600'>Selecciona una orden de trabajo para la toma.</div></AlertDialogTitle>
                     <AlertDialogDescription>
                     <EscogerOrdenDeTrabajoTable/>{/*LA TABLA PARA ESCOGER ORDEN DE TRABAJO*/}
 
@@ -117,7 +131,17 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method }) => {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel onClick={() => setIsOpen(false)}>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={GenerarOrdenDeTrabajoToma}>Generar</AlertDialogAction>
+                    {
+                        tipoOperacion=="masiva" ? 
+                        <AlertDialogAction onClick={GenerarOrdenDeTrabajoToma}>
+                        Crear orden de trabajo masiva
+                        </AlertDialogAction>
+                        :
+                        <AlertDialogAction onClick={GenerarOrdenDeTrabajoToma}>
+                        Crear orden de trabajo
+                        </AlertDialogAction>
+                    }
+                    
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
