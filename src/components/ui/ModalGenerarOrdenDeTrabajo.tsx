@@ -91,8 +91,14 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method }) => {
             })
 
         }
-        catch(response){
-            console.log(response)
+        catch(error){
+            console.log(error)
+            toast({
+                title: "¡Éxito!",
+                description: "Ocurrió un error",
+                variant: "success",
+    
+            })
         }
     }
 
