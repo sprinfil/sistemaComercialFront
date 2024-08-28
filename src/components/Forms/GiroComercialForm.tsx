@@ -29,6 +29,7 @@ import Modal from "../ui/Modal.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { Switch } from "../ui/switch.tsx";
 
 const GiroComercialForm = () => {
     const { toast } = useToast()
@@ -38,6 +39,10 @@ const GiroComercialForm = () => {
     const [abrirInput, setAbrirInput] = useState(false);
     const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
+    const [valorObtenidoBool, setValorObtenidoBool] = useState(false);
+    const [control, setControl] = useState(false);
+
+
 
     const form = useForm<z.infer<typeof girocomercialSchema>>({
         resolver: zodResolver(girocomercialSchema),
@@ -112,8 +117,11 @@ const GiroComercialForm = () => {
     function onSubmit(values: z.infer<typeof girocomercialSchema>) {
         console.log("submit");
         setLoading(true);
+        const boolConvetido = girocomercial.estado ? "activo" : "inactivo"
+
+        let values2 = {...values, estado: boolConvetido}
         if (accion == "crear") {
-            axiosClient.post(`/giros-catalogos`, values)
+            axiosClient.post(`/giros-catalogos`, values2)
                 .then((response) => {
                     const data = response.data;
                     if(data.restore)
@@ -134,13 +142,13 @@ const GiroComercialForm = () => {
                         id: 0,
                         nombre: "",
                         descripcion: "ninguna",
-                        estado: "activo"
+                        estado: false
                     });
                     form.reset({
                         id: 0,
                         nombre: "",
                         descripcion: "ninguna",
-                        estado: "activo"
+                        estado: false
                     });
                     
                     getGirosComerciales();
@@ -159,7 +167,10 @@ const GiroComercialForm = () => {
                 console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/giros-catalogos/${girocomercial.id}`, values)
+            const boolConvetido = values.estado == true ? "activo" : "inactivo"
+
+            let values2 = {...values, estado: boolConvetido}
+            axiosClient.put(`/giros-catalogos/${girocomercial.id}`, values2)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
@@ -219,7 +230,7 @@ const GiroComercialForm = () => {
                     id: 0,
                     nombre: "",
                     descripcion: "ninguna",
-                    estado: "activo"
+                    estado: false
                 });
                 setAccion("creado");
                 getGirosComerciales();
@@ -235,16 +246,18 @@ const GiroComercialForm = () => {
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            setControl(false);
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             });
             setGiroComercial({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
+            setControl(true);
             console.log("creando");
             setAbrirInput(true);
             setErrors({});
@@ -252,32 +265,38 @@ const GiroComercialForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             });
             setGiroComercial({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             })
         }
         if (accion == "creado") {
+            setControl(false);
+
             setAbrirInput(true);
             setErrors({});
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             });
             setGiroComercial({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             })
         }
         if (accion == "ver") {
+            setControl(false);
+            const valorDesdeBaseDeDatos: string = girocomercial.estado as unknown as string; 
+            const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
+            setValorObtenidoBool(valorBooleano);
             setAbrirInput(false);
             setErrors({});
             setAccion("");
@@ -285,15 +304,25 @@ const GiroComercialForm = () => {
                 id: girocomercial.id,
                 nombre: girocomercial.nombre,
                 descripcion: girocomercial.descripcion,
-                estado: girocomercial.estado
+                estado:valorObtenidoBool
             });
         }
         if (accion == "editar") {
             setAbrirInput(true);
+            setControl(true);
             setErrors({});
         }
         console.log(accion);
     }, [accion]);
+
+    useEffect(() => {
+        form.reset({
+            id: girocomercial.id,
+            nombre: girocomercial.nombre,
+            descripcion: girocomercial.descripcion,
+            estado:valorObtenidoBool
+        });
+    },[valorObtenidoBool])
 
     return (
         <div className="overflow-auto">
@@ -369,6 +398,40 @@ const GiroComercialForm = () => {
                                     </FormControl>
                                     <FormDescription>
                                         Agrega una breve descripción.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Descripción</FormLabel>
+                                    <FormControl>
+                                        {
+                                            control ? 
+                                            <Switch
+                                            className="ml-3"
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            }
+                                            /> 
+                                            :
+                                            <Switch
+                                            disabled
+                                            className="ml-3"
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            }
+                                            /> 
+                                            
+                                        }
+                               
+                                    </FormControl>
+                                    <FormDescription>
+                                    Aquí puedes cambiar el estado del giro comercial.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

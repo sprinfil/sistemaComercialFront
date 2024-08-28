@@ -18,7 +18,7 @@ const CrearOrdenDeTrabajo = () => {
  
   return (
     <div>
-        <div className=' w-full rounded-md border border-border h-[81vh] p-4 overflow-auto'>
+        <div className=''>
         {/*Formulario*/}
 
         <p className="text-[20px] font-medium mx-4">Ordenes de trabajo</p>

@@ -13,7 +13,7 @@ import { useStateContext } from '../../../contexts/ContextProvider'
 import { Colonia } from './Colonias-Calles/Colonia'
 import OrdenDeTrabajo from './OrdenDeTrabajo'
 import notFound from "../../../img/notFound.svg"
-
+import Caja from './Caja'
 
 const Catalogos = () => {
 
@@ -78,15 +78,21 @@ const Catalogos = () => {
       componente: <OrdenDeTrabajo />,
       permission: "VerOrdenDeTrabajo"
     }
+    ,
+    {
+      titulo: "Caja",
+      componente: <Caja />,
+      permission: "VerCaja"
+    }
   ]
 
-  return (
+  return ( 
     <div className='w-full'>
       <Tabs defaultValue="" className="" onValueChange={() => { setSeleccionarCatalogo(false) }}>
 
         <TabsList>
           {opciones.map((opcion, index) => {
-            if (permissions.includes(opcion.permission) || user.id == 1) {
+            if (permissions.includes(opcion.permission) || user.id == 1|| user?.roles?.includes("Admin")) {
               return (
                 <>
                   <TabsTrigger value={opcion.titulo} key={index}>{opcion.titulo}</TabsTrigger>
@@ -105,7 +111,7 @@ const Catalogos = () => {
         seleccionarCatalogo &&
         <>
           <div className='w-full h-[70vh] mt-[20px] flex flex-col items-center justify-center gap-5'>
-            <p>Selecciona un catalogo.</p>
+            <p>Selecciona un catálogo.</p>
           </div>
         </>
       }

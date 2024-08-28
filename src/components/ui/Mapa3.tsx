@@ -4,7 +4,7 @@ import PoligonosZustand from '../../contexts/PoligonosZustand';
 import { useStateContext } from '../../contexts/ContextPoligonos';
 import axiosClient from '../../axios-client';
 import IconButton from './IconButton';
-import { Pencil2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { Pencil2Icon, MagnifyingGlassIcon, EyeClosedIcon } from '@radix-ui/react-icons';
 import { HoverCard, HoverCardComponent } from './HoverCardComponent';
 import "../../cursors/pencilselectcursor.cur";
 import { LabelOverlay } from './MapLabel';
@@ -14,12 +14,16 @@ import { Input } from './input';
 import { Button } from 'react-day-picker';
 import { useNavigate } from 'react-router-dom';
 import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
+import { BuscarTomaUsuario, Usuario } from '../Tables/Columns/ContratoConsultaTomaColumns';
+import grifo from "../../img/grifo-de-agua.png"
+import { EyeIcon } from 'lucide-react';
 import { TomaPorUsuario } from '../Tables/Columns/TomaPorUsuarioColumns';
 import { useBreadcrumbStore } from "../../contexts/ZustandGeneralUsuario";
+
 export const Mapa3 = () => {
     const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
     const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma, setFindUserMapaGeo, setToma} = ZustandGeneralUsuario();
-    const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas } = PoligonosZustand();
+    const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas, set_ruta_visibility, set_libro_visibility } = PoligonosZustand();
     const navigate = useNavigate();
     const { setRutas, rutas } = useStateContext();
     const [map, set_map] = useState(null);
@@ -32,6 +36,9 @@ export const Mapa3 = () => {
     const { toast } = useToast()
     const [searchQuery, setSearchQuery] = useState("");
     const search_input = useRef(null);
+    const [hide_all_polygons, set_hide_all_polygons] = useState(false);
+    const [hide_all_tomas, set_hide_all_tomas] = useState(false);
+    const [hide_all_tomas_bool, set_hide_all_tomas_bool] = useState(false);
 
     const getRutas = async () => {
         set_loading_rutas(true);
@@ -59,24 +66,20 @@ export const Mapa3 = () => {
                     center: { lat: 24.131, lng: -110.3 },
                     zoom: 13,
                 });
-
                 set_map(map_temp);
-
             });
         }
 
     }, []);
 
     useEffect(() => {
-
+        const newTomasMarkers = [];
         polygons.forEach(polygon => {
             polygon.setMap(null);
         });
         overlays.forEach(overlay => overlay.onRemove());
         setPolygons([]);
         setOverlays([]);
-
-
 
         const newPolygons = rutas.map((ruta) => {
 
@@ -126,6 +129,8 @@ export const Mapa3 = () => {
 
             return ruta.libros.map((libro) => {
 
+                console.log(libro_visibility)
+
                 if (libro.polygon && libro_visibility[libro.id] && libro.polygon.coordinates[0].length > 0 && !loading_rutas) {
 
                     let polygonCoordinates = libro.polygon.coordinates[0].map((punto) => (
@@ -140,10 +145,10 @@ export const Mapa3 = () => {
                         paths: polygonCoordinates,
                         strokeColor: ruta.color,
                         fillColor: ruta.color,
-                        fillOpacity: 0.3,
-                        strokeOpacity: 0.3,
+                        fillOpacity: 0.2,
+                        strokeOpacity: 0.2,
                         //draggable: true,
-                        //editable: false,
+                        editable: false,
                     });
 
                     // Obtener el centro del polígono
@@ -157,7 +162,8 @@ export const Mapa3 = () => {
                     const labelOverlay = new CustomLabel(center, libro.nombre, ruta.color || "black"); // libro.nombre es un ejemplo de texto
                     labelOverlay.setMap(map);
 
-                    polygon.addListener('click', (event) => {
+                    /*
+                      polygon.addListener('click', (event) => {
                         const path = polygon.getPath();
                         const points = path.getArray().map((point) => ({
                             lat: point.lat(),
@@ -168,7 +174,7 @@ export const Mapa3 = () => {
                             puntos: points
                         }
 
-                        /*
+                        
                             if (polygon.editable) {
                             polygon.setEditable(false);
                             polygon.setDraggable(false);
@@ -185,7 +191,7 @@ export const Mapa3 = () => {
                                     toast({
                                         title: "Error",
                                         description: "Error",
-                                        description: "A ocurrido un Error",
+                                        //description: "A ocurrido un Error",
                                         variant: "destructive",
                                         action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                                     })
@@ -195,52 +201,62 @@ export const Mapa3 = () => {
                                     polygon.setEditable(true);
                                     polygon.setDraggable(true);
                                 }
-                        */
-
-
-                        console.log(polygon.getDraggable());
                     });
+                    */
+
 
                     if (libro.tomas.length > 0) {
                         libro.tomas.map((toma, index) => {
-                            console.log(toma)
+                            if (toma.posicion) {
+                                console.log(toma)
 
-                            /* TOMA INFO */
-                            const marker = new google.maps.Marker({
-                                position: {
-                                    lat: toma.posicion.coordinates[1], // Latitud
-                                    lng: toma.posicion.coordinates[0]  // Longitud
-                                },
-                                map: map,
-                                title: `Toma: ${toma.id_codigo_toma}`, // Puedes agregar un título o descripción si está disponible
-                            });
-
-                            // Crear una etiqueta utilizando InfoWindow
-                            const infoWindow = new google.maps.InfoWindow({
-                                content: `<div class="text-black">
-                            <strong>Código de Toma: ${toma.id_codigo_toma}</strong></br>
-                            <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
-                            <strong>Código Postal: ${toma.codigo_postal}</strong></br>
-                            <strong>Colonia: ${toma.colonia}</strong></br>
-                            <strong>Número de casa: ${toma.numero_casa}</strong></br>
-                            <button id="view-details-btn">Ver Detalles</button>
-                            </div>`, // Texto de la etiqueta
-                            });
-
-                            // O mostrarla al hacer clic en el marcador
-                            marker.addListener('click', () => {
-                                infoWindow.open(map, marker);
-                            });
-                            // Agregar un listener para el botón dentro de la InfoWindow
-                            google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
-                                const button = document.getElementById('view-details-btn');
-                                if (button) {
-                                    button.addEventListener('click', () => {
-                                        handleViewDetails(toma);
-                                    });
+                                /* TOMA INFO */
+                                const marker = new google.maps.Marker({
+                                    position: {
+                                        lat: toma.posicion.coordinates[1], // Latitud
+                                        lng: toma.posicion.coordinates[0]  // Longitud
+                                    },
+                                    map: hide_all_tomas ? null : map,
+                                    title: `Toma: ${toma.id_codigo_toma}`,
+                                    icon: {
+                                        url: `${grifo}`,
+                                        scaledSize: new google.maps.Size(35, 35),
+                                        anchor: new google.maps.Point(25, 25)
+                                    }
+                                    // Puedes agregar un título o descripción si está disponible
+                                });
+                                if (hide_all_polygons) {
+                                    marker.setMap(null);
                                 }
-                            });
-                            /* TOMA INFO */
+                                newTomasMarkers.push(marker);
+                                // Crear una etiqueta utilizando InfoWindow
+                                const infoWindow = new google.maps.InfoWindow({
+                                    content: `<div class="text-black">
+                                <strong>Código de Toma: ${toma.id_codigo_toma}</strong></br>
+                                <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
+                                <strong>Código Postal: ${toma.codigo_postal}</strong></br>
+                                <strong>Colonia: ${toma.colonia}</strong></br>
+                                <strong>Número de casa: ${toma.numero_casa}</strong></br>
+                                <button id="view-details-btn">Ver Detalles</button>
+                                </div>`, // Texto de la etiqueta
+                                });
+
+                                // O mostrarla al hacer clic en el marcador
+                                marker.addListener('click', () => {
+                                    infoWindow.open(map, marker);
+                                });
+                                // Agregar un listener para el botón dentro de la InfoWindow
+                                google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+                                    const button = document.getElementById('view-details-btn');
+                                    if (button) {
+                                        button.addEventListener('click', () => {
+                                            handleViewDetails(toma);
+                                        });
+                                    }
+                                });
+                                /* TOMA INFO */
+                            }
+
                         })
                     }
 
@@ -249,11 +265,10 @@ export const Mapa3 = () => {
                 return null;
             }).filter(polygon => polygon !== null);
         }).flat();
-
         setPolygons(newPolygons.map(p => p.polygon));
         setOverlays(newPolygons.map(p => p.labelOverlay));
 
-    }, [libro_visibility]);
+    }, [libro_visibility, ruta_visibility]);
 
     const toggle_modo_edicion = () => {
         set_editando(!editando);
@@ -287,8 +302,13 @@ export const Mapa3 = () => {
                             },
                             map: map,
                             title: `Toma: ${toma.id_codigo_toma}`, // Puedes agregar un título o descripción si está disponible
+                            icon: {
+                                url: `${grifo}`,
+                                scaledSize: new google.maps.Size(35, 35),
+                                anchor: new google.maps.Point(25, 25)
+                            }
                         });
-
+                        map.setZoom(20);
                         // Crear una etiqueta utilizando InfoWindow
                         const infoWindow = new google.maps.InfoWindow({
                             content: `<div class="text-black">
@@ -306,8 +326,8 @@ export const Mapa3 = () => {
                         marker.addListener('click', () => {
                             infoWindow.open(map, marker);
                         });
-                          // Agregar un listener para el botón dentro de la InfoWindow
-                          google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+                        // Agregar un listener para el botón dentro de la InfoWindow
+                        google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
                             const button = document.getElementById('view-details-btn');
                             if (button) {
                                 button.addEventListener('click', () => {
@@ -337,6 +357,37 @@ export const Mapa3 = () => {
         }
     };
 
+    const handle_hide_all_polygons = () => {
+  
+        let new_libro_visibility = {};
+        rutas.forEach(ruta => {
+            ruta.libros.forEach(libro => {
+                if(!hide_all_tomas_bool){
+                    new_libro_visibility[libro.id] = false;
+                }else{
+                    new_libro_visibility[libro.id] = true;
+                }
+            });
+        });
+        set_libro_visibility(new_libro_visibility);
+    
+        let new_ruta_visibility = {};
+        rutas.forEach(ruta => {
+            if(!hide_all_tomas_bool){
+                new_ruta_visibility[ruta.id] = false;
+            }else{
+                new_ruta_visibility[ruta.id] = true;
+            }
+        });
+        set_ruta_visibility(new_ruta_visibility);
+        set_hide_all_tomas_bool(!hide_all_tomas_bool);
+   
+    }
+
+    const handle_hide_all_tomas = () => {
+        set_hide_all_tomas(!hide_all_tomas);
+    }
+
     return (
         <>
             <div className='max-h-[90vh] h-full relative '>
@@ -354,23 +405,53 @@ export const Mapa3 = () => {
                     </div>
                     */
                 }
-                <div className='w-full h-[6vh] bg-muted p-1 flex items-center '>
+                <div className='w-full h-[6vh] bg-muted p-1 flex items-center gap-4  border border-border'>
                     <div className='flex gap-2 items-center'>
                         <MagnifyingGlassIcon />
                         <input value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            type='text' className='bg-background p-1  outline-none'
+                            type='text' className='bg-background p-1  outline-none text-[10px]'
                             placeholder='Buscar Toma ...'
                             ref={search_input}
                             onKeyDown={handleKeyDown}
                         />
-                        <button onClick={searchToma}>Buscar</button>
-
+                        <button onClick={searchToma} className='bg-background text-[10px] py-1 px-3'>Buscar</button>
                     </div>
+                    {
+                        !loading_rutas &&
+                        <>
+                            <div onClick={handle_hide_all_polygons}>
+                                <IconButton>
+                                    <div className='flex gap-2 items-center text-[10px]'>
+                                        Polígonos
+                                        {hide_all_tomas_bool && <><EyeClosedIcon className='w-[15px] h-[15px]' /></>}
+                                        {!hide_all_tomas_bool && <><EyeIcon className='w-[15px] h-[15px]' /></>}
+                                    </div>
+                                </IconButton>
+                            </div>
+                        </>
+                    }
+                    {
+                        !loading_rutas &&
+                        <>
+                            {/*
+                            <div onClick={handle_hide_all_tomas}>
+                                <IconButton>
+                                    <div className='flex gap-2 items-center text-[10px]'>
+                                        Tomas
+                                        {hide_all_tomas && <><EyeClosedIcon className='w-[15px] h-[15px]' /></>}
+                                        {!hide_all_tomas && <><EyeIcon className='w-[15px] h-[15px]' /></>}
+                                    </div>
+                                </IconButton>
+                            </div>
+                         */}
+
+                        </>
+                    }
 
                 </div>
 
-                <div id="map" className='w-full h-[84vh]'>
+                <div id="map" className='w-full h-[75vh]'>
                 </div>
             </div>
         </>

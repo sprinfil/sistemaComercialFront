@@ -1,17 +1,4 @@
-"use client"
-
-import * as React from "react"
-import {
-    ArrowUpCircle,
-    CheckCircle2,
-    Circle,
-    HelpCircle,
-    LucideIcon,
-    XCircle,
-} from "lucide-react"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import React from 'react';
 import {
     Command,
     CommandEmpty,
@@ -19,27 +6,35 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
-import axiosClient from "../../axios-client"
-import Loader from "./Loader"
+} from "@/components/ui/popover";
+import {
+    FormControl,
+} from "./form.tsx";
+import { Button } from "@/components/ui/button";
+import axiosClient from '../../axios-client.ts';
+import Loader from './Loader.tsx';
 
 type Status = {
-    value: string
-    label: string
+    value: string;
+    label: string;
+};
 
-}
+type ConceptosComboBoxNewProps = {
+    field: any;
+    onSelect: (selected: Status) => void;
+};
 
-export function ConceptosComboBox({setValue}) {
-
-
+export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado }: ConceptosComboBoxNewProps) => {
     const [loading, setLoading] = React.useState<boolean>(false);
-    const [statuses, setStatuses] = React.useState<Status[]>([]);
-
+    const [languages, setLanguages] = React.useState<Status[]>([]);
+    const [open, setOpen] = React.useState(false);
 
     React.useEffect(() => {
         getConcepto();
@@ -49,88 +44,75 @@ export function ConceptosComboBox({setValue}) {
         setLoading(true);
         try {
             const response = await axiosClient.get("/Concepto");
-
-
             let ctr = 0;
-            response.data.data.forEach(concepto => {
-                statuses[ctr] = { value: concepto.id, label: concepto.nombre };
+            response.data.forEach(concepto => {
+                languages[ctr] = { value: concepto.id, label: concepto.nombre };
                 ctr = ctr + 1;
             });
-
             setLoading(false);
         } catch (error) {
             setLoading(false);
             console.error("Failed to fetch concepto:", error);
         }
     };
+    
 
-
-
-    const [open, setOpen] = React.useState(false)
-    const [selectedStatus, setSelectedStatus] = React.useState<Status | null>(
-        null
-    )
+    console.log("esto segunnnn se envia", form.getValues);
 
     return (
-        <>
-
-
-            <div className="flex items-center space-x-4 overflow-auto">
-
-                <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
+        <div>
+            <Popover>
+                <PopoverTrigger asChild>
+                    <FormControl>
                         <Button
                             variant="outline"
-                            size="sm"
-                            className="w-full justify-start"
-                        >
-                            {selectedStatus ? (
-                                <>
-
-                                    {selectedStatus.label}
-                                </>
-                            ) : (
-                                <>Concepto</>
+                            role="combobox"
+                            className={cn(
+                                "w-full justify-between",
+                                !field.value && "text-muted-foreground"
                             )}
+                        >
+                            {field.value
+                                ? languages.find(
+                                    (language) => language.value === field.value
+                                )?.label
+                                : "Selecciona un concepto"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="p-0" side="right" align="start">
-                        <Command>
-                            <CommandInput placeholder="Change status..." />
-                            <CommandList>
-                                <CommandEmpty>No results found.</CommandEmpty>
-                                <CommandGroup>
-                                    {
-                                        loading &&
-                                        <Loader />
-                                    }
-                                    {
-                                        !loading &&
-                                        statuses.map((status) => (
-                                            <CommandItem
-                                                key={status.value}
-                                                value={status.value}
-                                                onSelect={(value) => {
-                                                    setSelectedStatus(
-                                                        status
-                                                    )
-                                                    setOpen(false)
-                                                    setValue(status.value)
-                                                }}
-                                            >
-                                                <span>{status.label}</span>
-                                            </CommandItem>
-                                        ))
-                                    }
-                                </CommandGroup>
-                            </CommandList>
-                        </Command>
-                    </PopoverContent>
-                </Popover>
-            </div>
-
-
-        </>
-
-    )
-}
+                    </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0 h-[300px]">
+                    <Command>
+                        <CommandInput placeholder="Buscar un concepto.. " />
+                        <CommandList>
+                            <CommandEmpty>Concepto no encontrado.</CommandEmpty>
+                            <CommandGroup>
+                                {loading && <Loader />}
+                                {!loading && languages.map((language) => (
+                                    <CommandItem
+                                        value={language.label}
+                                        key={language.value}
+                                        onSelect={() => {
+                                            form.setValue(name, language.value);
+                                            setCargoSeleccionado(language.label);
+                                        }}
+                                    >
+                                        <Check
+                                            className={cn(
+                                                "mr-2 h-4 w-4",
+                                                language.value === field.value
+                                                    ? "opacity-100"
+                                                    : "opacity-0"
+                                            )}
+                                        />
+                                        {language.label}
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+        </div>
+    );
+};

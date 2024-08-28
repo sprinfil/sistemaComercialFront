@@ -15,7 +15,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from '@radix-ui/react-toast'
 import PoligonosZustand from '../../contexts/PoligonosZustand';
 
-export const ModalImportarGeoJson = ({ trigger, updateData }) => {
+export const ModalImportarGeoJson = ({ updateData, open, toggle_open}) => {
 
     const { toast } = useToast()
     const [file, setFile] = useState(null);
@@ -40,21 +40,27 @@ export const ModalImportarGeoJson = ({ trigger, updateData }) => {
                 try {
                     set_loading_import(true);
                     const json = JSON.parse(reader.result);
-                    console.log(json);
+                    //console.log(json);
                     let nombres_rutas = [];
-                    let nombres_libros = []
-
+                    let nombres_libros = [];
+                   
+                   
                     //obtener nombre de las rutas
                     json.features.forEach((object, index) => {
+                      
                         let name_ruta = object.properties.name;
+                    
                         let indexL = name_ruta.search(/[Ll]/);
                         if (indexL !== -1) {
                             name_ruta = name_ruta.substring(0, indexL);
                         }
                         nombres_rutas.push(name_ruta);
                         nombres_libros.push(object.properties.name);
+                        console.log(object.geometry.coordinates[0])
+
                         nombres_libros[object.properties.name] = object.geometry.coordinates[0][0];
                     })
+
                     nombres_rutas = [...new Set(nombres_rutas)].sort();
 
                     const agrupados = nombres_rutas.reduce((acc, ruta) => {
@@ -88,8 +94,8 @@ export const ModalImportarGeoJson = ({ trigger, updateData }) => {
                                         console.log(response.response.data.message);
                                         toast({
                                             title: "Error",
-                                            /*description: response.response.data.message */
-                                            description: "A ocurrido un Error",
+                                            description: response.response.data.message ,
+                                            //description: "A ocurrido un Error",
                                             variant: "destructive",
                                             action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                                         })
@@ -100,8 +106,8 @@ export const ModalImportarGeoJson = ({ trigger, updateData }) => {
                                 console.log(response.response.data.message);
                                 toast({
                                     title: "Error",
-                                    /*description: response.response.data.message */
-                                    description: "A ocurrido un Error",
+                                    description: response.response.data.message ,
+                                    //description: "A ocurrido un Error",
                                     variant: "destructive",
                                     action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                                 })
@@ -124,7 +130,7 @@ export const ModalImportarGeoJson = ({ trigger, updateData }) => {
                                 toast({
                                     title: "Error",
                                     description: response.response.data.message ,
-                                    /*description: "A ocurrido un Error",*/
+                                    //description: "A ocurrido un Error",
                                     variant: "destructive",
                                     action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                                 })
@@ -139,12 +145,13 @@ export const ModalImportarGeoJson = ({ trigger, updateData }) => {
             };
             reader.readAsText(file);
         }
+        toggle_open();
     }
 
     return (
-        <div>
-            <AlertDialog>
-                <AlertDialogTrigger>{trigger}</AlertDialogTrigger>
+        <div >
+            <AlertDialog open ={open}>
+                <AlertDialogTrigger></AlertDialogTrigger>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Importar GeoJson</AlertDialogTitle>
@@ -154,14 +161,14 @@ export const ModalImportarGeoJson = ({ trigger, updateData }) => {
                                 <div className='mt-[10px]'><input type="file" onChange={handleFileChange} /></div>
                                 <div className='mt-[20px] flex gap-2'>
                                     <input type="checkbox" className='w-[20px]' onClick={() => { toggle_limpiar_poligonos(); }} />
-                                    <p>Limpiar Los registros Actuales (esto eliminará todos los poligonos actuales)</p>
+                                    <p>Limpiar los registros Actuales (esto eliminará todos los polígonos actuales)</p>
                                 </div>
                             </div>
 
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogCancel onClick={toggle_open}>Cancelar</AlertDialogCancel>
                         <div onClick={action}>
                             <AlertDialogAction>Aceptar</AlertDialogAction>
                         </div>

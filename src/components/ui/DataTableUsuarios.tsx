@@ -243,9 +243,9 @@ export function DataTableUsuarios<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}
@@ -259,9 +259,8 @@ export function DataTableUsuarios<TData, TValue>({
                 <TableRow
                   key={row.id}
                   onClick={() => handleRowClick(row.id, row.original)}
-                  className={`cursor-pointer hover:bg-border ${
-                    selectedRow === row.id ? "bg-border" : ""
-                  }`}
+                  className={`cursor-pointer hover:bg-border ${selectedRow === row.id ? "bg-border" : ""
+                    }`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

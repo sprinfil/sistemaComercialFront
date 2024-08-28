@@ -33,6 +33,8 @@ interface GeneralUsuario {
   setUsuario: (usuario: BuscarUsuario) => void;
   usuariosEncontrados: BuscarUsuario[];
   setUsuariosEncontrados: (usuarios: BuscarUsuario[]) => void;
+  dataCajaUser: BuscarUsuario[];
+  setDataCajaUser: (dataCajaUser: BuscarUsuario[]) => void;
   clearUsuariosEncontrados: () => void;
   usuariosRecuperado: BuscarUsuario[];
   setUsuariosRecuperado: (usuarios: BuscarUsuario[]) => void; 
@@ -56,8 +58,16 @@ interface GeneralUsuario {
   setFindUserOrToma:(findUserOrToma: boolean) => void;
   findUserMapaGeo: boolean;
   setFindUserMapaGeo: (findUserMapaGeo: boolean) => void;
+  controlDetalleCaja: string;
+  setControlDetalleCaja: (controlDetalleCaja: string) => void;
   booleanCodigoDeToma: boolean;
   setBooleanCodigoDeToma: (booleanCodigoDeToma: boolean) => void;
+ booleanCerrarModalFiltros: boolean;
+ setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros: boolean) => void;
+ idSeleccionadoConfiguracionOrdenDeTrabajo: number | null;
+ setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo: number) => void;
+ accionGeneradaEntreTabs: string,
+  setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs: string) => void;
 
 }
 
@@ -93,7 +103,17 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setFindUserOrToma:(findUserOrToma) => set({findUserOrToma}),
   findUserMapaGeo: false,
   setFindUserMapaGeo:(findUserOrToma) => set({findUserOrToma}),
+  controlDetalleCaja: '',
+  setControlDetalleCaja: (controlDetalleCaja) => set ({controlDetalleCaja}),
+  dataCajaUser: [],
+  setDataCajaUser:(dataCajaUser) => set ({dataCajaUser}),
   booleanCodigoDeToma: false,
   setBooleanCodigoDeToma:(booleanCodigoDeToma) => set({booleanCodigoDeToma}),
+  booleanCerrarModalFiltros: false,
+  setBooleanCerrarModalFiltros:(booleanCerrarModalFiltros) => set({booleanCerrarModalFiltros}),
+  idSeleccionadoConfiguracionOrdenDeTrabajo: null,
+ setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo) => set({idSeleccionadoConfiguracionOrdenDeTrabajo}),
+ accionGeneradaEntreTabs: '',
+ setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs) => set({accionGeneradaEntreTabs}),
 }));
 

@@ -21,6 +21,8 @@ export type Anomalia = {
   id: number
   nombre: string
   descripcion: string
+  facturable: string
+  estado: boolean
 }
 
 

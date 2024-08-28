@@ -8,6 +8,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ModeToggle } from '../../components/ui/mode-toggle'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ContextProvider, useStateContext } from '../../contexts/ContextProvider';
+import FechaHora from '../Layout/FechaHora';
+import PuntoVenta from './PuntoVenta';
+import RetirosCaja from './RetirosCaja';
+import ConfigurarCaja from './ConfigurarCaja';
+import CorteCaja from './CorteCaja';
 
 function App() {
 
@@ -17,27 +22,19 @@ function App() {
     const opciones = [
         {
           titulo: "Punto de Venta",
-          componente: ""
+          componente: <PuntoVenta/>
         },
-        {
-          titulo: "Retiros de Caja",
-          componente: ""
-        },
-        {
-          titulo: "Configurar Caja",
-          componente: ""
-        },
+
         {
             titulo: "Cortes de Caja",
-            componente: ""
+            componente: <CorteCaja/>
           },
       ]
 
 
     return (
         <div>
-
-            <div className='bg-muted w-full h-[7vh] flex items-center px-2 relative border-b border-border'>
+            <div className=' bg-muted w-full h-[7vh] flex items-center px-2 relative border-b border-border'>
                 <a title='Modulo Principal'>
                     <Link to={"/dashboard"}>
                         <IconButton>
@@ -47,7 +44,10 @@ function App() {
                     </Link>
                 </a>
                 <div className='absolute right-2 flex gap-5 items-center '>
-                    <p>29/07/2024</p>
+                    <nav>
+                      {/* Otros elementos del menú */}
+                      <FechaHora />
+                    </nav>
                     <p>Caja 10</p>
                     <p>{user.name}</p>
                     <Avatar>

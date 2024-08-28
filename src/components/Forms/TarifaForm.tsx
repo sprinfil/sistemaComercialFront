@@ -283,6 +283,7 @@ const TarifaForm = () => {
             console.log("creando");
             setAbrirInput(true);
             setBloquear(false);
+            console.log("ASJASJASJAAJS")
             setErrors({});
             form.reset({
                 id: 0,
@@ -326,8 +327,22 @@ const TarifaForm = () => {
             if (accion === "editar") {
                 setBloquear(false);
             }
+            if (accion === "crear") {
+                setBloquear(false);
+            }
         }
     );
+
+
+    useEffect(() => {
+        form.reset({
+            id: tarifa.id,
+            nombre: tarifa.nombre,
+            descripcion: tarifa.descripcion,
+            fecha: tarifa.fecha,
+            estado: tarifa.estado  === "activo" // 
+        });
+    },[])
     
     
 
@@ -438,7 +453,7 @@ const TarifaForm = () => {
                             isOpen={abrirModal}
                             setIsOpen={setAbrirModal}
                             method={() => handleConfirmUpdate()}
-                            text = {"Si activas esta tarifa se desactivaran todas las demás, ¿Deseas continuar?"}
+                            text = {"Si activas esta tarifa se desactivarán todas las demás, ¿Deseas continuar?"}
                         />
                     </form>
                 </Form>

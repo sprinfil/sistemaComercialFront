@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Mapa } from '../../components/ui/Mapa';
-import { TrashIcon, ContainerIcon, PlusIcon, Pencil2Icon, ReaderIcon, EyeOpenIcon, EyeClosedIcon, UploadIcon } from '@radix-ui/react-icons';
+import { TrashIcon, ContainerIcon, PlusIcon, Pencil2Icon, ReaderIcon, EyeOpenIcon, EyeClosedIcon, UploadIcon, DotsVerticalIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 import IconButton from '../../components/ui/IconButton';
 import { Checkbox } from "@/components/ui/checkbox"
 import Mapa2 from '../../components/ui/Mapa2';
@@ -14,11 +14,21 @@ import Modal from './Modal';
 import SheetLibro from './SheetLibro';
 import PoligonosZustand from '../../contexts/PoligonosZustand';
 import { ModalImportarGeoJson } from './ModalImportarGeoJson';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import ModalEliminarRuta from './ModalEliminarRuta';
 
 const MenuLateralPoligonosGeograficos = () => {
 
     const [effect, setEffect] = useState(false);
     const { setRutas, rutas } = useStateContext();
+    const [open, set_open] = useState(false);
     //const [ loading_rutas, set_loading_rutas ] = useState(false);
     //const [libro_visibility, set_libro_visibility] = useState([]);
     //const [ruta_visibility, set_ruta_visibility] = useState([]);
@@ -51,7 +61,7 @@ const MenuLateralPoligonosGeograficos = () => {
             new_visibility[ruta.id] = true;
         });
         set_ruta_visibility(new_visibility);
-        console.log(libro_visibility)
+
     }, [rutas]);
 
     //useEffect((()=>{console.log(libro_visibility)}),[libro_visibility])
@@ -87,6 +97,7 @@ const MenuLateralPoligonosGeograficos = () => {
         }
     }
 
+    //rutas
     const change_libro_visibility = (ruta) => {
 
         let new_visibility = { ...ruta_visibility };
@@ -102,16 +113,37 @@ const MenuLateralPoligonosGeograficos = () => {
 
     }
 
+    //libros
     const change_libro_visibility_by_libro_id = (libro_id) => {
-
         let new_visibility = { ...libro_visibility };
         new_visibility[libro_id] = !new_visibility[libro_id];
         set_libro_visibility(new_visibility);
     }
 
+    const toggle_open_import = () => {
+        set_open(!open);
+    }
+
+    const export_geojson = () => {
+        axiosClient.get("/ruta/export_geojson")
+            .then((response) => {
+                const jsonData = JSON.stringify(response.data, null, 2);
+                const url = window.URL.createObjectURL(new Blob([jsonData], { type: 'application/json' }));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'libroslapaz.geojson'); // nombre del archivo
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch((response) => {
+                console.log(response)
+            })
+    }
+
     return (
         <>
-            <div className='h-full w-full overflow-auto mt-[10px] px-2'>
+            <div className='h-full w-full overflow-auto px-2'>
                 {/*Menu de poligonos*/}
                 <div className='bg-principal border-border border'>
                     {/*superior*/}
@@ -121,7 +153,8 @@ const MenuLateralPoligonosGeograficos = () => {
                         </div>
                         <div className='w-[10%] flex items-center justify-end'>
                             <a title='Crear Ruta'>
-                                <SheetRuta
+                                {/*
+                                 <SheetRuta
                                     trigger={
                                         <IconButton>
                                             <ContainerIcon className="w-[17px] h-[17px]" />
@@ -130,18 +163,25 @@ const MenuLateralPoligonosGeograficos = () => {
                                     }
                                     updateData={getRutas}
                                 />
-                            </a>
-                            <a title="Importar GeoJson">
-                                <ModalImportarGeoJson
-                                    trigger={
-                                        <IconButton>
-                                            <UploadIcon />
-                                        </IconButton>
-                                    }
-                                    updateData = {getRutas}
-                                />
+                                */}
 
                             </a>
+
+                            <ModalImportarGeoJson
+                                open={open}
+                                toggle_open={toggle_open_import}
+                                updateData={getRutas}
+                            />
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger><DotsHorizontalIcon /></DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={toggle_open_import}>Importar GeoJson</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={export_geojson}>Exportar GeoJson</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                     </div>
 
@@ -152,7 +192,7 @@ const MenuLateralPoligonosGeograficos = () => {
                     }
                     {
                         loading_import &&
-                        <p className='p-2 bg-blue-500 text-white sticky top-0 z-50'> Cargando Importanción ... </p>
+                        <p className='p-2 bg-blue-500 text-white sticky top-0 z-50'> Cargando Importación ... </p>
                     }
                     {
                         rutas.length == 0 && !loading_import && !loading_rutas &&
@@ -200,7 +240,9 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                     ruta={ruta}
                                                                 />
                                                             </a>
-                                                            <a title='Agregar libro'>
+                                                            {
+                                                                /*
+                                                                       <a title='Agregar libro'>
                                                                 <SheetLibro
                                                                     trigger={
                                                                         <IconButton>
@@ -211,18 +253,20 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                     updateData={getRutas}
                                                                 />
                                                             </a>
+                                                                */
+                                                            }
 
-
-                                                            <Modal
-                                                                button={
-                                                                    <IconButton>
-                                                                        <TrashIcon className='w-[17px] h-[17px] text-red-500' />
-                                                                    </IconButton>
-                                                                }
-                                                                method={delete_ruta}
-                                                                delete_id={ruta.id}
-                                                            />
-
+                                                            {/*
+                                                                <ModalEliminarRuta
+                                                                    button={
+                                                                        <IconButton>
+                                                                            <TrashIcon className='w-[17px] h-[17px] text-red-500' />
+                                                                        </IconButton>
+                                                                    }
+                                                                    method={delete_ruta}
+                                                                    delete_id={ruta.id}
+                                                                />
+                                                            */}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -252,7 +296,9 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                     id_ruta={ruta.id}
                                                                     libro={libro}
                                                                 />
-                                                                <Modal
+
+                                                                {/*
+                                                                   <ModalEliminarRuta
                                                                     button={
                                                                         <IconButton>
                                                                             <TrashIcon className='w-[17px] h-[17px] text-red-500' />
@@ -261,6 +307,8 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                     method={delete_libro}
                                                                     delete_id={libro.id}
                                                                 />
+                                                                */}
+
                                                             </div>
                                                         </div>
                                                     )
