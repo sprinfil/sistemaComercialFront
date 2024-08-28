@@ -91,7 +91,7 @@ const ModalCargarConcepto = ({ trigger, dueño, setCargos, handleCargoSelect }) 
                                     </>
                                     :
                                     <>
-                                        <p className='text-[14px] m-1 text-yellow-500'>Monto Fijo</p>
+                                        <p className='text-[14px] m-1 text-red-500'>Monto Fijo</p>
                                     </>
                             }
 
