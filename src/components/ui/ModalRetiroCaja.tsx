@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,16 +11,57 @@ import {
 } from "@/components/ui/alert-dialog";
 import axiosClient from '../../axios-client';
 
-export const ModalRetiroCaja = ({ trigger, onRegister }) => {
-  const [amount, setAmount] = useState('');
+export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja }) => {
+  const [billsAndCoins, setBillsAndCoins] = useState({
+    0.10: 0,   // Centavos
+    0.20: 0,
+    0.50: 0,
+    1: 0,    // Monedas
+    2: 0,
+    5: 0,
+    10: 0,
+    20: 0,   // Billetes
+    50: 0,
+    100: 0,
+    200: 0,
+    500: 0,
+    1000: 0,
+  });
   const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
   const [isFirstModalOpen, setIsFirstModalOpen] = useState(false);
+  const [cajaSesionId, setCajaSesionId] = useState(null);
 
-  // Se asegura de limpiar el campo al abrir el modal
+
+  useEffect(() => {
+    // Obtener los valores almacenados en localStorage
+    
+    
+    const cajaSesion = 17; // Obtener sesion la caja
+
+    setCajaSesionId(cajaSesion ? parseInt(cajaSesion, 10) : null);
+
+    
+  }, []);
+  
+
   const handleOpenChange = (open) => {
     setIsFirstModalOpen(open);
     if (open) {
-      setAmount(''); // Limpia el campo cuando el modal se abre
+      setBillsAndCoins({
+        0.10: 0,
+        0.20: 0,
+        0.50: 0,
+        1: 0,
+        2: 0,
+        5: 0,
+        10: 0,
+        20: 0,
+        50: 0,
+        100: 0,
+        200: 0,
+        500: 0,
+        1000: 0,
+      }); // Limpia los campos cuando el modal se abre
     }
   };
 
@@ -29,33 +70,42 @@ export const ModalRetiroCaja = ({ trigger, onRegister }) => {
   };
 
   const handleConfirmAndClose = async () => {
+    const data = {
+      id_sesion_caja: cajaSesionId, // Utiliza el prop idSesionCaja
+      cantidad_centavo_10: billsAndCoins[0.10] || 0,
+      cantidad_centavo_20: billsAndCoins[0.20] || 0,
+      cantidad_centavo_50: billsAndCoins[0.50] || 0,
+      cantidad_moneda_1: billsAndCoins[1] || 0,
+      cantidad_moneda_2: billsAndCoins[2] || 0,
+      cantidad_moneda_5: billsAndCoins[5] || 0,
+      cantidad_moneda_10: billsAndCoins[10] || 0,
+      cantidad_moneda_20: billsAndCoins[20] || 0,
+      cantidad_billete_20: billsAndCoins[20] || 0,
+      cantidad_billete_50: billsAndCoins[50] || 0,
+      cantidad_billete_100: billsAndCoins[100] || 0,
+      cantidad_billete_200: billsAndCoins[200] || 0,
+      cantidad_billete_500: billsAndCoins[500] || 0,
+      cantidad_billete_1000: billsAndCoins[1000] || 0,
+      monto_total: totalAmount.toFixed(2), // Convertir a cadena con formato decimal
+    };
+  
     try {
-      // Realizar el registro del retiro
-      const idSesionCaja = 1; // Reemplaza este valor con el ID real de la sesión de caja
-      const formattedAmount = parseFloat(amount).toFixed(2);
-
-      const data = {
-        id_sesion_caja: idSesionCaja,
-        monto_total: formattedAmount,
-      };
-
-      const response = await axiosClient.post('/cajas/retiro/registrarRetiro', data);
-
-      console.log('Retiro registrado con éxito:', response.data);
+      console.log(data);
+      const response = await axiosClient.post("/cajas/retiro/registrarRetiro", data);
+      console.log('Retiro registrado:', response.data);
       
-      // Llama a la función onRegister si se pasó como prop
       if (onRegister) {
-        onRegister(formattedAmount); // Envía el monto registrado
+        onRegister(billsAndCoins); 
       }
-
-      // Cierra ambos modales
+      
       setIsSecondModalOpen(false);
       setIsFirstModalOpen(false);
     } catch (error) {
-      console.error('Error al registrar el retiro:', error);
-      // Aquí podrías manejar el error de manera más específica según sea necesario
+      console.error('Error registrando el retiro:', error);
+      alert('Ocurrió un error durante el registro del retiro.');
     }
   };
+  
 
   const handleCancel = () => {
     // Cierra ambos modales
@@ -63,49 +113,131 @@ export const ModalRetiroCaja = ({ trigger, onRegister }) => {
     setIsFirstModalOpen(false);
   };
 
+  const handleBillChange = (denomination, value) => {
+    setBillsAndCoins(prev => ({
+      ...prev,
+      [denomination]: value
+    }));
+  };
+
+  const totalAmount = Object.entries(billsAndCoins).reduce((total, [denomination, count]) => {
+    return total + (parseFloat(denomination) * count); 
+  }, 0);
+
   return (
     <div>
       <AlertDialog open={isFirstModalOpen} onOpenChange={handleOpenChange}>
         <AlertDialogTrigger asChild>
           {trigger}
         </AlertDialogTrigger>
-        <AlertDialogContent className="max-w-[30rem]">
+        <AlertDialogContent className="max-w-[80rem] max-h-[100vh] overflow-auto">
           <AlertDialogHeader>
-            <AlertDialogTitle>Registre el dinero que desea retirar</AlertDialogTitle>
+            <AlertDialogTitle>Retiro de caja</AlertDialogTitle>
+          </AlertDialogHeader>
+          <div className="p-4 grid grid-cols-3 gap-6 ">
+            {/* Conteo de Billetes */}
+            <div className="space-y-4">
+              <p className="text-sm font-medium mb-2">
+                Ingrese la cantidad de billetes:
+              </p>
+              {[20, 50, 100, 200, 500, 1000].map(denomination => (
+                <div key={denomination} className="flex items-center space-x-4">
+                  <label className="block text-sm font-medium w-1/2">
+                    Billetes de ${denomination}:
+                  </label>
+                  <input
+                    type="text"
+                    value={billsAndCoins[denomination]}
+                    onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
+                    className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="Cantidad"
+                  />
+                  <div className="text-sm font-medium w-1/6">
+                    ${(billsAndCoins[denomination] * denomination).toFixed(2)}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Conteo de Monedas */}
+            <div className="space-y-4">
+              <p className="text-sm font-medium mb-2">
+                Ingrese la cantidad de monedas:
+              </p>
+              {[1, 2, 5, 10].map(denomination => (
+                <div key={denomination} className="flex items-center space-x-4">
+                  <label className="block text-sm font-medium w-1/2">
+                    Monedas de ${denomination}:
+                  </label>
+                  <input
+                    type="text"
+                    value={billsAndCoins[denomination]}
+                    onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
+                    className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="Cantidad"
+                  />
+                  <div className="text-sm font-medium w-1/6">
+                    ${(billsAndCoins[denomination] * denomination).toFixed(2)}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Conteo de Centavos */}
+            <div className="space-y-4">
+              <p className="text-sm font-medium mb-2">
+                Ingrese la cantidad de centavos:
+              </p>
+              {[0.10, 0.20, 0.50].map(denomination => (
+                <div key={denomination} className="flex items-center space-x-4">
+                  <label className="block text-sm font-medium w-1/2">
+                    Centavos de ${denomination}:
+                  </label>
+                  <input
+                    type="text"
+                    value={billsAndCoins[denomination]}
+                    onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
+                    className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="Cantidad"
+                  />
+                  <div className="text-sm font-medium w-1/6">
+                    ${(billsAndCoins[denomination] * denomination).toFixed(2)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Información de la Caja */}
+          <div className="p-4 border-t">
+            <div className="flex items-center justify-between mt-4">
+              <p className="text-sm font-medium">Total calculado:</p>
+              <p className="text-sm">${totalAmount.toFixed(2)}</p>
+            </div>
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleNextStep}>Registrar Retiro</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Segundo Modal para Confirmación */}
+      <AlertDialog open={isSecondModalOpen} onOpenChange={setIsSecondModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Retiro</AlertDialogTitle>
           </AlertDialogHeader>
           <div className="p-4">
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
-              Cantidad de dinero:
-            </label>
-            <input
-              type="number"
-              id="amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value) }
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Ingrese la cantidad"
-            />
+            <p>El total de retiro calculado es: ${totalAmount.toFixed(2)}</p>
+            <p>¿Es correcto?</p>
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={handleCancel}>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleNextStep}>Siguiente</AlertDialogAction>
+            <AlertDialogAction onClick={handleConfirmAndClose}>Confirmar</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-
-        {/* Segundo Modal */}
-        {isSecondModalOpen && (
-          <AlertDialog open={isSecondModalOpen} onOpenChange={setIsSecondModalOpen}>
-            <AlertDialogContent className="max-w-[30rem]">
-              <AlertDialogHeader>
-                <AlertDialogTitle>¿La cantidad {amount} es correcta?</AlertDialogTitle>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel onClick={handleCancel}>Cancelar</AlertDialogCancel>
-                <AlertDialogAction onClick={handleConfirmAndClose}>Registrar</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        )}
       </AlertDialog>
     </div>
   );

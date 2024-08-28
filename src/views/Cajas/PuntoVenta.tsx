@@ -29,24 +29,19 @@ export default function PuntoVenta() {
   }, []);
 
   const handleRegister = async (amount) => {
-    const operatorId = user?.operador?.id; // Obtén el id_user del usuario desde el contexto
-    console.log(operatorId); // Verifica que el id_user se obtenga correctamente
-    const fechaApertura = formatDateTime(new Date()); // Formatear la fecha y hora actual como "YYYY-MM-DD HH:mm:ss"
+    
+     // Formatear la fecha y hora actual como "YYYY-MM-DD HH:mm:ss"
 
-    // Validar que el operador esté definido
-    if (!operatorId) {
-      console.error("El operador no está definido.");
-      return;
-    }
+    
 
     // Formatear el fondo_inicial a un string con dos decimales
     const formattedAmount = parseFloat(amount).toFixed(2);
 
     const data = {
-      id_operador: parseInt(operatorId, 10), // Asegurarse de que es un número
+       // Asegurarse de que es un número
       id_caja_catalogo: cajaCatalogoId,
       fondo_inicial: formattedAmount, // Usar el valor formateado
-      fecha_apertura: fechaApertura,
+      
     };
 
     try {
@@ -69,17 +64,7 @@ export default function PuntoVenta() {
     }
   };
 
-  // Función para formatear la fecha y hora en el formato "YYYY-MM-DD HH:mm:ss"
-  const formatDateTime = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  };
+  
 
   const handleModalClose = () => {
     setIsModalOpen(false);

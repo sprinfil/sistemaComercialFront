@@ -90,112 +90,105 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
         <AlertDialogTrigger asChild>
           {trigger}
         </AlertDialogTrigger>
-        <AlertDialogContent className="max-w-[80rem] max-h-[95vh] overflow-auto">
+        <AlertDialogContent className="max-w-[80rem] max-h-[100vh] overflow-auto">
           <AlertDialogHeader>
             <AlertDialogTitle>Corte de caja</AlertDialogTitle>
           </AlertDialogHeader>
-          <div className="p-4 grid grid-cols-2 gap-6">
-            {/* Conteo de Monedas y Billetes */}
+          <div className="p-4 grid grid-cols-3 gap-6 ">
+            {/* Conteo de Billetes */}
             <div className="space-y-4">
-              <div className="space-y-4">
-                <p className="text-sm font-medium mb-2">
-                  Ingrese la cantidad de centavos:
-                </p>
-                {[0.10, 0.20, 0.50].map(denomination => (
-                  <div key={denomination} className="flex items-center space-x-4">
-                    <label className="block text-sm font-medium w-1/2">
-                      Centavos de ${denomination}:
-                    </label>
-                    <input
-                      type="text"
-                      value={billsAndCoins[denomination]}
-                      onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
-                      className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      placeholder="Cantidad"
-                    />
-                    <div className="text-sm font-medium w-1/6">
-                      ${(billsAndCoins[denomination] * denomination).toFixed(2)}
-                    </div>
+              <p className="text-sm font-medium mb-2">
+                Ingrese la cantidad de billetes:
+              </p>
+              {[20, 50, 100, 200, 500, 1000].map(denomination => (
+                <div key={denomination} className="flex items-center space-x-4">
+                  <label className="block text-sm font-medium w-1/2">
+                    Billetes de ${denomination}:
+                  </label>
+                  <input
+                    type="text"
+                    value={billsAndCoins[denomination]}
+                    onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
+                    className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="Cantidad"
+                  />
+                  <div className="text-sm font-medium w-1/6">
+                    ${(billsAndCoins[denomination] * denomination).toFixed(2)}
                   </div>
-                ))}
-              </div>
-
-              <div className="space-y-4">
-                <p className="text-sm font-medium mb-2">
-                  Ingrese la cantidad de monedas:
-                </p>
-                {[1, 2, 5, 10].map(denomination => (
-                  <div key={denomination} className="flex items-center space-x-4">
-                    <label className="block text-sm font-medium w-1/2">
-                      Monedas de ${denomination}:
-                    </label>
-                    <input
-                      type="text"
-                      value={billsAndCoins[denomination]}
-                      onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
-                      className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      placeholder="Cantidad"
-                    />
-                    <div className="text-sm font-medium w-1/6">
-                      ${(billsAndCoins[denomination] * denomination).toFixed(2)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="space-y-4">
-                <p className="text-sm font-medium mb-2">
-                  Ingrese la cantidad de billetes:
-                </p>
-                {[20, 50, 100, 200, 500, 1000].map(denomination => (
-                  <div key={denomination} className="flex items-center space-x-4">
-                    <label className="block text-sm font-medium w-1/2">
-                      Billetes de ${denomination}:
-                    </label>
-                    <input
-                      type="text"
-                      value={billsAndCoins[denomination]}
-                      onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
-                      className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      placeholder="Cantidad"
-                    />
-                    <div className="text-sm font-medium w-1/6">
-                      ${(billsAndCoins[denomination] * denomination).toFixed(2)}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
 
-            {/* Información de la Caja */}
-            <div className="space-y-4 pl-6">
-              <p className="text-sm font-medium mb-2">Información de la Caja:</p>
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Número de Caja:</p>
-                
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Usuario Logueado:</p>
-                
-              </div>
-              <div className="space-y-2">
-                <p className="text-xs font-medium">Fondo Inicial:</p>
-                <div className="p-1 text-sm border rounded-md shadow-sm w-1/3">
-                  ${initialFund}
-                </div>  
-              </div>
-              <div className="space-y-2">
-                <p className="text-xs font-medium">Total Retirado:</p>
-                <div className="p-1 text-sm border rounded-md shadow-sm w-1/3">
-                  $
+            {/* Conteo de Monedas */}
+            <div className="space-y-4">
+              <p className="text-sm font-medium mb-2">
+                Ingrese la cantidad de monedas:
+              </p>
+              {[1, 2, 5, 10].map(denomination => (
+                <div key={denomination} className="flex items-center space-x-4">
+                  <label className="block text-sm font-medium w-1/2">
+                    Monedas de ${denomination}:
+                  </label>
+                  <input
+                    type="text"
+                    value={billsAndCoins[denomination]}
+                    onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
+                    className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="Cantidad"
+                  />
+                  <div className="text-sm font-medium w-1/6">
+                    ${(billsAndCoins[denomination] * denomination).toFixed(2)}
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <p className="text-xs font-medium">Total en Caja:</p>
-                <div className="p-1 text-sm border rounded-md shadow-sm w-1/3">
-                  ${totalAmount.toFixed(2)}
+              ))}
+            </div>
+
+            {/* Conteo de Centavos */}
+            <div className="space-y-4">
+              <p className="text-sm font-medium mb-2">
+                Ingrese la cantidad de centavos:
+              </p>
+              {[0.10, 0.20, 0.50].map(denomination => (
+                <div key={denomination} className="flex items-center space-x-4">
+                  <label className="block text-sm font-medium w-1/2">
+                    Centavos de ${denomination}:
+                  </label>
+                  <input
+                    type="text"
+                    value={billsAndCoins[denomination]}
+                    onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
+                    className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="Cantidad"
+                  />
+                  <div className="text-sm font-medium w-1/6">
+                    ${(billsAndCoins[denomination] * denomination).toFixed(2)}
+                  </div>
                 </div>
-              </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Información de la Caja */}
+          <div className="p-4 border-t mt-6 grid grid-cols-3 gap-4">
+            <div>
+              <p className="text-sm font-medium">Número de Caja:</p>
+              <div className="text-sm font-medium p-1 border rounded-md shadow-sm"># Caja</div>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Operador:</p>
+              <div className="text-sm font-medium p-1 border rounded-md shadow-sm">Usuario</div>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Fondo Inicial:</p>
+              <div className="text-sm font-medium p-1 border rounded-md shadow-sm">${initialFund}</div>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Total Retirado:</p>
+              <div className="text-sm font-medium p-1 border rounded-md shadow-sm">$0.00</div>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Total en Caja:</p>
+              <div className="text-sm font-medium p-1 border rounded-md shadow-sm">${totalAmount.toFixed(2)}</div>
             </div>
           </div>
 
@@ -217,9 +210,9 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
             </p>
           </div>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={setIsFirstModalOpen}>Corregir</AlertDialogAction>
-            <AlertDialogCancel onClick={() => setIsSecondModalOpen(false)}>No</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmAndClose}>Sí</AlertDialogAction>
+            <AlertDialogAction onClick={() => setIsFirstModalOpen(true)}>Corregir</AlertDialogAction>
+            <AlertDialogCancel onClick={() => setIsSecondModalOpen(false)}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmAndClose}>Confirmar</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
