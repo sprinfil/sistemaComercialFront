@@ -27,6 +27,8 @@ import { ZustandGeneralUsuario } from "../../../../contexts/ZustandGeneralUsuari
 import ContratoConsultaTomaTable from "../../../../components/Tables/Components/ContratoConsultaTomaTable.tsx";
 import { Pencil2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { TbFilterPlus } from "react-icons/tb";
+import { TiUserAdd } from "react-icons/ti";
+import IconButton from "../../../../components/ui/IconButton.tsx";
 
 
 interface BuscarUsuarioProps {
@@ -295,10 +297,21 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
             <div>
                 <div className='mt-5 ml-[5vh] w-[213vh] rounded-md border border-border  shadow-inherit p-6 h-[29.5vh] '>
                     <Form {...form}>
-                        <div className="text-muted-foreground text-[20px] mb-5">Consultar al usuario</div>
+                        <div className="justify-center items-center">
+                                <div className="text-muted-foreground text-[20px] mb-5">Consultar al usuario </div>
+                                {
+                                    botonCrearUsuario &&
+                                    <div className="flex justify-end" onClick={handleNavigationCrearUsuario}>
+                                    <IconButton><TiUserAdd className="h-[2.5vh]" /></IconButton>
+                                    </div>
+                                }
+                        </div>
+                   
+                       
                         <form onSubmit={form.handleSubmit(onSubmit)} className="">
                             <div className="flex space-x-2">
                                 <div className="w-[120vh] mr-5">
+
                                     <FormField
                                         control={form.control}
                                         name="filtro"
@@ -340,25 +353,23 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                                             </FormItem>
                                         )}
                                     />
-                                    
+
                                 </div>
                                 <div className="mt-8">
-                                <Button type="submit" className=""><MagnifyingGlassIcon/></Button>
+                                    <Button type="submit" className=""><MagnifyingGlassIcon /></Button>
 
-                                {
-                                    botonCrearUsuario && <Button type="button" onClick={handleNavigationCrearUsuario} className="">Crear usuario</Button>
-                                }
-                            </div>
+
+                                </div>
                             </div>
 
 
 
-                            
+
                         </form>
                     </Form>
                 </div>
 
-              
+
 
                 {
 

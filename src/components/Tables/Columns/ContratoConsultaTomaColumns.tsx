@@ -75,7 +75,8 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
     },
   },
   {
-    accessorKey: "usuario.telefono",
+    accessorFn: (row) => row.usuario?.apellido_materno,
+    id: "usuario.telefono",
     header: ({ column }) => {
       return (
         <Button
@@ -88,7 +89,8 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
     },
   },
   {
-    accessorKey: "usuario.correo",
+    accessorFn: (row) => row.usuario?.apellido_materno,
+    id: "usuario.correo",
     header: ({ column }) => {
       return (
         <Button

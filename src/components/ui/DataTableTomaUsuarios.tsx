@@ -101,7 +101,7 @@ export function DataTableTomaUsuarios<TData, TValue>({
 
 
       <div className="">
-        <div className="flex space-x-2">
+        <div className="flex space-x-5">
           
 
         <div className="flex flex-col space-y-2">
@@ -150,7 +150,7 @@ export function DataTableTomaUsuarios<TData, TValue>({
 
         </div>
        
-        <div className="flex space-x-4">
+        <div className="flex space-x-[30vh]">
         <div className="">
         <p className="mb-2 ml-2 mt-2">Correo</p>
         <Input
@@ -161,7 +161,7 @@ export function DataTableTomaUsuarios<TData, TValue>({
           const value = event.target.value;
           table.getColumn("usuario.correo")?.setFilterValue(value);
         }}
-        className="w-[68vh]"
+        className="w-[90vh]"
       />
       
         </div>
@@ -176,7 +176,7 @@ export function DataTableTomaUsuarios<TData, TValue>({
           const value = event.target.value;
           table.getColumn("usuario.telefono")?.setFilterValue(value);
         }}
-        className="w-[100vh]"
+        className="w-[90vh]"
       />
       
         </div>
