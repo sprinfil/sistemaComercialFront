@@ -53,7 +53,7 @@ export default function PuntoVenta() {
       setIsFondoCajaRegistered(true);
       setInitialFund(formattedAmount || 0);
       localStorage.setItem('isFondoCajaRegistered', 'true');
-      localStorage.setItem('fondoCajaAmount', formattedAmount);
+      
       setIsModalOpen(false);
     } catch (error) {
       if (error.response && error.response.status === 422) {

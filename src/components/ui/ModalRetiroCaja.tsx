@@ -10,33 +10,47 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import axiosClient from '../../axios-client';
+import { useToast } from './use-toast';
+import { ToastAction } from '@radix-ui/react-toast';
 
 export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja }) => {
-  const [billsAndCoins, setBillsAndCoins] = useState({
-    0.10: 0,   // Centavos
+  const [billetesCentavos, setBilletesCentavos] = useState({
+    0.10: 0,
     0.20: 0,
     0.50: 0,
-    1: 0,    // Monedas
-    2: 0,
-    5: 0,
-    10: 0,
-    20: 0,   // Billetes
+    20: 0,
     50: 0,
     100: 0,
     200: 0,
     500: 0,
     1000: 0,
   });
+  const [monedas, setMonedas] = useState({
+    1: 0,
+    2: 0,
+    5: 0,
+    10: 0,
+    20: 0,
+  });
   const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
   const [isFirstModalOpen, setIsFirstModalOpen] = useState(false);
   const [cajaSesionId, setCajaSesionId] = useState(null);
+  const { toast } = useToast()
 
+  function successToastCreado() {
+    toast({
+        title: "¡Éxito!",
+        description: "El retiro se ha realizado correctamente",
+        variant: "success",
+
+    })  
+  }
 
   useEffect(() => {
     // Obtener los valores almacenados en localStorage
     
     
-    const cajaSesion = 17; // Obtener sesion la caja
+    const cajaSesion = 51; // Obtener sesion la caja
 
     setCajaSesionId(cajaSesion ? parseInt(cajaSesion, 10) : null);
 
@@ -47,20 +61,23 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
   const handleOpenChange = (open) => {
     setIsFirstModalOpen(open);
     if (open) {
-      setBillsAndCoins({
+      setBilletesCentavos({
         0.10: 0,
         0.20: 0,
         0.50: 0,
-        1: 0,
-        2: 0,
-        5: 0,
-        10: 0,
         20: 0,
         50: 0,
         100: 0,
         200: 0,
         500: 0,
         1000: 0,
+      });
+      setMonedas({
+        1: 0,
+        2: 0,
+        5: 0,
+        10: 0,
+        20: 0,
       }); // Limpia los campos cuando el modal se abre
     }
   };
@@ -71,21 +88,21 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
 
   const handleConfirmAndClose = async () => {
     const data = {
-      id_sesion_caja: cajaSesionId, // Utiliza el prop idSesionCaja
-      cantidad_centavo_10: billsAndCoins[0.10] || 0,
-      cantidad_centavo_20: billsAndCoins[0.20] || 0,
-      cantidad_centavo_50: billsAndCoins[0.50] || 0,
-      cantidad_moneda_1: billsAndCoins[1] || 0,
-      cantidad_moneda_2: billsAndCoins[2] || 0,
-      cantidad_moneda_5: billsAndCoins[5] || 0,
-      cantidad_moneda_10: billsAndCoins[10] || 0,
-      cantidad_moneda_20: billsAndCoins[20] || 0,
-      cantidad_billete_20: billsAndCoins[20] || 0,
-      cantidad_billete_50: billsAndCoins[50] || 0,
-      cantidad_billete_100: billsAndCoins[100] || 0,
-      cantidad_billete_200: billsAndCoins[200] || 0,
-      cantidad_billete_500: billsAndCoins[500] || 0,
-      cantidad_billete_1000: billsAndCoins[1000] || 0,
+      id_caja_catalogo: cajaSesionId, // Utiliza el prop idSesionCaja
+      cantidad_centavo_10: billetesCentavos[0.10] || 0,
+      cantidad_centavo_20: billetesCentavos[0.20] || 0,
+      cantidad_centavo_50: billetesCentavos[0.50] || 0,
+      cantidad_moneda_1: monedas[1] || 0,
+      cantidad_moneda_2: monedas[2] || 0,
+      cantidad_moneda_5: monedas[5] || 0,
+      cantidad_moneda_10: monedas[10] || 0,
+      cantidad_moneda_20: monedas[20] || 0,
+      cantidad_billete_20: billetesCentavos[20] || 0,
+      cantidad_billete_50: billetesCentavos[50] || 0,
+      cantidad_billete_100: billetesCentavos[100] || 0,
+      cantidad_billete_200: billetesCentavos[200] || 0,
+      cantidad_billete_500: billetesCentavos[500] || 0,
+      cantidad_billete_1000: billetesCentavos[1000] || 0,
       monto_total: totalAmount.toFixed(2), // Convertir a cadena con formato decimal
     };
   
@@ -95,7 +112,7 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
       console.log('Retiro registrado:', response.data);
       
       if (onRegister) {
-        onRegister(billsAndCoins); 
+        onRegister(billetesCentavos, monedas); 
       }
       
       setIsSecondModalOpen(false);
@@ -114,14 +131,27 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
   };
 
   const handleBillChange = (denomination, value) => {
-    setBillsAndCoins(prev => ({
-      ...prev,
-      [denomination]: value
-    }));
+    if (denomination in billetesCentavos) {
+      setBilletesCentavos(prev => ({
+        ...prev,
+        [denomination]: value
+      }));
+    }
   };
 
-  const totalAmount = Object.entries(billsAndCoins).reduce((total, [denomination, count]) => {
-    return total + (parseFloat(denomination) * count); 
+  const handlemonedasChange = (denomination, value) => {
+    if (denomination in monedas) {
+      setMonedas(prev => ({
+        ...prev,
+        [denomination]: value
+      }));
+    }
+  }
+
+  const totalAmount = Object.entries(billetesCentavos).reduce((total, [denomination, count]) => {
+    return total + (parseFloat(denomination) * count);
+  }, 0) + Object.entries(monedas).reduce((total, [denomination, count]) => {
+    return total + (parseFloat(denomination) * count);
   }, 0);
 
   return (
@@ -147,13 +177,13 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
                   </label>
                   <input
                     type="text"
-                    value={billsAndCoins[denomination]}
+                    value={billetesCentavos[denomination]}
                     onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
                     className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     placeholder="Cantidad"
                   />
                   <div className="text-sm font-medium w-1/6">
-                    ${(billsAndCoins[denomination] * denomination).toFixed(2)}
+                    ${(billetesCentavos[denomination] * denomination).toFixed(2)}
                   </div>
                 </div>
               ))}
@@ -164,20 +194,20 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
               <p className="text-sm font-medium mb-2">
                 Ingrese la cantidad de monedas:
               </p>
-              {[1, 2, 5, 10].map(denomination => (
+              {[1, 2, 5, 10,20].map(denomination => (
                 <div key={denomination} className="flex items-center space-x-4">
                   <label className="block text-sm font-medium w-1/2">
                     Monedas de ${denomination}:
                   </label>
                   <input
                     type="text"
-                    value={billsAndCoins[denomination]}
-                    onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
+                    value={monedas[denomination]}
+                    onChange={(e) => handlemonedasChange(denomination, parseInt(e.target.value) || 0)}
                     className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     placeholder="Cantidad"
                   />
                   <div className="text-sm font-medium w-1/6">
-                    ${(billsAndCoins[denomination] * denomination).toFixed(2)}
+                    ${(monedas[denomination] * denomination).toFixed(2)}
                   </div>
                 </div>
               ))}
@@ -195,13 +225,13 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
                   </label>
                   <input
                     type="text"
-                    value={billsAndCoins[denomination]}
+                    value={billetesCentavos[denomination]}
                     onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
                     className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     placeholder="Cantidad"
                   />
                   <div className="text-sm font-medium w-1/6">
-                    ${(billsAndCoins[denomination] * denomination).toFixed(2)}
+                    ${(billetesCentavos[denomination] * denomination).toFixed(2)}
                   </div>
                 </div>
               ))}
@@ -235,7 +265,7 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={handleCancel}>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmAndClose}>Confirmar</AlertDialogAction>
+            <AlertDialogAction onClick={()=> {handleConfirmAndClose(), successToastCreado()}}>Confirmar</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

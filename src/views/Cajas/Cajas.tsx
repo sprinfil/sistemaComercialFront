@@ -14,6 +14,7 @@ import RetirosCaja from './RetirosCaja';
 import ConfigurarCaja from './ConfigurarCaja';
 import CorteCaja from './CorteCaja';
 import { FondoCajaProvider } from '../../contexts/FondoCajaContext';
+import axiosClient from '../../axios-client';
 
 function App() {
 
@@ -30,6 +31,8 @@ function App() {
       // Redirigir al usuario a la página principal
       navigate("/dashboard");
     };
+
+    
 
     const opciones = [
         {
