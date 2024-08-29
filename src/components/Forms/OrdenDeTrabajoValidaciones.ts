@@ -11,3 +11,9 @@ export const OrdenDeTrabajoCrearSchema = z.object({
     genera_masiva: z.boolean(),
 })
 
+
+export const OrdenDeTrabajoAsignarIndividualSchema = z.object({
+    id: z.number(),
+    id_empleado_encargado: z.number(),
+})
+

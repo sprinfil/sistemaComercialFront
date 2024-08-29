@@ -6,51 +6,44 @@ import { useStateContext } from '../../../contexts/ContextAnomalias.tsx';
 import Loader from '../../ui/Loader.tsx';
 import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
+import { DataTableAsignarOTIndividual } from '../../ui/DataTableAsignarOTIndividual.tsx';
+import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
+import { BuscarUsuario } from '../Columns/ContratoConsultaUsuarioColumns.tsx';
+import ModalInformacionOtToma from '../../ui/ModalInformaciónOtToma.tsx';
 
 export default function AsignarOrdenDeTrabajoTable() {
 
-  const { anomalias, setAnomalias, loadingTable, setLoadingTable, setAccion, setAnomalia} = useStateContext();
+  const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT} = ZustandGeneralUsuario();
 
-  useEffect(() => {
-    getAnomalias();
-  }, []);
+      console.log("esto llego para asignar individual",usuariosEncontrados);
+  const [abrirModalInformativo, setAbrirModalInformativo] = useState(false);
 
-  const getAnomalias = async () => {
-    setLoadingTable(true);
-    try {
-      const response = await axiosClient.get("/OrdenTrabajo");
-      setLoadingTable(false);
-      setAnomalias(response.data.data);
-      console.log(response.data.data);
-    } catch (error) {
-      setLoadingTable(false);
-      console.error("Failed to fetch anomalias:", error);
-    }
-  };
 
-  //metodo para las filas
-
-  const handleRowClick = (anomalia: Anomalia) =>
+  const handleRowClick = (usuarioToma: BuscarUsuario) =>
   {
-    setAnomalia(anomalia);
-    setAccion("ver");
+
+    //este es el id de la toma seleccionada
+    //setAnomalia(anomalia);
+    //setAccion("ver");
+    setAbrirModalInformativo(true);
+
   };
 
-
-  if (loadingTable) {
-    return <div><Loader /></div>;
-  }
+  
+ 
 
   return (
 
     <div>
-      <div onClick={()=>{setAccion("crear")}}>
-
-
-       
-        </div>
       
-      <DataTable columns={columns} data={anomalias} sorter='nombre' onRowClick={handleRowClick}/>
+      <DataTableAsignarOTIndividual columns={columns} data={usuariosEncontrados} sorter='nombre' onRowClick={handleRowClick}/>
+      
+      <ModalInformacionOtToma
+      isOpen={abrirModalInformativo}
+      setIsOpen={setAbrirModalInformativo}
+      method={handleRowClick}
+      text={"Información de la orden de trabajo"}
+      />
     </div>
   );
 }

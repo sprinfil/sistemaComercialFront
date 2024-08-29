@@ -70,7 +70,11 @@ interface GeneralUsuario {
   setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs: string) => void;
   idSeleccionadoGenerarOrdenDETrabajoToma: number | null;
   setIdSeleccionadoGenerarOrdenDETrabajoToma: (idSeleccionadoGenerarOrdenDETrabajoToma: number) => void;
-
+  idSeleccionadoTomaAsignacionOT: number | null;
+  setIdSeleccionadoTomaAsignacionOT: (idSeleccionadoTomaAsignacionOT: number) => void;
+  controlTablaOperadorOTIndividual: boolean;
+  setControlTablaOperadorOTIndividual:(controlTablaOperadorOTIndividual: boolean) => void;
+  
 }
 
 export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
@@ -119,5 +123,9 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
  setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs) => set({accionGeneradaEntreTabs}),
  idSeleccionadoGenerarOrdenDETrabajoToma: null,
  setIdSeleccionadoGenerarOrdenDETrabajoToma: (idSeleccionadoGenerarOrdenDETrabajoToma: number) => set({idSeleccionadoGenerarOrdenDETrabajoToma}),
+ idSeleccionadoTomaAsignacionOT: null,
+ setIdSeleccionadoTomaAsignacionOT: (idSeleccionadoTomaAsignacionOT: number) => set({idSeleccionadoTomaAsignacionOT}),
+ controlTablaOperadorOTIndividual: false,
+ setControlTablaOperadorOTIndividual:(controlTablaOperadorOTIndividual) => set({controlTablaOperadorOTIndividual}),
 }));
 
