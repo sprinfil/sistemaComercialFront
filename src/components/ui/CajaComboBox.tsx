@@ -38,7 +38,7 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void; // Nueva prop para el callback
 };
 
-export const CajaComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado}) => {
+export const CajaComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado, disabled = false}) => {
 
 
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -79,6 +79,7 @@ export const CajaComboBox = ({ field, form, name = "id_concepto", setCargoSelecc
                                 "w-full justify-between",
                                 !field.value && "text-muted-foreground"
                             )}
+                            disabled={disabled}
                         >
                             {field.value
                                 ? languages.find(

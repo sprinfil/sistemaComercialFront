@@ -33,6 +33,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import dayjs from 'dayjs';
+import estructura_ticket from '../../tickets/TicketPagoEnCaja';
+import axios from 'axios';
+import imprimir from '../../tickets/FuncionesImpresora';
 
 export const ModalMetodoPago = ({
   open_modal,
@@ -48,7 +51,13 @@ export const ModalMetodoPago = ({
   const recibi = useRef();
   const recibi_real = useRef();
   const [errores, set_errores] = useState([]);
-  const total_neto = total + total_iva;
+  const total_neto = total;
+
+  //console.log(estructura_ticket(ticket_data));
+
+
+
+
   const handleCambio = () => {
 
     let errores_temp = [];
@@ -112,10 +121,107 @@ export const ModalMetodoPago = ({
         .then((response) => {
           set_open_modal(false);
           update_data(dueno.id_codigo_toma)
-
           
+          let abono = parseFloat(recibi.current.value);
+          let recibi_temp = parseFloat(recibi_real.current.value);
+
+          let ticket_data_copia = {
+            nombre_caja: "Caja 1",
+            consecutivo: "000123",
+            nombre_cajero: "Juan Pérez",
+            pago_folio: response.data.folio,
+            fecha_pago: response.data.fecha_pago,
+            copia: true,
+            usuario_nombre: dueno?.usuario?.nombre,
+            numero_cuenta: dueno.id_codigo_toma,
+            calle: dueno?.calle,
+            numero: dueno?.numero_casa,
+            codigo_postal: dueno?.codigo_postal,
+            colonia: dueno?.colonia,
+            rfc: dueno?.usuario?.rfc,
+            /*
+               conceptos: [
+              { nombre: "Servicio A", monto: "100.00" },
+              { nombre: "Servicio B", monto: "150.00" }
+            ],
+            */
+
+            saldo_anterior: total_neto.toString(),
+            metodo_pago: metodo_pago_selected,
+            recibido: recibi_temp.toString(),
+            cambio: cambio.toString(),
+            pago_neto: abono.toString(),
+            saldo_pendiente: (total_neto - abono).toString()
+          };
+          let ticket_data_original = {
+            nombre_caja: "Caja 1",
+            consecutivo: "000123",
+            nombre_cajero: "Daniela Encinas Pacheco",
+            pago_folio: response.data.folio,
+            fecha_pago: response.data.fecha_pago,
+            copia: false,
+            usuario_nombre: dueno?.usuario?.nombre + " " + dueno?.usuario?.apellido_paterno + " " + dueno?.usuario?.apellido_materno,
+            numero_cuenta: dueno.id_codigo_toma,
+            calle: dueno?.calle,
+            numero: dueno?.numero_casa,
+            codigo_postal: dueno?.codigo_postal,
+            colonia: dueno?.colonia,
+            rfc: dueno?.usuario?.rfc,
+            /*
+               conceptos: [
+              { nombre: "Servicio A", monto: "100.00" },
+              { nombre: "Servicio B", monto: "150.00" }
+            ],
+            */
+
+            saldo_anterior: total_neto.toString(),
+            metodo_pago: metodo_pago_selected,
+            recibido: recibi_temp.toString(),
+            cambio: cambio.toString(),
+            pago_neto: abono.toString(),
+            saldo_pendiente: (total_neto - abono).toString()
+          };
+
+          console.log(response)
+
+          let ticket_copia = estructura_ticket(ticket_data_copia);
+          let ticket_original = estructura_ticket(ticket_data_original);
+          let barcode = response.data.folio.toString();
+
+          imprimir(ticket_original, barcode, "logosapa.png")
+            .then((response) => {
+              let estructura_talon = []
+              estructura_talon.push([`TALON CAJERO`, `CT`, `B`])
+              imprimir(estructura_talon, "", "").then(() => { }).catch((response) => {
+                toast({
+                  variant: "destructive",
+                  title: "Error",
+                  //description: response.response.data.error,
+                  description: "Ocurrio un error al imprimir",
+                  action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                })
+              })
+            })
+            .catch((response) => {
+              toast({
+                variant: "destructive",
+                title: "Error",
+                //description: response.response.data.error,
+                description: "Ocurrio un error al imprimir",
+                action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+              })
+            })
+
         })
         .catch((response) => {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            //description: response.response.data.error,
+            description: "No se pudo procesar el pago",
+            action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+          })
+
           console.log(response)
         })
     }
@@ -219,7 +325,7 @@ export const ModalMetodoPago = ({
                                         className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
                                         <TableCell className="font-medium">{cargo.concepto.nombre}</TableCell>
                                         <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
-                                        <TableCell className="">$ {(parseFloat(cargo.monto) + parseFloat(cargo.iva)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                                        <TableCell className="">$ {(parseFloat(cargo.monto_pendiente) ).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                                         <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
                                       </TableRow>
                                     ))}

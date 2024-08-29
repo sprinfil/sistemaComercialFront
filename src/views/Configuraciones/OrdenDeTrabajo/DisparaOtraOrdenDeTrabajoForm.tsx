@@ -77,6 +77,18 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_OT_Catalogo_encadenada:number}[]>([{ id: 0, id_OT_Catalogo_encadenada: 0}]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
+    const [control, setControl] = useState(false);
+
+
+
+    console.log(control);
+
+
+
+
+
+
+
 
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0 
@@ -262,50 +274,57 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
 
     
     
-      useEffect(() => {
+    useEffect(() => {
         if (accionGeneradaEntreTabs === "eliminar") {
-          setAbrirInput(false);
+            setAbrirInput(false);
         }
+    
         if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
-          setAbrirInput(true);
-          setErrors({});
-          setOrdenDeTrabajo({
-            id: 0,
-            nombre: "",
-            descripcion: "ninguna",
-          });
+            setAbrirInput(true);
+            setErrors({});
+            setOrdenDeTrabajo({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
         }
-        if (accionGeneradaEntreTabs === "ver") {
-          setAbrirInput(false);
-          setErrors({});
-          setAccion("");
-        
-          // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
-          //SUS PROPIEDADDES
-          // Transformación de datos
-                const ordenTrabajoEncadenadas = Array.isArray(ordenDeTrabajo.ordenes_trabajo_encadenadas) ?
+    
+        if (accionGeneradaEntreTabs === "ver" || accionGeneradaEntreTabs === "editar") {
+            setAbrirInput(true);
+            setErrors({});
+    
+            // Transformación de datos para el formulario
+            const ordenTrabajoEncadenadas = Array.isArray(ordenDeTrabajo.ordenes_trabajo_encadenadas) ?
                 ordenDeTrabajo.ordenes_trabajo_encadenadas.map(item => ({
-                id: item.id,
-                id_OT_Catalogo_encadenada: item.id_OT_Catalogo_encadenada,
+                    id: item.id,
+                    id_OT_Catalogo_encadenada: item.id_OT_Catalogo_encadenada,
                 })) : [];
-
-                // Reseteo del formulario
+    
+            // Manejo de la acción "ver"
+            if (accionGeneradaEntreTabs === "ver") {
+                setControl(true);
                 form.reset({
                     orden_trabajo_encadenadas: ordenTrabajoEncadenadas,
                 });
-
-                // Actualización del estado y depuración
-                setTotalAccionesComponente(ordenTrabajoEncadenadas);
-                console.log("Valores del cargo:", ordenTrabajoEncadenadas);
-                console.log("Valores del formulario después del reset:", form.getValues());
-        }
-        
+            }
     
-        if (accion === "editar") {
-          setAbrirInput(true);
-          setErrors({});
+            // Manejo de la acción "editar"
+            if (accionGeneradaEntreTabs === "editar") {
+                setControl(false);
+                form.reset({
+                    orden_trabajo_encadenadas: ordenTrabajoEncadenadas,
+                });
+            }
+    
+            // Actualización del estado si los datos cambiaron
+            if (JSON.stringify(ordenTrabajoEncadenadas) !== JSON.stringify(totalAccionesComponente)) {
+                setTotalAccionesComponente(ordenTrabajoEncadenadas);
+            }
+    
+            console.log("Valores del cargo:", ordenTrabajoEncadenadas);
+            console.log("Valores del formulario después del reset:", form.getValues());
         }
-      }, [accion, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
+    }, [accionGeneradaEntreTabs, ordenDeTrabajo, idSeleccionadoConfiguracionOrdenDeTrabajo]);
 
 
     const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
@@ -356,8 +375,8 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                 {totalAccionesComponente.length < 1 
                 && 
                 <div className="flex justify-center mt-[20vh]">
-                     {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o mas operadores.</p> : 
-              <p className="text-muted-foreground text-[20px]">Sin operadores</p>
+                     {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o mas ordenes de trabajo.</p> : 
+              <p className="text-muted-foreground text-[20px]">Sin ordenes de trabajo encadenadas.</p>
              }
 
                     </div>
@@ -368,8 +387,6 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {totalAccionesComponente.map((accion, index) => {
-                            console.log(index);
-                            console.log(index.id);
                             return (
                                 <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
                                      <div className="text-sm font-medium mb-3">
@@ -384,7 +401,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                                                 render={({ field }) => (
 
                                                     
-                                                    <DisparaOtraOTComboBox form={form} field={field} name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`} setCargoSeleccionado={setConceptoSeleccionado}/>
+                                                    <DisparaOtraOTComboBox form={form} field={field} name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control}/>
 
                                                 )}
                                             />

@@ -38,7 +38,7 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void; // Nueva prop para el callback
 };
 
-export const CuentasContablesComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado}) => {
+export const CuentasContablesComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado, disabled=false}) => {
 
 
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -79,21 +79,23 @@ export const CuentasContablesComboBox = ({ field, form, name = "id_concepto", se
                                 "w-full justify-between",
                                 !field.value && "text-muted-foreground"
                             )}
+
+                            disabled={disabled}
                         >
                             {field.value
                                 ? languages.find(
                                     (language) => language.value === field.value
                                 )?.label
-                                : "Selecciona un concepto"}
+                                : "Selecciona una cuenta contable"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0 h-[300px]">
                     <Command>
-                        <CommandInput placeholder="Buscar Concepto ... " />
+                        <CommandInput placeholder="Buscar cuenta contable ... " />
                         <CommandList>
-                            <CommandEmpty>Concepto no encontrado.</CommandEmpty>
+                            <CommandEmpty>Cuenta contable no encontrada.</CommandEmpty>
                             <CommandGroup>
                                 {
                                     loading &&

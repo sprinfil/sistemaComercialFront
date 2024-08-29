@@ -32,10 +32,8 @@ export default function CajaTable() {
   // Método para las filas
   const handleRowClick = (caja: Caja) => {
     setCaja(caja);
-    setAccion("ver");
-    setAccionGeneradaEntreTabs("ver");
-    setAccion
     setIdSeleccionadoConfiguracionOrdenDeTrabajo(caja.id);
+    setAccionGeneradaEntreTabs("ver");
   };
 
   if (loadingTable) {

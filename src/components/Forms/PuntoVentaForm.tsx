@@ -100,10 +100,13 @@ const PuntoVentaForm = () => {
     handleClear();
     setLoading(true);
     setError(null);
+
+    let codigo = codigo_toma != null ? codigo_toma : userInput;
+
     try {
-      const userResponse = await axiosClient.get(`/Toma/codigo/${codigo_toma || userInput}`);
-      const cargosResponse = await axiosClient.get(`/Toma/cargos/${codigo_toma ||userInput}`);
-      const pagosResponse = await axiosClient.get(`/Toma/pagos/${codigo_toma ||userInput}`);
+      const userResponse = await axiosClient.get(`/Toma/codigo/${codigo}`);
+      const cargosResponse = await axiosClient.get(`/Toma/cargos/${codigo}`);
+      const pagosResponse = await axiosClient.get(`/Toma/pagos/${codigo}`);
 
       if (userResponse.data) {
         setDataToma(userResponse.data);
@@ -292,7 +295,7 @@ const PuntoVentaForm = () => {
   };
 
   const calculateTotal = () => {
-    return selectedCargos.reduce((acc, cargo) => acc + parseFloat(cargo.monto || 0), 0);
+    return selectedCargos.reduce((acc, cargo) => acc + parseFloat(cargo.monto_pendiente || 0), 0);
   };
 
   const calculateTotalIva = () => {
@@ -399,6 +402,7 @@ const PuntoVentaForm = () => {
         </div>
         <p className="whitespace-nowrap">Número de toma</p>
         <Input
+        type="number"
           className="h-8 ml-1 mr-1 w-96"
           value={userInput}
           onChange={handleInputChange}
@@ -745,7 +749,7 @@ const PuntoVentaForm = () => {
                                   {cargo.nombre}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                  ${(parseFloat(cargo.monto) + parseFloat(cargo.iva)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                  ${(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                   {cargo.estado}
@@ -1004,7 +1008,7 @@ const PuntoVentaForm = () => {
                         {cargo?.entidad}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                        ${(parseFloat(cargo.monto) + parseFloat(cargo.iva)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ${(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap text-sm ">
                         {cargo.concepto.prioridad_abono}
@@ -1033,7 +1037,7 @@ const PuntoVentaForm = () => {
 
           <div className=" flex gap-3">
             <div className="">TOTAL</div>
-            ${(totalRestante + total_iva).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            ${(totalRestante).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
 
         </div>
