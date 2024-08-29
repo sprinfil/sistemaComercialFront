@@ -169,23 +169,34 @@ const PuntoVentaForm = () => {
 
         let prioridades = selectedCargos.map(cargo_temp => cargo_temp.concepto.prioridad_abono);
 
-        //prioridades = [...new Set(prioridades)];
-
-        //const minimo = Math.min(...prioridades);
-
         const maximo = Math.max(...prioridades);
         console.log(maximo)
 
         if (!busqueda) {
           if (cargo.concepto.prioridad_abono > maximo || cargo.concepto.prioridad_abono == maximo) {
-
-            //ESTE CONCEPTO SI SE PUEDE QUITAR
-            return prevSelectedCargos.filter(c => c.id !== cargo.id);
-
+            if (cargo.concepto.prioridad_por_antiguedad == 1) {
+              let facturaciones = selectedCargos.filter(c => c.concepto.prioridad_por_antiguedad == 1 && c.id != cargo.id)
+              const fechaFacturacion = new Date(cargo.fecha_cargo);
+              const esMasReciente = facturaciones.every(c => new Date(c.fecha_cargo) < fechaFacturacion);
+              if (esMasReciente) {
+                return prevSelectedCargos.filter(c => c.id !== cargo.id);
+              } else {
+                //ESTE CONCEPTO NO SE PUEDE QUITAR
+                toast({
+                  //variant: "destructive",
+                  title: "Debes Quitar los conceptos con menor prioridad de antiguedad",
+                  action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                })
+                return [...prevSelectedCargos];
+              }
+            } else {
+              //ESTE CONCEPTO SI SE PUEDE QUITAR
+              return prevSelectedCargos.filter(c => c.id !== cargo.id);
+            }
           } else {
             //ESTE CONCEPTO NO SE PUEDE QUITAR
             toast({
-              variant: "destructive",
+              //variant: "destructive",
               title: "Concepto Obligatorio",
               description: "Este concepto no se puede quitar",
               action: <ToastAction altText="Try again">Aceptar</ToastAction>,
@@ -214,10 +225,53 @@ const PuntoVentaForm = () => {
           }
 
           if (cargo.concepto.prioridad_abono == minimo || cargo.concepto.prioridad_abono < minimo) {
-            return [...prevSelectedCargos, newCargo];
+
+            //PRIORIDAD POR ANTIGUEDAD
+            if (cargo.concepto.prioridad_por_antiguedad == 1) {
+              // let cargos_prioridad_por_antiguedad = pendingCargos.filter(cargo => cargo.concepto.prioridad_por_antiguedad == 1);
+              // let fechas = cargos_prioridad_por_antiguedad.map(cargo => cargo.fecha_cargo);
+              // let fechaMasReciente;
+              // if (fechas.length > 0) {
+              //   fechaMasReciente = fechas.reduce((max, fechaActual) => {
+              //     return fechaActual > max ? fechaActual : max;
+              //   });
+              // }
+
+              let cargos_prioridad_por_antiguedad = pendingCargos.filter(cargo => cargo.concepto.prioridad_por_antiguedad == 1);
+              const fecha_cargo = new Date(cargo.fecha_cargo);
+              let abajo = cargos_prioridad_por_antiguedad.filter(c => new Date(c.fecha_cargo) < fecha_cargo);
+
+              let todosEstanPresentes = abajo.every(elemento => selectedCargos.includes(elemento));
+              let error = false;
+
+              if (abajo.length > 0) {
+                abajo.map(cargo_abajo => {
+                  error = true;
+                  selectedCargos.map(cargo => {
+                    if (cargo_abajo.id == cargo.id) {
+                      error = false;
+                    }
+                  })
+                })
+              }
+              if (!error) {
+                return [...prevSelectedCargos, newCargo];
+              } else {
+                //ESTE CONCEPTO NO SE PUEDE AGREGAR
+                toast({
+                  //variant: "destructive",
+                  title: "Hay Conceptos con prioridad de antiguedad mayor",
+                  action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                })
+                return [...prevSelectedCargos];
+              }
+
+            } else {
+              return [...prevSelectedCargos, newCargo];
+            }
+
           } else {
             //ESTE CONCEPTO NO SE PUEDE AGREGAR
-            //ESTE CONCEPTO NO SE PUEDE QUITAR
             toast({
               title: "Hay Conceptos de mayor prioridad",
               description: "Selecciona todos los conceptos con mayor prioridad",
@@ -382,7 +436,7 @@ const PuntoVentaForm = () => {
         </div>
         <p className="whitespace-nowrap">Número de toma</p>
         <Input
-        type="number"
+          type="number"
           className="h-8 ml-1 mr-1 w-96"
           value={userInput}
           onChange={handleInputChange}

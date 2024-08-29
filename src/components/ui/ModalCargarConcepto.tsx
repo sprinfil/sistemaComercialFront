@@ -56,7 +56,9 @@ const ModalCargarConcepto = ({ trigger, dueño, setCargos, handleCargoSelect }) 
             }
         });
         if (cargosResponse.data) {
-            setCargos(cargosResponse.data);
+            let filteredCargos = cargosResponse.data.filter(cargo => cargo.estado === 'pendiente');
+            filteredCargos = filteredCargos.sort((a, b) => a.concepto.prioridad_abono - b.concepto.prioridad_abono)
+            setCargos(filteredCargos);
         }
     }
 

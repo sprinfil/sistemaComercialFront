@@ -43,7 +43,7 @@ export const ModalMetodoPago = ({
   total,
   total_iva,
   cargos, dueno,
-  update_data
+  update_data,
 }) => {
   const { toast } = useToast()
   const [metodo_pago_selected, set_metodo_pago_selected] = useState("efectivo");
@@ -121,38 +121,22 @@ export const ModalMetodoPago = ({
         .then((response) => {
           set_open_modal(false);
           update_data(dueno.id_codigo_toma)
-          
+
           let abono = parseFloat(recibi.current.value);
           let recibi_temp = parseFloat(recibi_real.current.value);
 
-          let ticket_data_copia = {
-            nombre_caja: "Caja 1",
-            consecutivo: "000123",
-            nombre_cajero: "Juan Pérez",
-            pago_folio: response.data.folio,
-            fecha_pago: response.data.fecha_pago,
-            copia: true,
-            usuario_nombre: dueno?.usuario?.nombre,
-            numero_cuenta: dueno.id_codigo_toma,
-            calle: dueno?.calle,
-            numero: dueno?.numero_casa,
-            codigo_postal: dueno?.codigo_postal,
-            colonia: dueno?.colonia,
-            rfc: dueno?.usuario?.rfc,
-            /*
-               conceptos: [
-              { nombre: "Servicio A", monto: "100.00" },
-              { nombre: "Servicio B", monto: "150.00" }
-            ],
-            */
+          let abonos: any[] = [];
 
-            saldo_anterior: total_neto.toString(),
-            metodo_pago: metodo_pago_selected,
-            recibido: recibi_temp.toString(),
-            cambio: cambio.toString(),
-            pago_neto: abono.toString(),
-            saldo_pendiente: (total_neto - abono).toString()
-          };
+          response.data.abonos.map((abono) => {
+            abonos.push(
+              {
+                nombre: abono.cargo,
+                monto_abonado: abono.total_abonado,
+                monto_pendiente: abono.monto_pendiente
+              }
+            )
+          })
+
           let ticket_data_original = {
             nombre_caja: "Caja 1",
             consecutivo: "000123",
@@ -167,24 +151,20 @@ export const ModalMetodoPago = ({
             codigo_postal: dueno?.codigo_postal,
             colonia: dueno?.colonia,
             rfc: dueno?.usuario?.rfc,
-            /*
-               conceptos: [
-              { nombre: "Servicio A", monto: "100.00" },
-              { nombre: "Servicio B", monto: "150.00" }
-            ],
-            */
-
-            saldo_anterior: total_neto.toString(),
+            conceptos: abonos,
+            //saldo_anterior: total_neto.toFixed(2).toString(),
+            saldo_anterior: response.data.saldo_anterior,
             metodo_pago: metodo_pago_selected,
             recibido: recibi_temp.toString(),
-            cambio: cambio.toString(),
+            cambio: cambio.toFixed(2).toString(),
             pago_neto: abono.toString(),
-            saldo_pendiente: (total_neto - abono).toString()
+            //saldo_pendiente: (total_neto - abono).toFixed(2).toString()
+            saldo_pendiente: response.data.saldo_actual,
+            saldo_a_favor: response.data.saldo_no_aplicado
           };
 
-          console.log(response)
+          console.log(ticket_data_original)
 
-          let ticket_copia = estructura_ticket(ticket_data_copia);
           let ticket_original = estructura_ticket(ticket_data_original);
           let barcode = response.data.folio.toString();
 
@@ -251,7 +231,7 @@ export const ModalMetodoPago = ({
                         </div>
                       </div>
                       <div className={metodo_pago_selected == "tarjeta_credito" ? "my-5 w-full h-[20vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-5 w-full h-[15vh] hover:h-[20vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`}
-                        onClick={() => { set_metodo_pago_selected("tarjeta_credito") }}>
+                        onClick={() => { set_metodo_pago_selected("tarjeta_credito")}}>
                         <div className='flex flex-col gap-2 items-center justify-center'>
                           <img src={credit_card} alt="" className='w-[70px]' />
                           <p>Tarjeta Crédito</p>
@@ -292,7 +272,7 @@ export const ModalMetodoPago = ({
                           <div className='w-full flex h-[5vh] gap-5'>
                             <div>
                               <p>Cantidad Abonar</p>
-                              <input ref={recibi} onChange={() => { handleCambio() }} type="number" className='bg-muted p-4 w-[20vw] h-[6vh] outline-border' name="" id="" />
+                              <input ref={recibi} defaultValue={total_neto.toFixed(2)} onChange={() => { handleCambio() }} type="number" className='bg-muted p-4 w-[20vw] h-[6vh] outline-border' name="" id="" />
                             </div>
                             <div>
                               <p className=''>Recibo</p>
@@ -323,9 +303,9 @@ export const ModalMetodoPago = ({
                                     {cargos.map((cargo, index) => (
                                       <TableRow key={cargo.id}
                                         className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
-                                        <TableCell className="font-medium">{cargo.concepto.nombre}</TableCell>
+                                        <TableCell className="font-medium">{cargo.nombre}</TableCell>
                                         <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
-                                        <TableCell className="">$ {(parseFloat(cargo.monto_pendiente) ).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                                        <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                                         <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
                                       </TableRow>
                                     ))}
