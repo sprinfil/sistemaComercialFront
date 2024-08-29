@@ -24,6 +24,8 @@ import Loader from './Loader.tsx';
 type Status = {
     value: string;
     label: string;
+    disabled?: boolean; // Añadido parámetro disabled
+
 };
 
 type ConceptosComboBoxNewProps = {
@@ -31,7 +33,7 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void;
 };
 
-export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado }: ConceptosComboBoxNewProps) => {
+export const ConceptosOrdenDeTrabajoComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado, disabled = false}: ConceptosComboBoxNewProps) => {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([]);
     const [open, setOpen] = React.useState(false);
@@ -57,11 +59,10 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
     };
     
 
-    console.log("esto segunnnn se envia", form.getValues);
 
     return (
         <div>
-            <Popover>
+            <Popover disabled = {disabled}>
                 <PopoverTrigger asChild>
                     <FormControl>
                         <Button
@@ -71,6 +72,7 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
                                 "w-full justify-between",
                                 !field.value && "text-muted-foreground"
                             )}
+                            disabled={disabled} 
                         >
                             {field.value
                                 ? languages.find(
@@ -81,7 +83,7 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0 h-[300px]">
+                <PopoverContent className="w-full p-0 h-[300px]" align="start">
                     <Command>
                         <CommandInput placeholder="Buscar un concepto.. " />
                         <CommandList>
@@ -89,13 +91,15 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
                             <CommandGroup>
                                 {loading && <Loader />}
                                 {!loading && languages.map((language) => (
+                                    
                                     <CommandItem
                                         value={language.label}
                                         key={language.value}
                                         onSelect={() => {
                                             form.setValue(name, language.value);
-                                            setCargoSeleccionado(language.label);
+                                            setCargoSeleccionado(language.value);
                                         }}
+                                        
                                     >
                                         <Check
                                             className={cn(

@@ -9,6 +9,8 @@ import OrdenDeTrabajoAccionesForm from '../OrdenDeTrabajo/OrdenDeTrabajoAcciones
 import CargosDeLaOrdenDeTrabajoForm from '../OrdenDeTrabajo/CargosDeLaOrdenDeTrabajoForm.tsx';
 import DisparaOtraOrdenDeTrabajoForm from '../OrdenDeTrabajo/DisparaOtraOrdenDeTrabajoForm.tsx';
 
+import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
+
 
 const OrdenDeTrabajo = () => {
   
@@ -73,11 +75,12 @@ const OrdenDeTrabajo = () => {
 const OrdenDeTrabajoformEdit = () => {
 
   const { accion } = useStateContext();
+  const {accionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
   return (
     <>
         {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
-      {accion == "editar" ? (<div className='w-full rounded-md border border-primary'>
+      {accionGeneradaEntreTabs == "editar" ? (<div className='w-full rounded-md border border-primary h-full p-4'>
             <OrdenDeTrabajoForm />
           </div>) : (<div className='w-full rounded-md'>
             <OrdenDeTrabajoForm />
@@ -91,12 +94,13 @@ export default OrdenDeTrabajo
 const MostrarTable = () => {
 
   const { accion } = useStateContext();
+  const {accionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
   return(
     <>
         {/*Datatable*/}
 
-      <OcultarTable accion={accion}>
+      <OcultarTable accion={accionGeneradaEntreTabs}>
       <OrdenDeTrabajoTable />
       </OcultarTable>
       

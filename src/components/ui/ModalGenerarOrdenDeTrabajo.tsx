@@ -11,13 +11,45 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import EscogerOrdenDeTrabajoTable from '../Tables/Components/EscogerOrdenDeTrabajoTable';
+import axiosClient from '../../axios-client';
 
 const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method }) => {
+
+
+
+
 
     const action = () => {
         method();
         setIsOpen(false);
     }
+
+
+
+
+    const GenerarOrdenDeTrabajoToma = async () => {
+
+
+        const values = [
+            {id_toma: 7,},
+            {id_orden_trabajo_catalogo: 2}
+        ]
+        const values2 = {
+            ordenes_trabajo: values,
+        }
+        console.log(values2);
+        try{
+            const response = await axiosClient.post(`OrdenTrabajo/create`, values2)
+            setIsOpen(false);
+            console.log(response);
+
+        }
+        catch(response){
+            console.log(response)
+        }
+    }
+
+
 
     return (
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -32,7 +64,7 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method }) => {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel onClick={() => setIsOpen(false)}>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={action}>Generar</AlertDialogAction>
+                    <AlertDialogAction onClick={GenerarOrdenDeTrabajoToma}>Generar</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

@@ -10,7 +10,9 @@ import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.t
 export default function OrdenDeTrabajoTable() {
 
   const { ordenDeTrabajos, setOrdenDeTrabajos, loadingTable, setLoadingTable, setAccion, setOrdenDeTrabajo} = useStateContext();
- const {setIdSeleccionadoConfiguracionOrdenDeTrabajo} = ZustandGeneralUsuario();
+ const {setIdSeleccionadoConfiguracionOrdenDeTrabajo, idSeleccionadoConfiguracionOrdenDeTrabajo, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
+ console.log("Actualizando ID a:", idSeleccionadoConfiguracionOrdenDeTrabajo);
+
   useEffect(() => {
     getOrdenDeTrabajo();
   }, []);
@@ -31,7 +33,8 @@ export default function OrdenDeTrabajoTable() {
 const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
     {
     setOrdenDeTrabajo(tipoDeToma);
-    setAccion("ver");
+    setAccionGeneradaEntreTabs("ver");
+    setIdSeleccionadoConfiguracionOrdenDeTrabajo(tipoDeToma.id);
     console.log(tipoDeToma);
   }
 
@@ -42,7 +45,7 @@ const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
   return (
 
     <div>
-      <div onClick={()=>{setAccion("crear")}}>
+      <div onClick={()=>{setAccionGeneradaEntreTabs("crear")}}>
         <IconButton>
           <div className='flex gap-2 items-center'> Agregar nueva orden de trabajo <PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>

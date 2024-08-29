@@ -24,6 +24,8 @@ import Loader from './Loader.tsx';
 type Status = {
     value: string;
     label: string;
+    disabled?: boolean; // Añadido parámetro disabled
+
 };
 
 type ConceptosComboBoxNewProps = {
@@ -31,7 +33,7 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void;
 };
 
-export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado }: ConceptosComboBoxNewProps) => {
+export const DisparaOtraOTComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado, disabled = false }: ConceptosComboBoxNewProps) => {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([]);
     const [open, setOpen] = React.useState(false);
@@ -43,9 +45,9 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
     const getConcepto = async () => {
         setLoading(true);
         try {
-            const response = await axiosClient.get("/Concepto");
+            const response = await axiosClient.get("/OrdenTrabajoCatalogo");
             let ctr = 0;
-            response.data.forEach(concepto => {
+            response.data.data.forEach(concepto => {
                 languages[ctr] = { value: concepto.id, label: concepto.nombre };
                 ctr = ctr + 1;
             });
@@ -56,8 +58,6 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
         }
     };
     
-
-    console.log("esto segunnnn se envia", form.getValues);
 
     return (
         <div>
@@ -71,21 +71,22 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
                                 "w-full justify-between",
                                 !field.value && "text-muted-foreground"
                             )}
+                            disabled={disabled}
                         >
                             {field.value
                                 ? languages.find(
                                     (language) => language.value === field.value
                                 )?.label
-                                : "Selecciona un concepto"}
+                                : "Selecciona una orden de trabajo"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0 h-[300px]">
+                <PopoverContent className="w-full p-0 h-[400px]" align="start">
                     <Command>
-                        <CommandInput placeholder="Buscar un concepto.. " />
+                        <CommandInput placeholder="Buscar una OT.. " />
                         <CommandList>
-                            <CommandEmpty>Concepto no encontrado.</CommandEmpty>
+                            <CommandEmpty>Orden de trabajo no encontrada.</CommandEmpty>
                             <CommandGroup>
                                 {loading && <Loader />}
                                 {!loading && languages.map((language) => (
@@ -94,7 +95,7 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
                                         key={language.value}
                                         onSelect={() => {
                                             form.setValue(name, language.value);
-                                            setCargoSeleccionado(language.label);
+                                            setCargoSeleccionado(language.value);
                                         }}
                                     >
                                         <Check

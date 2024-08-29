@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
     Command,
     CommandEmpty,
@@ -15,45 +15,58 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import {
+    Form,
     FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "./form.tsx";
 import { Button } from "@/components/ui/button"
+import axiosClient from '../../axios-client.ts'
 import Loader from './Loader.tsx'
 
 type Status = {
     value: string
     label: string
+
 }
 
 type ConceptosComboBoxNewProps = {
     field: any;
-    form: any;
-    name?: string;
-    setCargoSeleccionado: (label: string) => void;
+    onSelect: (selected: Status) => void; // Nueva prop para el callback
 };
 
-export const BuscarUsuarioComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado }: ConceptosComboBoxNewProps) => {
+export const CuentasContablesComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado, disabled=false}) => {
+
 
     const [loading, setLoading] = React.useState<boolean>(false);
-    const [languages, setLanguages] = React.useState<Status[]>([
-        { value: "1", label: "Nombre, Código de usuario, Código de toma" },
-        { value: "4", label: "Dirección" },
-        { value: "5", label: "Código toma" },
-    ]);
+    const [languages, setLanguages] = React.useState<Status[]>([]);
 
-    const [open, setOpen] = React.useState(false);
 
-    useEffect(() => {
-        if (!field.value) {
-            const defaultFilter = languages[0]; 
-            form.setValue(name, defaultFilter.value); 
-            setCargoSeleccionado(defaultFilter.label); 
+    React.useEffect(() => {
+        getConcepto();
+    }, []);
+
+    const getConcepto = async () => {
+        setLoading(true);
+        try {
+            const response = await axiosClient.get("/Concepto");
+            let ctr = 0;
+            response.data.forEach(concepto => {
+                languages[ctr] = { value: concepto.id, label: concepto.nombre };
+                ctr = ctr + 1;
+            });
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            console.error("Failed to fetch concepto:", error);
         }
-    }, [form, name, languages, setCargoSeleccionado, field.value]);
+    };
 
-    const selectedLabel = field.value
-        ? languages.find((language) => language.value === field.value)?.label
-        : languages[0]?.label; 
+    const [open, setOpen] = React.useState(false)
+
     return (
         <div>
             <Popover>
@@ -66,28 +79,39 @@ export const BuscarUsuarioComboBox = ({ field, form, name = "id_concepto", setCa
                                 "w-full justify-between",
                                 !field.value && "text-muted-foreground"
                             )}
+
+                            disabled={disabled}
                         >
-                            {selectedLabel || "Selecciona un filtro"} {/* Mostrar el valor seleccionado o predeterminado */}
+                            {field.value
+                                ? languages.find(
+                                    (language) => language.value === field.value
+                                )?.label
+                                : "Selecciona una cuenta contable"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0 h-[300px]">
                     <Command>
-                        <CommandInput placeholder="Buscar filtro ..." />
+                        <CommandInput placeholder="Buscar cuenta contable ... " />
                         <CommandList>
-                            <CommandEmpty>Filtro no encontrado.</CommandEmpty>
+                            <CommandEmpty>Cuenta contable no encontrada.</CommandEmpty>
                             <CommandGroup>
-                                {loading && <Loader />}
-                                {!loading && (
+                                {
+                                    loading &&
+                                    <Loader />
+                                }
+                                {
+                                    !loading &&
                                     <>
                                         {languages.map((language) => (
                                             <CommandItem
                                                 value={language.label}
                                                 key={language.value}
                                                 onSelect={() => {
-                                                    form.setValue(name, language.value);
-                                                    setCargoSeleccionado(language.label);
+                                                    form.setValue(name, language.value)
+                                                    setCargoSeleccionado(language.label); 
+
                                                 }}
                                             >
                                                 <Check
@@ -102,12 +126,13 @@ export const BuscarUsuarioComboBox = ({ field, form, name = "id_concepto", setCa
                                             </CommandItem>
                                         ))}
                                     </>
-                                )}
+                                }
+
                             </CommandGroup>
                         </CommandList>
                     </Command>
                 </PopoverContent>
             </Popover>
         </div>
-    );
+    )
 }

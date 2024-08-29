@@ -25,7 +25,7 @@ export default function EscogerOrdenDeTrabajoTable() {
 
   const getOrdenDeTrabajoDelUsuario = async () => {
     try {
-      const response = await axiosClient.get("/ConstanciasCatalogo");
+      const response = await axiosClient.get("/OrdenTrabajoCatalogo");
       setOrdenDeTrabajos(response.data.data);
       console.log(response.data.data);
     } catch (error) {

@@ -11,12 +11,34 @@ export function BreadCrumbDetalleUsuario() {
   
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [tomaSeleccionada, setTomaSeleccionada] = useState<BuscarTomaUsuario | null>(null);
+  const [consultaNombreToma, setConsultaNombreToma] = useState<Usuario| null>(null);
+
+  type Usuario = {
+    id: number
+    nombre: string
+    apellido_paterno: string
+    apellido_materno: string
+    telefono: string
+    correo: string
+    curp: string
+    tomas: tomas;
+  }
+
+  type tomas = {
+    id: number
+    calle: string
+    
+  }
 
 
+
+  
+    //console.log("esto llego al breadcrumb jeje",usuariosEncontrados);
 
   useEffect(() => {
     if (usuariosEncontrados.length > 0) {
       setUsuario(usuariosEncontrados[0]);
+      setConsultaNombreToma(usuariosEncontrados[0]);
     }
   }, [usuariosEncontrados]);
 
@@ -25,12 +47,15 @@ export function BreadCrumbDetalleUsuario() {
       setTomaSeleccionada(toma);
     } else if (Array.isArray(tomaUsuariosEncontrados) && tomaUsuariosEncontrados.length > 0) {
       setTomaSeleccionada(tomaUsuariosEncontrados[0]);
+      setConsultaNombreToma(tomaUsuariosEncontrados[0]);
     }
   }, [toma, tomaUsuariosEncontrados]);
 
   const handleClick = () => {
     setMostrarSiguiente(false);
   };
+
+  //console.log(consultaNombreToma?.tomas[0]?.calle);
 
   return (
     <nav className="ml-5 mt-5">
@@ -63,7 +88,7 @@ export function BreadCrumbDetalleUsuario() {
           <li>
             <Link to="/usuario" onClick={handleClick}>
               <p className="text-[15px] font-medium">
-                {usuario?.nombre || 'Nombre no disponible'}
+                {consultaNombreToma?.nombre || 'Nombre no disponible'}
               </p>
             </Link>
           </li>
@@ -73,7 +98,7 @@ export function BreadCrumbDetalleUsuario() {
               <li>
                 <Link to="/usuario/toma">
                   <p className="text-[15px] font-medium ml-4">
-                    Toma: {tomaSeleccionada?.calle || 'Nombre no disponible'}
+                    Toma: {consultaNombreToma?.tomas[0]?.calle|| 'Nombre no disponible'}
                   </p>
                 </Link>
               </li>

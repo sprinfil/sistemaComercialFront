@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PrintButton from '../../components/Tables/Components/PrintButtom';
 import { ExitIcon, PersonIcon, GlobeIcon, ClipboardCopyIcon, DesktopIcon, BoxModelIcon, ReaderIcon, GearIcon } from '@radix-ui/react-icons';
 import IconButton from '../../components/ui/IconButton';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ModeToggle } from '../../components/ui/mode-toggle'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -13,11 +13,23 @@ import PuntoVenta from './PuntoVenta';
 import RetirosCaja from './RetirosCaja';
 import ConfigurarCaja from './ConfigurarCaja';
 import CorteCaja from './CorteCaja';
+import { FondoCajaProvider } from '../../contexts/FondoCajaContext';
 
 function App() {
 
     const { setToken, setUser, user, permissions, setPermissions } = useStateContext();
     const [activeTab, setActiveTab] = useState("Punto de Venta");
+    const navigate = useNavigate(); // Hook para redirigir al usuario
+
+
+    const handleExitClick = () => {
+      // Limpiar localStorage
+      localStorage.removeItem('isFondoCajaRegistered');
+      localStorage.removeItem('fondoCajaAmount');
+
+      // Redirigir al usuario a la página principal
+      navigate("/dashboard");
+    };
 
     const opciones = [
         {
@@ -35,9 +47,9 @@ function App() {
     return (
         <div>
             <div className=' bg-muted w-full h-[7vh] flex items-center px-2 relative border-b border-border'>
-                <a title='Modulo Principal'>
+                <a title='Modulo Principal' onClick={handleExitClick}>
                     <Link to={"/dashboard"}>
-                        <IconButton>
+                        <IconButton >
                             <ExitIcon className='w-[20px] h-[20px] rotate-180' />
                             <div className='ml-[10px]'><p>Volver</p></div>
                         </IconButton>

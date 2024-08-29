@@ -41,7 +41,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import MarcoForm from "../ui/MarcoForm.tsx";
-
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 type OrdenDeTrabajo = {
     nombre: string;
     aplicacion: string;
@@ -61,8 +61,11 @@ const OrdenDeTrabajoForm = () => {
     const [nombreSeleccionado, setNombreSeleccionado] = useState<string | null>(null);
     const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
     const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>([]);
+    const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
 
 
+    console.log(accionGeneradaEntreTabs);
+    console.log(ordenDeTrabajo);
     //#region SUCCESSTOAST
     function successToastCreado() {
         toast({
@@ -162,7 +165,7 @@ const OrdenDeTrabajoForm = () => {
         console.log(data);
     
         // Acción de crear
-        if (accion === "crear") {
+        if (accionGeneradaEntreTabs === "crear") {
             axiosClient.put(`/OrdenTrabajoCatalogo/create`,  data)
                 .then((response) => {
                     const data = response.data;
@@ -191,7 +194,7 @@ const OrdenDeTrabajoForm = () => {
                             momento_cargo: "",
                             genera_masiva: false
                         });
-                        setAccion("creado");
+                        setAccionGeneradaEntreTabs("creado");
                         getAnomalias();
                         successToastCreado();
                         console.log(values);
@@ -211,7 +214,7 @@ const OrdenDeTrabajoForm = () => {
         }
     
         // Acción de editar
-        if (accion === "editar") {
+        if (accionGeneradaEntreTabs === "editar") {
 
           
 
@@ -219,7 +222,7 @@ const OrdenDeTrabajoForm = () => {
                 .then((data) => {
                     setLoading(false);
                     setAbrirInput(false);
-                    setAccion("");
+                    setAccionGeneradaEntreTabs("");
                     getAnomalias();
                     setOrdenDeTrabajo(data.data);
                     successToastEditado();
@@ -259,7 +262,7 @@ const OrdenDeTrabajoForm = () => {
         try {
             await axiosClient.delete(`/TipoToma/log_delete/${ordenDeTrabajo.id}`);
             getAnomalias();
-            setAccion("eliminar");
+            setAccionGeneradaEntreTabs("eliminar");
             successToastEliminado();
         } catch (error) {
             errorToast();
@@ -272,7 +275,7 @@ const OrdenDeTrabajoForm = () => {
             .then(() => {
                 setLoading(false);
                 setAbrirInput(false);
-                setAccion("crear");
+                setAccionGeneradaEntreTabs("crear");
                 setOrdenDeTrabajo({
                     id: 0,
                     nombre: "",
@@ -282,7 +285,7 @@ const OrdenDeTrabajoForm = () => {
                     genera_masiva: false
                 });
                 getAnomalias();
-                setAccion("creado");
+                setAccionGeneradaEntreTabs("creado");
                 successToastRestaurado();
                 setModalReactivacionOpen(false);
             })
@@ -294,7 +297,7 @@ const OrdenDeTrabajoForm = () => {
 
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
-        if (accion == "eliminar") {
+        if (accionGeneradaEntreTabs == "eliminar") {
             setBloquear(false);
             form.reset({
                 id: 0,
@@ -304,7 +307,7 @@ const OrdenDeTrabajoForm = () => {
             setOrdenDeTrabajo({});
             setAbrirInput(false);
         }
-        if (accion == "crear") {
+        if (accionGeneradaEntreTabs == "crear") {
             setAbrirInput(true);
             setBloquear(true);
             setErrors({});
@@ -325,7 +328,7 @@ const OrdenDeTrabajoForm = () => {
                 genera_masiva: false
             })
         }
-        if (accion == "creado") {
+        if (accionGeneradaEntreTabs == "creado") {
             setAbrirInput(true);
             setBloquear(false);
             setErrors({});
@@ -346,7 +349,7 @@ const OrdenDeTrabajoForm = () => {
                 genera_masiva: false
             })
         }
-        if (accion == "ver") {
+        if (accionGeneradaEntreTabs == "ver") {
             setBloquear(false);
 
             
@@ -354,7 +357,6 @@ const OrdenDeTrabajoForm = () => {
 
             setAbrirInput(false);
             setErrors({});
-            setAccion("");
             setCargosAgregados([]);
             form.reset({
                 id: ordenDeTrabajo.id,
@@ -366,18 +368,19 @@ const OrdenDeTrabajoForm = () => {
               
             });
         }
-        if (accion == "editar") {
+        if (accionGeneradaEntreTabs == "editar") {
             setAbrirInput(true);
             setBloquear(true);
             setErrors({});
         }
-    }, [accion]);
+    }, [accionGeneradaEntreTabs]);
 
 
 
 
     useEffect(() => {
-        form.reset({
+      
+             form.reset({
             id: ordenDeTrabajo.id,
             nombre: ordenDeTrabajo.nombre,
             descripcion: ordenDeTrabajo.descripcion,
@@ -386,7 +389,26 @@ const OrdenDeTrabajoForm = () => {
             genera_masiva: ordenDeTrabajo.genera_masiva
           
         });
-    },[])
+        
+       
+    },[ordenDeTrabajo.id])
+
+
+    useEffect(() => {
+        if(accionGeneradaEntreTabs == "editar")
+        {
+             form.reset({
+            id: ordenDeTrabajo.id,
+            nombre: ordenDeTrabajo.nombre,
+            descripcion: ordenDeTrabajo.descripcion,
+            vigencias: String(ordenDeTrabajo.vigencias),
+            momento_cargo: ordenDeTrabajo.momento_cargo,
+            genera_masiva: Boolean(ordenDeTrabajo.genera_masiva)
+          
+        });
+        }
+       
+    },[accionGeneradaEntreTabs])
 
 
     const handleAgregarCargo = () => {
@@ -410,7 +432,7 @@ const OrdenDeTrabajoForm = () => {
                 <div className='flex h-[40px] items-center bg-muted rounded-sm '>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
+                            {accionGeneradaEntreTabs == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
                             {ordenDeTrabajo.nombre != "" && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
                         </div>
                         {(ordenDeTrabajo.nombre != null && ordenDeTrabajo.nombre != "") &&
@@ -424,7 +446,7 @@ const OrdenDeTrabajoForm = () => {
                                             </IconButton>
                                         </a>}
                                 />
-                                <div onClick={() => setAccion("editar")}>
+                                <div onClick={() => setAccionGeneradaEntreTabs("editar")}>
                                     <a title="Editar">
                                         <IconButton>
                                             <Pencil2Icon className="w-[20px] h-[20px]" />
@@ -452,9 +474,7 @@ const OrdenDeTrabajoForm = () => {
                     {errors && <Error errors={errors} />}
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                            <MarcoForm
-                            title={"Información General"}>
- <FormField
+                            <FormField
                                 control={form.control}
                                 name="nombre"
                                 render={({ field }) => (
@@ -513,7 +533,10 @@ const OrdenDeTrabajoForm = () => {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Momento del cargo</FormLabel>
-                                        <Select
+                                        {
+                                            accionGeneradaEntreTabs == "ver" ?
+                                            <Select
+                                            disabled
                                             onValueChange={(value) => field.onChange(String(value))}
                                             value={String(field.value)}
                                         >
@@ -529,6 +552,25 @@ const OrdenDeTrabajoForm = () => {
                                                 <SelectItem value="no genera">No genera</SelectItem>
                                             </SelectContent>
                                         </Select>
+                                        :
+                                        <Select
+                                        onValueChange={(value) => field.onChange(String(value))}
+                                        value={String(field.value)}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecciona el momento del cargo" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="generar">Generar</SelectItem>
+                                            <SelectItem value="asignar">Asignar</SelectItem>
+                                            <SelectItem value="concluir">Concluir</SelectItem>
+                                            <SelectItem value="no genera">No genera</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                        }
+                                       
                                         <FormDescription>
                                             Selecciona el momento del cargo.
                                         </FormDescription>
@@ -573,7 +615,6 @@ const OrdenDeTrabajoForm = () => {
                                 )}
                             />
 
-                            </MarcoForm>
                            
 
                             {/*accion == "crear" && <OrdenDeTrabajoCargosTable cargos={cargosAgregados}/>*/}
