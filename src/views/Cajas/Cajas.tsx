@@ -1,88 +1,86 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
-import PrintButton from '../../components/Tables/Components/PrintButtom';
-import { ExitIcon, PersonIcon, GlobeIcon, ClipboardCopyIcon, DesktopIcon, BoxModelIcon, ReaderIcon, GearIcon } from '@radix-ui/react-icons';
-import IconButton from '../../components/ui/IconButton';
+import React, { useState, useEffect } from 'react';
+import { ExitIcon } from '@radix-ui/react-icons';
 import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ModeToggle } from '../../components/ui/mode-toggle'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ContextProvider, useStateContext } from '../../contexts/ContextProvider';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ModeToggle } from '../../components/ui/mode-toggle';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useStateContext } from '../../contexts/ContextProvider';
 import FechaHora from '../Layout/FechaHora';
 import PuntoVenta from './PuntoVenta';
-import RetirosCaja from './RetirosCaja';
-import ConfigurarCaja from './ConfigurarCaja';
 import CorteCaja from './CorteCaja';
-import { FondoCajaProvider } from '../../contexts/FondoCajaContext';
+import IconButton from '../../components/ui/IconButton';
 import axiosClient from '../../axios-client';
 
 function App() {
-
-    const { setToken, setUser, user, permissions, setPermissions } = useStateContext();
+    const { user } = useStateContext();
     const [activeTab, setActiveTab] = useState("Punto de Venta");
-    const navigate = useNavigate(); // Hook para redirigir al usuario
+    const [cajaNombre, setCajaNombre] = useState(""); // Estado para almacenar el nombre de la caja
+    const navigate = useNavigate();
 
+    useEffect(() => {
+        const fetchCajaNombre = async () => {
+            try {
+                const response = await axiosClient.get("/cajas/estadoSesionCobro");
+                const { caja_nombre } = response.data;
+                setCajaNombre(caja_nombre); // Almacenar el nombre de la caja en el estado
+            } catch (error) {
+                console.error("Error al obtener el nombre de la caja:", error);
+            }
+        };
+
+        fetchCajaNombre(); // Llamada a la función para obtener el nombre de la caja
+    }, []);
 
     const handleExitClick = () => {
-      // Redirigir al usuario a la página principal
-      navigate("/dashboard");
+        navigate("/dashboard");
     };
-
-    
 
     const opciones = [
         {
-          titulo: "Punto de Venta",
-          componente: <PuntoVenta/>
+            titulo: "Punto de Venta",
+            componente: <PuntoVenta />
         },
-
         {
             titulo: "Cortes de Caja",
-            componente: <CorteCaja/>
-          },
-      ]
-
+            componente: <CorteCaja />
+        },
+    ];
 
     return (
         <div>
-            <div className=' bg-muted w-full h-[7vh] flex items-center px-2 relative border-b border-border'>
+            <div className='bg-muted w-full h-[7vh] flex items-center px-2 relative border-b border-border'>
                 <a title='Modulo Principal' onClick={handleExitClick}>
                     <Link to={"/dashboard"}>
-                        <IconButton >
+                        <IconButton>
                             <ExitIcon className='w-[20px] h-[20px] rotate-180' />
                             <div className='ml-[10px]'><p>Volver</p></div>
                         </IconButton>
                     </Link>
                 </a>
-                <div className='absolute right-2 flex gap-5 items-center '>
+                <div className='absolute right-2 flex gap-5 items-center'>
                     <nav>
-                      {/* Otros elementos del menú */}
-                      <FechaHora />
+                        <FechaHora />
                     </nav>
-                    <p>Caja 10</p>
+                    <p>{cajaNombre}</p> {/* Mostrar el nombre de la caja */}
                     <p>{user.name}</p>
                     <Avatar>
                         <AvatarImage src="https://github.com/shadcn.png" />
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
-                    <ModeToggle/>
+                    <ModeToggle />
                 </div>
             </div>
             <div>
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList>
-                {opciones.map((opcion, index) => (
-                  <>
-                    <TabsTrigger value={opcion.titulo} key={index}>{opcion.titulo}</TabsTrigger>
-                  </>
-                ))}
-              </TabsList>
-              {opciones.map((opcion, index) => (
-                <>
-                  <TabsContent value={opcion.titulo} key={index}>{opcion.componente}</TabsContent>
-                </>
-              ))}
-            </Tabs>
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                    <TabsList>
+                        {opciones.map((opcion, index) => (
+                            <TabsTrigger value={opcion.titulo} key={index}>{opcion.titulo}</TabsTrigger>
+                        ))}
+                    </TabsList>
+                    {opciones.map((opcion, index) => (
+                        <TabsContent value={opcion.titulo} key={index}>{opcion.componente}</TabsContent>
+                    ))}
+                </Tabs>
             </div>
         </div>
     );
