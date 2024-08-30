@@ -336,14 +336,14 @@ const CajaOperadoresForm = () => {
     
 
 
-    const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
+    const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-border';
 
     //console.log("a ver que datos manda el form", form.getValues());
 
     return (
         <div>
             <div className="overflow-auto">
-                <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+                <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
                             {caja.nombre_caja && <p className="text-muted-foreground text-[20px]">{caja.nombre_caja}</p>}

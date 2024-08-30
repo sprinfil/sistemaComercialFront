@@ -261,12 +261,12 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
             <div className="space-y-4">
               <p className="text-sm font-medium mb-2">Total tarjetas:</p>
               <input
-                type="text"
+                type="number"
                 value={totalTarjetas}
-                onChange={(e) => setTotalTarjetas(parseFloat(e.target.value) || 0)}
+                onChange={(e) => setTotalTarjetas(parseFloat(e.target.value))}
                 className="block w-full p-1 border rounded-md shadow-sm bg-background sm:text-sm"
                 placeholder="Cantidad"
-                maxLength={3}
+                maxLength={10}
               />
             </div>
 
@@ -274,12 +274,12 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
             <div className="space-y-4">
               <p className="text-sm font-medium mb-2">Total cheques:</p>
               <input
-                type="text"
+                type="number"
                 value={totalCheques}
-                onChange={(e) => setTotalCheques(parseFloat(e.target.value) || 0)}
+                onChange={(e) => setTotalCheques(parseFloat(e.target.value))}
                 className="block w-full p-1 border rounded-md shadow-sm bg-background sm:text-sm"
                 placeholder="Cantidad"
-                maxLength={3}
+                maxLength={10}
               />
             </div>
           </div>

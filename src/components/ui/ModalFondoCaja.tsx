@@ -51,7 +51,7 @@ export const ModalFondoCaja = ({ open, onRegister }) => {
               Cantidad de dinero:
             </label>
             <input
-            type="text"
+            type="number"
             id="amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
