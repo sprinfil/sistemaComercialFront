@@ -346,9 +346,9 @@ const CajaOperadoresForm = () => {
                 <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {caja.nombre_caja && <p className="text-muted-foreground text-[20px]">{caja.nombre_caja}</p>}
+                            {caja?.nombre_caja && <p className="text-muted-foreground text-[20px]">{caja?.nombre_caja}</p>}
                         </div>
-                        {caja.nombre_caja && (
+                        {caja?.nombre_caja && (
                             <>
                                 <Modal
                                     method={onDelete}

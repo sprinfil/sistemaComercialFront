@@ -415,7 +415,8 @@ const PuntoVentaForm = () => {
           <UpdateIcon className="w-[20px] h-[20px]" />
         </IconButton>
 
-        <ModalMasFiltros
+{/*
+ <ModalMasFiltros
           trigger={
             <IconButton title="Más Filtros">
               <HamburgerMenuIcon className="w-[20px] h-[20px]" />
@@ -424,6 +425,10 @@ const PuntoVentaForm = () => {
           setdataUser={setDataToma}
           cerrarForm={booleanCerrarModalFiltros}
         />
+*/}
+       
+
+        
       </div>
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex min-h-[78vh] max-h-[78vh] px-2">
