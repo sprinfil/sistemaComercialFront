@@ -37,19 +37,13 @@ const PuntoVentaForm = () => {
   const [pendingCargos, setPendingCargos] = useState([]);
   const [selectedCargos, setSelectedCargos] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [conceptos, setConceptos] = useState<Concepto[]>([]); // Define el tipo de estado
-  const [loadingTable, setLoadingTable] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cerrarForm, setCerrarForm] = useState(false);
-  const [mostrarCodigoUsuario, setMostrarCodigoUsuario] = useState(false);
   const [cargos_usuario, set_cargos_usuario] = useState(null);
   const [error, setError] = useState<string | null>(null);
-  const { usuariosEncontrados, dataCajaUser, setDataCajaUser, booleanCerrarModalFiltros } = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
+  const {dataCajaUser, setDataCajaUser, booleanCerrarModalFiltros } = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
   const [open_metodo_pago_modal, set_open_metodo_pago_modal] = useState(false);
   const input_user_ref = useRef();
-
-  // Estado para almacenar las cantidades a abonar
   const [amountsToPay, setAmountsToPay] = useState<{ [id: string]: number }>({});
+
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(event.target.value);
@@ -304,21 +298,16 @@ const PuntoVentaForm = () => {
   }
 
   const handleF5Press = (event: KeyboardEvent) => {
-    if (event.key === 'F5') {
+    if (event.key === 'F1') {
       event.preventDefault(); // Prevenir recarga de página
       iniciar_proceso_pago();
     }
 
-    if (event.key === 'F1') {
+    if (event.key === 'F2') {
       event.preventDefault(); // Prevenir recarga de página
       input_user_ref.current.focus();
     }
   };
-
-
-
-
-
 
   useEffect(() => {
     window.addEventListener('keydown', handleF5Press);
@@ -357,10 +346,6 @@ const PuntoVentaForm = () => {
     return selectedCargos.reduce((acc, cargo) => acc + (parseFloat(amountsToPay[cargo.id] || 0)), 0);
   };
 
-  interface Concepto {
-    nombre: string;
-  }
-
   const limpiar_cargos_seleccionados = (cargos) => {
     cargos.map((cargo, index) => {
       handleCargoSelect(cargo);
@@ -384,27 +369,27 @@ const PuntoVentaForm = () => {
     <div className="flex flex-col relative">
       <div className="h-10 justify-center flex items-center rounded-sm">
         <div className="left-4  h-[30px] bg-muted absolute p-3 rounded-md flex items-center">
-        <ModalRetiroCaja
-          trigger={
-            <IconButton title="Retiro de caja">
-              <ExternalLinkIcon />
-            </IconButton>
-          } 
-          setdataUser={setDataToma}
-          cerrarForm={booleanCerrarModalFiltros}
-        />
-        <ModalCorteCaja
-          trigger={
-            <IconButton title="Corte de caja">
-              <ScissorsIcon />
-            </IconButton>
-          } 
-          setdataUser={setDataToma}
-          cerrarForm={booleanCerrarModalFiltros}
-        />
-        
-          
-          
+          <ModalRetiroCaja
+            trigger={
+              <IconButton title="Retiro de caja">
+                <ExternalLinkIcon />
+              </IconButton>
+            }
+            setdataUser={setDataToma}
+            cerrarForm={booleanCerrarModalFiltros}
+          />
+          <ModalCorteCaja
+            trigger={
+              <IconButton title="Corte de caja">
+                <ScissorsIcon />
+              </IconButton>
+            }
+            setdataUser={setDataToma}
+            cerrarForm={booleanCerrarModalFiltros}
+          />
+
+
+
           <ConfigurarCajaModal
             trigger={<IconButton>
               <GearIcon />
@@ -413,10 +398,11 @@ const PuntoVentaForm = () => {
           </ConfigurarCajaModal>
 
         </div>
-        <p className="whitespace-nowrap">Número de toma</p>
+        <p className="whitespace-nowrap mr-3">Número de toma (F2)</p>
         <Input
           ref={input_user_ref}
           type="number"
+
           className="h-8 ml-1 mr-1 w-96"
           value={userInput}
           onChange={handleInputChange}
@@ -472,6 +458,7 @@ const PuntoVentaForm = () => {
               cargos={selectedCargos}
               dueno={dataToma}
               update_data={fetchdataUser}
+              all_cargos={pendingCargos}
             />
             <Tabs defaultValue="general">
               <TabsList>
@@ -1056,7 +1043,7 @@ const PuntoVentaForm = () => {
 
         </div>
         <Button onClick={() => { (iniciar_proceso_pago()) }}>
-          PAGAR(F5)
+          PAGAR(F1)
         </Button>
 
       </div>

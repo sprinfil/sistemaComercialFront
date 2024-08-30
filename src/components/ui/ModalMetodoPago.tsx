@@ -44,6 +44,7 @@ export const ModalMetodoPago = ({
   total_iva,
   cargos, dueno,
   update_data,
+  all_cargos
 }) => {
   const { toast } = useToast()
   const [metodo_pago_selected, set_metodo_pago_selected] = useState("");
@@ -51,7 +52,7 @@ export const ModalMetodoPago = ({
   const recibi = useRef();
   const recibi_real = useRef();
   const [errores, set_errores] = useState([]);
-  const total_neto = total;
+  let total_neto = total;
 
   //console.log(estructura_ticket(ticket_data));
 
@@ -60,6 +61,46 @@ export const ModalMetodoPago = ({
       recibi_real.current.focus();
     }
   },[metodo_pago_selected])
+
+  
+  useEffect(() => {
+    window.addEventListener('keydown', handleF5Press);
+    return () => {
+      window.removeEventListener('keydown', handleF5Press);
+    };
+  }, []);
+
+  
+  const calculateTotal = () => {
+    return all_cargos.reduce((acc, cargo) => acc + parseFloat(cargo.monto_pendiente || 0), 0);
+  };
+
+  if(cargos.length == 0){
+    total_neto = calculateTotal();
+  }
+
+  const handleF5Press = (event: KeyboardEvent) => {
+    if (event.key === 'F1') {
+      event.preventDefault(); 
+      set_metodo_pago_selected("efectivo")
+    }
+    if (event.key === 'F2') {
+      event.preventDefault(); 
+      set_metodo_pago_selected("tarjeta_credito")
+    }
+    if (event.key === 'F3') {
+      event.preventDefault(); 
+      set_metodo_pago_selected("tarjeta_debito")
+    }
+    if (event.key === 'F4') {
+      event.preventDefault(); 
+      set_metodo_pago_selected("documento")
+    }
+    if (event.key === 'F5') {
+      event.preventDefault(); 
+      set_metodo_pago_selected("transferencia")
+    }
+  };
 
   const handleCambio = () => {
 
@@ -227,38 +268,38 @@ export const ModalMetodoPago = ({
                   <p className='mb-5'>Método de pago</p>
                   <div className='border p-4 rounded-md'>
                     <div className='overflow-auto max-h-[55vh] no-scrollbar select-none'>
-                      <div className={metodo_pago_selected == "efectivo" ? "my-5 w-full h-[20vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-5 w-full h-[15vh] hover:h-[20vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`} onClick={() => { set_metodo_pago_selected("efectivo") }}>
+                      <div className={metodo_pago_selected == "efectivo" ? "my-1 w-full h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-1 w-full h-[10vh] hover:h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`} onClick={() => { set_metodo_pago_selected("efectivo") }}>
                         <div className='flex flex-col gap-2 items-center justify-center'>
-                          <img src={cash} alt="" className='w-[70px]' />
-                          <p>Efectivo</p>
+                          <img src={cash} alt="" className='w-[30px]' />
+                          <p>Efectivo (F1)</p>
                         </div>
                       </div>
-                      <div className={metodo_pago_selected == "tarjeta_credito" ? "my-5 w-full h-[20vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-5 w-full h-[15vh] hover:h-[20vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`}
+                      <div className={metodo_pago_selected == "tarjeta_credito" ? "my-1 w-full h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-1 w-full h-[10vh] hover:h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`}
                         onClick={() => { set_metodo_pago_selected("tarjeta_credito")}}>
                         <div className='flex flex-col gap-2 items-center justify-center'>
-                          <img src={credit_card} alt="" className='w-[70px]' />
-                          <p>Tarjeta Crédito</p>
+                          <img src={credit_card} alt="" className='w-[30px]' />
+                          <p>Tarjeta Crédito (F2)</p>
                         </div>
                       </div>
-                      <div className={metodo_pago_selected == "tarjeta_debito" ? "my-5 w-full h-[20vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-5 w-full h-[15vh] hover:h-[20vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`}
+                      <div className={metodo_pago_selected == "tarjeta_debito" ? "my-1 w-full h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-1 w-full h-[10vh] hover:h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`}
                         onClick={() => { set_metodo_pago_selected("tarjeta_debito") }}>
                         <div className='flex flex-col gap-2 items-center justify-center'>
-                          <img src={credit_card_2} alt="" className='w-[70px]' />
-                          <p>Tarjeta Débito</p>
+                          <img src={credit_card_2} alt="" className='w-[30px]' />
+                          <p>Tarjeta Débito (F3)</p>
                         </div>
                       </div>
-                      <div className={metodo_pago_selected == "documento" ? "my-5 w-full h-[20vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-5 w-full h-[15vh] hover:h-[20vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`}
+                      <div className={metodo_pago_selected == "documento" ? "my-1 w-full h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-1 w-full h-[10vh] hover:h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`}
                         onClick={() => { set_metodo_pago_selected("documento") }}>
                         <div className='flex flex-col gap-2 items-center justify-center'>
-                          <img src={cheque} alt="" className='w-[70px]' />
-                          <p>Cheque</p>
+                          <img src={cheque} alt="" className='w-[30px]' />
+                          <p>Cheque (F4)</p>
                         </div>
                       </div>
-                      <div className={metodo_pago_selected == "transferencia" ? "my-5 w-full h-[20vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-5 w-full h-[15vh] hover:h-[20vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`}
+                      <div className={metodo_pago_selected == "transferencia" ? "my-1 w-full h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-1 w-full h-[10vh] hover:h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`}
                         onClick={() => { set_metodo_pago_selected("transferencia") }}>
                         <div className='flex flex-col gap-2 items-center justify-center'>
-                          <img src={cheque} alt="" className='w-[70px]' />
-                          <p>Transferencia</p>
+                          <img src={cheque} alt="" className='w-[30px]' />
+                          <p>Transferencia (F5)</p>
                         </div>
                       </div>
                     </div>
@@ -303,15 +344,40 @@ export const ModalMetodoPago = ({
                                     </TableRow>
                                   </TableHeader>
                                   <TableBody>
-                                    {cargos.map((cargo, index) => (
-                                      <TableRow key={cargo.id}
-                                        className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
-                                        <TableCell className="font-medium">{cargo.nombre}</TableCell>
-                                        <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
-                                        <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                                        <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
+                                    {
+                                      cargos.length > 0 ?
+                                      cargos.map((cargo, index) => (
+                                        <TableRow key={cargo.id}
+                                          className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
+                                          <TableCell className="font-medium">{cargo.nombre}</TableCell>
+                                          <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
+                                          <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                                          <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
+                                        </TableRow>
+                                      )):
+                                      <>
+                                      {
+                                        all_cargos.length > 0 ?
+                                         all_cargos.map((cargo, index) => (
+                                          <TableRow key={cargo.id}
+                                            className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
+                                            <TableCell className="font-medium">{cargo.nombre}</TableCell>
+                                            <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
+                                            <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                                            <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
+                                          </TableRow>
+                                        ))
+                                        :
+                                        <TableRow>
+                                        <TableCell className="font-medium">Abono a saldo a favor</TableCell>
+                                        <TableCell>Abonable</TableCell>
+                                        <TableCell className="">Sin Monto</TableCell>
+                                        <TableCell className="">Sin prioridad</TableCell>
                                       </TableRow>
-                                    ))}
+                                      }
+                                      </>
+                                    }
+                                   
                                   </TableBody>
 
                                 </Table>
