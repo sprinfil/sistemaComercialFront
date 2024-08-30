@@ -24,10 +24,6 @@ function App() {
 
 
     const handleExitClick = () => {
-      // Limpiar localStorage
-      localStorage.removeItem('isFondoCajaRegistered');
-      localStorage.removeItem('fondoCajaAmount');
-
       // Redirigir al usuario a la página principal
       navigate("/dashboard");
     };

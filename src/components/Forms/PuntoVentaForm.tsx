@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axiosClient from "../../axios-client";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -46,27 +46,22 @@ const PuntoVentaForm = () => {
   const [error, setError] = useState<string | null>(null);
   const { usuariosEncontrados, dataCajaUser, setDataCajaUser, booleanCerrarModalFiltros } = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
   const [open_metodo_pago_modal, set_open_metodo_pago_modal] = useState(false);
+  const input_user_ref = useRef();
 
   // Estado para almacenar las cantidades a abonar
   const [amountsToPay, setAmountsToPay] = useState<{ [id: string]: number }>({});
-  console.log("ESTO LLEGO XDDD", dataCajaUser);
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(event.target.value);
   };
-  console.log('AVER QUE LE MANDA EN TOMA:', dataCajaUser[0]?.usuario?.nombre || "NO");
-  console.log("a ver si se deberia abrir el codgio", mostrarCodigoUsuario);
 
   useEffect(() => {
     setDataToma({});
-
-    //setSelectedCargos([]);
-    console.log(dataCajaUser);
     setCargosData(null);
     setPagosData(null);
     //const usuario_tomas = await axiosClient.get(`/o`)
     get_usuario_cargos();
 
-    console.log(cargos_usuario);
   }, [dataCajaUser])
 
   /*
@@ -82,9 +77,8 @@ const PuntoVentaForm = () => {
   */
 
   const get_usuario_cargos = async () => {
-    const cargos_usuario_fetch = await axiosClient.get(`/usuarios/consultar/cargos/${dataCajaUser[0].id}`);
+    const cargos_usuario_fetch = await axiosClient.get(`/usuarios/consultar/cargos/${dataCajaUser[0]?.id}`);
     set_cargos_usuario(cargos_usuario_fetch.data);
-
     if (cargos_usuario_fetch?.data?.tomas?.length == 1) {
       cargos_usuario_fetch.data.tomas.map((toma, index) => {
         toma.cargos_vigentes.map((cargo, index) => {
@@ -92,7 +86,6 @@ const PuntoVentaForm = () => {
         })
       })
     }
-
   }
 
   const fetchdataUser = async (codigo_toma = null) => {
@@ -172,7 +165,6 @@ const PuntoVentaForm = () => {
         let prioridades = selectedCargos.map(cargo_temp => cargo_temp.concepto.prioridad_abono);
 
         const maximo = Math.max(...prioridades);
-        console.log(maximo)
 
         if (!busqueda) {
           if (cargo.concepto.prioridad_abono > maximo || cargo.concepto.prioridad_abono == maximo) {
@@ -316,6 +308,11 @@ const PuntoVentaForm = () => {
       event.preventDefault(); // Prevenir recarga de página
       iniciar_proceso_pago();
     }
+
+    if (event.key === 'F1') {
+      event.preventDefault(); // Prevenir recarga de página
+      input_user_ref.current.focus();
+    }
   };
 
 
@@ -363,49 +360,12 @@ const PuntoVentaForm = () => {
   interface Concepto {
     nombre: string;
   }
-  const getConceptos = async (): Promise<Concepto[]> => {
-    try {
-      console.log('Fetching conceptos...');
-      const response = await axiosClient.get<{ data: Concepto[] }>('/Concepto'); // Ajusta la URL según tu API
-      console.log('Response received:', response);
-
-      const data = response.data.data; // Accede al array dentro de la propiedad 'data'
-      console.log('Data extracted:', data);
-
-      if (Array.isArray(data)) {
-        const conceptos = data.map(item => ({ nombre: item.nombre }));
-        console.log('Conceptos processed:', conceptos);
-        return conceptos; // Devuelve solo el campo 'nombre'
-      } else {
-        console.error('La respuesta no es un array:', data);
-        return [];
-      }
-    } catch (error) {
-      console.error('Error obteniendo conceptos:', error);
-      return [];
-    }
-  };
 
   const limpiar_cargos_seleccionados = (cargos) => {
     cargos.map((cargo, index) => {
       handleCargoSelect(cargo);
     })
   }
-
-  const openModal = async () => {
-    console.log('Opening modal...');
-    const conceptosList = await getConceptos(); // Llama a getConceptos cuando se abre el modal
-    console.log('Conceptos list obtained:', conceptosList);
-
-    setConceptos(conceptosList); // Establece los conceptos obtenidos
-    setIsModalOpen(true); // Abre el modal
-    console.log('Modal state set to open.');
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false); // Cierra el modal
-    console.log('Modal state set to closed.');
-  };
 
   const iniciar_proceso_pago = () => {
     set_open_metodo_pago_modal(true);
@@ -417,7 +377,6 @@ const PuntoVentaForm = () => {
   const total_iva = calculateTotalIva();
 
   useEffect(() => {
-    console.log(dataToma);
 
   }, [dataToma, dataCajaUser]);
 
@@ -456,6 +415,7 @@ const PuntoVentaForm = () => {
         </div>
         <p className="whitespace-nowrap">Número de toma</p>
         <Input
+          ref={input_user_ref}
           type="number"
           className="h-8 ml-1 mr-1 w-96"
           value={userInput}

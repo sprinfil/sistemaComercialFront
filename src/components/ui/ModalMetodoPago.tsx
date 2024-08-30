@@ -46,7 +46,7 @@ export const ModalMetodoPago = ({
   update_data,
 }) => {
   const { toast } = useToast()
-  const [metodo_pago_selected, set_metodo_pago_selected] = useState("efectivo");
+  const [metodo_pago_selected, set_metodo_pago_selected] = useState("");
   const [cambio, set_cambio] = useState(0);
   const recibi = useRef();
   const recibi_real = useRef();
@@ -55,8 +55,11 @@ export const ModalMetodoPago = ({
 
   //console.log(estructura_ticket(ticket_data));
 
-
-
+  useEffect(()=>{
+    if (recibi_real.current) {
+      recibi_real.current.focus();
+    }
+  },[metodo_pago_selected])
 
   const handleCambio = () => {
 

@@ -206,7 +206,7 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
                     type="text"
                     value={billetesCentavos[denomination]}
                     onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
-                    className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="block w-1/3 p-1 bg-background border rounded-md shadow-sm bg-background sm:text-sm"
                     placeholder="Cantidad"
                     maxLength={3}
                   />
@@ -227,7 +227,7 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
                       type="text"
                       value={monedas[denomination]}
                       onChange={(e) => handlemonedasChange(denomination, parseInt(e.target.value) || 0)}
-                      className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      className="block w-1/3 p-1 border bg-background rounded-md shadow-sm bg-background sm:text-sm"
                       placeholder="Cantidad"
                       maxLength={3}
                     />
@@ -248,7 +248,7 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
                     type="text"
                     value={billetesCentavos[denomination]}
                     onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
-                    className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="block w-1/3 p-1 border rounded-md shadow-sm bg-background sm:text-sm"
                     placeholder="Cantidad"
                     maxLength={3}
                   />
@@ -264,7 +264,7 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
                 type="text"
                 value={totalTarjetas}
                 onChange={(e) => setTotalTarjetas(parseFloat(e.target.value) || 0)}
-                className="block w-full p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="block w-full p-1 border rounded-md shadow-sm bg-background sm:text-sm"
                 placeholder="Cantidad"
                 maxLength={3}
               />
@@ -277,7 +277,7 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
                 type="text"
                 value={totalCheques}
                 onChange={(e) => setTotalCheques(parseFloat(e.target.value) || 0)}
-                className="block w-full p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="block w-full p-1 border rounded-md shadow-sm bg-background sm:text-sm"
                 placeholder="Cantidad"
                 maxLength={3}
               />

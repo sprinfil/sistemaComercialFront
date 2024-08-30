@@ -27,7 +27,7 @@ import { ZustandGeneralUsuario } from "../../../../contexts/ZustandGeneralUsuari
 import ContratoConsultaTomaTable from "../../../../components/Tables/Components/ContratoConsultaTomaTable.tsx";
 import { Pencil2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { TbFilterPlus } from "react-icons/tb";
-import { TiUserAdd } from "react-icons/ti";
+//import { TiUserAdd } from "react-icons/ti";
 import IconButton from "../../../../components/ui/IconButton.tsx";
 
 

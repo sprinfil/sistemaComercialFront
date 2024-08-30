@@ -47,7 +47,7 @@ export const ModalFondoCaja = ({ open, onRegister }) => {
             <AlertDialogTitle>Registre el fondo de caja inicial</AlertDialogTitle>
           </AlertDialogHeader>
           <div className="p-4">
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="amount" className="block text-sm font-medium ">
               Cantidad de dinero:
             </label>
             <input
@@ -56,7 +56,7 @@ export const ModalFondoCaja = ({ open, onRegister }) => {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             onBlur={handleBlur} // Formatea cuando el campo pierde el foco
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block w-full p-2 border rounded-md shadow-sm bg-background sm:text-sm"
             placeholder="Ingrese la cantidad"
             maxLength={5}
           />

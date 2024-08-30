@@ -179,7 +179,7 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
                     type="text"
                     value={billetesCentavos[denomination]}
                     onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
-                    className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="block w-1/3 p-1 border rounded-md shadow-sm bg-background sm:text-sm"
                     placeholder="Cantidad"
                   />
                   <div className="text-sm font-medium w-1/6">
@@ -203,7 +203,7 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
                     type="text"
                     value={monedas[denomination]}
                     onChange={(e) => handlemonedasChange(denomination, parseInt(e.target.value) || 0)}
-                    className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="block w-1/3 p-1 border rounded-md shadow-sm bg-background sm:text-sm"
                     placeholder="Cantidad"
                   />
                   <div className="text-sm font-medium w-1/6">
@@ -227,7 +227,7 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
                     type="text"
                     value={billetesCentavos[denomination]}
                     onChange={(e) => handleBillChange(denomination, parseInt(e.target.value) || 0)}
-                    className="block w-1/3 p-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="block w-1/3 p-1 border rounded-md shadow-sm bg-background sm:text-sm"
                     placeholder="Cantidad"
                   />
                   <div className="text-sm font-medium w-1/6">
