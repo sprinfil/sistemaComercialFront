@@ -47,7 +47,7 @@ export type orden_trabajo_encadenadas = {
 
 export const columns: ColumnDef<OrdenDeTrabajo>[] = [
   {
-    accessorKey: "orden_trabajo_catalogo.descripcion",
+    accessorKey: "descripcion",
     header: ({ column }) => (
       <Button
         variant="ghost"

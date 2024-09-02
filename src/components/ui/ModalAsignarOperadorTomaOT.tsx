@@ -111,9 +111,21 @@ console.log(tipoOperacion);
         try{
           const response = axiosClient.put('/OrdenTrabajo/update', ordenes_trabajo)
           console.log(response);
+          toast({
+            title: "¡Éxito!",
+            description: "La orden de trabajo se ha asignado correctamente",
+            variant: "success",
+
+        })
         }
         catch(response){
           console.log(response);
+          toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "Algo salió mal.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
         }
       };
 
@@ -142,9 +154,14 @@ console.log(tipoOperacion);
                         render={({ field }) => (
                         <FormItem>
                             <FormLabel>Selecciona el operador</FormLabel>
-                            <FormControl>
-                            <OperadoresOtIndividualComboBox form={form} field={field} name="id_empleado_encargado" setCargoSeleccionado={setOperadorSeleccionado} />
-                            </FormControl>
+                            <div className='flex space-x-2'>
+                              <div className='w-[112vh]'>
+                              <OperadoresOtIndividualComboBox form={form} field={field} name="id_empleado_encargado" setCargoSeleccionado={setOperadorSeleccionado} />
+
+                              </div>
+                            <Button type='submit'>Asignar</Button>
+                              </div>
+                           
                             <FormDescription>
                             El nombre del operador.
                             </FormDescription>
@@ -154,6 +171,7 @@ console.log(tipoOperacion);
                     />
                     <div className=''>
                     </div>
+
                     </form>
                 </Form>
 
@@ -165,8 +183,8 @@ console.log(tipoOperacion);
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel onClick={() => setIsOpen(false)}>Cancelar</AlertDialogCancel>
-                    <Button type='submit'>Asignar</Button>
                 </AlertDialogFooter>
+
             </AlertDialogContent>
         </AlertDialog>
     );

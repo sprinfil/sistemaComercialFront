@@ -14,6 +14,6 @@ export const OrdenDeTrabajoCrearSchema = z.object({
 
 export const OrdenDeTrabajoAsignarIndividualSchema = z.object({
     id: z.number(),
-    id_empleado_encargado: z.number(),
+    id_empleado_encargado: z.number().min(1,"El operador es requerido"),
 })
 

@@ -24,16 +24,20 @@ export default function EscogerOrdenDeTrabajoTable() {
     getOrdenDeTrabajoDelUsuario();
   }, []);
 
+  const [data, setData] = useState({});
+
   const getOrdenDeTrabajoDelUsuario = async () => {
     try {
       const response = await axiosClient.get("/OrdenTrabajoCatalogo");
-      setOrdenDeTrabajos(response.data.data);
+      setData(response.data.data);
       console.log(response.data.data);
     } catch (error) {
       setLoadingTable(false);
       console.error("Failed to fetch Orden de trabajo:", error);
     }
   };
+
+  console.log(data);
 
 const HandleClickRow = (ordenTrabajo: OrdenDeTrabajo) =>
     {
@@ -50,7 +54,7 @@ const HandleClickRow = (ordenTrabajo: OrdenDeTrabajo) =>
 
   return (
     <div>
-      <EscogerOrdenDeTrabajoDataTable columns={columns} data={ordenDeTrabajos} sorter='nombre' onRowClick={HandleClickRow}/>
+      <EscogerOrdenDeTrabajoDataTable columns={columns} data={data} sorter='nombre' onRowClick={HandleClickRow}/>
     </div>
   );
 }

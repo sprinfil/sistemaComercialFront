@@ -46,7 +46,7 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
     //setAnomalia(anomalia);
     //setAccion("ver");
     
-    setAbrirModalInformativo(true);
+    //setAbrirModalInformativo(true);
     setIdSeleccionadoAsignarOrdenDeTrabajoToma(usuarioToma.tomas[0].id)
   };
 
@@ -57,7 +57,7 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
 
     <div>
       
-      <DataTableAsignarOTIndividual columns={columns} data={usuariosEncontrados} sorter='nombre' onRowClick={handleRowClick}/>
+      <DataTableAsignarOTIndividual columns={columns} data={data} sorter='nombre' onRowClick={handleRowClick}/>
       
       <ModalInformacionOtToma
       isOpen={abrirModalInformativo}

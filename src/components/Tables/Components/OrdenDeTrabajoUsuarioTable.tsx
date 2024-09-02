@@ -40,6 +40,7 @@ export default function OrdenDeTrabajoUsuarioTable() {
     }
   };
 
+console.log(data);
   
 
 const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>

@@ -58,6 +58,28 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
     ),
   },
   {
+    accessorKey: "fecha_finalizada",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Finalización
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "estado",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Estado
+      </Button>
+    ),
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const OrdenDeTrabajo = row.original
