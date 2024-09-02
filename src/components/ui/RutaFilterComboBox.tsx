@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import axiosClient from '../../axios-client.ts';
 import Loader from './Loader.tsx';
-
+import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt.tsx';
 type Status = {
     value: string;
     label: string;
@@ -33,7 +33,7 @@ export const RutaFilterComboBox = ({ field, name = "id_concepto", setCargoSelecc
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([]);
     const [open, setOpen] = React.useState(false);
-
+    const {setidRutaSeleccionada, setRutaBooleanForLibro, rutaBooleanForLibro} = ZustandFiltrosOrdenTrabajo();
     React.useEffect(() => {
         getConcepto();
     }, []);
@@ -47,12 +47,23 @@ export const RutaFilterComboBox = ({ field, name = "id_concepto", setCargoSelecc
                 label: concepto.nombre,
             }));
             setLanguages(conceptos);
+           
         } catch (error) {
             console.error("Failed to fetch concepto:", error);
         } finally {
             setLoading(false);
         }
     };
+
+    
+   React.useEffect(() => {
+    if (field.value) {
+        setRutaBooleanForLibro(false); 
+    } else {
+        setRutaBooleanForLibro(true); 
+    }
+}, [field.value]);
+
 
     return (
         <div>
@@ -90,6 +101,7 @@ export const RutaFilterComboBox = ({ field, name = "id_concepto", setCargoSelecc
                                                 // Update the field value here
                                                 field.onChange({ target: { value: language.value } });
                                                 setCargoSeleccionado(language.label);
+                                                setidRutaSeleccionada(language.value);
                                                 setOpen(false);
                                             }}
                                         >

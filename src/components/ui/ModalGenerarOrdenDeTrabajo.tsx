@@ -14,11 +14,15 @@ import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import EscogerOrdenDeTrabajoTable from '../Tables/Components/EscogerOrdenDeTrabajoTable';
 import axiosClient from '../../axios-client';
 import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
+import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt';
+
 const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }) => {
     
     const { toast } = useToast()
 
-console.log(tipoOperacion);
+    const {arregloCrearOrdenesDeTrabajo} = ZustandFiltrosOrdenTrabajo();
+
+    console.log(tipoOperacion);
 
     const {usuariosEncontrados, setUsuariosEncontrados, idSeleccionadoGenerarOrdenDETrabajoToma} = ZustandGeneralUsuario();
 
@@ -102,6 +106,41 @@ console.log(tipoOperacion);
         }
     }
 
+    const GenerarOrdenDeTrabajoMasivaToma = async () => {
+      
+
+        const arreglo = arregloCrearOrdenesDeTrabajo.map((item) => ({
+            id_toma: item.id,
+            id_orden_trabajo_catalogo: idSeleccionadoGenerarOrdenDETrabajoToma
+        }))
+        const values2 = {
+            ordenes_trabajo: arreglo
+        };
+        console.log(values2);
+        try{
+            const response = await axiosClient.post(`OrdenTrabajo/create`, values2)
+            setIsOpen(false);
+            console.log(response);
+            toast({
+                title: "¡Éxito!",
+                description: "Se ha creado la orden de trabajo.",
+                variant: "success",
+    
+            })
+
+        }
+        catch(error){
+            console.log(error)
+            toast({
+                variant: "destructive",
+                title: "Oh, no. Error",
+                description: "Algo salió mal.",
+                action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+            })
+        }
+    }
+
+
 
 
     return (
@@ -133,7 +172,7 @@ console.log(tipoOperacion);
                     <AlertDialogCancel onClick={() => setIsOpen(false)}>Cancelar</AlertDialogCancel>
                     {
                         tipoOperacion=="masiva" ? 
-                        <AlertDialogAction onClick={GenerarOrdenDeTrabajoToma}>
+                        <AlertDialogAction onClick={GenerarOrdenDeTrabajoMasivaToma}>
                         Crear orden de trabajo masiva
                         </AlertDialogAction>
                         :

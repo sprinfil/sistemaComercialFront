@@ -4,26 +4,95 @@ import { MdContentPasteSearch } from 'react-icons/md'
 import OrdenDeTrabajoCrearTomasTable from '../../components/Tables/Components/OrdenDeTrabajoCrearTomasTable'
 import ModalGenerarOrdenDeTrabajo from '../../components/ui/ModalGenerarOrdenDeTrabajo'
 import { Button } from '../../components/ui/button'
-
+import { FaSearch } from 'react-icons/fa'
+import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt'
+import axiosClient from '../../axios-client'
 export const OtMasivaForm = () => {
+
+
+
+
+  const { isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
+    setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador } = ZustandFiltrosOrdenTrabajo();
+
+
     const [abrirModal, setAbrirModal] = useState(false);
+
+
+
+
+
+
+
+
+
     function handleGenerarOrdenDeTrabajo()
     {
         setAbrirModal(true);
     }
+
+
+//METODO DE FILTRACION PARA CONSEGUIR LAS ORDENES DE TRABAJO Y PODER ASIGNARLAS
+    const getOrdenesDeTrabajo = async () => {
+      const values = {
+        asignada: isAsignadaChecked,
+        no_asignada: isNoAsignadaChecked,
+      }
+      console.log("VALORES ENVIADOS", values);
+      try {
+        const response = await axiosClient.post("OrdenTrabajo/filtros", values);
+        console.log(response);
+
+
+        if (Array.isArray(response.data.ordenes_trabajo)) {
+          const tomas = response.data.ordenes_trabajo.map((item: any) => item.toma);
+
+          console.log("Tomas extraídas", tomas);
+
+          setInformacionRecibidaPorFiltros(tomas);
+        } else {
+          console.log("No jala", response.data.ordenes_trabajo);
+        }
+
+      } catch (error) {
+        console.error("Failed to fetch anomalias:", error);
+      }
+    };
+
+
+
+
+
+
+
+
+
   return (
     <div className='w-full'>
 
     <div className='ml-2 mt-5 border border-border rounded p-5  mr-10 shadow-sm'>
       <div className='flex space-x-2'>
-      <p className="text-muted-foreground text-[20px] mr-[100vh]">Generar ordenes de trabajo masivas</p>
-        <div className='flex items-center ml-[2vh]'>
+      <p className="text-xl text-[20px] mr-[100vh] font-medium">Generar ordenes de trabajo masivas</p>
+        <div className='flex items-center ml-[2vh]' title='Seleccionar orden de trabajo'>
             
-            <IconButton onClick={handleGenerarOrdenDeTrabajo}><MdContentPasteSearch className='w-[5vh] h-[5vh]'/></IconButton>
+            <IconButton onClick={handleGenerarOrdenDeTrabajo}><MdContentPasteSearch className='w-[4vh] h-[4vh]'/></IconButton>
             </div>
       </div>
       
-        <p className="text-gray-500 text-[20px] mt-5">Selecciona las tomas</p>
+        <p className="text-[20px] mt-5 ">
+          <div className='flex space-x-2'>
+          <h2 className="text-lg font-semibold text-gray-700">
+          Filtrar
+        </h2>
+          <div className='w-[5vh]' onClick={getOrdenesDeTrabajo}>
+          <IconButton title="Buscar">
+          <FaSearch />
+        </IconButton>
+          </div>
+          
+            </div>
+      
+        </p>
 
          
             <div>
@@ -38,7 +107,6 @@ export const OtMasivaForm = () => {
             />
 
             <div className='flex justify-end'>
-            <Button className='mt-10'>Crear orden de trabajo masiva</Button>
 
             </div>
 

@@ -22,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import IconButton from "./IconButton";
 import { TbFilterPlus } from "react-icons/tb";
+import { Checkbox } from "./checkbox";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -92,6 +93,10 @@ export function DataTableAsignarOTIndividual<TData, TValue>({
   
     {
       control && 
+      
+
+     
+
       <div className="mt-2 mb-2">
       <Input
           placeholder="Buscar..."
@@ -102,6 +107,13 @@ export function DataTableAsignarOTIndividual<TData, TValue>({
           }
           className="w-[20vh]"
         />
+         <div className='flex items-center space-x-2'>
+              <div className="text-sm font-medium mb-2 mt-2">Asignadas</div>
+              <div className='ml-2'>
+                <Checkbox />
+              </div>
+            </div>
+
            </div>
 
     }

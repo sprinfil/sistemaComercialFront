@@ -64,10 +64,12 @@ const CrearOrdenDeTrabajo = () => {
           <IconButton onClick={handleGenerarOrdenDeTrabajo}><MdOutlinePostAdd className='w-[5vh] h-[5vh]'/></IconButton>
           </div>
           </div>
+          <div title='Asignar operador'>
           <IconButton onClick={handleGenerarOrdenDeTrabajo2}><RiUserSearchLine className='w-[4vh] h-[4vh]'/></IconButton>
+          </div>
         </div>
         
-        <h2 className='mt-5 text-gray-500'>Ordenes de trabajo de la toma.</h2>
+        <h2 className='mt-5 text-gray-500'>Historial de rdenes de trabajo de la toma</h2>
         <div className='mt-10'>
         
         <OrdenDeTrabajoUsuarioTable/>

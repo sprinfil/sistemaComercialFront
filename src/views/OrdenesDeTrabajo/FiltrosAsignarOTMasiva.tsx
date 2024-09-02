@@ -1,13 +1,24 @@
-import React,{useState} from 'react'
+import React, { useState } from 'react'
 import { FiFilter } from "react-icons/fi";
 import { Checkbox } from "@/components/ui/checkbox"
 import MarcoForm from '../../components/ui/MarcoForm';
 import MarcoFormFiltrosOT from '../../components/ui/MarcoFormFiltrosOT';
 import { LibroFilterComboBox } from '../../components/ui/LibroFilterComboBox';
 import { RutaFilterComboBox } from '../../components/ui/RutaFilterComboBox';
-
+import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt';
 
 const FiltrosAsignarOTMasiva = () => {
+
+
+
+  //#regionVARIABLES PARA OBTENER EL VALOR DE LOS FILTROS
+  const{isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked, rutaBooleanForLibro} = ZustandFiltrosOrdenTrabajo();
+
+  //#end
+
+
+
+
 
 
   // Estado para manejar el valor seleccionado
@@ -16,16 +27,16 @@ const FiltrosAsignarOTMasiva = () => {
 
   // Función para manejar la selección del concepto
   const handleSelect = (label: string) => {
-      console.log('Concepto seleccionado:', label);
-      // Aquí puedes hacer lo que necesites con la selección
+    console.log('Concepto seleccionado:', label);
+    // Aquí puedes hacer lo que necesites con la selección
   };
 
   // Simulación de un objeto 'field' como lo usarías en un formulario
   const field = {
-      value: selectedValue,
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-          setSelectedValue(event.target.value);
-      }
+    value: selectedValue,
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSelectedValue(event.target.value);
+    }
   };
 
   const field2 = {
@@ -33,12 +44,12 @@ const FiltrosAsignarOTMasiva = () => {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       setSelectedValue2(event.target.value);
     }
-};
+  };
 
 
 
 
-
+  console.log(rutaBooleanForLibro);
 
 
 
@@ -58,75 +69,101 @@ const FiltrosAsignarOTMasiva = () => {
 
         </div>
         <div className='flex flex-col mt-6 w-full'>
-          <div className='text-muted-foreground text-[15px]'>Estado de la orden de trabajo</div>
-          <hr className='mb-2 border border-gray-300 '></hr>
+          <div className="text-lg font-semibold- mb-2 mt-2">
+            Estado de la orden de trabajo
+          </div>
+          <hr className="border-t border-border my-1"></hr>
 
           <div className='flex space-x-6 mb-2'>
             <div className='flex items-center space-x-2'>
-              <span>Asignada</span>
+              <div className="text-sm font-medium mb-2 mt-2">Asignada</div>
               <div className='ml-2'>
-                <Checkbox />
+                <Checkbox 
+                checked={isAsignadaChecked} 
+                onCheckedChange={setIsAsignadaChecked} 
+                />
+                
               </div>
             </div>
             <div className='flex items-center space-x-6 ml-10'>
-              <span>No asignada</span>
+              <div className="text-sm font-medium mb-2 mt-2">No asignada</div>
               <div className='ml-10'>
-                <Checkbox />
+                <Checkbox 
+                 checked={isNoAsignadaChecked} 
+                 onCheckedChange={setIsNoAsignadaChecked} />
               </div>
             </div>
           </div>
 
 
-          <div className='text-muted-foreground text-[15px]'>Tipo de toma</div>
-          <hr className='mb-2 border border-gray-300 '></hr>
+          <div className="text-lg font-semibold- mb-2 mt-2">
+            Tipo de toma
+          </div>
+          <hr className="border-t border-border my-1"></hr>
           <div className=''>
-  
-            <div className='flex items-center space-x-2'>
-              <span>Doméstica</span>
-              <div className='ml-2'>
-                <Checkbox />
-              </div>
-            </div>
-            <div className='flex items-center space-x-3'>
-              <span>Comercial</span>
-              <div className='ml-3'>
-                <Checkbox />
-              </div>
-            </div>
-            <div className='flex items-center space-x-4'>
-              <span>Industrial</span>
-              <div className='ml-2'>
-                <Checkbox />
-              </div>
-            </div>
+
+          <div className="grid grid-cols-2 gap-2 items-center">
+        <div className="flex items-center">
+          <div className="text-sm font-medium mb-2 mt-2">Doméstica</div>
+          <div className="ml-2">
+            <Checkbox />
+          </div>
+        </div>
+        <div className="flex items-center">
+          <div className="text-sm font-medium mb-2 mt-2">Comercial</div>
+          <div className="ml-2">
+            <Checkbox />
+          </div>
+        </div>
+        <div className="flex items-center">
+          <div className="text-sm font-medium mb-2 mt-2">Industrial</div>
+          <div className="ml-2">
+            <Checkbox />
+          </div>
+        </div>
+        <div className="flex items-center">
+          <div className="text-sm font-medium mb-2 mt-2">Especial</div>
+          <div className="ml-2">
+            <Checkbox />
+          </div>
+        </div>
+      </div>
           </div>
 
-          <div className='text-muted-foreground text-[15px]'>Ruta y libro</div>
-          <hr className='mb-2 border border-gray-300 '></hr>
-          <div className=''>
-  
+          <div className="text-lg font-semibold- mb-2 mt-2">
+            Ruta y libro
+          </div>
+          <hr className="border-t border-border my-1"></hr>
+          <div className='mt-2'>
+
             <div className='flex items-center space-x-2'>
-              <span>Ruta</span>
+              <div className="text-sm font-medium mb-2 mt-2">
+                Ruta
+              </div>
               <div className='ml-2'>
-              <RutaFilterComboBox
-                        field={field}
-                        name="id_concepto" // Puedes cambiar esto si es necesario
-                        setCargoSeleccionado={handleSelect}
-                    />
+                <RutaFilterComboBox
+                  field={field}
+                  name="id_concepto" // Puedes cambiar esto si es necesario
+                  setCargoSeleccionado={handleSelect}
+                />
 
               </div>
             </div>
             <div className='flex items-center space-x-3 mt-2'>
-              <span>Libro</span>
+              <div className="text-sm font-medium mb-2">
+                Libro
+              </div>
               <div className='ml-3'>
+                
                 <LibroFilterComboBox
-                field={field2}
-                name="id_libro" // Puedes cambiar esto si es necesario
-                setCargoSeleccionado={handleSelect}/>
+                  field={field2}
+                  name="id_libro" // Puedes cambiar esto si es necesario
+                  setCargoSeleccionado={handleSelect}
+                  disabled = {rutaBooleanForLibro} />
 
               </div>
             </div>
-            
+
           </div>
         </div>
       </div>

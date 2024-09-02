@@ -27,26 +27,32 @@ type RutaFilterComboBoxProps = {
     field: any; // Cambiar a un tipo más específico si es posible
     name?: string;
     setCargoSeleccionado: (label: string) => void;
+    disabled: boolean
 };
+import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt.tsx';
 
-export const LibroFilterComboBox = ({ field, name = "id_concepto", setCargoSeleccionado }: RutaFilterComboBoxProps) => {
+export const LibroFilterComboBox = ({ field, name = "id_concepto", setCargoSeleccionado, disabled}: RutaFilterComboBoxProps) => {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([]);
     const [open, setOpen] = React.useState(false);
+    const {idRutaSeleccionada} = ZustandFiltrosOrdenTrabajo();
+
 
     React.useEffect(() => {
         getConcepto();
-    }, []);
+    }, [idRutaSeleccionada]);
 
     const getConcepto = async () => {
         setLoading(true);
         try {
-            const response = await axiosClient.get("/libro");
-            const conceptos = response.data.data.map((concepto: any) => ({
+            const response = await axiosClient.get(`/ruta/libros/${idRutaSeleccionada}`);
+            const conceptos = response.data.map((concepto: any) => ({
                 value: concepto.id,
                 label: concepto.nombre,
             }));
             setLanguages(conceptos);
+            console.log("entro");
+
             console.log(response);
         } catch (error) {
             console.error("Failed to fetch concepto:", error);
@@ -67,6 +73,7 @@ export const LibroFilterComboBox = ({ field, name = "id_concepto", setCargoSelec
                             !field.value && "text-muted-foreground"
                         )}
                         onClick={() => setOpen(!open)}
+                        disabled={disabled}
                     >
                         {field.value
                             ? languages.find((language) => language.value === field.value)?.label
