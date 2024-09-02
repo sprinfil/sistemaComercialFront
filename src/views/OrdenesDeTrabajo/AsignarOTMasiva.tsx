@@ -37,7 +37,7 @@ export const AsignarOTMasiva = () => {
   const { usuariosEncontrados, idSeleccionadoTomaAsignacionOT, controlTablaOperadorOTIndividual } = ZustandGeneralUsuario();
   const [operadorSeleccionado, setOperadorSeleccionado] = useState("");
   const { isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
-    setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador } = ZustandFiltrosOrdenTrabajo();
+    setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador, arregloAsignarIndividualTomaAOperador} = ZustandFiltrosOrdenTrabajo();
 
 
 
@@ -96,7 +96,7 @@ export const AsignarOTMasiva = () => {
   function onSubmitIndividual(values: z.infer<typeof OrdenDeTrabajoAsignarIndividualSchema>) {
 
     const values2 = {
-      id: idSeleccionadoTomaAsignacionOT,
+      id: idSeleccionadoTomaAsignacionOT || arregloAsignarIndividualTomaAOperador,
       id_empleado_encargado: values.id_empleado_encargado
     }
 

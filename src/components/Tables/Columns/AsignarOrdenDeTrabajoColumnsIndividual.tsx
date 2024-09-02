@@ -6,7 +6,7 @@ import {EyeOpenIcon } from '@radix-ui/react-icons';
 import { useStateContext } from "../../../contexts/ContextOrdenDeTrabajo"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario";
-
+import { ZustandFiltrosOrdenTrabajo } from "../../../contexts/ZustandFiltrosOt";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type OrdenDeTrabajo = {
@@ -49,6 +49,8 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
   {
     id: "select",
     header: ({ table }) => {
+
+      const {arregloAsignarIndividualTomaAOperador, setArregloAsignarIndividualTomaAOperador} = ZustandFiltrosOrdenTrabajo();
       return(
         <Checkbox
         checked={
@@ -63,6 +65,7 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
           // Esperar hasta que se complete la actualización y luego obtener las filas seleccionadas
           setTimeout(() => {
             const selectedRows = table.getSelectedRowModel().rows.map(row => row.original);
+            setArregloAsignarIndividualTomaAOperador(selectedRows);
             if (selectedRows.length === 0) {
               console.log("No rows selected.");
             } else {
@@ -76,6 +79,7 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
      
       },
     cell: ({ row, table }) => {
+      const {arregloAsignarIndividualTomaAOperador, setArregloAsignarIndividualTomaAOperador} = ZustandFiltrosOrdenTrabajo();
 
       return(
         <Checkbox
@@ -86,6 +90,7 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
           // Esperar hasta que se complete la actualización y luego obtener las filas seleccionadas
           setTimeout(() => {
             const selectedRows = table.getSelectedRowModel().rows.map(row => row.original);
+              setArregloAsignarIndividualTomaAOperador(selectedRows);
             if (selectedRows.length === 0) {
               console.log("No rows selected.");
             } else {
@@ -117,11 +122,17 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
     cell: ({ row }) => {
       const OrdenDeTrabajo = row.original
       const { setOrdenDeTrabajo, setAccion } = useStateContext();
-      const { setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
+      const { setAccionGeneradaEntreTabs, setAbrirModalInformativo } = ZustandGeneralUsuario();
+
+
+      const handleAbrir = () => {
+        setAbrirModalInformativo(true);
+      }
+
       return (
-        <div onClick={()=>{setOrdenDeTrabajo(OrdenDeTrabajo);setAccionGeneradaEntreTabs("ver")}}>
+        <div onClick={()=>{setOrdenDeTrabajo(OrdenDeTrabajo);setAccionGeneradaEntreTabs("ver");}}>
           <IconButton>
-            <EyeOpenIcon className="w-[20px] h-[20px]"/>
+            <EyeOpenIcon className="w-[20px] h-[20px]" onClick={() => handleAbrir()}/>
           </IconButton>
         </div>
       )

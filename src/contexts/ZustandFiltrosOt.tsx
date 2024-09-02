@@ -1,9 +1,7 @@
 import {create} from 'zustand';
-import { OrdenDeTrabajo } from '../components/Tables/Columns/OrdenDeTrabajoCargosColumns';
 import { AsignarOrdenDeTrabajo } from '../components/Tables/Columns/AsignarOrdenDeTrabajoColumns';
 import { OrdenDeTrabajoCrearTomas } from '../components/Tables/Columns/OrdenDeTrabajoCrearTomas';
-
-
+import { OrdenDeTrabajo } from '../components/Tables/Columns/AsignarOrdenDeTrabajoColumnsIndividual';
 interface FiltrosOrdenTrabajo {
   isAsignadaChecked: boolean;
   setIsAsignadaChecked: (isAsignadaChecked:boolean) => void;
@@ -19,6 +17,8 @@ interface FiltrosOrdenTrabajo {
   setArregloOrdenesDeTrabajoParaAsignarAOperador: (arregloOrdenesDeTrabajoParaAsignarAOperador:AsignarOrdenDeTrabajo[]) => void;
   arregloCrearOrdenesDeTrabajo:OrdenDeTrabajoCrearTomas[]
   setArregloCrearOrdenesDeTrabajo: (arregloCrearOrdenesDeTrabajo:OrdenDeTrabajoCrearTomas[]) => void;
+  arregloAsignarIndividualTomaAOperador:OrdenDeTrabajo[]
+  setArregloAsignarIndividualTomaAOperador: (arregloAsignarIndividualTomaAOperador:OrdenDeTrabajo[]) => void;
 
 }
 
@@ -37,5 +37,8 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setArregloOrdenesDeTrabajoParaAsignarAOperador: (arregloOrdenesDeTrabajoParaAsignarAOperador) => set({arregloOrdenesDeTrabajoParaAsignarAOperador}),
   arregloCrearOrdenesDeTrabajo: [],
   setArregloCrearOrdenesDeTrabajo: (arregloCrearOrdenesDeTrabajo) => set({arregloCrearOrdenesDeTrabajo}),
+  arregloAsignarIndividualTomaAOperador: [],
+  setArregloAsignarIndividualTomaAOperador: (arregloAsignarIndividualTomaAOperador) => set({arregloAsignarIndividualTomaAOperador}),
+
 }));
 

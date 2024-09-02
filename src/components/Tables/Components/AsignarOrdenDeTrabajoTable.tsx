@@ -13,7 +13,7 @@ import ModalInformacionOtToma from '../../ui/ModalInformaciónOtToma.tsx';
 
 export default function AsignarOrdenDeTrabajoTable() {
 
-  const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma} = ZustandGeneralUsuario();
+  const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma, setAbrirModalInformativo, abrirModalInformativo} = ZustandGeneralUsuario();
 
 
 
@@ -39,8 +39,7 @@ export default function AsignarOrdenDeTrabajoTable() {
       }
     };
 
-
-  const [abrirModalInformativo, setAbrirModalInformativo] = useState(false);
+console.log(data);
 
 
   const handleRowClick = (usuarioToma: BuscarUsuario) =>
@@ -49,7 +48,6 @@ export default function AsignarOrdenDeTrabajoTable() {
     //este es el id de la toma seleccionada
     //setAnomalia(anomalia);
     //setAccion("ver");
-    setAbrirModalInformativo(true);
     setIdSeleccionadoAsignarOrdenDeTrabajoToma(usuarioToma?.tomas[0]?.id)
   };
 
