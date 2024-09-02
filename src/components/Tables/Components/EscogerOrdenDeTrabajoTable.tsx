@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DataTable } from '../../../components/ui/DataTable';
-import { columns, OrdenDeTrabajo } from "../Columns/OrdenDeTrabajoColumns.tsx";
+import { columns, OrdenDeTrabajo } from "../Columns/OrdenDeTrabajoCrearIndividualColumns.tsx";
 import axiosClient from '../../../axios-client.ts';
 import Loader from '../../ui/Loader.tsx';
 import IconButton from '../../ui/IconButton.tsx';

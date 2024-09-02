@@ -11,37 +11,33 @@ import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.t
 import { BuscarUsuario } from '../Columns/ContratoConsultaUsuarioColumns.tsx';
 import ModalInformacionOtToma from '../../ui/ModalInformaciónOtToma.tsx';
 
-export default function AsignarOrdenDeTrabajoTable() {
+export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
 
   const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma} = ZustandGeneralUsuario();
 
-
-
-  //console.log("esto llego para asignar individual",usuariosEncontrados[0]?.tomas[0].id_codigo_toma);
-
-    useEffect(() => {
-      getAnomalias();
-    }, []);
-
-    const [data,setData] = useState({});
-  
-    const getAnomalias = async () => {
-      //setLoadingTable(true);
-      try {
-        const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0]?.tomas[0]?.id_codigo_toma}`);
-        //setLoadingTable(false);
-        //setAnomalias(response.data.data);
-        console.log(response.data.data);
-        setData(response.data.data)
-      } catch (error) {
-        //setLoadingTable(false);
-        console.error("Failed to fetch anomalias:", error);
-      }
-    };
-
-
+      console.log("esto llego para asignar individual",usuariosEncontrados[0].tomas[0].id_codigo_toma);
+      console.log("esto llego para asignar individual",usuariosEncontrados[0]);
   const [abrirModalInformativo, setAbrirModalInformativo] = useState(false);
+  
+  const [data, setData] = useState({});
 
+  useEffect(() => {
+    getTomasConOrdenDeTrabajo();
+  }, []);
+
+  const getTomasConOrdenDeTrabajo = async () => {
+    //setLoadingTable(true);
+    try {
+      const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0].tomas[0].id_codigo_toma}`);
+      console.log(response.data.data);
+      setData(response.data.data);
+    } catch (error) {
+      //setLoadingTable(false);
+      console.error("Failed to fetch anomalias:", error);
+    }
+  };
+
+  console.log(data);
 
   const handleRowClick = (usuarioToma: BuscarUsuario) =>
   {
@@ -49,17 +45,19 @@ export default function AsignarOrdenDeTrabajoTable() {
     //este es el id de la toma seleccionada
     //setAnomalia(anomalia);
     //setAccion("ver");
+    
     setAbrirModalInformativo(true);
-    setIdSeleccionadoAsignarOrdenDeTrabajoToma(usuarioToma?.tomas[0]?.id)
+    setIdSeleccionadoAsignarOrdenDeTrabajoToma(usuarioToma.tomas[0].id)
   };
 
   
+ 
 
   return (
 
     <div>
       
-      <DataTableAsignarOTIndividual columns={columns} data={data} sorter='nombre' onRowClick={handleRowClick}/>
+      <DataTableAsignarOTIndividual columns={columns} data={usuariosEncontrados} sorter='nombre' onRowClick={handleRowClick}/>
       
       <ModalInformacionOtToma
       isOpen={abrirModalInformativo}

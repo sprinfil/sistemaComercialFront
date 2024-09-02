@@ -47,61 +47,6 @@ export type orden_trabajo_encadenadas = {
 
 export const columns: ColumnDef<OrdenDeTrabajo>[] = [
   {
-    id: "select",
-    header: ({ table }) => {
-      return(
-        <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        
-        onCheckedChange={(value) => {
-          // Actualizar la selección de todas las filas
-          table.toggleAllPageRowsSelected(!!value);
-
-          // Esperar hasta que se complete la actualización y luego obtener las filas seleccionadas
-          setTimeout(() => {
-            const selectedRows = table.getSelectedRowModel().rows.map(row => row.original);
-            if (selectedRows.length === 0) {
-              console.log("No rows selected.");
-            } else {
-              console.log("Selected Rows:", selectedRows);
-            }
-          }, 0); // Ejecuta después de que la actualización se haya aplicado
-        }}
-        aria-label="Select all"
-      />
-      )
-     
-      },
-    cell: ({ row, table }) => {
-
-      return(
-        <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => {
-          row.toggleSelected(!!value);
-
-          // Esperar hasta que se complete la actualización y luego obtener las filas seleccionadas
-          setTimeout(() => {
-            const selectedRows = table.getSelectedRowModel().rows.map(row => row.original);
-            if (selectedRows.length === 0) {
-              console.log("No rows selected.");
-            } else {
-              console.log("Selected Rows:", selectedRows);
-            }
-          }, 0); // Ejecuta después de que la actualización se haya aplicado
-        }}
-        aria-label="Select row"
-      />
-      )
-     
-    },
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: "orden_trabajo_catalogo.descripcion",
     header: ({ column }) => (
       <Button

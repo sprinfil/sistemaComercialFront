@@ -69,7 +69,7 @@ const CrearOrdenDeTrabajo = () => {
           </div>
         </div>
         
-        <h2 className='mt-5 text-gray-500'>Historial de rdenes de trabajo de la toma</h2>
+        <h2 className='mt-5 text-gray-500'>Historial de ordenes de trabajo de la toma</h2>
         <div className='mt-10'>
         
         <OrdenDeTrabajoUsuarioTable/>

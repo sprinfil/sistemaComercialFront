@@ -29,6 +29,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { OrdenDeTrabajoAsignarIndividualSchema } from '../Forms/OrdenDeTrabajoValidaciones.ts';
 import { z } from "zod";
 import { Button } from './button.tsx';
+import AsignarOrdenDeTrabajoTable from '../Tables/Components/AsignarOrdenDeTrabajoTable.tsx';
+import AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable from '../Tables/Components/AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable.tsx';
 const ModalAsignarOperadorTomaOT = ({ isOpen, setIsOpen, method, tipoOperacion }) => {
     
     const { toast } = useToast()
@@ -118,7 +120,7 @@ console.log(tipoOperacion);
 
     return (
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-            <AlertDialogContent>
+            <AlertDialogContent   className="max-w-4xl mx-auto p-6">
                 <AlertDialogHeader>
 
                    
@@ -133,7 +135,7 @@ console.log(tipoOperacion);
                     <AlertDialogDescription>
 
                     <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-5">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
                     <FormField
                         control={form.control}
                         name="id_empleado_encargado"
@@ -154,11 +156,16 @@ console.log(tipoOperacion);
                     </div>
                     </form>
                 </Form>
+
+
+                <AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable />
+
+
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel onClick={() => setIsOpen(false)}>Cancelar</AlertDialogCancel>
-                    <Button type='submit' >Asignar</Button>
+                    <Button type='submit'>Asignar</Button>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

@@ -7,9 +7,13 @@ import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { EscogerOrdenDeTrabajoDataTable } from '../../ui/EscogerOrdenDeTrabajoDataTable.tsx';
 import { zustandOrdenTrabajoStore } from '../../../contexts/ZustandOrdenesDeTrabajoUsuario.tsx';
-
+import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
 export default function OrdenDeTrabajoUsuarioTable() {
 
+  const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma} = ZustandGeneralUsuario();
+
+      console.log("esto llego para asignar individual",usuariosEncontrados[0].tomas[0].id_codigo_toma);
+      console.log("esto llego para asignar individual",usuariosEncontrados[0]);
   const {
     ordenDeTrabajos,
     setOrdenDeTrabajos,
@@ -19,20 +23,23 @@ export default function OrdenDeTrabajoUsuarioTable() {
     setOrdenDeTrabajo
   } = zustandOrdenTrabajoStore();
 
+  const [data,setData] = useState({})
+
   useEffect(() => {
     getOrdenDeTrabajoDelUsuario();
   }, []);
 
   const getOrdenDeTrabajoDelUsuario = async () => {
     try {
-      const response = await axiosClient.get("/Toma/ordenesTrabajo/1");
-      setOrdenDeTrabajos(response.data.data);
+      const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0].tomas[0].id_codigo_toma}`);
+      setData(response.data.data);
       console.log(response.data.data);
     } catch (error) {
       setLoadingTable(false);
       console.error("Failed to fetch Orden de trabajo:", error);
     }
   };
+
   
 
 const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
@@ -48,7 +55,7 @@ const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
 
   return (
     <div>
-      <EscogerOrdenDeTrabajoDataTable columns={columns} data={ordenDeTrabajos} sorter='nombre' onRowClick={HandleClickRow}/>
+      <EscogerOrdenDeTrabajoDataTable columns={columns} data={data} sorter='nombre' onRowClick={HandleClickRow}/>
     </div>
   );
 }

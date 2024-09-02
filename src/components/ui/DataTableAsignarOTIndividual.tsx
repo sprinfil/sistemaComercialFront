@@ -93,12 +93,10 @@ export function DataTableAsignarOTIndividual<TData, TValue>({
   
     {
       control && 
-      
-
-     
 
       <div className="mt-2 mb-2">
-      <Input
+        <div className="flex space-x-5">
+        <Input
           placeholder="Buscar..."
           type="text"
           value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
@@ -114,6 +112,8 @@ export function DataTableAsignarOTIndividual<TData, TValue>({
               </div>
             </div>
 
+        </div>
+      
            </div>
 
     }
