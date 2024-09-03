@@ -30,6 +30,7 @@ import { OrdenDeTrabajoAsignarIndividualSchema } from '../Forms/OrdenDeTrabajoVa
 import { z } from "zod";
 import { Button } from './button.tsx';
 import AsignarOrdenDeTrabajoTable from '../Tables/Components/AsignarOrdenDeTrabajoTable.tsx';
+import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt.tsx';
 import AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable from '../Tables/Components/AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable.tsx';
 const ModalAsignarOperadorTomaOT = ({ isOpen, setIsOpen, method, tipoOperacion }) => {
     
@@ -37,8 +38,8 @@ const ModalAsignarOperadorTomaOT = ({ isOpen, setIsOpen, method, tipoOperacion }
 
 console.log(tipoOperacion);
 
-    const {usuariosEncontrados, setUsuariosEncontrados, idSeleccionadoGenerarOrdenDETrabajoToma} = ZustandGeneralUsuario();
-
+    const {usuariosEncontrados, setUsuariosEncontrados, idSeleccionadoGenerarOrdenDETrabajoToma, arrwegl} = ZustandGeneralUsuario();
+    const {arregloAsignarIndividualTomaAOperador} = ZustandFiltrosOrdenTrabajo();
    // console.log(JSON.stringify(usuariosEncontrados));
    //console.log(idSeleccionadoGenerarOrdenDETrabajoToma);
 
@@ -68,7 +69,7 @@ console.log(tipoOperacion);
   
     type tomas = {
       id: number
-      id_codigo_toma: string
+      codigo_toma: string
       
     }
 
@@ -80,7 +81,7 @@ console.log(tipoOperacion);
         
       }, [usuariosEncontrados]);
 
-      //console.log("Tomas ID:", consultaIdToma?.tomas[0].id_codigo_toma); 
+      //console.log("Tomas ID:", consultaIdToma?.tomas[0].codigo_toma); 
 
 
 
@@ -96,7 +97,7 @@ console.log(tipoOperacion);
       { 
         
         const values2 = {
-          id: 1,
+          id: arregloAsignarIndividualTomaAOperador[0]?.id,
           id_empleado_encargado: values.id_empleado_encargado
         }
     
@@ -115,7 +116,7 @@ console.log(tipoOperacion);
             title: "¡Éxito!",
             description: "La orden de trabajo se ha asignado correctamente",
             variant: "success",
-
+            
         })
         }
         catch(response){
@@ -132,7 +133,7 @@ console.log(tipoOperacion);
 
     return (
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-            <AlertDialogContent   className="max-w-4xl mx-auto p-6">
+            <AlertDialogContent   className="max-w-[150vh] ">
                 <AlertDialogHeader>
 
                    

@@ -11,7 +11,7 @@ export const crearContratoSchema = z.object({
     id_usuario: z.number().min(1,"Ingresa algo para buscar al usuario"),
     id_giro_comercial: z.number().min(1,"Ingresa algo para buscar al usuario"),
     id_libro: z.number().min(1,"Ingresa algo para buscar al usuario"),
-    id_codigo_toma: z.number().min(1,"Ingresa algo para buscar al usuario"),
+    codigo_toma: z.number().min(1,"Ingresa algo para buscar al usuario"),
     clave_catastral: z.string().min(1,"Ingresa algo para buscar al usuario"),
     calle: z.string().min(1,"Ingresa algo para buscar al usuario"),
     entre_calle_1: z.string().min(1,"Ingresa algo para buscar al usuario"),

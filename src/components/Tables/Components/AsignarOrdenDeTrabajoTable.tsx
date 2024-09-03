@@ -17,7 +17,7 @@ export default function AsignarOrdenDeTrabajoTable() {
 
 
 
-  //console.log("esto llego para asignar individual",usuariosEncontrados[0]?.tomas[0].id_codigo_toma);
+  //console.log("esto llego para asignar individual",usuariosEncontrados[0]?.tomas[0].codigo_toma);
 
     useEffect(() => {
       getAnomalias();
@@ -28,7 +28,7 @@ export default function AsignarOrdenDeTrabajoTable() {
     const getAnomalias = async () => {
       //setLoadingTable(true);
       try {
-        const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0]?.tomas[0]?.id_codigo_toma}`);
+        const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0]?.tomas[0]?.codigo_toma}`);
         //setLoadingTable(false);
         //setAnomalias(response.data.data);
         console.log(response.data.data);

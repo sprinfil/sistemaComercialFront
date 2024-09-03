@@ -120,7 +120,7 @@ export function DataTableAsignarOTIndividual<TData, TValue>({
    
       
       </div>
-      <div className="rounded-md border h-full overflow-auto">
+      <div className="rounded-md border overflow-auto max-h-[50vh]">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -141,7 +141,7 @@ export function DataTableAsignarOTIndividual<TData, TValue>({
             ))}
           </TableHeader>
 
-          <TableBody>
+          <TableBody className= "">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow

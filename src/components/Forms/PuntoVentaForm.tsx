@@ -197,9 +197,9 @@ const PuntoVentaForm = () => {
         }
       } else {
 
-        if (entidad.id_codigo_toma != null) {
+        if (entidad.codigo_toma != null) {
 
-          entidad_temp = entidad?.id_codigo_toma;
+          entidad_temp = entidad?.codigo_toma;
           newCargo = { ...cargo, entidad: entidad_temp };
           let minimo;
           // Obtener todas las prioridades y las seleccionadas
@@ -498,7 +498,7 @@ const PuntoVentaForm = () => {
                                 <div className="font-semibold mb-2">Servicio de agua y alcantarillado:</div>
                               </div>
                               <div className="px-4">
-                                <div className="mb-2">{dataToma?.id_codigo_toma}</div>
+                                <div className="mb-2">{dataToma?.codigo_toma}</div>
                                 <div className="mb-2">{dataToma?.clave_catastral}</div>
                                 <div className="mb-2">{dataToma?.estatus}</div>
                                 <div className="mb-2">{dataToma?.calle}</div>
@@ -520,7 +520,7 @@ const PuntoVentaForm = () => {
                     </>
                   )
                   :
-                  dataCajaUser[0] && dataToma?.id_codigo_toma != "" && !dataCajaUser[0]?.usuario?.nombre &&
+                  dataCajaUser[0] && dataToma?.codigo_toma != "" && !dataCajaUser[0]?.usuario?.nombre &&
                   <div className="justify-center ml-5 mr-5 mt-5">
                     <div className="relative">
                       {
@@ -644,7 +644,7 @@ const PuntoVentaForm = () => {
                                 <div className="font-semibold mb-2">Servicio de agua y alcantarillado:</div>
                               </div>
                               <div className="px-4">
-                                <div className="mb-2">{dataCajaUser[0]?.id_codigo_toma}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.codigo_toma}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.clave_catastral}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.estatus}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.calle}</div>
@@ -821,8 +821,8 @@ const PuntoVentaForm = () => {
                       {
                         cargos_usuario.tomas.map((toma, index) => (
                           <>
-                            <AccordionItem value={`toma-${toma.id_codigo_toma}`}>
-                              <AccordionTrigger>Cargos Toma {toma.id_codigo_toma} {toma.colonia} {toma.calle}</AccordionTrigger>
+                            <AccordionItem value={`toma-${toma.codigo_toma}`}>
+                              <AccordionTrigger>Cargos Toma {toma.codigo_toma} {toma.colonia} {toma.calle}</AccordionTrigger>
                               <AccordionContent>
                                 <>
                                   <div className="relative">

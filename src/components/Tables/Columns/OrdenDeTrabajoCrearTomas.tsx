@@ -19,7 +19,7 @@ import { ZustandFiltrosOrdenTrabajo } from "../../../contexts/ZustandFiltrosOt"
 // You can use a Zod schema here if you want.
 export type OrdenDeTrabajoCrearTomas = {
   id: number
-  id_codigo_toma: string
+  codigo_toma: string
   descripcion: string
   facturable: string
   estado: boolean
@@ -87,7 +87,7 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "id_codigo_toma",
+    accessorKey: "codigo_toma",
     header: ({ column }) => (
       <Button
         variant="ghost"

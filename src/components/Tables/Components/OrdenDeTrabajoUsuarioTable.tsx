@@ -12,7 +12,7 @@ export default function OrdenDeTrabajoUsuarioTable() {
 
   const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma} = ZustandGeneralUsuario();
 
-      console.log("esto llego para asignar individual",usuariosEncontrados[0].tomas[0].id_codigo_toma);
+      console.log("esto llego para asignar individual",usuariosEncontrados[0]?.tomas[0]?.codigo_toma);
       console.log("esto llego para asignar individual",usuariosEncontrados[0]);
   const {
     ordenDeTrabajos,
@@ -31,7 +31,7 @@ export default function OrdenDeTrabajoUsuarioTable() {
 
   const getOrdenDeTrabajoDelUsuario = async () => {
     try {
-      const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0].tomas[0].id_codigo_toma}`);
+      const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0]?.tomas[0]?.codigo_toma}`);
       setData(response.data.data);
       console.log(response.data.data);
     } catch (error) {

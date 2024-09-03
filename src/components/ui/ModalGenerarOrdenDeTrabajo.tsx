@@ -53,7 +53,7 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }
   
     type tomas = {
       id: number
-      id_codigo_toma: string
+      codigo_toma: string
       
     }
 
@@ -65,7 +65,7 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }
         
       }, [usuariosEncontrados]);
 
-      //console.log("Tomas ID:", consultaIdToma?.tomas[0].id_codigo_toma); 
+      //console.log("Tomas ID:", consultaIdToma?.tomas[0].codigo_toma); 
 
 
 
@@ -77,7 +77,7 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }
         const values2 = {
             ordenes_trabajo: [
                 {
-                    id_toma: consultaIdToma?.tomas[0]?.id_codigo_toma,
+                    id_toma: consultaIdToma?.tomas[0]?.id,
                     id_orden_trabajo_catalogo: idSeleccionadoGenerarOrdenDETrabajoToma
                 }
             ]
@@ -145,7 +145,7 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }
 
     return (
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-            <AlertDialogContent>
+            <AlertDialogContent >
                 <AlertDialogHeader>
 
                     {tipoOperacion=="masiva" ?
@@ -164,6 +164,7 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }
                     
                     <AlertDialogTitle><div className='text-xs text-gray-600'>Selecciona una orden de trabajo para la toma.</div></AlertDialogTitle>
                     <AlertDialogDescription>
+                        
                     <EscogerOrdenDeTrabajoTable/>{/*LA TABLA PARA ESCOGER ORDEN DE TRABAJO*/}
 
                     </AlertDialogDescription>

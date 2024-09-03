@@ -79,9 +79,10 @@ export const OtMasivaForm = () => {
             </div>
       </div>
       
-        <p className="text-[20px] mt-5 ">
+      <div className=''>
+      <p className="text-[20px] mt-5 ">
           <div className='flex space-x-2'>
-          <h2 className="text-lg font-semibold text-gray-700">
+          <h2 className="text-[20px]">
           Filtrar
         </h2>
           <div className='w-[5vh]' onClick={getOrdenesDeTrabajo}>
@@ -94,6 +95,8 @@ export const OtMasivaForm = () => {
       
         </p>
 
+      </div>
+      
          
             <div>
             <OrdenDeTrabajoCrearTomasTable/>

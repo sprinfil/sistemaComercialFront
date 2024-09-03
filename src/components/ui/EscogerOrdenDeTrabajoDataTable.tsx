@@ -74,7 +74,7 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
           className="w-full"
         />
       </div>
-      <div className="rounded-md border h-full overflow-auto">
+      <div className="rounded-md border overflow-auto max-h-[50vh]">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

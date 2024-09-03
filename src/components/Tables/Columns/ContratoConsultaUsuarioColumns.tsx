@@ -19,6 +19,7 @@ export type BuscarUsuario = {
 export type tomas = {
   id: number
   id_codigo_toma: string
+  codigo_toma: string
   clave_catastral: string
   numero_casa: string
   colonia: string

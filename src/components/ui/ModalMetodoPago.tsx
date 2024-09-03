@@ -120,7 +120,7 @@ export const ModalMetodoPago = ({
       })
         .then((response) => {
           set_open_modal(false);
-          update_data(dueno.id_codigo_toma)
+          update_data(dueno.codigo_toma)
           
           let abono = parseFloat(recibi.current.value);
           let recibi_temp = parseFloat(recibi_real.current.value);
@@ -133,7 +133,7 @@ export const ModalMetodoPago = ({
             fecha_pago: response.data.fecha_pago,
             copia: true,
             usuario_nombre: dueno?.usuario?.nombre,
-            numero_cuenta: dueno.id_codigo_toma,
+            numero_cuenta: dueno.codigo_toma,
             calle: dueno?.calle,
             numero: dueno?.numero_casa,
             codigo_postal: dueno?.codigo_postal,
@@ -161,7 +161,7 @@ export const ModalMetodoPago = ({
             fecha_pago: response.data.fecha_pago,
             copia: false,
             usuario_nombre: dueno?.usuario?.nombre + " " + dueno?.usuario?.apellido_paterno + " " + dueno?.usuario?.apellido_materno,
-            numero_cuenta: dueno.id_codigo_toma,
+            numero_cuenta: dueno.codigo_toma,
             calle: dueno?.calle,
             numero: dueno?.numero_casa,
             codigo_postal: dueno?.codigo_postal,
