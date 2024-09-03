@@ -4,6 +4,7 @@ import { ModalCorteCaja } from '../../components/ui/ModalCorteCaja';
 import { ModalFondoCaja } from '../../components/ui/ModalFondoCaja';
 import axiosClient from '../../axios-client'; // Importa la instancia configurada de axiosClient
 import { useStateContext } from '../../contexts/ContextProvider'; // Importa el hook personalizado
+import ZustandPuntoVenta from '../../contexts/ZustandPuntoVenta';
 
 export default function PuntoVenta() {
   const { user } = useStateContext(); // Accede al contexto para obtener el usuario
@@ -11,6 +12,7 @@ export default function PuntoVenta() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initialFund, setInitialFund] = useState('');
   const [cajaCatalogoId, setCajaCatalogoId] = useState(null); // ID de la caja catalogada
+  const {set_session_caja} = ZustandPuntoVenta();
 
   useEffect(() => {
     const cajaCatalogo = 51; // Obtener la caja
@@ -24,6 +26,7 @@ export default function PuntoVenta() {
         if (fondo_inicial) {
           setIsFondoCajaRegistered(true);
           setInitialFund(parseFloat(fondo_inicial) || 0);
+          
         } else {
           setIsModalOpen(true);
         }
@@ -46,7 +49,7 @@ export default function PuntoVenta() {
     try {
       const response = await axiosClient.post('/cajas/store', data);
       console.log('Caja abierta con éxito:', response.data);
-
+      fetch_session_status();
       setIsFondoCajaRegistered(true);
       setInitialFund(formattedAmount || 0);
       setIsModalOpen(false);
@@ -62,6 +65,16 @@ export default function PuntoVenta() {
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
+
+  const fetch_session_status = async () => {
+    try {
+        const response = await axiosClient.get("/cajas/estadoSesionCobro");
+        console.log(response.data);
+        set_session_caja(response.data);
+    } catch (error) {
+        console.error("Error al obtener el nombre de la caja:", error);
+    }
+};
 
   return (
     <div>

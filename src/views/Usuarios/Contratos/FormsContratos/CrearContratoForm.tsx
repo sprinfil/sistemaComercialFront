@@ -33,7 +33,7 @@ export const CrearContratoForm = () => {
             id_usuario: 1,
             id_giro_comercial: 1,
             id_libro: 1,
-            id_codigo_toma: 1,
+            codigo_toma: 1,
             clave_catastral: "",
             calle:"",
             entre_calle_1: "",

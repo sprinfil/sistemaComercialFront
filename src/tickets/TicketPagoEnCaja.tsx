@@ -9,14 +9,31 @@ function formatLine(name, amount) {
     return `${paddedName}${paddedAmount}`;
 }
 
+function format_metodo_pago(pago: string): string{
+    if(pago == "efectivo"){
+        return "Efectivo";
+    }
+    if(pago == "tarjeta_credito"){
+        return "Tarjeta Credito";
+    }
+    if(pago == "tarjeta_debito"){
+        return "Tarjeta Debito";
+    }
+    if(pago == "cheque"){
+        return "Cheque";
+    }
+    if(pago == "transferencia"){
+        return "Transferencia";
+    }
+    return pago;
+}
+
 
 const removeAccents = (str) => {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 };
 
 export default function estructura_ticket(data) {
-
-    console.log(data.conceptos)
 
     let estructura_ticket = []
     estructura_ticket.push([`FELIX ORTEGA 2330, CENTRO, LA PAZ .C.S`, `CT`, `B`])
@@ -61,8 +78,10 @@ export default function estructura_ticket(data) {
     estructura_ticket.push([`Detalle del pago`, `CT`, `B`])
     estructura_ticket.push([` `, `LT`])
     estructura_ticket.push([formatLine(`SALDO ANTERIOR`, `$ ${data?.saldo_anterior}`), `LT`])
-    estructura_ticket.push([`${data?.metodo_pago}`, `LT`, `B`])
-    estructura_ticket.push([formatLine(`RECIBIDO`, `$ ${data?.recibido}`), `LT`])
+    estructura_ticket.push([`${format_metodo_pago(data?.metodo_pago)}`, `LT`, `B`])
+    if(data?.recibido != "0"){
+        estructura_ticket.push([formatLine(`RECIBIDO`, `$ ${data?.recibido}`), `LT`])
+    }
     estructura_ticket.push([formatLine(`PAGO NETO`, `$ ${data?.pago_neto}`), `LT`])
     estructura_ticket.push([formatLine(`CAMBIO`, `$ ${data?.cambio}`), `LT`])
     estructura_ticket.push([` `, `LT`])

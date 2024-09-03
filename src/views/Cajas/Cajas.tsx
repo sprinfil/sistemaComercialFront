@@ -10,18 +10,22 @@ import PuntoVenta from './PuntoVenta';
 import CorteCaja from './CorteCaja';
 import IconButton from '../../components/ui/IconButton';
 import axiosClient from '../../axios-client';
+import ZustandPuntoVenta from '../../contexts/ZustandPuntoVenta';
 
 function App() {
     const { user } = useStateContext();
     const [activeTab, setActiveTab] = useState("Punto de Venta");
     const [cajaNombre, setCajaNombre] = useState(""); // Estado para almacenar el nombre de la caja
     const navigate = useNavigate();
+    const {set_session_caja, session_caja} = ZustandPuntoVenta();
 
     useEffect(() => {
         const fetchCajaNombre = async () => {
             try {
                 const response = await axiosClient.get("/cajas/estadoSesionCobro");
                 const { caja_nombre } = response.data;
+                console.log(response.data);
+                set_session_caja(response.data);
                 setCajaNombre(caja_nombre); // Almacenar el nombre de la caja en el estado
             } catch (error) {
                 console.error("Error al obtener el nombre de la caja:", error);
@@ -40,10 +44,10 @@ function App() {
             titulo: "Punto de Venta",
             componente: <PuntoVenta />
         },
-        {
-            titulo: "Cortes de Caja",
-            componente: <CorteCaja />
-        },
+        // {
+        //     titulo: "Cortes de Caja",
+        //     componente: <CorteCaja />
+        // },
     ];
 
     return (

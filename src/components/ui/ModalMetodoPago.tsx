@@ -36,15 +36,17 @@ import dayjs from 'dayjs';
 import estructura_ticket from '../../tickets/TicketPagoEnCaja';
 import axios from 'axios';
 import imprimir from '../../tickets/FuncionesImpresora';
-
+import ZustandPuntoVenta from '../../contexts/ZustandPuntoVenta';
 export const ModalMetodoPago = ({
   open_modal,
   set_open_modal,
   total,
   total_iva,
-  cargos, dueno,
+  cargos, 
+  dueno,
   update_data,
-  all_cargos
+  all_cargos,
+  modelo_dueno = "toma"
 }) => {
   const { toast } = useToast()
   const [metodo_pago_selected, set_metodo_pago_selected] = useState("");
@@ -52,17 +54,24 @@ export const ModalMetodoPago = ({
   const recibi = useRef();
   const recibi_real = useRef();
   const [errores, set_errores] = useState([]);
+  const { session_caja } = ZustandPuntoVenta();
+  const [folio, set_folio] = useState("");
+  const folio_input = useRef();
+
   let total_neto = total;
 
   //console.log(estructura_ticket(ticket_data));
 
-  useEffect(()=>{
+  useEffect(() => {
     if (recibi_real.current) {
       recibi_real.current.focus();
     }
-  },[metodo_pago_selected])
+    if (folio_input.current) {
+      folio_input.current.focus();
+    }
+  }, [metodo_pago_selected])
 
-  
+
   useEffect(() => {
     window.addEventListener('keydown', handleF5Press);
     return () => {
@@ -70,34 +79,34 @@ export const ModalMetodoPago = ({
     };
   }, []);
 
-  
+
   const calculateTotal = () => {
     return all_cargos.reduce((acc, cargo) => acc + parseFloat(cargo.monto_pendiente || 0), 0);
   };
 
-  if(cargos.length == 0){
+  if (cargos.length == 0) {
     total_neto = calculateTotal();
   }
 
   const handleF5Press = (event: KeyboardEvent) => {
     if (event.key === 'F1') {
-      event.preventDefault(); 
+      event.preventDefault();
       set_metodo_pago_selected("efectivo")
     }
     if (event.key === 'F2') {
-      event.preventDefault(); 
+      event.preventDefault();
       set_metodo_pago_selected("tarjeta_credito")
     }
     if (event.key === 'F3') {
-      event.preventDefault(); 
+      event.preventDefault();
       set_metodo_pago_selected("tarjeta_debito")
     }
     if (event.key === 'F4') {
-      event.preventDefault(); 
-      set_metodo_pago_selected("documento")
+      event.preventDefault();
+      set_metodo_pago_selected("cheque")
     }
     if (event.key === 'F5') {
-      event.preventDefault(); 
+      event.preventDefault();
       set_metodo_pago_selected("transferencia")
     }
   };
@@ -124,7 +133,7 @@ export const ModalMetodoPago = ({
 
     recibi_real_temp != 0 ? set_cambio(recibi_real_temp - cantidad_abonar) : set_cambio(0);
 
-    if (recibi_real_temp < cantidad_abonar) {
+    if (recibi_real_temp < cantidad_abonar && metodo_pago_selected == "efectivo") {
       errores_temp.push({ cargo_id: 0, mensaje: "El abono no puede ser superior a la cantidad de dinero recibida" })
     }
 
@@ -154,20 +163,26 @@ export const ModalMetodoPago = ({
       })
     } else {
       axiosClient.post("/pagos/store", {
-        id_caja: 1,
+        id_caja: session_caja.id,
         id_dueno: dueno.id,
-        modelo_dueno: "toma",
+        modelo_dueno: modelo_dueno,
         total_pagado: recibi_temp,
         forma_pago: metodo_pago_selected,
         fecha_pago: today,
-        cargos: cargos_temp
+        cargos: cargos_temp,
+        folio: folio
       })
         .then((response) => {
           set_open_modal(false);
-          update_data(dueno.id_codigo_toma)
+          
+          if(modelo_dueno == "usuario"){
+            update_data();
+          }else{
+            update_data(dueno.codigo_toma)
+          }
 
-          let abono = parseFloat(recibi.current.value);
-          let recibi_temp = parseFloat(recibi_real.current.value);
+          let abono = parseFloat(recibi?.current.value);
+          let recibi_temp = metodo_pago_selected == "efectivo" ? parseFloat(recibi_real?.current.value) : "0";
 
           let abonos: any[] = [];
 
@@ -182,14 +197,14 @@ export const ModalMetodoPago = ({
           })
 
           let ticket_data_original = {
-            nombre_caja: "Caja 1",
+            nombre_caja: session_caja.caja_nombre,
             consecutivo: "000123",
-            nombre_cajero: "Daniela Encinas Pacheco",
+            nombre_cajero: session_caja.nombre_operador,
             pago_folio: response.data.folio,
             fecha_pago: response.data.fecha_pago,
             copia: false,
             usuario_nombre: dueno?.usuario?.nombre + " " + dueno?.usuario?.apellido_paterno + " " + dueno?.usuario?.apellido_materno,
-            numero_cuenta: dueno.id_codigo_toma,
+            numero_cuenta: dueno.codigo_toma,
             calle: dueno?.calle,
             numero: dueno?.numero_casa,
             codigo_postal: dueno?.codigo_postal,
@@ -251,6 +266,10 @@ export const ModalMetodoPago = ({
     }
   }
 
+  const handle_folio = () => {
+    set_folio(folio_input?.current?.value);
+  }
+
   cargos = cargos.sort((a, b) => a.concepto.prioridad_abono - b.concepto.prioridad_abono)
 
   return (
@@ -275,7 +294,7 @@ export const ModalMetodoPago = ({
                         </div>
                       </div>
                       <div className={metodo_pago_selected == "tarjeta_credito" ? "my-1 w-full h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-1 w-full h-[10vh] hover:h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`}
-                        onClick={() => { set_metodo_pago_selected("tarjeta_credito")}}>
+                        onClick={() => { set_metodo_pago_selected("tarjeta_credito") }}>
                         <div className='flex flex-col gap-2 items-center justify-center'>
                           <img src={credit_card} alt="" className='w-[30px]' />
                           <p>Tarjeta Crédito (F2)</p>
@@ -288,8 +307,8 @@ export const ModalMetodoPago = ({
                           <p>Tarjeta Débito (F3)</p>
                         </div>
                       </div>
-                      <div className={metodo_pago_selected == "documento" ? "my-1 w-full h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-1 w-full h-[10vh] hover:h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`}
-                        onClick={() => { set_metodo_pago_selected("documento") }}>
+                      <div className={metodo_pago_selected == "cheque" ? "my-1 w-full h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all bg-muted" : `my-1 w-full h-[10vh] hover:h-[12vh] rounded-md flex items-center justify-center cursor-pointer transition-all hover:bg-muted`}
+                        onClick={() => { set_metodo_pago_selected("cheque") }}>
                         <div className='flex flex-col gap-2 items-center justify-center'>
                           <img src={cheque} alt="" className='w-[30px]' />
                           <p>Cheque (F4)</p>
@@ -346,19 +365,7 @@ export const ModalMetodoPago = ({
                                   <TableBody>
                                     {
                                       cargos.length > 0 ?
-                                      cargos.map((cargo, index) => (
-                                        <TableRow key={cargo.id}
-                                          className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
-                                          <TableCell className="font-medium">{cargo.nombre}</TableCell>
-                                          <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
-                                          <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                                          <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
-                                        </TableRow>
-                                      )):
-                                      <>
-                                      {
-                                        all_cargos.length > 0 ?
-                                         all_cargos.map((cargo, index) => (
+                                        cargos.map((cargo, index) => (
                                           <TableRow key={cargo.id}
                                             className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
                                             <TableCell className="font-medium">{cargo.nombre}</TableCell>
@@ -366,18 +373,30 @@ export const ModalMetodoPago = ({
                                             <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                                             <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
                                           </TableRow>
-                                        ))
-                                        :
-                                        <TableRow>
-                                        <TableCell className="font-medium">Abono a saldo a favor</TableCell>
-                                        <TableCell>Abonable</TableCell>
-                                        <TableCell className="">Sin Monto</TableCell>
-                                        <TableCell className="">Sin prioridad</TableCell>
-                                      </TableRow>
-                                      }
-                                      </>
+                                        )) :
+                                        <>
+                                          {
+                                            all_cargos.length > 0 ?
+                                              all_cargos.map((cargo, index) => (
+                                                <TableRow key={cargo.id}
+                                                  className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
+                                                  <TableCell className="font-medium">{cargo.nombre}</TableCell>
+                                                  <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
+                                                  <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                                                  <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
+                                                </TableRow>
+                                              ))
+                                              :
+                                              <TableRow>
+                                                <TableCell className="font-medium">Abono a saldo a favor</TableCell>
+                                                <TableCell>Abonable</TableCell>
+                                                <TableCell className="">Sin Monto</TableCell>
+                                                <TableCell className="">Sin prioridad</TableCell>
+                                              </TableRow>
+                                          }
+                                        </>
                                     }
-                                   
+
                                   </TableBody>
 
                                 </Table>
@@ -394,6 +413,95 @@ export const ModalMetodoPago = ({
 
                         </div>
                       </>
+                    }
+                    {
+                      metodo_pago_selected == "tarjeta_credito" || metodo_pago_selected == "tarjeta_debito" ||
+                      metodo_pago_selected == "transferencia" || metodo_pago_selected == "cheque"  ?
+                      <>
+                        <div className='relative h-full'>
+                          <div className='w-full flex h-[5vh] gap-5'>
+                            <div>
+                              <p>Cantidad Abonar</p>
+                              <input ref={recibi} defaultValue={total_neto.toFixed(2)} onChange={() => { handleCambio() }} type="number" className='bg-muted p-4 w-[20vw] h-[6vh] outline-border' name="" id="" />
+                            </div>
+                            <div>
+                              <p>Folio</p>
+                              <input ref={folio_input} onChange={() => { handle_folio(); }} type="number" className='bg-muted p-4 w-[20vw] h-[6vh] outline-border' name="" id="" />
+                            </div>
+                            {errores.length > 0 &&
+                              <div className='h-[10vh] overflow-auto'>
+                                {errores.map((error, index) => (
+                                  <p className='text-red-500'>{error.mensaje}</p>
+                                ))}
+                              </div>
+                            }
+                          </div>
+                          <div className='mt-10 '>
+                            <div className="w-full relative overflow-auto">
+                              <div className='items-center overflow-auto h-[33vh]'>
+                                <Table>
+                                  <TableCaption></TableCaption>
+                                  <TableHeader>
+                                    <TableRow>
+                                      <TableHead>Concepto</TableHead>
+                                      <TableHead>Abonar</TableHead>
+                                      <TableHead>Monto + IVA</TableHead>
+                                      <TableHead>Prioridad</TableHead>
+                                    </TableRow>
+                                  </TableHeader>
+                                  <TableBody>
+                                    {
+                                      cargos.length > 0 ?
+                                        cargos.map((cargo, index) => (
+                                          <TableRow key={cargo.id}
+                                            className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
+                                            <TableCell className="font-medium">{cargo.nombre}</TableCell>
+                                            <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
+                                            <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                                            <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
+                                          </TableRow>
+                                        )) :
+                                        <>
+                                          {
+                                            all_cargos.length > 0 ?
+                                              all_cargos.map((cargo, index) => (
+                                                <TableRow key={cargo.id}
+                                                  className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
+                                                  <TableCell className="font-medium">{cargo.nombre}</TableCell>
+                                                  <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
+                                                  <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                                                  <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
+                                                </TableRow>
+                                              ))
+                                              :
+                                              <TableRow>
+                                                <TableCell className="font-medium">Abono a saldo a favor</TableCell>
+                                                <TableCell>Abonable</TableCell>
+                                                <TableCell className="">Sin Monto</TableCell>
+                                                <TableCell className="">Sin prioridad</TableCell>
+                                              </TableRow>
+                                          }
+                                        </>
+                                    }
+
+                                  </TableBody>
+
+                                </Table>
+                              </div>
+
+                            </div>
+                            <div className="w-full relative bg-muted h-[10vh] flex items-center">
+                              <div className='absolute right-0 px-5 py-3 text-[22px]'>
+                                <p className='mb-3'>Total: ${total_neto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                                <p>Cambio: ${cambio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </>
+                      :
+                      <></>
                     }
                   </div>
                 </div>

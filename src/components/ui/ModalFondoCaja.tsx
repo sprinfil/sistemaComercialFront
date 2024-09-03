@@ -26,6 +26,7 @@ export const ModalFondoCaja = ({ open, onRegister }) => {
 
   const handleNextStep = () => {
     setIsSecondModalOpen(true); // Abre el segundo modal
+    
   };
 
   const handleConfirmAndClose = () => {
