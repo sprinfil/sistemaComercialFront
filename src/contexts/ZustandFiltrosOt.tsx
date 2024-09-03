@@ -19,7 +19,10 @@ interface FiltrosOrdenTrabajo {
   setArregloCrearOrdenesDeTrabajo: (arregloCrearOrdenesDeTrabajo:OrdenDeTrabajoCrearTomas[]) => void;
   arregloAsignarIndividualTomaAOperador:OrdenDeTrabajo[]
   setArregloAsignarIndividualTomaAOperador: (arregloAsignarIndividualTomaAOperador:OrdenDeTrabajo[]) => void;
-
+  dataOrdenesDeTrabajoHistorialToma:[]
+  setDataOrdenesDeTrabajoHistorialToma:(dataOrdenesDeTrabajoHistorialToma:[]) => void;
+  asignadasEnToma: boolean;
+  setAsignadasEnToma: (asignadasEnToma:boolean) => void;
 }
 
 export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => ({
@@ -39,6 +42,9 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setArregloCrearOrdenesDeTrabajo: (arregloCrearOrdenesDeTrabajo) => set({arregloCrearOrdenesDeTrabajo}),
   arregloAsignarIndividualTomaAOperador: [],
   setArregloAsignarIndividualTomaAOperador: (arregloAsignarIndividualTomaAOperador) => set({arregloAsignarIndividualTomaAOperador}),
-
+  dataOrdenesDeTrabajoHistorialToma: [],
+  setDataOrdenesDeTrabajoHistorialToma: (dataOrdenesDeTrabajoHistorialToma) => set({dataOrdenesDeTrabajoHistorialToma}),
+  asignadasEnToma: false,
+  setAsignadasEnToma: (asignadasEnToma) => set({asignadasEnToma}),
 }));
 

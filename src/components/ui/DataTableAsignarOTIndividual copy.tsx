@@ -34,7 +34,7 @@ interface DataTableProps<TData, TValue> {
   onRowClick?: (row: TData) => void;
 }
 
-export function DataTableAsignarOTIndividual2<TData, TValue>({
+export function DataTableAsignarOTIndividual<TData, TValue>({
   columns,
   data,
   sorter,

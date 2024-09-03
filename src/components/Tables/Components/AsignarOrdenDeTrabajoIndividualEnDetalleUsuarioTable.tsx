@@ -6,15 +6,18 @@ import { useStateContext } from '../../../contexts/ContextAnomalias.tsx';
 import Loader from '../../ui/Loader.tsx';
 import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
-import { DataTableAsignarOTIndividual } from '../../ui/DataTableAsignarOTIndividual.tsx';
+import { DataTableAsignarOTIndividual2 } from '../../ui/DataTableAsignarOTIndividual.tsx';
+import { DataTableAsignarOTIndividual } from '../../ui/DataTableAsignarOTIndividual copy.tsx';
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
 import { BuscarUsuario } from '../Columns/ContratoConsultaUsuarioColumns.tsx';
 import ModalInformacionOtToma from '../../ui/ModalInformaciónOtToma.tsx';
-
+import { ZustandFiltrosOrdenTrabajo } from '../../../contexts/ZustandFiltrosOt.tsx';
 export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
 
-  const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma} = ZustandGeneralUsuario();
-
+  const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma,} = ZustandGeneralUsuario();
+  
+  
+  const {informacionRecibidaPorFiltros, asignadasEnToma} = ZustandFiltrosOrdenTrabajo();
       console.log("esto llego para asignar individual",usuariosEncontrados[0].tomas[0].codigo_toma);
       console.log("esto llego para asignar individual",usuariosEncontrados[0]);
   const [abrirModalInformativo, setAbrirModalInformativo] = useState(false);
@@ -26,7 +29,6 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
   }, []);
 
   const getTomasConOrdenDeTrabajo = async () => {
-    //setLoadingTable(true);
     try {
       const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0].tomas[0].codigo_toma}`);
       console.log(response.data.data);
@@ -50,14 +52,21 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
     setIdSeleccionadoAsignarOrdenDeTrabajoToma(usuarioToma.tomas[0].id)
   };
 
+  console.log(informacionRecibidaPorFiltros);
   
- 
+
 
   return (
 
     <div>
-      
-      <DataTableAsignarOTIndividual columns={columns} data={data} sorter='nombre' onRowClick={handleRowClick}/>
+      {
+        asignadasEnToma ?
+        <DataTableAsignarOTIndividual2 columns={columns} data={informacionRecibidaPorFiltros} sorter='nombre' onRowClick={handleRowClick}/>
+
+        :
+        <DataTableAsignarOTIndividual columns={columns} data={data} sorter='nombre' onRowClick={handleRowClick}/>
+
+      }
       
       <ModalInformacionOtToma
       isOpen={abrirModalInformativo}

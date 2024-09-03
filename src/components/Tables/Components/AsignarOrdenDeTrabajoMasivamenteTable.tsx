@@ -6,7 +6,7 @@ import { useStateContext } from '../../../contexts/ContextAnomalias.tsx';
 import Loader from '../../ui/Loader.tsx';
 import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
-import { DataTableAsignarOTIndividual } from '../../ui/DataTableAsignarOTIndividual.tsx';
+import { DataTableAsignarOTIndividual } from '../../ui/DataTableAsignarOTIndividual copy.tsx';
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
 import { BuscarUsuario } from '../Columns/ContratoConsultaUsuarioColumns.tsx';
 import ModalInformacionOtToma from '../../ui/ModalInformaciónOtToma.tsx';

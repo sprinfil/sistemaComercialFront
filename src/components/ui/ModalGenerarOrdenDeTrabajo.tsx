@@ -15,12 +15,15 @@ import EscogerOrdenDeTrabajoTable from '../Tables/Components/EscogerOrdenDeTraba
 import axiosClient from '../../axios-client';
 import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
 import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt';
-
+import { zustandOrdenTrabajoStore } from '../../contexts/ZustandOrdenesDeTrabajoUsuario';
 const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }) => {
 
     const { toast } = useToast()
-
-    const { arregloCrearOrdenesDeTrabajo } = ZustandFiltrosOrdenTrabajo();
+    const {
+        loadingTable,
+        setLoadingTable
+      } = zustandOrdenTrabajoStore();
+    const { arregloCrearOrdenesDeTrabajo,setDataOrdenesDeTrabajoHistorialToma } = ZustandFiltrosOrdenTrabajo();
 
     console.log(tipoOperacion);
 
@@ -67,12 +70,24 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }
 
     //console.log("Tomas ID:", consultaIdToma?.tomas[0].codigo_toma); 
 
-
+    //volver a tener las ordenes de trabajo bhistorial del usuario
+    const getOrdenDeTrabajoDelUsuario = async () => {
+        setLoadingTable(true);
+        try {
+          const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0]?.tomas[0]?.codigo_toma}`);
+          setDataOrdenesDeTrabajoHistorialToma(response.data.data);
+          setLoadingTable(false);
+          console.log(response.data.data);
+        } catch (error) {
+          setLoadingTable(false);
+          console.error("Failed to fetch Orden de trabajo:", error);
+        }
+      };
 
 
     //GENERA ORDEN DE TRABAJO A UNA TOMA
     const GenerarOrdenDeTrabajoToma = async () => {
-
+        setLoadingTable(true);
         const values2 = {
             ordenes_trabajo: [
                 {
@@ -85,6 +100,7 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }
         try {
             const response = await axiosClient.post(`OrdenTrabajo/create`, values2)
             setIsOpen(false);
+            setLoadingTable(false);
             console.log(response);
             toast({
                 title: "¡Éxito!",
@@ -92,9 +108,12 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }
                 variant: "success",
 
             })
+            getOrdenDeTrabajoDelUsuario();
+
 
         }
         catch (error) {
+            setLoadingTable(false);
             console.log(error)
             toast({
                 variant: "destructive",

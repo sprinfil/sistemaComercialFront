@@ -8,9 +8,11 @@ import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { EscogerOrdenDeTrabajoDataTable } from '../../ui/EscogerOrdenDeTrabajoDataTable.tsx';
 import { zustandOrdenTrabajoStore } from '../../../contexts/ZustandOrdenesDeTrabajoUsuario.tsx';
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
+
+
 export default function EscogerOrdenDeTrabajoTable() {
 
-  const {idSeleccionadoConfiguracionOrdenDeTrabajo, setIdSeleccionadoGenerarOrdenDETrabajoToma, idSeleccionadoGenerarOrdenDETrabajoToma} = ZustandGeneralUsuario();
+  const {idSeleccionadoConfiguracionOrdenDeTrabajo, setIdSeleccionadoGenerarOrdenDETrabajoToma, idSeleccionadoGenerarOrdenDETrabajoToma, asignadasEnToma} = ZustandGeneralUsuario();
   const {
     ordenDeTrabajos,
     setOrdenDeTrabajos,
