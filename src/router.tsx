@@ -19,6 +19,7 @@ import { CrearContratoForm } from './views/Usuarios/Contratos/FormsContratos/Cre
 import { TomaUsuarioDetalle } from './views/Usuarios/Consultar/TomaUsuarioDetalle';
 import { GenerarOtMasiva } from './views/OrdenesDeTrabajo/GenerarOtMasiva';
 import { AsignarOTMasiva } from './views/OrdenesDeTrabajo/AsignarOTMasiva';
+import { Monitores } from './views/Monitores/Monitores';
 
 
 
@@ -93,6 +94,10 @@ const router = createBrowserRouter ([
                 path:'/asignar/orden/masiva',
                 element: <AsignarOTMasiva/>
             },
+            {
+                path:'/monitores',
+                element: <Monitores/>
+            }
         ]
     },
     {

@@ -23,6 +23,14 @@ interface FiltrosOrdenTrabajo {
   setDataOrdenesDeTrabajoHistorialToma:(dataOrdenesDeTrabajoHistorialToma:[]) => void;
   asignadasEnToma: boolean;
   setAsignadasEnToma: (asignadasEnToma:boolean) => void;
+  dataOrdenDeTrabajoMonitor:[]
+  setDataOrdenDeTrabajoMonitor:(dataOrdenDeTrabajoMonitor:[]) => void;
+  loadingTable: boolean;
+  setLoadingTable: (loadingTable:boolean) => void;
+  boolUsoFiltros: boolean;
+  setBoolUsoFiltros:(boolUsoFiltros:boolean) => void;
+  valorParaSaberSiUsaLaTablaDeFiltros: boolean;
+  setvalorParaSaberSiUsaLaTablaDeFiltros:(valorParaSaberSiUsaLaTablaDeFiltros:boolean) => void;
 }
 
 export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => ({
@@ -46,5 +54,14 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setDataOrdenesDeTrabajoHistorialToma: (dataOrdenesDeTrabajoHistorialToma) => set({dataOrdenesDeTrabajoHistorialToma}),
   asignadasEnToma: false,
   setAsignadasEnToma: (asignadasEnToma) => set({asignadasEnToma}),
+  dataOrdenDeTrabajoMonitor: [],
+  setDataOrdenDeTrabajoMonitor: (dataOrdenDeTrabajoMonitor) => set({dataOrdenDeTrabajoMonitor}),
+  loadingTable: false,
+  setLoadingTable: (loadingTable) => set({loadingTable}),
+  boolUsoFiltros: false,
+  setBoolUsoFiltros: (boolUsoFiltros) => set({boolUsoFiltros}),
+  valorParaSaberSiUsaLaTablaDeFiltros: false,
+  setvalorParaSaberSiUsaLaTablaDeFiltros: (valorParaSaberSiUsaLaTablaDeFiltros) => set({valorParaSaberSiUsaLaTablaDeFiltros}),
+
 }));
 

@@ -155,7 +155,7 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Monitores",
                     descripcion: "Haz consultas de cualquier entidad que necesites.",
-                    route: "/proximamente",
+                    route: "/monitores",
                     permission: ""
                 },
             ]

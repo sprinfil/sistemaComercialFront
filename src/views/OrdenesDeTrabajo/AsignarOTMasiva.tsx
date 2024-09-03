@@ -27,8 +27,26 @@ import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import AsignarOrdenDeTrabajoMasivamenteTable from '../../components/Tables/Components/AsignarOrdenDeTrabajoMasivamenteTable.tsx';
 import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt';
+import { OcultarTable } from '../../components/Tables/Components/OcultarTable.tsx';
+
+const MostrarFiltros = () => {
+
+  //const { accion } = useStateContext();
+ // const {accionGeneradaEntreTabs} = ZustandGeneralUsuario();
+
+  return (
+    <>
+      {/*Datatable*/}
+
+      <OcultarTable accion={""}>
+      <FiltrosAsignarOTMasiva/>
+      </OcultarTable>
+
+    </>
+  )
 
 
+};
 export const AsignarOTMasiva = () => {
 
   const { toast } = useToast()
@@ -183,10 +201,11 @@ const getOrdenesDeTrabajo = async () => {
 
 return (
   <div>
-    <div className='flex space-x-2'>
-      <FiltrosAsignarOTMasiva />
+    <div className='flex space-x-2 mt-2'>
+      <MostrarFiltros />
+
       <div className='w-full'>
-        <div className='border border-gray-300 rounded-sm ml-5 p-7 mr-5 mt-5 shadow-sm'>
+        <div className='border border-gray-300 rounded-sm p-7 mr-5 shadow-sm'>
           {selectedAction === "individual" && (
             <p className="text-muted-foreground text-[20px] mb-5">Asignar órdenes de trabajo individual</p>
           )}
@@ -197,7 +216,7 @@ return (
             <p className="text-muted-foreground text-[20px] mb-5">Asignar órdenes de trabajo masivas.</p>
           )}
 
-          <div className='flex space-x-2'>
+          <div className='flex space-x-2 w-full'>
             <Select onValueChange={handleSelectChange} value={selectedAction}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecciona el tipo de orden de trabajo." />
@@ -249,10 +268,10 @@ return (
 
 
           {selectedAction === "individual" && controlTablaOperadorOTIndividual && (
-            <div>
+            <div className=''>
 
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmitIndividual)} className="space-y-8 mt-5">
+                <form onSubmit={form.handleSubmit(onSubmitIndividual)} className="space-y-8 ">
                   <FormField
                     control={form.control}
                     name="id_empleado_encargado"
@@ -260,10 +279,10 @@ return (
                       <FormItem>
                         <FormLabel>Selecciona el operador</FormLabel>
                         <div className='flex space-x-2'>
-                          <div className='w-[180vh]'>
+                          <div className='w-[120vh]'>
                             <OperadoresOtIndividualComboBox form={form} field={field} name="id_empleado_encargado" setCargoSeleccionado={setOperadorSeleccionado} />
                           </div>
-                          <Button type='submit' className='mb-2 w-[10vh]'>Asignar</Button>
+                          <Button type='submit' className=' w-[10vh]'>Asignar</Button>
                         </div>
 
                         <FormDescription>
@@ -285,17 +304,20 @@ return (
           {selectedAction === "masivamente" && (
             <div>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmitMasiva)} className="space-y-8 mt-2">
+                <form onSubmit={form.handleSubmit(onSubmitMasiva)} className="space-y-8">
                   <FormField
                     control={form.control}
                     name="id_empleado_encargado"
                     render={({ field }) => (
                       <FormItem>
+                        <div className='mt-2'>
                         <FormLabel>Selecciona el operador</FormLabel>
                         <div className='flex space-x-2'>
                           <OperadoresOtIndividualComboBox form={form} field={field} name="id_empleado_encargado" setCargoSeleccionado={setOperadorSeleccionado} />
                           <Button type='submit' className=''>Asignar</Button>
                         </div>
+                        </div>
+                     
 
 
                         <FormDescription>

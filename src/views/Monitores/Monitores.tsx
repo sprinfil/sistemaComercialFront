@@ -1,0 +1,54 @@
+import React, { useState } from 'react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { OrdenDeTrabajoMonitor } from './OrdenDeTrabajoMonitor'
+import { useStateContext } from '../../contexts/ContextProvider'
+
+export const Monitores = () => {
+
+
+  const { permissions, user } = useStateContext();
+  const [seleccionarCatalogo, setSeleccionarCatalogo] = useState(true);
+
+  const opciones = [
+    {
+      titulo: "Orden de trabajo",
+      componente: <OrdenDeTrabajoMonitor />,
+      permission: "VerAnomalias"
+    },
+   
+  ]
+
+  return ( 
+    <div className='w-full'>
+      <Tabs defaultValue="" className="" onValueChange={() => { setSeleccionarCatalogo(false) }}>
+
+        <TabsList>
+          {opciones.map((opcion, index) => {
+            if (permissions.includes(opcion.permission) || user.id == 1|| user?.roles?.includes("Admin")) {
+              return (
+                <>
+                  <TabsTrigger value={opcion.titulo} key={index}>{opcion.titulo}</TabsTrigger>
+                </>
+              )
+            }
+          })}
+        </TabsList>
+        {opciones.map((opcion, index) => (
+          <>
+            <TabsContent value={opcion.titulo} key={index}>{opcion.componente}</TabsContent>
+          </>
+        ))}
+      </Tabs>
+      {
+        seleccionarCatalogo &&
+        <>
+          <div className='w-full h-[70vh] mt-[20px] flex flex-col items-center justify-center gap-5'>
+            <p>Selecciona un catálogo.</p>
+          </div>
+        </>
+      }
+
+    </div >
+  )
+}
+

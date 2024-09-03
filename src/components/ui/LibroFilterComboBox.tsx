@@ -46,7 +46,7 @@ export const LibroFilterComboBox = ({ field, name = "id_concepto", setCargoSelec
         setLoading(true);
         try {
             const response = await axiosClient.get(`/ruta/libros/${idRutaSeleccionada}`);
-            const conceptos = response.data.map((concepto: any) => ({
+            const conceptos = response.data.data.map((concepto: any) => ({
                 value: concepto.id,
                 label: concepto.nombre,
             }));

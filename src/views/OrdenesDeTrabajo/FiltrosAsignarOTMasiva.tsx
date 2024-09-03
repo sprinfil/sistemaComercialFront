@@ -54,9 +54,8 @@ const FiltrosAsignarOTMasiva = () => {
 
 
   return (
-    <div className='w-[70vh] overflow-auto'>
-
-      <div className='border border-shadow ml-5 mt-5 h-full p-5'>
+<div className='overflow-auto min-h-[20vh]'>
+      <div className='ml-5 mt-5 h-full p-3'>
 
         <div className='flex space-x-2'>
           <div>
@@ -64,29 +63,31 @@ const FiltrosAsignarOTMasiva = () => {
           </div>
           <div>
             Filtros
-
           </div>
 
         </div>
         <div className='flex flex-col mt-6 w-full'>
-          <div className="text-lg font-semibold- mb-2 mt-2">
+        
+          <div className="text-lg font-semibold- mt-1">
             Estado de la orden de trabajo
           </div>
           <hr className="border-t border-border my-1"></hr>
-
-          <div className='flex space-x-6 mb-2'>
+          <div className='flex space-x-[10vh] mb-2'>
             <div className='flex items-center space-x-2'>
-              <div className="text-sm font-medium mb-2 mt-2">Asignada</div>
+              <div className="text-sm font-medium mb-2 mt-2">
+                Asignada
+                </div>
               <div className='ml-2'>
                 <Checkbox 
                 checked={isAsignadaChecked} 
                 onCheckedChange={setIsAsignadaChecked} 
                 />
-                
+  
               </div>
             </div>
-            <div className='flex items-center space-x-6 ml-10'>
-              <div className="text-sm font-medium mb-2 mt-2">No asignada</div>
+            <div className='flex items-center space-x-2 ml-10'>
+              <div className="text-sm font-medium mb-2 mt-2">
+                No asignada</div>
               <div className='ml-10'>
                 <Checkbox 
                  checked={isNoAsignadaChecked} 
@@ -96,13 +97,13 @@ const FiltrosAsignarOTMasiva = () => {
           </div>
 
 
-          <div className="text-lg font-semibold- mb-2 mt-2">
+          <div className="text-lg font-semibold- mt-1">
             Tipo de toma
           </div>
           <hr className="border-t border-border my-1"></hr>
           <div className=''>
 
-          <div className="grid grid-cols-2 gap-2 items-center">
+          <div className="grid grid-cols-2 gap-2 items-center justify-center">
         <div className="flex items-center">
           <div className="text-sm font-medium mb-2 mt-2">Doméstica</div>
           <div className="ml-2">
@@ -130,7 +131,7 @@ const FiltrosAsignarOTMasiva = () => {
       </div>
           </div>
 
-          <div className="text-lg font-semibold- mb-2 mt-2">
+          <div className="text-lg font-semibold- mt-2">
             Ruta y libro
           </div>
           <hr className="border-t border-border my-1"></hr>

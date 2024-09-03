@@ -15,7 +15,7 @@ export const GenerarOtMasiva = () => {
 
   return (
     <div className=''>
-      <div className='flex space-x-2'>
+      <div className='flex space-x-2 mt-2'>
         
       <MostrarFiltros/>
 

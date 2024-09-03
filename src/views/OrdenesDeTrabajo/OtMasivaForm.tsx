@@ -70,7 +70,7 @@ export const OtMasivaForm = () => {
   return (
     <div className='w-full'>
 
-    <div className='ml-2 mt-5 border border-border rounded p-5  mr-10 shadow-sm'>
+    <div className='border border-border rounded p-5  mr-10 shadow-sm'>
       <div className='flex space-x-2'>
       <p className="text-xl text-[20px] mr-[100vh] font-medium">Generar ordenes de trabajo masivas</p>
         <div className='flex items-center ml-[2vh]' title='Seleccionar orden de trabajo'>
