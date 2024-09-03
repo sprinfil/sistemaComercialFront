@@ -391,12 +391,12 @@ const MedidorForm = () => {
                             name="numeroSerie"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Numero de serie</FormLabel>
+                                    <FormLabel>Número de serie</FormLabel>
                                     <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe el numero de serie" {...field} />
+                                        <Input readOnly={!abrirInput} placeholder="Escribe el número de serie" {...field} />
                                     </FormControl>
                                     <FormDescription>
-                                        El numero de serie del medidor.
+                                        El número de serie del medidor.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -423,9 +423,9 @@ const MedidorForm = () => {
                             name="diametro"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Diametro</FormLabel>
+                                    <FormLabel>Diámetro</FormLabel>
                                     <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe diametro del medidor" {...field} />
+                                        <Input readOnly={!abrirInput} placeholder="Escribe diámetro del medidor" {...field} />
                                     </FormControl>
                                     <FormDescription>
                                         El diametro del medidor.

@@ -30,7 +30,7 @@ export const columns: ColumnDef<Medidor>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Nombre
+          Número de serie
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
