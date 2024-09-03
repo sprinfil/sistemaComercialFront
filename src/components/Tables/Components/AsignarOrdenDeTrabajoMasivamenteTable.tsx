@@ -29,7 +29,7 @@ export default function AsignarOrdenDeTrabajoMasivamenteTable() {
     console.log(usuarioToma);
 
   };
-
+  console.log(informacionRecibidaPorFiltros);
 
   return (
 

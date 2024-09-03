@@ -127,6 +127,7 @@ export const AsignarOTMasiva = () => {
       id: item.id,
       id_empleado_encargado: values.id_empleado_encargado
     }));
+    
 
 
 
@@ -165,7 +166,7 @@ const getOrdenesDeTrabajo = async () => {
 
 
     if (Array.isArray(response.data.ordenes_trabajo)) {
-      const tomas = response.data.ordenes_trabajo.map((item: any) => item.toma);
+      const tomas = response.data.ordenes_trabajo.map((item: any) => item);
 
       console.log("Tomas extraídas", tomas);
 

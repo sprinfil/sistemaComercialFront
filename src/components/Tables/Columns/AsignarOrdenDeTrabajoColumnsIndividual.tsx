@@ -107,13 +107,46 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "toma.codigo_toma",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Toma
+      </Button>
+    ),
+  },
+  {
     accessorKey: "orden_trabajo_catalogo.descripcion",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Tipo de orden de trabajo
+        Tipo
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "estado",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Tipo
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "fecha_vigencia",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Fecha de vigencia
       </Button>
     ),
   },
