@@ -224,9 +224,8 @@ return (
   <div>
     <div className='flex space-x-2 mt-2'>
       <MostrarFiltros />
-
       <div className='w-full'>
-        <div className='border border-gray-300 rounded-sm p-7 mr-5 shadow-sm'>
+        <div className='border border-gray-300 rounded-sm p-7 mr-5 shadow-sm h-[78vh] overflow-auto'>
           {selectedAction === "individual" && (
             <p className="text-muted-foreground text-[20px] mb-5">Asignar órdenes de trabajo individual</p>
           )}

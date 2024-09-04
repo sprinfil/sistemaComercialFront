@@ -6,7 +6,7 @@ import IconButton from '../../../components/ui/IconButton.tsx';
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import { Icon } from 'lucide-react';
-import { OcultarTable } from '../../../components/Tables/Components/OcultarTable.tsx';
+import { OcultarTable } from '../../../components/Tables/Components/OcultarTable.tsx'
 
 export default function Anomalias() {
 

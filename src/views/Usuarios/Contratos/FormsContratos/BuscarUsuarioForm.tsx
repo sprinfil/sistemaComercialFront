@@ -295,9 +295,10 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     return (
         <ContextProvider>
             <div>
-                <div className='mt-5 ml-[5vh] w-[213vh] rounded-md border border-border  shadow-inherit p-6 h-[29.5vh] '>
+                <div className='mt-5 ml-[5vh] w-[100vh] rounded-md border border-border  shadow-inherit p-6 h-[20vh] '>
                     <Form {...form}>
                         <div className="justify-center items-center">
+                         
                             <div className="flex space-x-2">
                                 <div className="w-[200vh] mr-[180]">
                                 <div className="text-muted-foreground text-[20px] mb-5">Consultar al usuario </div>
@@ -315,7 +316,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                        
                         <form onSubmit={form.handleSubmit(onSubmit)} className="">
                             <div className="flex space-x-2">
-                                <div className="w-[120vh] mr-5">
+                                <div className="w-[50vh] mr-5">
 
                                     <FormField
                                         control={form.control}
@@ -333,8 +334,8 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                                     />
                                 </div>
 
-                                <div className="w-[90vh]">
-                                    {nombreSeleccionado === "Nombre, Código de usuario, Código de toma" && "Escribe el nombre o código del usuario o código de la toma"}
+                                <div className="w-[50vh]">
+                                    {nombreSeleccionado === "Nombre, Código de usuario, Código de toma" && "Nombre, Código de usuario, Código de toma"}
                                     {nombreSeleccionado === "Código usuario" && "Escribe el código del usuario"}
                                     {nombreSeleccionado === "Correo" && "Escribe el correo del usuario"}
                                     {nombreSeleccionado === "Dirección" && "Escribe la dirección de la toma"}
@@ -373,9 +374,6 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                         </form>
                     </Form>
                 </div>
-
-
-
                 {
 
                     mostrarTablaUsuario && filtroSeleccionado == "1" && <ContratoConsultaUsuarioTable accion2={tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado={filtroSeleccionado} />

@@ -17,20 +17,19 @@ const DefaultLayout = () => {
 
   return (
     <div className='h-[90vh]'>
-
-      <section>
-        {/*Menu Superior*/}
-        <MenuSuperiosNew />
-        <div className=' h-[30px] w-full bg-gradient-to-r bg-muted  text-[10px] flex items-center px-2 border-border border mb-[5px] gap-2'> <span className='text-primary' dangerouslySetInnerHTML={{ __html: localStorage.getItem("submenu_icono") }}></span> <p>{localStorage.getItem("submenu_titulo")}</p></div>
-        {/*  */}
-        {/*<MenuSuperior />*/}
-      </section>
-      <main className='overflow-auto h-full max-h-[84vh]'>
-        <Outlet />
-      </main>
-
-
-    </div >
+      <>
+        <section>
+          {/*Menu Superior*/}
+          <MenuSuperiosNew />
+          <div className=' h-[30px] w-full bg-gradient-to-r bg-muted  text-[10px] flex items-center px-2 border-border border mb-[5px] gap-2'> <span className='text-primary' dangerouslySetInnerHTML={{ __html: localStorage.getItem("submenu_icono") }}></span> <p>{localStorage.getItem("submenu_titulo")}</p></div>
+          {/*  */}
+          {/*<MenuSuperior />*/}
+        </section>
+        <main className='overflow-auto h-full max-h-[84vh]'>
+          <Outlet />
+        </main>
+      </>
+    </div>
   )
 }
 

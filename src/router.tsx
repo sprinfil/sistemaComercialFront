@@ -17,6 +17,7 @@ import { ContratacionBuscarUsuario } from './views/Usuarios/Contratos/Contrataci
 import BuscarUsuario from './views/Usuarios/Consultar/BuscarUsuario';
 import { CrearContratoForm } from './views/Usuarios/Contratos/FormsContratos/CrearContratoForm';
 import { TomaUsuarioDetalle } from './views/Usuarios/Consultar/TomaUsuarioDetalle';
+import { FondoCajaProvider } from './contexts/FondoCajaContext';
 import { GenerarOtMasiva } from './views/OrdenesDeTrabajo/GenerarOtMasiva';
 import { AsignarOTMasiva } from './views/OrdenesDeTrabajo/AsignarOTMasiva';
 import { Monitores } from './views/Monitores/Monitores';

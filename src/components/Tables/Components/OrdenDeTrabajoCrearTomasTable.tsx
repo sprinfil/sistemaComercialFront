@@ -7,6 +7,7 @@ import Loader from '../../ui/Loader.tsx';
 import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { ZustandFiltrosOrdenTrabajo } from '../../../contexts/ZustandFiltrosOt.tsx';
+import { DataTableGenerarOrden } from '../../ui/DataTableGenerarOrden.tsx';
 export default function OrdenDeTrabajoCrearTomasTable() {
 
 
@@ -32,7 +33,7 @@ export default function OrdenDeTrabajoCrearTomasTable() {
       {
         loadingTable ? <Loader/>
         :
-        <DataTable columns={columns} data={informacionRecibidaPorFiltros} sorter='nombre' onRowClick={handleRowClick}/>
+        <DataTableGenerarOrden columns={columns} data={informacionRecibidaPorFiltros} sorter='nombre' onRowClick={handleRowClick}/>
 
       }
     </div>

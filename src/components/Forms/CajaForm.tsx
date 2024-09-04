@@ -32,6 +32,7 @@ import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import { CuentasContablesComboBox } from "../ui/CuentasContablesComboBox.tsx";
 import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 
 const CajaForm = () => {
     const { toast } = useToast()
@@ -124,6 +125,14 @@ const CajaForm = () => {
     {
 
     },[])
+    const convertToHoursMinutes = (time) => {
+        // Verifica si el formato de entrada es correcto
+        if (!/^(\d{2}):(\d{2}):(\d{2})$/.test(time)) {
+            console.log("d");
+        }
+        // Simplemente toma las horas y minutos del string HH:mm:ss
+        return time.substring(0, 5); // 'HH:mm' está en los primeros 5 caracteres
+    };
 
     function onSubmit(values: z.infer<typeof cajaCatalogoSchema>) {
         setLoading(true);
@@ -133,8 +142,8 @@ const CajaForm = () => {
         const timeWithoutSeconds2 = values.hora_cierre; // Ej. "15:45"
 
         // Agregar segundos ":00" al final
-        const timeWithSeconds1 = `${timeWithoutSeconds1}:00`;
-        const timeWithSeconds2 = `${timeWithoutSeconds2}:00`;
+        const timeWithSeconds1 = `${timeWithoutSeconds1}`;
+        const timeWithSeconds2 = `${timeWithoutSeconds2}`;
 
 
         const values2 = {
@@ -142,6 +151,7 @@ const CajaForm = () => {
             hora_apertura: timeWithSeconds1,
             hora_cierre: timeWithSeconds2,
         }
+        console.log(values2);
 
 
         if (accionGeneradaEntreTabs == "crear") {
@@ -187,18 +197,14 @@ const CajaForm = () => {
         }
         if (accionGeneradaEntreTabs == "editar") {
 
-            const timeWithSeconds1 = `${values.hora_apertura}`;
-            const timeWithSeconds2 = `${values.hora_cierre}`;
-
-    
-            
-    
+           
             const values2 = {
                 ...values,
-                hora_apertura: timeWithSeconds1,
-                hora_cierre: timeWithSeconds2,
-            }
+                hora_apertura: convertToHoursMinutes(values.hora_apertura),
+                hora_cierre: convertToHoursMinutes(values.hora_cierre),
+            };
 
+            console.log(values2);
 
 
             axiosClient.put(`/cajas/modificarCajaCatalogo/${caja?.id}`, values2)
@@ -320,6 +326,7 @@ const CajaForm = () => {
         if (accionGeneradaEntreTabs == "crear") {
             console.log("creando");
             setAbrirInput(true);
+            setControl(false);
             setErrors({});
             form.reset({
                 id: 0,
@@ -393,7 +400,7 @@ const CajaForm = () => {
     return (
         <>
             <div className="overflow-auto max-w-full max-h-full">
-                <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+                <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
                             {accionGeneradaEntreTabs == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva caja</p>}
