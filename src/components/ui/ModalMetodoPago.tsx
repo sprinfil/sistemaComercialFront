@@ -81,7 +81,7 @@ export const ModalMetodoPago = ({
 
 
   const calculateTotal = () => {
-    return all_cargos.reduce((acc, cargo) => acc + parseFloat(cargo.monto_pendiente || 0), 0);
+    return all_cargos?.reduce((acc, cargo) => acc + parseFloat(cargo.monto_pendiente || 0), 0);
   };
 
   if (cargos.length == 0) {

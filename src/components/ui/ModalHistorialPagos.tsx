@@ -37,6 +37,9 @@ const ModalHistorialPagos = ({ trigger }) => {
     const [pagos, set_pagos] = useState([]);
     const [filtered_pagos, set_filtered_pagos] = useState([])
     const input_folio = useRef()
+    const input_numero_toma = useRef()
+    const input_numero_usuario = useRef()
+
     const { toast } = useToast()
     const [selected_pago, set_selected_pago] = useState([]);
 
@@ -75,17 +78,17 @@ const ModalHistorialPagos = ({ trigger }) => {
                 id_caja: session_caja.id,
                 folio: pago.folio
             }
-        ).then((response)=>{
+        ).then((response) => {
             console.log(response)
         })
-        .catch((response)=>{
-            console.log(response)
-        })
+            .catch((response) => {
+                console.log(response)
+            })
     }
 
-    useEffect(()=>{
-        //console.log(selected_pago)
-    },[selected_pago])
+    useEffect(() => {
+        console.log(selected_pago)
+    }, [selected_pago])
 
     const reimprimir = (pago) => {
         let ticket_data_original = {
@@ -96,7 +99,7 @@ const ModalHistorialPagos = ({ trigger }) => {
             fecha_pago: pago.fecha_pago,
             copia: false,
             //usuario_nombre: dueno?.usuario?.nombre + " " + dueno?.usuario?.apellido_paterno + " " + dueno?.usuario?.apellido_materno,
-            usuario_nombre: "falta api",
+            usuario_nombre: selected_pago.usuario.nombre + " " + selected_pago.usuario.apellido_paterno + " " + selected_pago.usuario.apellido_materno,
             numero_cuenta: pago.dueno.codigo_toma,
             calle: pago.dueno?.calle,
             numero: pago.dueno?.numero_casa,
@@ -161,12 +164,12 @@ const ModalHistorialPagos = ({ trigger }) => {
                                         <div className='flex gap-3 shadow-md p-2 items-center border rounded-md'>
                                             <p>Pago: {selected_pago?.folio}</p>
                                             <div className='w-[200px] gap-2 flex items-center justify-center px-2 py-2 rounded-md dark:hover:bg-blue-900 hover:bg-blue-100 cursor-pointer ease-in duration-100'
-                                                onClick={() => { reimprimir(pago) }}
+                                                onClick={() => { reimprimir(selected_pago) }}
                                             >
                                                 <ReaderIcon className='w-[20px] h-[20px] text-blue-500' />
                                                 <p>Reimprimir Ticket</p>
                                             </div>
-                                            <Button variant={"destructive"} onClick={()=>{solicitud_cancelacion(selected_pago)}}>Solicitud de Cancelación</Button>
+                                            <Button variant={"destructive"} onClick={() => { solicitud_cancelacion(selected_pago) }}>Solicitud de Cancelación</Button>
                                         </div>
                                         <div className='grid grid-cols-2 gap-4 mt-5'>
                                             <div className='max-h-[60vh] overflow-auto'>
@@ -194,7 +197,7 @@ const ModalHistorialPagos = ({ trigger }) => {
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Nombre del Usuario</TableCell>
-                                                            <TableCell>falta api</TableCell>
+                                                            <TableCell>{selected_pago?.usuario?.nombre + " " + selected_pago?.usuario?.apellido_paterno + " " + selected_pago?.usuario?.apellido_materno}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Número de Cuenta</TableCell>
@@ -253,7 +256,25 @@ const ModalHistorialPagos = ({ trigger }) => {
                                             </div>
 
                                             <div className='w-full h-full '>
+                                                <div className='max-h-[60vh] overflow-auto'>
+                                                    <Table>
+                                                        <TableBody>
+                                                            <TableRow className="bg-muted">
+                                                                <TableCell>Concepto</TableCell>
+                                                                <TableCell>Monto Abonado</TableCell>
+                                                                <TableCell>Monto Pendiente</TableCell>
+                                                            </TableRow>
+                                                            {selected_pago.abonos_con_cargos.map(abono => (
+                                                                <TableRow>
+                                                                    <TableCell>{abono?.nombre}</TableCell>
+                                                                    <TableCell>{abono?.monto_abonado}</TableCell>
+                                                                    <TableCell>{abono?.monto_pendiente}</TableCell>
+                                                                </TableRow>
 
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -268,7 +289,6 @@ const ModalHistorialPagos = ({ trigger }) => {
                                                 <TableHeader className="bg-muted ">
                                                     <TableRow>
                                                         <TableHead>Folio</TableHead>
-                                                        <TableHead>Número de Toma</TableHead>
                                                         <TableHead>Monto</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
@@ -278,7 +298,7 @@ const ModalHistorialPagos = ({ trigger }) => {
                                                             <>
                                                                 <TableRow className="cursor-pointer" onClick={() => { set_selected_pago(pago) }}>
                                                                     <TableCell>{pago.folio}</TableCell>
-                                                                    <TableCell>{pago.dueno.codigo_toma}</TableCell>
+                                                           
                                                                     <TableCell>$ {pago.total_pagado}</TableCell>
                                                                 </TableRow>
                                                             </>
