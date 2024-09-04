@@ -17,16 +17,19 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Anomalia = {
+export type MonitorOrden = {
   id: number
   nombre: string
   descripcion: string
   facturable: string
   estado: boolean
+  toma: {
+    codigo_toma: string
+  }
 }
 
 
-export const columns: ColumnDef<Anomalia>[] = [
+export const columns: ColumnDef<MonitorOrden>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -50,7 +53,7 @@ export const columns: ColumnDef<Anomalia>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "nombre",
+    accessorKey: "toma.codigo_toma",
     header: ({ column }) => {
       return (
         <Button
@@ -58,13 +61,12 @@ export const columns: ColumnDef<Anomalia>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Toma
-          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
   },
   {
-    accessorKey: "nombre",
+    accessorKey: "orden_trabajo_catalogo.nombre",
     header: ({ column }) => {
       return (
         <Button
@@ -72,13 +74,12 @@ export const columns: ColumnDef<Anomalia>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Tipo
-          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
   },
   {
-    accessorKey: "nombre",
+    accessorKey: "estado",
     header: ({ column }) => {
       return (
         <Button
@@ -86,25 +87,37 @@ export const columns: ColumnDef<Anomalia>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Estado
-          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
   },
   {
-    accessorKey: "nombre",
+    accessorKey: "created_at",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Fecha
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Creada
         </Button>
       )
     },
   },
+  {
+    accessorKey: "fecha_finalizada",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Concluida
+        </Button>
+      )
+    },
+  },
+
   {
     id: "actions",
     cell: ({ row }) => {

@@ -20,7 +20,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-
+import IconButton from "./IconButton";
+import { MdContentPasteSearch } from "react-icons/md";
+import { FaSearch } from "react-icons/fa";
+import { TbFilterPlus } from "react-icons/tb";
+import { ZustandFiltrosOrdenTrabajo } from "../../contexts/ZustandFiltrosOt";
+import axiosClient from "../../axios-client";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -28,7 +33,7 @@ interface DataTableProps<TData, TValue> {
   onRowClick?: (row: TData) => void;
 }
 
-export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
+export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
   columns,
   data,
   sorter,
@@ -39,7 +44,10 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
     []
   );
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
-
+  const [control, setControl] =  React.useState(false);
+  const { isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
+    setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador, boolUsoFiltros, 
+    setBoolUsoFiltros, setvalorParaSaberSiUsaLaTablaDeFiltros, setLoadingTable, loadingTable} = ZustandFiltrosOrdenTrabajo();
   const table = useReactTable({
     data,
     columns,
@@ -61,10 +69,67 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
     onRowClick?.(rowData);
   };
 
+  const handleControl = () => {
+
+    if(boolUsoFiltros)
+    {
+      setBoolUsoFiltros(false);
+    }
+    else
+    {
+      setBoolUsoFiltros(true);
+
+    }
+  }
+
+  
+//METODO DE FILTRACION PARA CONSEGUIR LAS ORDENES DE TRABAJO Y PODER ASIGNARLAS
+const getOrdenesDeTrabajo = async () => {
+  setLoadingTable(true);
+  const values = {
+    asignada: isAsignadaChecked,
+    no_asignada: isNoAsignadaChecked,
+  }
+  console.log("VALORES ENVIADOS", values);
+  try {
+    const response = await axiosClient.post("OrdenTrabajo/filtros", values);
+    console.log(response);
+
+    setLoadingTable(false);
+
+    if (Array.isArray(response.data.ordenes_trabajo)) {
+      const tomas = response.data.ordenes_trabajo.map((item: any) => item);
+
+      console.log("Tomas extraídas", tomas);
+      setvalorParaSaberSiUsaLaTablaDeFiltros(true);
+      setInformacionRecibidaPorFiltros(tomas);
+    } else {
+      console.log("No jala", response.data.ordenes_trabajo);
+    }
+
+  } catch (error) {
+    setLoadingTable(false);
+    console.error("Failed to fetch anomalias:", error);
+  }
+};
+
+
+
+
+
   return (
     <div className="">
       <div className="flex items-center py-4">
-        <Input
+      
+      <IconButton title="Buscar" onClick={getOrdenesDeTrabajo}>
+          <FaSearch />
+        </IconButton>
+        <IconButton title="Ver más filtros" onClick={handleControl}>      
+          <TbFilterPlus className="w-[2.5vh] h-[2.5vh]"/> 
+        </IconButton>
+        {
+          boolUsoFiltros && 
+          <Input
           placeholder="Buscar..."
           type="text"
           value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
@@ -73,8 +138,10 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
           }
           className="w-full"
         />
+        }
+       
       </div>
-      <div className="rounded-md border overflow-auto max-h-[50vh]">
+      <div className="rounded-md border h-full overflow-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

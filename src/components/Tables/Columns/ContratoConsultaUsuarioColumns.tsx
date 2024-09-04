@@ -18,6 +18,8 @@ export type BuscarUsuario = {
 
 export type tomas = {
   id: number
+  id_codigo_toma: string
+  codigo_toma: string
   clave_catastral: string
   numero_casa: string
   colonia: string
@@ -121,8 +123,6 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      console.log("Row data:", row);
-      console.log("Tomas data:", row.tomas);
       return row.tomas?.[0].clave_catastral;
     },
     id: "tomas.clave_catastral",
@@ -138,8 +138,6 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      console.log("Row data:", row);
-      console.log("Tomas data:", row.tomas);
       return row.tomas?.[0].calle;
     },
     id: "tomas.calle",
@@ -155,8 +153,6 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      console.log("Row data:", row);
-      console.log("Tomas data:", row.tomas);
       return row.tomas?.[0].numero_casa;
     },
     id: "tomas.numero_casa",
@@ -172,8 +168,6 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      console.log("Row data:", row);
-      console.log("Tomas data:", row.tomas);
       return row.tomas?.[0].colonia;
     },
     id: "tomas.colonia",
@@ -189,8 +183,6 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      console.log("Row data:", row);
-      console.log("Tomas data:", row.tomas);
       return row.tomas?.[0].entre_calle_1;
     },
     id: "tomas.entre_calle_1",
@@ -206,8 +198,6 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      console.log("Row data:", row);
-      console.log("Tomas data:", row.tomas);
       return row.tomas?.[0].entre_calle_2;
     },
     id: "tomas.entre_calle_2",
@@ -223,8 +213,6 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      console.log("Row data:", row);
-      console.log("Tomas data:", row.tomas);
       return row.tomas?.[0].codigo_postal;
     },
     id: "tomas.codigo_postal",
@@ -240,8 +228,6 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      console.log("Row data:", row);
-      console.log("Tomas data:", row.tomas);
       return row.tomas?.[0].localidad;
     },
     id: "tomas.localidad",

@@ -136,13 +136,13 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Generar Ordenes de Trabajo",
                     descripcion: "Genera ordenes para operadores de campo",
-                    route: "/proximamente",
+                    route: "/crear/orden/masiva",
                     permission: ""
                 },
                 {
                     titulo: "Asignar Ordenes de Trabajo",
                     descripcion: "Asigna Ordenes de trabajo para operadores de campo",
-                    route: "/proximamente",
+                    route: "/asignar/orden/masiva",
                     permission: ""
                 },
             ]
@@ -155,7 +155,7 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Monitores",
                     descripcion: "Haz consultas de cualquier entidad que necesites.",
-                    route: "/proximamente",
+                    route: "/monitores",
                     permission: ""
                 },
             ]

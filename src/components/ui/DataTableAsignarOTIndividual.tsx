@@ -20,7 +20,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import IconButton from "./IconButton";
+import { TbFilterPlus } from "react-icons/tb";
+import { Checkbox } from "./checkbox";
+import { ZustandFiltrosOrdenTrabajo } from "../../contexts/ZustandFiltrosOt";
+import axiosClient from "../../axios-client";
 
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -28,7 +34,7 @@ interface DataTableProps<TData, TValue> {
   onRowClick?: (row: TData) => void;
 }
 
-export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
+export function DataTableAsignarOTIndividual2<TData, TValue>({
   columns,
   data,
   sorter,
@@ -39,6 +45,9 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
     []
   );
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
+  const [control, setControl] = React.useState(false);
+  const{setAsignadasEnToma, asignadasEnToma,setInformacionRecibidaPorFiltros} = ZustandFiltrosOrdenTrabajo();
+ const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma,} = ZustandGeneralUsuario();
 
   const table = useReactTable({
     data,
@@ -61,9 +70,65 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
     onRowClick?.(rowData);
   };
 
+  const handleControl = () => 
+  {
+    if(control)
+    {
+      setControl(false);
+
+    }
+    else
+    {
+      setControl(true);
+
+    }
+    
+
+  }
+
+  //METODO DE FILTRACION PARA CONSEGUIR LAS ORDENES DE TRABAJO Y PODER ASIGNARLAS
+  const getOrdenesDeTrabajo = async () => {
+    const values = {
+      asignada: asignadasEnToma,
+      toma_id: usuariosEncontrados[0].tomas[0].id
+    }
+    console.log("VALORES ENVIADOS", values);
+    try {
+      const response = await axiosClient.post("OrdenTrabajo/filtros", values);
+      console.log(response);
+
+
+      if (Array.isArray(response.data.ordenes_trabajo)) {
+        const tomas = response.data.ordenes_trabajo.map((item: any) => item.toma);
+
+        console.log("Tomas extraídas", tomas);
+
+        setInformacionRecibidaPorFiltros(tomas);
+      } else {
+        console.log("No jala", response.data.ordenes_trabajo);
+      }
+
+    } catch (error) {
+      console.error("Failed to fetch anomalias:", error);
+    }
+  };
+
+
   return (
     <div className="">
-      <div className="flex items-center py-4">
+      <div className="flex space-x-10">
+        <div className="w-[5vh] h-[5vh] mt-1" onClick={handleControl} title="Ver más filtros.">
+        <IconButton>      
+          <TbFilterPlus className="w-[2.5vh] h-[2.5vh]"/> 
+        </IconButton>
+
+        </div>
+   
+    {
+      control && 
+
+      <div className="mt-2 mb-2">
+        <div className="flex space-x-5">
         <Input
           placeholder="Buscar..."
           type="text"
@@ -71,8 +136,27 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
           }
-          className="w-full"
+          className="w-[20vh]"
         />
+         {/* ESTE CHECKBOX ES EL QUE NOS CONSULTARA LAS ASIGNADAS */}
+         <div className='flex items-center space-x-2'>
+              <div className="text-sm font-medium mb-2 mt-2">Asignadas</div>
+              <div className='ml-2'>
+                <Checkbox 
+                checked={asignadasEnToma} 
+                onCheckedChange={setAsignadasEnToma} 
+                onClick={getOrdenesDeTrabajo}
+                /> 
+              </div>
+            </div>
+
+        </div>
+      
+           </div>
+
+    }
+   
+      
       </div>
       <div className="rounded-md border overflow-auto max-h-[50vh]">
         <Table>
@@ -95,7 +179,7 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
             ))}
           </TableHeader>
 
-          <TableBody>
+          <TableBody className= "">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -123,22 +207,7 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Anterior
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Siguiente
-        </Button>
+      
       </div>
     </div>
   );
