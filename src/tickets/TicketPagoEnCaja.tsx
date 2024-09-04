@@ -9,20 +9,20 @@ function formatLine(name, amount) {
     return `${paddedName}${paddedAmount}`;
 }
 
-function format_metodo_pago(pago: string): string{
-    if(pago == "efectivo"){
+function format_metodo_pago(pago: string): string {
+    if (pago == "efectivo") {
         return "Efectivo";
     }
-    if(pago == "tarjeta_credito"){
+    if (pago == "tarjeta_credito") {
         return "Tarjeta Credito";
     }
-    if(pago == "tarjeta_debito"){
+    if (pago == "tarjeta_debito") {
         return "Tarjeta Debito";
     }
-    if(pago == "cheque"){
+    if (pago == "cheque") {
         return "Cheque";
     }
-    if(pago == "transferencia"){
+    if (pago == "transferencia") {
         return "Transferencia";
     }
     return pago;
@@ -55,14 +55,21 @@ export default function estructura_ticket(data) {
     estructura_ticket.push([`Informacion de usuario`, `CT`, `B`])
     estructura_ticket.push([` `, `CT`])
     estructura_ticket.push([`Usuario: ${data?.usuario_nombre}`, `LT`])
-    estructura_ticket.push([`Numero de Toma: ${data?.numero_cuenta}`, `LT`])
+    if(data?.modelo_dueno == "toma"){
+        estructura_ticket.push([`Numero de Toma: ${data?.numero_cuenta}`, `LT`])
+    }else{
+        estructura_ticket.push([`Numero de Cuenta: ${data?.numero_cuenta}`, `LT`])
+    }
     estructura_ticket.push([` `, `CT`])
-    estructura_ticket.push([`Direccion`, `CT`, `B`])
-    estructura_ticket.push([` `, `CT`])
-    estructura_ticket.push([`Calle: ${data?.calle} ${data?.numero}`, `LT`])
-    estructura_ticket.push([`Codigo Postal: ${data?.codigo_postal}`, `LT`])
-    estructura_ticket.push([`COLONIA: ${data?.colonia}`, `LT`])
-    estructura_ticket.push([`RFC: ${data?.rfc}`, `LT`])
+    if (data?.modelo_dueno == "toma") {
+        estructura_ticket.push([`Direccion`, `CT`, `B`])
+        estructura_ticket.push([` `, `CT`])
+        estructura_ticket.push([`Calle: ${data?.calle} ${data?.numero}`, `LT`])
+        estructura_ticket.push([`Codigo Postal: ${data?.codigo_postal}`, `LT`])
+        estructura_ticket.push([`COLONIA: ${data?.colonia}`, `LT`])
+        estructura_ticket.push([`RFC: ${data?.rfc}`, `LT`])
+    }
+
     estructura_ticket.push([`_________________________________________`, `LT`, `B`])
     estructura_ticket.push([` `, `LT`])
     estructura_ticket.push([`Concepto(s)`, `CT`, `B`])
@@ -70,7 +77,7 @@ export default function estructura_ticket(data) {
     estructura_ticket.push([["CONCEPTO", "ABONADO", "RESTANTE"], `LT`, `B`, "TABLE"])
     estructura_ticket.push([` `, `CT`])
     data.conceptos.map((concepto) => {
-        estructura_ticket.push([[removeAccents(concepto.nombre), `$ ${concepto.monto_abonado}`, `$ ${concepto.monto_pendiente.toFixed(2)}`], `LT`, ``, "TABLE"])
+        estructura_ticket.push([[removeAccents(concepto.nombre), `$ ${concepto.monto_abonado}`, `$ ${parseFloat(concepto.monto_pendiente).toFixed(2)}`], `LT`, ``, "TABLE"])
         estructura_ticket.push([` `, `CT`])
     })
     estructura_ticket.push([`_________________________________________`, `LT`, `B`])
@@ -79,7 +86,7 @@ export default function estructura_ticket(data) {
     estructura_ticket.push([` `, `LT`])
     estructura_ticket.push([formatLine(`SALDO ANTERIOR`, `$ ${data?.saldo_anterior}`), `LT`])
     estructura_ticket.push([`${format_metodo_pago(data?.metodo_pago)}`, `LT`, `B`])
-    if(data?.recibido != "0"){
+    if (data?.recibido != "0") {
         estructura_ticket.push([formatLine(`RECIBIDO`, `$ ${data?.recibido}`), `LT`])
     }
     estructura_ticket.push([formatLine(`PAGO NETO`, `$ ${data?.pago_neto}`), `LT`])

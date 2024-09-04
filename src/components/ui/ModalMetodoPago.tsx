@@ -42,7 +42,7 @@ export const ModalMetodoPago = ({
   set_open_modal,
   total,
   total_iva,
-  cargos, 
+  cargos,
   dueno,
   update_data,
   all_cargos,
@@ -174,10 +174,10 @@ export const ModalMetodoPago = ({
       })
         .then((response) => {
           set_open_modal(false);
-          
-          if(modelo_dueno == "usuario"){
+
+          if (modelo_dueno == "usuario") {
             update_data();
-          }else{
+          } else {
             update_data(dueno.codigo_toma)
           }
 
@@ -203,27 +203,49 @@ export const ModalMetodoPago = ({
             pago_folio: response.data.folio,
             fecha_pago: response.data.fecha_pago,
             copia: false,
-            usuario_nombre: dueno?.usuario?.nombre + " " + dueno?.usuario?.apellido_paterno + " " + dueno?.usuario?.apellido_materno,
-            numero_cuenta: dueno.codigo_toma,
-            calle: dueno?.calle,
-            numero: dueno?.numero_casa,
-            codigo_postal: dueno?.codigo_postal,
-            colonia: dueno?.colonia,
-            rfc: dueno?.usuario?.rfc,
+
+            /*
+               usuario_nombre: dueno?.usuario?.nombre + " " + dueno?.usuario?.apellido_paterno + " " + dueno?.usuario?.apellido_materno,
+                        numero_cuenta: dueno.codigo_toma,
+                        calle: dueno?.calle,
+                        numero: dueno?.numero_casa,
+                        codigo_postal: dueno?.codigo_postal,
+                        colonia: dueno?.colonia,
+                        rfc: dueno?.usuario?.rfc,
+            */
+
             conceptos: abonos,
-            //saldo_anterior: total_neto.toFixed(2).toString(),
             saldo_anterior: response.data.saldo_anterior,
             metodo_pago: metodo_pago_selected,
             recibido: recibi_temp.toString(),
             cambio: cambio.toFixed(2).toString(),
             pago_neto: abono.toString(),
-            //saldo_pendiente: (total_neto - abono).toFixed(2).toString()
+
             saldo_pendiente: response.data.saldo_actual,
-            saldo_a_favor: response.data.saldo_no_aplicado
+            saldo_a_favor: response.data.saldo_no_aplicado,
+
+            modelo_dueno: modelo_dueno
           };
 
-          console.log(ticket_data_original)
+          console.log(dueno)
+          let informacion_dueno = {
+            usuario_nombre:
+            (modelo_dueno == "toma" ? dueno?.usuario?.nombre : dueno?.nombre) + " " +
+            (modelo_dueno == "toma" ? dueno?.usuario?.apellido_paterno : dueno?.apellido_paterno) + " " +
+            (modelo_dueno == "toma" ? dueno?.usuario?.apellido_materno : dueno?.apellido_materno),
 
+            numero_cuenta: modelo_dueno == "toma" ? dueno.codigo_toma : dueno?.codigo_usuario,
+
+            calle: dueno?.calle || "",
+            numero: dueno?.numero_casa || "",
+            codigo_postal: dueno?.codigo_postal || "",
+            colonia: dueno?.colonia || "",
+            rfc: dueno?.usuario?.rfc || "",
+          }
+
+          ticket_data_original = {...ticket_data_original, ...informacion_dueno};
+
+          console.log(ticket_data_original);
           let ticket_original = estructura_ticket(ticket_data_original);
           let barcode = response.data.folio.toString();
 
@@ -416,92 +438,92 @@ export const ModalMetodoPago = ({
                     }
                     {
                       metodo_pago_selected == "tarjeta_credito" || metodo_pago_selected == "tarjeta_debito" ||
-                      metodo_pago_selected == "transferencia" || metodo_pago_selected == "cheque"  ?
-                      <>
-                        <div className='relative h-full'>
-                          <div className='w-full flex h-[5vh] gap-5'>
-                            <div>
-                              <p>Cantidad Abonar</p>
-                              <input ref={recibi} defaultValue={total_neto.toFixed(2)} onChange={() => { handleCambio() }} type="number" className='bg-muted p-4 w-[20vw] h-[6vh] outline-border' name="" id="" />
-                            </div>
-                            <div>
-                              <p>Folio</p>
-                              <input ref={folio_input} onChange={() => { handle_folio(); }} type="number" className='bg-muted p-4 w-[20vw] h-[6vh] outline-border' name="" id="" />
-                            </div>
-                            {errores.length > 0 &&
-                              <div className='h-[10vh] overflow-auto'>
-                                {errores.map((error, index) => (
-                                  <p className='text-red-500'>{error.mensaje}</p>
-                                ))}
+                        metodo_pago_selected == "transferencia" || metodo_pago_selected == "cheque" ?
+                        <>
+                          <div className='relative h-full'>
+                            <div className='w-full flex h-[5vh] gap-5'>
+                              <div>
+                                <p>Cantidad Abonar</p>
+                                <input ref={recibi} defaultValue={total_neto.toFixed(2)} onChange={() => { handleCambio() }} type="number" className='bg-muted p-4 w-[20vw] h-[6vh] outline-border' name="" id="" />
                               </div>
-                            }
-                          </div>
-                          <div className='mt-10 '>
-                            <div className="w-full relative overflow-auto">
-                              <div className='items-center overflow-auto h-[33vh]'>
-                                <Table>
-                                  <TableCaption></TableCaption>
-                                  <TableHeader>
-                                    <TableRow>
-                                      <TableHead>Concepto</TableHead>
-                                      <TableHead>Abonar</TableHead>
-                                      <TableHead>Monto + IVA</TableHead>
-                                      <TableHead>Prioridad</TableHead>
-                                    </TableRow>
-                                  </TableHeader>
-                                  <TableBody>
-                                    {
-                                      cargos.length > 0 ?
-                                        cargos.map((cargo, index) => (
-                                          <TableRow key={cargo.id}
-                                            className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
-                                            <TableCell className="font-medium">{cargo.nombre}</TableCell>
-                                            <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
-                                            <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                                            <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
-                                          </TableRow>
-                                        )) :
-                                        <>
-                                          {
-                                            all_cargos.length > 0 ?
-                                              all_cargos.map((cargo, index) => (
-                                                <TableRow key={cargo.id}
-                                                  className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
-                                                  <TableCell className="font-medium">{cargo.nombre}</TableCell>
-                                                  <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
-                                                  <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                                                  <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
+                              <div>
+                                <p>Folio</p>
+                                <input ref={folio_input} onChange={() => { handle_folio(); }} type="number" className='bg-muted p-4 w-[20vw] h-[6vh] outline-border' name="" id="" />
+                              </div>
+                              {errores.length > 0 &&
+                                <div className='h-[10vh] overflow-auto'>
+                                  {errores.map((error, index) => (
+                                    <p className='text-red-500'>{error.mensaje}</p>
+                                  ))}
+                                </div>
+                              }
+                            </div>
+                            <div className='mt-10 '>
+                              <div className="w-full relative overflow-auto">
+                                <div className='items-center overflow-auto h-[33vh]'>
+                                  <Table>
+                                    <TableCaption></TableCaption>
+                                    <TableHeader>
+                                      <TableRow>
+                                        <TableHead>Concepto</TableHead>
+                                        <TableHead>Abonar</TableHead>
+                                        <TableHead>Monto + IVA</TableHead>
+                                        <TableHead>Prioridad</TableHead>
+                                      </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                      {
+                                        cargos.length > 0 ?
+                                          cargos.map((cargo, index) => (
+                                            <TableRow key={cargo.id}
+                                              className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
+                                              <TableCell className="font-medium">{cargo.nombre}</TableCell>
+                                              <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
+                                              <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                                              <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
+                                            </TableRow>
+                                          )) :
+                                          <>
+                                            {
+                                              all_cargos.length > 0 ?
+                                                all_cargos.map((cargo, index) => (
+                                                  <TableRow key={cargo.id}
+                                                    className={`${errores.some(error => error.cargo_id === cargo.id) ? "bg-red-500 text-white hover:bg-red-600" : ""}`} >
+                                                    <TableCell className="font-medium">{cargo.nombre}</TableCell>
+                                                    <TableCell> {cargo.concepto.abonable == 1 ? <> <p>Abonable</p> </> : <><p>No Abonable</p></>}</TableCell>
+                                                    <TableCell className="">$ {(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                                                    <TableCell className="">{cargo.concepto.prioridad_abono}</TableCell>
+                                                  </TableRow>
+                                                ))
+                                                :
+                                                <TableRow>
+                                                  <TableCell className="font-medium">Abono a saldo a favor</TableCell>
+                                                  <TableCell>Abonable</TableCell>
+                                                  <TableCell className="">Sin Monto</TableCell>
+                                                  <TableCell className="">Sin prioridad</TableCell>
                                                 </TableRow>
-                                              ))
-                                              :
-                                              <TableRow>
-                                                <TableCell className="font-medium">Abono a saldo a favor</TableCell>
-                                                <TableCell>Abonable</TableCell>
-                                                <TableCell className="">Sin Monto</TableCell>
-                                                <TableCell className="">Sin prioridad</TableCell>
-                                              </TableRow>
-                                          }
-                                        </>
-                                    }
+                                            }
+                                          </>
+                                      }
 
-                                  </TableBody>
+                                    </TableBody>
 
-                                </Table>
+                                  </Table>
+                                </div>
+
                               </div>
-
-                            </div>
-                            <div className="w-full relative bg-muted h-[10vh] flex items-center">
-                              <div className='absolute right-0 px-5 py-3 text-[22px]'>
-                                <p className='mb-3'>Total: ${total_neto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                                <p>Cambio: ${cambio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                              <div className="w-full relative bg-muted h-[10vh] flex items-center">
+                                <div className='absolute right-0 px-5 py-3 text-[22px]'>
+                                  <p className='mb-3'>Total: ${total_neto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                                  <p>Cambio: ${cambio.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                                </div>
                               </div>
                             </div>
+
                           </div>
-
-                        </div>
-                      </>
-                      :
-                      <></>
+                        </>
+                        :
+                        <></>
                     }
                   </div>
                 </div>

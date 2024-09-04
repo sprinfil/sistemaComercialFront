@@ -85,6 +85,7 @@ const PuntoVentaForm = () => {
   */
 
   const get_usuario_cargos = async () => {
+    setSelectedCargos([]);
     const cargos_usuario_fetch = await axiosClient.get(`/usuarios/consultar/cargos/${dataCajaUser[0]?.id}`);
     set_cargos_usuario(cargos_usuario_fetch.data);
     console.log(cargos_usuario_fetch.data)

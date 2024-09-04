@@ -30,6 +30,7 @@ import estructura_ticket from '../../tickets/TicketPagoEnCaja';
 import imprimir from '../../tickets/FuncionesImpresora';
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import ModalSolicitudCancelacionPago from './ModalSolicitudCancelacionPago';
 
 const ModalHistorialPagos = ({ trigger }) => {
 
@@ -169,7 +170,12 @@ const ModalHistorialPagos = ({ trigger }) => {
                                                 <ReaderIcon className='w-[20px] h-[20px] text-blue-500' />
                                                 <p>Reimprimir Ticket</p>
                                             </div>
-                                            <Button variant={"destructive"} onClick={() => { solicitud_cancelacion(selected_pago) }}>Solicitud de Cancelación</Button>
+                                            <ModalSolicitudCancelacionPago trigger={
+                                                <Button variant={"destructive"} >Solicitud de Cancelación</Button>
+                                            }
+                                                cancelacion_pago={() => { solicitud_cancelacion(selected_pago) }}
+                                            />
+
                                         </div>
                                         <div className='grid grid-cols-2 gap-4 mt-5'>
                                             <div className='max-h-[60vh] overflow-auto'>
@@ -298,7 +304,7 @@ const ModalHistorialPagos = ({ trigger }) => {
                                                             <>
                                                                 <TableRow className="cursor-pointer" onClick={() => { set_selected_pago(pago) }}>
                                                                     <TableCell>{pago.folio}</TableCell>
-                                                           
+
                                                                     <TableCell>$ {pago.total_pagado}</TableCell>
                                                                 </TableRow>
                                                             </>
