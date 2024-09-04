@@ -134,7 +134,7 @@ const ModalCerrarOT = ({ isOpen, setIsOpen, method }) => {
 
       setLoadingTable(false);
 
-      setIsOpen(false);
+      setIsOpen(true);
 
       toast({
         title: "¡Éxito!",
@@ -158,6 +158,7 @@ const ModalCerrarOT = ({ isOpen, setIsOpen, method }) => {
 
   function onSubmit(values: z.infer<typeof cerrarOtSchema>) {
     console.log("valores ingresados", values);
+    setIsOpen(true);
 
     axiosClient.post(`/AnomaliasCatalogo/create`, values)
       .then((response) => {
@@ -182,64 +183,72 @@ const ModalCerrarOT = ({ isOpen, setIsOpen, method }) => {
     setIsOpen(false);
 
   }
+  const [abrirModal, setAbrirModal] = useState(false);
+ const abrirModalGG = () => {
+    //setAnomalia(anomalia);
+    //setAccion("ver");
+    setAbrirModal(true);
+  };
+
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogContent className="max-w-[65vh]">
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            <div className="flex space-x-2">
-              Cerrar orden de trabajo con accion de crear(prueba)
-            </div>
-          </AlertDialogTitle>
+    <AlertDialogContent className="max-w-[65vh]">
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          <div className="flex space-x-2">
+            Cerrar orden de trabajo con accion de crear(prueba)
+          </div>
+        </AlertDialogTitle>
 
-          <AlertDialogDescription>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-2">
-                <FormField
-                  control={form.control}
-                  name="obervaciones"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Observaciones</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Escribe tus observaciones" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Observaciones
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="material_utilizado"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Material utilizado</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Material utilizado" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Agrega una breve descripción.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex justify-end">
-                <Button type="submit" onClick={handleca}>Guardar</Button>
-
-                  </div>
-              </form>
-            </Form>
-       
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-       
-      </AlertDialogContent>
-    </AlertDialog>
+        <AlertDialogDescription>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-2">
+              <FormField
+                control={form.control}
+                name="obervaciones"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Observaciones</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Escribe tus observaciones" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Observaciones
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="material_utilizado"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Material utilizado</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Material utilizado" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Agrega una breve descripción.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-end">
+                <Button onClick={abrirModalGG}>Guardar</Button>
+              </div>
+            </form>
+          </Form>
+          <ModalRegistroOT
+            isOpen={abrirModal}
+            setIsOpen={setAbrirModal}
+            method={""} />
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+    </AlertDialogContent>
+  </AlertDialog>
   );
 }
 

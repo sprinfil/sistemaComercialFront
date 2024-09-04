@@ -35,7 +35,7 @@ import { Textarea } from "./textarea.tsx";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { cerrarOtSchema } from "../Forms/validaciones.ts";
+import { registroMedidotOtSchema } from "../Forms/validaciones.ts";
 
 const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
 
@@ -80,99 +80,49 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
     setConsultaIdToma(usuariosEncontrados[0]);
   }, [usuariosEncontrados]);
 
-  const getOrdenDeTrabajoMonitor = async () => {
-    setLoadingTable(true);
-    try {
-      const response = await axiosClient.get("OrdenTrabajo/NoAsignada");
-      setLoadingTable(false);
-      setDataOrdenDeTrabajoMonitor(response.data.data);
-      console.log(response);
-    } catch (error) {
-      setLoadingTable(false);
-      console.error("Failed to fetch orden:", error);
-    }
-  };
 
-  const cancelarOrdenDeTrabajo = async () => {
-    setLoadingTable(true);
-    try {
-      const response = await axiosClient.delete(
-        `OrdenTrabajo/log_delete/${detalleOrdenDeTrabajoTomaMonitor2?.id}`
-      );
-      console.log(response);
 
-      setLoadingTable(false);
-
-      setIsOpen(false);
-
-      toast({
-        title: "¡Éxito!",
-        description: "La orden de trabajo se ha cancelado correctamente",
-        variant: "success",
-      })
-      getOrdenDeTrabajoMonitor();
-
-    } catch (response) {
-      console.log(response);
-      toast({
-        variant: "destructive",
-        title: "Oh, no. Error",
-        description: "No se pudo cancelar.",
-        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-      })
-      setLoadingTable(false);
-
-    }
-  };
-
-  const cerrarUnaOT = async () => {
-    setLoadingTable(true);
-    try {
-      const response = await axiosClient.put(`OrdenTrabajo/cerrar`, values);
-      console.log(response);
-
-      setLoadingTable(false);
-
-      setIsOpen(false);
-
-      toast({
-        title: "¡Éxito!",
-        description: "La orden de trabajo se ha cancelado correctamente",
-        variant: "success",
-      })
-      getOrdenDeTrabajoMonitor();
-
-    } catch (response) {
-      console.log(response);
-      toast({
-        variant: "destructive",
-        title: "Oh, no. Error",
-        description: "No se pudo cancelar.",
-        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-      })
-      setLoadingTable(false);
-
-    }
-  };
-
-  function onSubmit(values: z.infer<typeof cerrarOtSchema>) {
+  function onSubmit(values: z.infer<typeof registroMedidotOtSchema>) {
     console.log("valores ingresados", values);
 
-    axiosClient.post(`/AnomaliasCatalogo/create`, values)
+    const values2 = {
+      orden_trabajo:
+      {
+        id: values.id
+        
+      }
+    }
+
+    axiosClient.put(`/OrdenTrabajo/cerrar`, values)
       .then((response) => {
         console.log(response);
+        
+      toast({
+        title: "¡Éxito!",
+        description: "La orden de trabajo se ha cancelado correctamente",
+        variant: "success",
+      })
+
       })
       .catch((response) => {
         console.log(response);
+        toast({
+          variant: "destructive",
+          title: "Oh, no. Error",
+          description: "No se pudo cancelar.",
+          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
       });
   }
 
-  const form = useForm<z.infer<typeof cerrarOtSchema>>({
-    resolver: zodResolver(cerrarOtSchema),
+  const form = useForm<z.infer<typeof registroMedidotOtSchema>>({
+    resolver: zodResolver(registroMedidotOtSchema),
     defaultValues: {
       id: 0,
-      obervaciones: "",
-      material_utilizado: "",
+      numero_serie: "",
+      marca: "",
+      diametro: "",
+      tipo: ""
     },
   });
 
@@ -184,28 +134,27 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogContent className="max-w-[65vh]">
+      <AlertDialogContent className="max-w-[120vh]">
         <AlertDialogHeader>
           <AlertDialogTitle>
             <div className="flex space-x-2">
-              Cerrar orden de trabajo con accion de crear(prueba)
+              Registro de medidor 
             </div>
           </AlertDialogTitle>
-
           <AlertDialogDescription>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-2">
                 <FormField
                   control={form.control}
-                  name="obervaciones"
+                  name="numero_serie"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Observaciones</FormLabel>
+                      <FormLabel>Numero de serie</FormLabel>
                       <FormControl>
-                        <Input placeholder="Escribe tus observaciones" {...field} />
+                        <Input placeholder="Escribe el numero de serie" {...field} />
                       </FormControl>
                       <FormDescription>
-                        Observaciones
+                        Numero de serie
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -213,20 +162,53 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
                 />
                 <FormField
                   control={form.control}
-                  name="material_utilizado"
+                  name="marca"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Material utilizado</FormLabel>
+                      <FormLabel>Marca</FormLabel>
                       <FormControl>
-                        <Input placeholder="Material utilizado" {...field} />
+                        <Input placeholder="Escribe la marca del medidor" {...field} />
                       </FormControl>
                       <FormDescription>
-                        Agrega una breve descripción.
+                       Escribe la marca del medidor 
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="diametro"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Diametro</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Escribe el diametro " {...field} />
+                      </FormControl>
+                      <FormDescription>
+                       Escribe el diametro
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                  <FormField
+                  control={form.control}
+                  name="tipo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tipo</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Escribe el tipo " {...field} />
+                      </FormControl>
+                      <FormDescription>
+                       Escribe el tipo
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
                 <div className="flex justify-end">
                 <Button type="submit" onClick={handleca}>Guardar</Button>
 

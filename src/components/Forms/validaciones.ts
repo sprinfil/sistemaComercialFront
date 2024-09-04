@@ -123,3 +123,11 @@ export const cerrarOtSchema = z.object({
   obervaciones: z.string().min(1, "Las obervaciones son requeridas."),
   material_utilizado: z.string(),
 })
+
+export const registroMedidotOtSchema = z.object({
+  id: z.number(),
+  numero_serie: z.string().min(1, "El numero de serie es requerido."),
+  marca: z.string(),
+  diametro: z.string(),
+  tipo: z.string(),
+})
