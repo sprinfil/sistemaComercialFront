@@ -4,8 +4,8 @@ import {
   ColumnFiltersState,
   SortingState,
   flexRender,
-  getCoreRowModel,
   useReactTable,
+  getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
   getPaginationRowModel,
@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  sorter: string;
+  sorter?: string;
   onRowClick?: (row: TData) => void;
 }
 
@@ -38,22 +38,20 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
+  const [selectedRow, setSelectedRow] = React.useState<string | null>(null);
 
   const table = useReactTable({
     data,
     columns,
-    sorter,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
       columnFilters,
     },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const handleRowClick = (rowId: string, rowData: TData) => {
@@ -81,24 +79,22 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
 
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -145,4 +141,3 @@ export function DataTable<TData, TValue>({
     </div>
   );
 }
-
