@@ -385,7 +385,7 @@ const MedidorForm = () => {
             tipo: medidor.tipo,
             estatus: medidor.estatus === "activo"  // 
         });
-    },[])
+    },[medidor, usuariosEncontrados])
     
     
 
