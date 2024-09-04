@@ -32,14 +32,15 @@ import { Button } from './button.tsx';
 import AsignarOrdenDeTrabajoTable from '../Tables/Components/AsignarOrdenDeTrabajoTable.tsx';
 import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt.tsx';
 import AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable from '../Tables/Components/AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable.tsx';
+
 const ModalAsignarOperadorTomaOT = ({ isOpen, setIsOpen, method, tipoOperacion }) => {
     
     const { toast } = useToast()
 
 console.log(tipoOperacion);
 
-    const {usuariosEncontrados, setUsuariosEncontrados, idSeleccionadoGenerarOrdenDETrabajoToma, arrwegl} = ZustandGeneralUsuario();
-    const {arregloAsignarIndividualTomaAOperador} = ZustandFiltrosOrdenTrabajo();
+    const {usuariosEncontrados, setUsuariosEncontrados, idSeleccionadoGenerarOrdenDETrabajoToma} = ZustandGeneralUsuario();
+    const {arregloAsignarIndividualTomaAOperador, setLoadingTable, loadingTable, setDataOrdenesDeTrabajoHistorialToma, loadingTableOrdenesDeTrabajoHistorial, setLoadingTableOrdenesDeTrabajoHistorial} = ZustandFiltrosOrdenTrabajo();
    // console.log(JSON.stringify(usuariosEncontrados));
    //console.log(idSeleccionadoGenerarOrdenDETrabajoToma);
 
@@ -92,7 +93,21 @@ console.log(tipoOperacion);
           id_empleado_encargado: 0
         },
       })
-    
+
+      const getOrdenDeTrabajoDelUsuario = async () => {
+        setLoadingTableOrdenesDeTrabajoHistorial(true);
+        try {
+          const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0]?.tomas[0]?.codigo_toma}`);
+          setDataOrdenesDeTrabajoHistorialToma(response.data.data);
+          setLoadingTableOrdenesDeTrabajoHistorial(false);
+          console.log(response.data.data);
+        } catch (error) {
+          setLoadingTableOrdenesDeTrabajoHistorial(false);
+          console.error("Failed to fetch Orden de trabajo:", error);
+        }
+      };
+
+     
       function onSubmit(values: z.infer<typeof OrdenDeTrabajoAsignarIndividualSchema>)
       { 
         
@@ -118,6 +133,9 @@ console.log(tipoOperacion);
             variant: "success",
             
         })
+          setIsOpen(false);
+          getOrdenDeTrabajoDelUsuario();
+         
         }
         catch(response){
           console.log(response);

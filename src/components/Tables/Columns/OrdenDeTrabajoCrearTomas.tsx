@@ -93,8 +93,51 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Codigo de toma
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        Toma
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "calle",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Calle
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "numero_casa",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        #
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "colonia",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Colonia
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "tipo_toma.nombre",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Tipo
       </Button>
     ),
   },

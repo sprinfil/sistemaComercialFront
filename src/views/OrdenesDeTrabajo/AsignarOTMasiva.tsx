@@ -51,11 +51,11 @@ export const AsignarOTMasiva = () => {
 
   const { toast } = useToast()
 
-  const [selectedAction, setSelectedAction] = useState('');
-  const { usuariosEncontrados, idSeleccionadoTomaAsignacionOT, controlTablaOperadorOTIndividual } = ZustandGeneralUsuario();
+  const { usuariosEncontrados, idSeleccionadoTomaAsignacionOT, controlTablaOperadorOTIndividual,idSeleccionadoAsignarOrdenDeTrabajoToma} = ZustandGeneralUsuario();
   const [operadorSeleccionado, setOperadorSeleccionado] = useState("");
   const { isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
-    setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador, arregloAsignarIndividualTomaAOperador} = ZustandFiltrosOrdenTrabajo();
+    setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador,
+     arregloAsignarIndividualTomaAOperador, setLoadingTable, loadingTable, selectedAction, setSelectedAction, setDataAsignarOtIndividual} = ZustandFiltrosOrdenTrabajo();
 
 
 
@@ -110,11 +110,28 @@ export const AsignarOTMasiva = () => {
   //#endregion
 
 
+  const getOtIndividuales = async () => {
+    setLoadingTable(true);
+    try {
+      const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0]?.tomas[0]?.codigo_toma}`);
+      setLoadingTable(false);
+      //setAnomalias(response.data.data);
+      console.log(response.data.data);
+      setDataAsignarOtIndividual(response.data.data)
+    } catch (error) {
+      //setLoadingTable(false);
+      console.error("Failed to fetch anomalias:", error);
+      setLoadingTable(false);
+
+    }
+  };
+
+
   //METODO PARA ASIGNAR INDIVIDUALMENTE LA OT
   function onSubmitIndividual(values: z.infer<typeof OrdenDeTrabajoAsignarIndividualSchema>) {
 
     const values2 = {
-      id: idSeleccionadoTomaAsignacionOT || arregloAsignarIndividualTomaAOperador,
+      id: idSeleccionadoAsignarOrdenDeTrabajoToma,
       id_empleado_encargado: values.id_empleado_encargado
     }
 
@@ -129,6 +146,7 @@ export const AsignarOTMasiva = () => {
       const response = axiosClient.put('/OrdenTrabajo/update', ordenes_trabajo)
       console.log(response);
       successToastCreado();
+      getOtIndividuales();
 
     }
     catch (response) {
@@ -160,6 +178,7 @@ export const AsignarOTMasiva = () => {
     const response = axiosClient.put('OrdenTrabajo/asigna/masiva', ordenes_trabajo)
     console.log(response);
     successToastCreado();
+    getOrdenesDeTrabajo();
 
   }
   catch (response) {
@@ -178,11 +197,12 @@ const getOrdenesDeTrabajo = async () => {
     no_asignada: isNoAsignadaChecked,
   }
   console.log("VALORES ENVIADOS", values);
+  setLoadingTable(true);
   try {
     const response = await axiosClient.post("OrdenTrabajo/filtros", values);
     console.log(response);
 
-
+    setLoadingTable(false);
     if (Array.isArray(response.data.ordenes_trabajo)) {
       const tomas = response.data.ordenes_trabajo.map((item: any) => item);
 
@@ -195,6 +215,7 @@ const getOrdenesDeTrabajo = async () => {
 
   } catch (error) {
     console.error("Failed to fetch anomalias:", error);
+    setLoadingTable(false);
   }
 };
 

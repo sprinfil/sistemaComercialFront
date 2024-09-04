@@ -10,45 +10,50 @@ import { DataTableAsignarOTIndividual } from '../../ui/DataTableAsignarOTIndivid
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
 import { BuscarUsuario } from '../Columns/ContratoConsultaUsuarioColumns.tsx';
 import ModalInformacionOtToma from '../../ui/ModalInformaciónOtToma.tsx';
-
+import { ZustandFiltrosOrdenTrabajo } from '../../../contexts/ZustandFiltrosOt.tsx';
 export default function AsignarOrdenDeTrabajoTable() {
 
-  const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma, setAbrirModalInformativo, abrirModalInformativo} = ZustandGeneralUsuario();
+  const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma, 
+    setAbrirModalInformativo, abrirModalInformativo} = ZustandGeneralUsuario();
 
+  const {setSelectedAction, selectedAction, dataAsignarOtIndividual, setDataAsignarOtIndividual, setLoadingTable, loadingTable} = ZustandFiltrosOrdenTrabajo();
 
 
   //console.log("esto llego para asignar individual",usuariosEncontrados[0]?.tomas[0].codigo_toma);
 
     useEffect(() => {
       getAnomalias();
-    }, []);
+    }, [selectedAction]);
 
     const [data,setData] = useState({});
   
     const getAnomalias = async () => {
-      //setLoadingTable(true);
+      setLoadingTable(true);
       try {
         const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0]?.tomas[0]?.codigo_toma}`);
-        //setLoadingTable(false);
+        setLoadingTable(false);
         //setAnomalias(response.data.data);
         console.log(response.data.data);
-        setData(response.data.data)
+        setDataAsignarOtIndividual(response.data.data)
       } catch (error) {
         //setLoadingTable(false);
         console.error("Failed to fetch anomalias:", error);
       }
     };
 
-console.log(data);
+console.log(dataAsignarOtIndividual);
+
+if (loadingTable) {
+  return <div><Loader /></div>;
+}
 
 
   const handleRowClick = (usuarioToma: BuscarUsuario) =>
   {
-
     //este es el id de la toma seleccionada
     //setAnomalia(anomalia);
     //setAccion("ver");
-    setIdSeleccionadoAsignarOrdenDeTrabajoToma(usuarioToma?.tomas[0]?.id)
+    setIdSeleccionadoAsignarOrdenDeTrabajoToma(usuarioToma?.id)
   };
 
   
@@ -57,7 +62,7 @@ console.log(data);
 
     <div>
       
-      <DataTableAsignarOTIndividual columns={columns} data={data} sorter='nombre' onRowClick={handleRowClick}/>
+      <DataTableAsignarOTIndividual columns={columns} data={dataAsignarOtIndividual} sorter='nombre' onRowClick={handleRowClick}/>
       
       <ModalInformacionOtToma
       isOpen={abrirModalInformativo}

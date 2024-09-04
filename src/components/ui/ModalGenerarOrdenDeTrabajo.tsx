@@ -23,7 +23,7 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }
         loadingTable,
         setLoadingTable
       } = zustandOrdenTrabajoStore();
-    const { arregloCrearOrdenesDeTrabajo,setDataOrdenesDeTrabajoHistorialToma } = ZustandFiltrosOrdenTrabajo();
+    const { arregloCrearOrdenesDeTrabajo,setDataOrdenesDeTrabajoHistorialToma, setLoadingTableOrdenesDeTrabajoHistorial} = ZustandFiltrosOrdenTrabajo();
 
     console.log(tipoOperacion);
 
@@ -72,14 +72,14 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }
 
     //volver a tener las ordenes de trabajo bhistorial del usuario
     const getOrdenDeTrabajoDelUsuario = async () => {
-        setLoadingTable(true);
+        setLoadingTableOrdenesDeTrabajoHistorial(true);
         try {
           const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0]?.tomas[0]?.codigo_toma}`);
           setDataOrdenesDeTrabajoHistorialToma(response.data.data);
-          setLoadingTable(false);
+          setLoadingTableOrdenesDeTrabajoHistorial(false);
           console.log(response.data.data);
         } catch (error) {
-          setLoadingTable(false);
+            setLoadingTableOrdenesDeTrabajoHistorial(false);
           console.error("Failed to fetch Orden de trabajo:", error);
         }
       };

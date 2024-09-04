@@ -17,7 +17,7 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
   const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma,} = ZustandGeneralUsuario();
   
   
-  const {informacionRecibidaPorFiltros, asignadasEnToma} = ZustandFiltrosOrdenTrabajo();
+  const {informacionRecibidaPorFiltros, asignadasEnToma, loadingTable, setLoadingTable} = ZustandFiltrosOrdenTrabajo();
       console.log("esto llego para asignar individual",usuariosEncontrados[0].tomas[0].codigo_toma);
       console.log("esto llego para asignar individual",usuariosEncontrados[0]);
   const [abrirModalInformativo, setAbrirModalInformativo] = useState(false);
@@ -29,10 +29,12 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
   }, []);
 
   const getTomasConOrdenDeTrabajo = async () => {
+    setLoadingTable(true);
     try {
       const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0].tomas[0].codigo_toma}`);
       console.log(response.data.data);
       setData(response.data.data);
+      setLoadingTable(false);
     } catch (error) {
       //setLoadingTable(false);
       console.error("Failed to fetch anomalias:", error);
@@ -53,7 +55,10 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
   };
 
   console.log(informacionRecibidaPorFiltros);
-  
+  if (loadingTable) {
+    return <div><Loader /></div>;
+  }
+
 
 
   return (

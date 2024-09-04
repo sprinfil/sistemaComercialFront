@@ -34,6 +34,12 @@ interface FiltrosOrdenTrabajo {
   setvalorParaSaberSiUsaLaTablaDeFiltros:(valorParaSaberSiUsaLaTablaDeFiltros:boolean) => void;
   detalleOrdenDeTrabajoTomaMonitor2:MonitorOrden2[]
   setDetalleOrdenDeTrabajoTomaMonitor2:(detalleOrdenDeTrabajoTomaMonitor2:MonitorOrden2[]) => void;
+  selectedAction: string;
+  setSelectedAction:(selectedAction:string) => void;
+  dataAsignarOtIndividual:[]
+  setDataAsignarOtIndividual:(dataAsignarOtIndividual:[]) => void;
+  loadingTableOrdenesDeTrabajoHistorial: boolean;
+  setLoadingTableOrdenesDeTrabajoHistorial: (loadingTable:boolean) => void;
 }
 
 export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => ({
@@ -67,5 +73,11 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setvalorParaSaberSiUsaLaTablaDeFiltros: (valorParaSaberSiUsaLaTablaDeFiltros) => set({valorParaSaberSiUsaLaTablaDeFiltros}),
   detalleOrdenDeTrabajoTomaMonitor2: [],
   setDetalleOrdenDeTrabajoTomaMonitor2: (detalleOrdenDeTrabajoTomaMonitor2) => set({detalleOrdenDeTrabajoTomaMonitor2}),
+  selectedAction: '',
+  setSelectedAction: (selectedAction) => set({selectedAction}),
+  dataAsignarOtIndividual: [],
+  setDataAsignarOtIndividual: (dataAsignarOtIndividual) => set({dataAsignarOtIndividual}),
+  loadingTableOrdenesDeTrabajoHistorial: false,
+  setLoadingTableOrdenesDeTrabajoHistorial: (loadingTableOrdenesDeTrabajoHistorial) => set({loadingTableOrdenesDeTrabajoHistorial}),
 }));
 

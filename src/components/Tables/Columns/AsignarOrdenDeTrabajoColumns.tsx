@@ -91,7 +91,7 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "id_toma",
+    accessorKey: "toma.codigo_toma",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -127,13 +127,25 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
     ),
   },
   {
-    accessorKey: "fecha_vigencia",
+    accessorKey: "created_at",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Fecha de vigencia
+        Creada
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "fecha_finalizada",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Concluida
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),

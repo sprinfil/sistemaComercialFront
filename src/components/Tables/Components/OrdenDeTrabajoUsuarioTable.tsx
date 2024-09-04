@@ -12,14 +12,12 @@ import { ZustandFiltrosOrdenTrabajo } from '../../../contexts/ZustandFiltrosOt.t
 export default function OrdenDeTrabajoUsuarioTable() {
 
   const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma} = ZustandGeneralUsuario();
-  const {dataOrdenesDeTrabajoHistorialToma, setDataOrdenesDeTrabajoHistorialToma} = ZustandFiltrosOrdenTrabajo();
+  const {dataOrdenesDeTrabajoHistorialToma, setDataOrdenesDeTrabajoHistorialToma, setLoadingTable, loadingTable, setLoadingTableOrdenesDeTrabajoHistorial, loadingTableOrdenesDeTrabajoHistorial} = ZustandFiltrosOrdenTrabajo();
       console.log("esto llego para asignar individual",usuariosEncontrados[0]?.tomas[0]?.codigo_toma);
       console.log("esto llego para asignar individual",usuariosEncontrados[0]);
   const {
     ordenDeTrabajos,
     setOrdenDeTrabajos,
-    loadingTable,
-    setLoadingTable,
     setAccion,
     setOrdenDeTrabajo
   } = zustandOrdenTrabajoStore();
@@ -31,19 +29,19 @@ export default function OrdenDeTrabajoUsuarioTable() {
   }, []);
 
   const getOrdenDeTrabajoDelUsuario = async () => {
-    setLoadingTable(true);
+    setLoadingTableOrdenesDeTrabajoHistorial(true);
     try {
       const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0]?.tomas[0]?.codigo_toma}`);
       setDataOrdenesDeTrabajoHistorialToma(response.data.data);
-      setLoadingTable(false);
+      setLoadingTableOrdenesDeTrabajoHistorial(false);
       console.log(response.data.data);
     } catch (error) {
-      setLoadingTable(false);
+      setLoadingTableOrdenesDeTrabajoHistorial(false);
       console.error("Failed to fetch Orden de trabajo:", error);
     }
   };
 
-  if (loadingTable) {
+  if (loadingTableOrdenesDeTrabajoHistorial) {
     return <div><Loader /></div>;
   }
 console.log(data);
@@ -56,13 +54,16 @@ const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
     console.log(tipoDeToma);
 }
 
-  if (loadingTable) {
-    return <div><Loader /></div>;
-  }
+
 
   return (
     <div>
-      <EscogerOrdenDeTrabajoDataTable columns={columns} data={dataOrdenesDeTrabajoHistorialToma} sorter='nombre' onRowClick={HandleClickRow}/>
+      {
+        loadingTableOrdenesDeTrabajoHistorial ? <Loader/>
+        :
+        <EscogerOrdenDeTrabajoDataTable columns={columns} data={dataOrdenesDeTrabajoHistorialToma} sorter='orden_trabajo_catalogo.descripcion' onRowClick={HandleClickRow}/>
+
+      }
     </div>
   );
 }

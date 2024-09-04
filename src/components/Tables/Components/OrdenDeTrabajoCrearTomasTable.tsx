@@ -11,7 +11,7 @@ export default function OrdenDeTrabajoCrearTomasTable() {
 
 
 
-  const {informacionRecibidaPorFiltros} = ZustandFiltrosOrdenTrabajo();
+  const {informacionRecibidaPorFiltros, loadingTable} = ZustandFiltrosOrdenTrabajo();
 
   //metodo para las filas
 
@@ -29,7 +29,12 @@ export default function OrdenDeTrabajoCrearTomasTable() {
   return (
 
     <div>
-      <DataTable columns={columns} data={informacionRecibidaPorFiltros} sorter='nombre' onRowClick={handleRowClick}/>
+      {
+        loadingTable ? <Loader/>
+        :
+        <DataTable columns={columns} data={informacionRecibidaPorFiltros} sorter='nombre' onRowClick={handleRowClick}/>
+
+      }
     </div>
   );
 }

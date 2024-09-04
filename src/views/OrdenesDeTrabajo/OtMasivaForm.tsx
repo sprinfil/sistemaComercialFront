@@ -13,7 +13,7 @@ export const OtMasivaForm = () => {
 
 
   const { isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
-    setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador } = ZustandFiltrosOrdenTrabajo();
+    setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador, setLoadingTable, loadingTable} = ZustandFiltrosOrdenTrabajo();
 
 
     const [abrirModal, setAbrirModal] = useState(false);
@@ -34,6 +34,7 @@ export const OtMasivaForm = () => {
 
 //METODO DE FILTRACION PARA CONSEGUIR LAS ORDENES DE TRABAJO Y PODER ASIGNARLAS
     const getOrdenesDeTrabajo = async () => {
+      setLoadingTable(true);
       const values = {
         asignada: isAsignadaChecked,
         no_asignada: isNoAsignadaChecked,
@@ -48,6 +49,7 @@ export const OtMasivaForm = () => {
           const tomas = response.data.ordenes_trabajo.map((item: any) => item.toma);
 
           console.log("Tomas extraídas", tomas);
+          setLoadingTable(false);
 
           setInformacionRecibidaPorFiltros(tomas);
         } else {
@@ -55,6 +57,7 @@ export const OtMasivaForm = () => {
         }
 
       } catch (error) {
+        setLoadingTable(false);
         console.error("Failed to fetch anomalias:", error);
       }
     };

@@ -82,7 +82,7 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "codigo_toma",
+    accessorKey: "toma.codigo_toma",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -115,13 +115,24 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
     ),
   },
   {
-    accessorKey: "fecha_vigencia",
+    accessorKey: "created_at",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Fecha de vigencia
+        Creada
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "fecha_finalizada",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Concluida
       </Button>
     ),
   },
