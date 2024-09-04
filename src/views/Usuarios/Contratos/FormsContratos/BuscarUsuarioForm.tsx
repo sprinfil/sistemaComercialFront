@@ -295,7 +295,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     return (
         <ContextProvider>
             <div>
-                <div className='mt-5 ml-[5vh] w-[100vh] rounded-md border border-border  shadow-inherit p-6 h-[15vh] '>
+                <div className='mt-5 ml-[5vh] w-[100vh] rounded-md border border-border  shadow-inherit p-6 h-[20vh] '>
                     <Form {...form}>
                         <div className="justify-center items-center">
                          
