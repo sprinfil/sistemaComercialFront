@@ -65,27 +65,13 @@ export const columns2: ColumnDef<MonitorOrden2>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Codigo
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Toma
         </Button>
       )
     },
   },
  
-  {
-    accessorKey: "estado",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Estado
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-  },
+ 
   {
     accessorKey: "orden_trabajo_catalogo.descripcion",
     header: ({ column }) => {
@@ -95,7 +81,19 @@ export const columns2: ColumnDef<MonitorOrden2>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Tipo
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "estado",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Estado
         </Button>
       )
     },
@@ -109,7 +107,6 @@ export const columns2: ColumnDef<MonitorOrden2>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Creación
-          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
@@ -127,8 +124,7 @@ export const columns2: ColumnDef<MonitorOrden2>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Fecha finalizada
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Concluida
         </Button>
       )
     },

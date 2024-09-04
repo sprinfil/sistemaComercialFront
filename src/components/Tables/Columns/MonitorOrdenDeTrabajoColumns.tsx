@@ -60,12 +60,64 @@ export const columns: ColumnDef<MonitorOrden>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Nombre
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Toma
         </Button>
       )
     },
   },
+  {
+    accessorKey: "orden_trabajo_catalogo.nombre",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Tipo
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "estado",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Estado
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "created_at",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Creada
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "fecha_finalizada",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Concluida
+        </Button>
+      )
+    },
+  },
+
   {
     id: "actions",
     cell: ({ row }) => {
