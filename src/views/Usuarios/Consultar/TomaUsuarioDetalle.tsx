@@ -34,7 +34,7 @@ export const TomaUsuarioDetalle = () => {
   }, [usuariosEncontrados, setUsuariosRecuperado, tomaUsuariosEncontrados]);
 
   //console.log("ESTE ES EL USUARIO RECUPERADO " + JSON.stringify(usuariosRecuperado));
-
+  console.log(usuariosEncontrados[0])
   const options = [
     {
       titulo: "Principal",

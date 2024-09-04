@@ -31,6 +31,13 @@ import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACT
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import { Switch } from "../ui/switch.tsx";
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
+import { useBreadcrumbStore } from "../../contexts/ZustandGeneralUsuario.tsx";
+import {  Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,} from "@radix-ui/react-select";
 
 
 
@@ -44,17 +51,36 @@ const MedidorForm = () => {
     const [bloquear, setBloquear] = useState(false);
     const [abrirModal, setAbrirModal] = useState(false);
 
+    const {toma, setToma,tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, setTomaUsuariosEncontrados, tomaUsuariosEncontrados}= ZustandGeneralUsuario()
+    const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
+    const [activeTab, setActiveTab] = useState("Detalles");
+
     const getCurrentDate = () => new Date().toISOString().split("T")[0];
+
+    useEffect(() => {
+        //console.log("ESTE USUARIO LLEGA A LA TOMA DETALLE:", tomaUsuariosEncontrados[0]?.usuario);
+    
+        if (usuariosEncontrados.length > 0) {
+          // Establece el estado global solo si hay usuarios encontrados
+          setUsuariosRecuperado(usuariosEncontrados); // Debe ser un arreglo de usuarios
+          setMostrarSiguiente(true);
+        }
+        else
+        {
+          console.log("no hay longitud");
+        }
+      }, [usuariosEncontrados, setUsuariosRecuperado, tomaUsuariosEncontrados]);
 
     const form = useForm<z.infer<typeof medidorSchema>>({
         resolver: zodResolver(medidorSchema),
         defaultValues: {
             id: medidor != null ? medidor.id : 0,
-            numeroSerie: medidor != null ? medidor.numeroSerie : "",
+            id_toma: usuariosEncontrados[0].tomas[0].id != null ? usuariosEncontrados[0].tomas[0].id : 0,
+            numero_serie: medidor != null ? medidor.numero_serie : "",
             marca: medidor != null ? medidor.marca : "",
             diametro: medidor != null ? medidor.diametro : "",
             tipo: medidor != null ? medidor.tipo : "",
-            estado: false,
+            estatus: false,
         },
     })
 
@@ -138,35 +164,38 @@ const MedidorForm = () => {
 
     function onSubmit(values: z.infer<typeof medidorSchema>) {
         console.log("submit");
-        const estadoConvertido = values.estado ? 'activo' : 'inactivo';
+        const estadoConvertido = values.estatus ? 'activo' : 'inactivo';
 
             const datosAEnviar = {
                 ...values,
-                estado: estadoConvertido,
+                estatus: estadoConvertido,
             };
 
 
         setLoading(true);
         if (accion == "crear") {
-            axiosClient.post(`/tarifa/create`, datosAEnviar)
+            axiosClient.post(`/medidor/nuevo`, datosAEnviar)
                 .then((response) => {
+                    console.log(response)
                     const data = response.data;
                     setLoading(false);
                     setMedidor({
                         id: 0,
-                        numeroSerie:"",
+                        id_toma:0,
+                        numero_serie:"",
                         marca: "",
                         diametro: "",
                         tipo: "",
-                        estado: false,
+                        estatus: false,
                     });
                     form.reset({
                         id: 0,
-                        numeroSerie:"",
+                        id_toma:0,
+                        numero_serie:"",
                         marca: "",
                         diametro: "",
                         tipo: "",
-                        estado: false,
+                        estatus: false,
                     });
                     getMedidores();
                     successToastCreado();
@@ -184,7 +213,7 @@ const MedidorForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/tarifa/update/${medidor.id}`, datosAEnviar)
+            axiosClient.put(`/medidores/${datosAEnviar.id}`, datosAEnviar)
                 .then((response) => {
                     const data = response.data;
                     if (response.data.confirmUpdate) {
@@ -232,9 +261,9 @@ const MedidorForm = () => {
     const getMedidores = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/tarifa");
+            const response = await axiosClient.get(`/medidores/toma/${usuariosEncontrados[0].tomas[0].id}`);
             setLoadingTable(false);
-            setMedidores(response.data.data);
+            setMedidores(response.data);
         } catch (error) {
             setLoading(false);
             errorToast();
@@ -245,7 +274,7 @@ const MedidorForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.delete(`/tarifa/log_delete/${medidor.id}`);
+            await axiosClient.delete(`${medidor.id}`);
             getMedidores();
             setAccion("eliminar");
             successToastEliminado();
@@ -261,11 +290,12 @@ const MedidorForm = () => {
             setBloquear(false);
             form.reset({
                 id: 0,
-                numeroSerie: "",
+                id_toma:0,
+                numero_serie: "",
                 marca: "",
                 diametro: "",
                 tipo: "",
-                estado: false,
+                estatus: false,
             });
             setMedidor({});
             setAbrirInput(false);
@@ -274,11 +304,12 @@ const MedidorForm = () => {
             setBloquear(false);
             form.reset({
                 id: 0,
-                numeroSerie: "",
+                id_toma:0,
+                numero_serie: "",
                 marca: "",
                 diametro: "",
                 tipo: "",
-                estado: false,
+                estatus: false,
             });
             setMedidor({});
             setAbrirInput(false);
@@ -291,7 +322,8 @@ const MedidorForm = () => {
             setErrors({});
             form.reset({
                 id: 0,
-                numeroSerie: "",
+                id_toma:0,
+                numero_serie: "",
                 marca: "",
                 diametro: "",
                 tipo: "",
@@ -299,11 +331,12 @@ const MedidorForm = () => {
             });
             setMedidor({
                 id: 0,
-                numeroSerie: "",
+                id_toma:0,
+                numero_serie: "",
                 marca: "",
                 diametro: "",
                 tipo: "",
-                estado: false,
+                estatus: false,
             });
         }
         if (accion === "ver") {
@@ -313,11 +346,12 @@ const MedidorForm = () => {
             setBloquear(true);
             form.reset({
                 id: medidor.id,
-                numeroSerie: medidor.numeroSerie,
+                id_toma: usuariosEncontrados[0].tomas[0].id,
+                numero_serie: medidor.numero_serie,
                 marca: medidor.marca,
                 diametro: medidor.diametro,
                 tipo: medidor.tipo,
-                estado: medidor.estado === "activo" // Convertir "activo" a true y "inactivo" a false
+                estatus: medidor.estatus === "activo" // Convertir "activo" a true y "inactivo" a false
             });
         }
         if (accion === "editar") {
@@ -344,11 +378,12 @@ const MedidorForm = () => {
     useEffect(() => {
         form.reset({
             id: medidor.id,
-            numeroSerie: medidor.numeroSerie,
+            id_toma: usuariosEncontrados[0].tomas[0].id,
+            numero_serie: medidor.numero_serie,
             marca: medidor.marca,
             diametro: medidor.diametro,
             tipo: medidor.tipo,
-            estado: medidor.estado === "activo"  // 
+            estatus: medidor.estatus === "activo"  // 
         });
     },[])
     
@@ -360,9 +395,9 @@ const MedidorForm = () => {
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
                         {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo medidor</p>}
-                        {medidor.numeroSerie != "" && <p className="text-muted-foreground text-[20px]">{medidor.numeroSerie}</p>}
+                        {medidor.numero_serie != "" && <p className="text-muted-foreground text-[20px]">{medidor.numeroSerie}</p>}
                     </div>
-                    {(medidor.numeroSerie != null && medidor.numeroSerie != "") &&
+                    {(medidor.numero_serie != null && medidor.numero_serie != "") &&
                         <>
                             <Modal
                                 method={onDelete}
@@ -388,7 +423,7 @@ const MedidorForm = () => {
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <FormField
                             control={form.control}
-                            name="numeroSerie"
+                            name="numero_serie"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Número de serie</FormLabel>
@@ -425,7 +460,7 @@ const MedidorForm = () => {
                                 <FormItem>
                                     <FormLabel>Diámetro</FormLabel>
                                     <FormControl>
-                                        <Input readOnly={!abrirInput} placeholder="Escribe diámetro del medidor" {...field} />
+                                        <Input readOnly={!abrirInput} placeholder="Escribe dimetro del medidor" {...field} />
                                     </FormControl>
                                     <FormDescription>
                                         El diametro del medidor.
@@ -452,7 +487,7 @@ const MedidorForm = () => {
                         />
                     <FormField
                             control={form.control}
-                            name="estado"
+                            name="estatus"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="items-center">Estatus</FormLabel>

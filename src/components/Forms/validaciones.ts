@@ -129,10 +129,11 @@ export const cajaOperadorCatalogoSchema = z.object({
 //VALIDACIONES Medidor
 export const medidorSchema = z.object({
   id: z.number(),
-  numeroSerie: z.string().min(1, "El Nombre es requerido"),
+  id_toma: z.number(),
+  numero_serie: z.string().min(1, "El Nombre es requerido"),
   marca: z.string().min(1, "El Nombre es requerido"),
   diametro: z.string().min(1, "El Nombre es requerido"),
   tipo: z.string().min(1, "El Nombre es requerido"),
-  estado: z.boolean()
+  estatus: z.boolean()
 
 })
