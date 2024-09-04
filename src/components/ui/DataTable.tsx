@@ -63,16 +63,19 @@ export function DataTable<TData, TValue>({
     <div className="">
       <div className="flex items-center py-4">
         
-        <Input
-          placeholder="Buscar..."
-          type="text"
-          value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
-          }
-          className="w-full"
-        />
-        
+        {sorter &&
+          <Input
+            placeholder="Buscar..."
+            type="text"
+            value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
+            }
+            className="w-full"
+          />
+        }
+
+
       </div>
       <div className="rounded-md border overflow-auto">
         <Table>
@@ -84,9 +87,9 @@ export function DataTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -99,9 +102,8 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   onClick={() => handleRowClick(row.id, row.original)}
-                  className={`cursor-pointer hover:bg-border ${
-                    selectedRow === row.id ? "bg-border" : ""
-                  }`}
+                  className={`cursor-pointer hover:bg-border ${selectedRow === row.id ? "bg-border" : ""
+                    }`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

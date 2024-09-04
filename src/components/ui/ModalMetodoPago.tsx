@@ -170,7 +170,9 @@ export const ModalMetodoPago = ({
         forma_pago: metodo_pago_selected,
         fecha_pago: today,
         cargos: cargos_temp,
-        folio: folio
+        referencia: folio,
+        recibido: recibi_real?.current?.value || 0,
+        cambio: cambio
       })
         .then((response) => {
           set_open_modal(false);
@@ -448,7 +450,7 @@ export const ModalMetodoPago = ({
                               </div>
                               <div>
                                 <p>Folio</p>
-                                <input ref={folio_input} onChange={() => { handle_folio(); }} type="number" className='bg-muted p-4 w-[20vw] h-[6vh] outline-border' name="" id="" />
+                                <input ref={folio_input} onChange={() => { handle_folio(); }} type="text" className='bg-muted p-4 w-[20vw] h-[6vh] outline-border' name="" id="" />
                               </div>
                               {errores.length > 0 &&
                                 <div className='h-[10vh] overflow-auto'>

@@ -385,9 +385,9 @@ const MedidorForm = () => {
             tipo: medidor.tipo,
             estatus: medidor.estatus === "activo"  // 
         });
-    },[])
+    },[medidor, usuariosEncontrados])
     
-    
+
 
     return (
         <div className="overflow-auto">

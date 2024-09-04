@@ -111,12 +111,13 @@ const ModalHistorialPagos = ({ trigger }) => {
             //saldo_anterior: total_neto.toFixed(2).toString(),
             saldo_anterior: pago.saldo_anterior,
             metodo_pago: pago.forma_pago,
-            recibido: pago.total_abonado,
+            recibido: pago.recibido,
             pago_neto: pago.total_pagado,
-            cambio: (parseFloat(pago.total_abonado) - parseFloat(pago.total_abonado)).toFixed(2),
+            cambio: pago.cambio,
             //saldo_pendiente: (total_neto - abono).toFixed(2).toString()
-            saldo_pendiente: pago.saldo_actual,
-            saldo_a_favor: pago.saldo_no_aplicado
+            saldo_pendiente: pago.saldo_actual || 0,
+            saldo_a_favor: pago.saldo_no_aplicado || 0,
+            modelo_dueno: pago.modelo_dueno
         };
 
         let ticket_original = estructura_ticket(ticket_data_original);
@@ -239,23 +240,23 @@ const ModalHistorialPagos = ({ trigger }) => {
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Recibido</TableCell>
-                                                            <TableCell>{selected_pago.total_abonado}</TableCell>
+                                                            <TableCell>{selected_pago.recibido}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Pago Neto</TableCell>
-                                                            <TableCell>{selected_pago.total_pagado}</TableCell>
+                                                            <TableCell>{selected_pago.total_abonado}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Cambio</TableCell>
-                                                            <TableCell>{(parseFloat(selected_pago.total_abonado) - parseFloat(selected_pago.total_abonado)).toFixed(2)}</TableCell>
+                                                            <TableCell>{selected_pago.cambio}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Saldo Pendiente</TableCell>
-                                                            <TableCell>{selected_pago.saldo_actual}</TableCell>
+                                                            <TableCell>{selected_pago.saldo_actual || 0}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Saldo a Favor</TableCell>
-                                                            <TableCell>{selected_pago.saldo_no_aplicado}</TableCell>
+                                                            <TableCell>{selected_pago.saldo_no_aplicado || 0}</TableCell>
                                                         </TableRow>
                                                     </TableBody>
                                                 </Table>
