@@ -158,7 +158,6 @@ const ModalHistorialPagos = ({ trigger }) => {
                         <AlertDialogDescription>Pagos del día.</AlertDialogDescription>
                     </AlertDialogHeader>
                     <div className='h-[70vh]'>
-
                         <>
                             {
                                 selected_pago?.folio ?
@@ -184,7 +183,7 @@ const ModalHistorialPagos = ({ trigger }) => {
                                                     <TableBody>
                                                         <TableRow>
                                                             <TableCell>Nombre Caja</TableCell>
-                                                            <TableCell>{session_caja.caja_nombre}</TableCell>
+                                                            <TableCell>{session_caja.caja_nombre || "<<Sin datos>>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Consecutivo</TableCell>
@@ -192,51 +191,51 @@ const ModalHistorialPagos = ({ trigger }) => {
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Nombre Cajero</TableCell>
-                                                            <TableCell>{session_caja.nombre_operador}</TableCell>
+                                                            <TableCell>{session_caja.nombre_operador || "<Sin datos>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Folio de Pago</TableCell>
-                                                            <TableCell>{selected_pago.folio}</TableCell>
+                                                            <TableCell>{selected_pago.folio || "<Sin datos>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Fecha de Pago</TableCell>
-                                                            <TableCell>{selected_pago.fecha_pago}</TableCell>
+                                                            <TableCell>{selected_pago.fecha_pago || "<Sin datos>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Nombre del Usuario</TableCell>
-                                                            <TableCell>{selected_pago?.usuario?.nombre + " " + selected_pago?.usuario?.apellido_paterno + " " + selected_pago?.usuario?.apellido_materno}</TableCell>
+                                                            <TableCell>{(selected_pago?.usuario?.nombre + " " + selected_pago?.usuario?.apellido_paterno + " " + selected_pago?.usuario?.apellido_materno) || "<Sin datos>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Número de Cuenta</TableCell>
-                                                            <TableCell>{selected_pago.dueno.codigo_toma}</TableCell>
+                                                            <TableCell>{selected_pago.dueno.codigo_toma || "<Sin datos>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Calle</TableCell>
-                                                            <TableCell>{selected_pago.dueno?.calle}</TableCell>
+                                                            <TableCell>{selected_pago.dueno?.calle || "<Sin datos>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Número</TableCell>
-                                                            <TableCell>{selected_pago.dueno?.numero_casa}</TableCell>
+                                                            <TableCell>{selected_pago.dueno?.numero_casa || "<Sin datos>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Código Postal</TableCell>
-                                                            <TableCell>{selected_pago.dueno?.codigo_postal}</TableCell>
+                                                            <TableCell>{selected_pago.dueno?.codigo_postal || "<Sin datos>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Colonia</TableCell>
-                                                            <TableCell>{selected_pago.dueno?.colonia}</TableCell>
+                                                            <TableCell>{selected_pago.dueno?.colonia || "<Sin datos>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>RFC</TableCell>
-                                                            <TableCell>{selected_pago.dueno?.usuario?.rfc}</TableCell>
+                                                            <TableCell>{selected_pago.dueno?.usuario?.rfc || "<Sin datos>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Saldo Anterior</TableCell>
-                                                            <TableCell>{selected_pago.saldo_anterior}</TableCell>
+                                                            <TableCell>{selected_pago.saldo_anterior || "<Sin datos>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Método de Pago</TableCell>
-                                                            <TableCell>{selected_pago.forma_pago}</TableCell>
+                                                            <TableCell>{selected_pago.forma_pago || "<Sin datos>"}</TableCell>
                                                         </TableRow>
                                                         <TableRow>
                                                             <TableCell>Recibido</TableCell>

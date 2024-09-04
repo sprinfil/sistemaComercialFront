@@ -88,7 +88,12 @@ const PuntoVentaForm = () => {
     setSelectedCargos([]);
     const cargos_usuario_fetch = await axiosClient.get(`/usuarios/consultar/cargos/${dataCajaUser[0]?.id}`);
     set_cargos_usuario(cargos_usuario_fetch.data);
-    console.log(cargos_usuario_fetch.data)
+    //console.log(cargos_usuario_fetch.data)
+    
+    cargos_usuario_fetch.data.cargos_vigentes.map(cargo =>{
+      handleCargoSelect(cargo, dataCajaUser[0], true);
+    })
+
     if (cargos_usuario_fetch?.data?.tomas?.length == 1) {
       cargos_usuario_fetch.data.tomas.map((toma, index) => {
         toma.cargos_vigentes.map((cargo, index) => {
