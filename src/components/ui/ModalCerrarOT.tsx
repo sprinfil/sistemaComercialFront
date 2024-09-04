@@ -44,7 +44,7 @@ const ModalCerrarOT = ({ isOpen, setIsOpen, method }) => {
   const {
     arregloCrearOrdenesDeTrabajo,
     setDataOrdenesDeTrabajoHistorialToma,
-    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor
+    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor, dataRegistroMedidorModalCerrarOT, setDataRegistroMedidorModalCerrarOT
   } = ZustandFiltrosOrdenTrabajo();
 
   const {
@@ -94,80 +94,18 @@ const ModalCerrarOT = ({ isOpen, setIsOpen, method }) => {
     }
   };
 
-  const cancelarOrdenDeTrabajo = async () => {
-    setLoadingTable(true);
-    try {
-      const response = await axiosClient.delete(
-        `OrdenTrabajo/log_delete/${detalleOrdenDeTrabajoTomaMonitor2?.id}`
-      );
-      console.log(response);
 
-      setLoadingTable(false);
-
-      setIsOpen(false);
-
-      toast({
-        title: "¡Éxito!",
-        description: "La orden de trabajo se ha cancelado correctamente",
-        variant: "success",
-      })
-      getOrdenDeTrabajoMonitor();
-
-    } catch (response) {
-      console.log(response);
-      toast({
-        variant: "destructive",
-        title: "Oh, no. Error",
-        description: "No se pudo cancelar.",
-        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-      })
-      setLoadingTable(false);
-
-    }
-  };
-
-  const cerrarUnaOT = async () => {
-    setLoadingTable(true);
-    try {
-      const response = await axiosClient.put(`OrdenTrabajo/cerrar`, values);
-      console.log(response);
-
-      setLoadingTable(false);
-
-      setIsOpen(true);
-
-      toast({
-        title: "¡Éxito!",
-        description: "La orden de trabajo se ha cancelado correctamente",
-        variant: "success",
-      })
-      getOrdenDeTrabajoMonitor();
-
-    } catch (response) {
-      console.log(response);
-      toast({
-        variant: "destructive",
-        title: "Oh, no. Error",
-        description: "No se pudo cancelar.",
-        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-      })
-      setLoadingTable(false);
-
-    }
-  };
 
   function onSubmit(values: z.infer<typeof cerrarOtSchema>) {
     console.log("valores ingresados", values);
+    setDataRegistroMedidorModalCerrarOT(values);
     setIsOpen(true);
+    setAbrirModal(true);
 
-    axiosClient.post(`/AnomaliasCatalogo/create`, values)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((response) => {
-        console.log(response);
-      });
+    
   }
+
+  console.log(dataRegistroMedidorModalCerrarOT);
 
   const form = useForm<z.infer<typeof cerrarOtSchema>>({
     resolver: zodResolver(cerrarOtSchema),
@@ -237,7 +175,7 @@ const ModalCerrarOT = ({ isOpen, setIsOpen, method }) => {
                 )}
               />
               <div className="flex justify-end">
-                <Button onClick={abrirModalGG}>Guardar</Button>
+                <Button type="submit">Guardar</Button>
               </div>
             </form>
           </Form>

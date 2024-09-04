@@ -43,7 +43,7 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
   const {
     arregloCrearOrdenesDeTrabajo,
     setDataOrdenesDeTrabajoHistorialToma,
-    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor
+    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor, dataRegistroMedidorModalCerrarOT
   } = ZustandFiltrosOrdenTrabajo();
 
   const {
@@ -81,19 +81,38 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
   }, [usuariosEncontrados]);
 
 
+  console.log(detalleOrdenDeTrabajoTomaMonitor2?.id);
+  let modelo = detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.modelo;
+  //aqui obtengo lo del modal anterIOR
+  console.log("informacion obtenida desde la variable", detalleOrdenDeTrabajoTomaMonitor2);
 
   function onSubmit(values: z.infer<typeof registroMedidotOtSchema>) {
     console.log("valores ingresados", values);
-
     const values2 = {
       orden_trabajo:
       {
-        id: values.id
-        
+        id: detalleOrdenDeTrabajoTomaMonitor2?.id,
+        id_empleado_asigno:  detalleOrdenDeTrabajoTomaMonitor2?.id_empleado_asigno,
+        id_orden_trabajo_catalogo: detalleOrdenDeTrabajoTomaMonitor2?.id_orden_trabajo_catalogo,
+        observaciones: dataRegistroMedidorModalCerrarOT?.obervaciones,
+        material_utilizado: dataRegistroMedidorModalCerrarOT?.material_utilizado,
+        genera_OT_encadenadas: false
+      },
+      modelos:
+      {
+        "medidores": 
+        {
+          numero_serie: values.numero_serie, 
+          marca: values.marca,
+          diametro: values.diametro,
+          tipo: values.tipo,
+
+        }
       }
     }
-
-    axiosClient.put(`/OrdenTrabajo/cerrar`, values)
+    
+    console.log(values2);
+    axiosClient.put(`/OrdenTrabajo/cerrar`, values2)
       .then((response) => {
         console.log(response);
         

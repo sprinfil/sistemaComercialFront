@@ -3,6 +3,14 @@ import { AsignarOrdenDeTrabajo } from '../components/Tables/Columns/AsignarOrden
 import { OrdenDeTrabajoCrearTomas } from '../components/Tables/Columns/OrdenDeTrabajoCrearTomas';
 import { OrdenDeTrabajo } from '../components/Tables/Columns/AsignarOrdenDeTrabajoColumnsIndividual';
 import { MonitorOrden2 } from '../components/Tables/Columns/MonitorOrdenDeTrabajoColumns2';
+
+type ordenTrabajoCerrar =
+{
+  id: number,
+  observaciones: string,
+  material_utilizado: string
+
+}
 interface FiltrosOrdenTrabajo {
   isAsignadaChecked: boolean;
   setIsAsignadaChecked: (isAsignadaChecked:boolean) => void;
@@ -40,6 +48,8 @@ interface FiltrosOrdenTrabajo {
   setDataAsignarOtIndividual:(dataAsignarOtIndividual:[]) => void;
   loadingTableOrdenesDeTrabajoHistorial: boolean;
   setLoadingTableOrdenesDeTrabajoHistorial: (loadingTable:boolean) => void;
+  dataRegistroMedidorModalCerrarOT:ordenTrabajoCerrar[]
+  setDataRegistroMedidorModalCerrarOT:(dataRegistroMedidorModalCerrarOT:ordenTrabajoCerrar[]) => void;
 }
 
 export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => ({
@@ -79,5 +89,7 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setDataAsignarOtIndividual: (dataAsignarOtIndividual) => set({dataAsignarOtIndividual}),
   loadingTableOrdenesDeTrabajoHistorial: false,
   setLoadingTableOrdenesDeTrabajoHistorial: (loadingTableOrdenesDeTrabajoHistorial) => set({loadingTableOrdenesDeTrabajoHistorial}),
+  dataRegistroMedidorModalCerrarOT: [],
+  setDataRegistroMedidorModalCerrarOT: (dataRegistroMedidorModalCerrarOT) => set({dataRegistroMedidorModalCerrarOT}),
 }));
 
