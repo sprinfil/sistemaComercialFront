@@ -17,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type MonitorOrden = {
+export type MonitorOrden2 = {
   id: number
   nombre: string
   descripcion: string
@@ -25,11 +25,16 @@ export type MonitorOrden = {
   estado: boolean
   toma: {
     codigo_toma: string
+    libro:
+  {
+    nombre:string
   }
+  }
+  
 }
 
 
-export const columns2: ColumnDef<MonitorOrden>[] = [
+export const columns2: ColumnDef<MonitorOrden2>[] = [
   {
     id: "select",
     header: ({ table }) => (

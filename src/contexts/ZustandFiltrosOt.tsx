@@ -2,6 +2,7 @@ import {create} from 'zustand';
 import { AsignarOrdenDeTrabajo } from '../components/Tables/Columns/AsignarOrdenDeTrabajoColumns';
 import { OrdenDeTrabajoCrearTomas } from '../components/Tables/Columns/OrdenDeTrabajoCrearTomas';
 import { OrdenDeTrabajo } from '../components/Tables/Columns/AsignarOrdenDeTrabajoColumnsIndividual';
+import { MonitorOrden2 } from '../components/Tables/Columns/MonitorOrdenDeTrabajoColumns2';
 interface FiltrosOrdenTrabajo {
   isAsignadaChecked: boolean;
   setIsAsignadaChecked: (isAsignadaChecked:boolean) => void;
@@ -31,6 +32,8 @@ interface FiltrosOrdenTrabajo {
   setBoolUsoFiltros:(boolUsoFiltros:boolean) => void;
   valorParaSaberSiUsaLaTablaDeFiltros: boolean;
   setvalorParaSaberSiUsaLaTablaDeFiltros:(valorParaSaberSiUsaLaTablaDeFiltros:boolean) => void;
+  detalleOrdenDeTrabajoTomaMonitor2:MonitorOrden2[]
+  setDetalleOrdenDeTrabajoTomaMonitor2:(detalleOrdenDeTrabajoTomaMonitor2:MonitorOrden2[]) => void;
 }
 
 export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => ({
@@ -62,6 +65,7 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setBoolUsoFiltros: (boolUsoFiltros) => set({boolUsoFiltros}),
   valorParaSaberSiUsaLaTablaDeFiltros: false,
   setvalorParaSaberSiUsaLaTablaDeFiltros: (valorParaSaberSiUsaLaTablaDeFiltros) => set({valorParaSaberSiUsaLaTablaDeFiltros}),
-
+  detalleOrdenDeTrabajoTomaMonitor2: [],
+  setDetalleOrdenDeTrabajoTomaMonitor2: (detalleOrdenDeTrabajoTomaMonitor2) => set({detalleOrdenDeTrabajoTomaMonitor2}),
 }));
 
