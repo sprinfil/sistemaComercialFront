@@ -76,7 +76,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
     setDataCajaUser([contratobuscarUsuario]);
     setBooleanCerrarModalFiltros(false);
   
-    console.log("ESTO RECIBIRA CAJAAA DESDE SELECCION DE FILA" + JSON.stringify(dataCajaUser)); 
+    
     if(accion2 == "verUsuarioDetalle")
     {
       navigate("/usuario/toma");
