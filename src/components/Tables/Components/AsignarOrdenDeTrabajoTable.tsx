@@ -62,7 +62,7 @@ if (loadingTable) {
 
     <div>
       
-      <DataTableAsignarOTIndividual columns={columns} data={dataAsignarOtIndividual} sorter='nombre' onRowClick={handleRowClick}/>
+      <DataTableAsignarOTIndividual columns={columns} data={dataAsignarOtIndividual} sorter='toma.codigo_toma' onRowClick={handleRowClick}/>
       
       <ModalInformacionOtToma
       isOpen={abrirModalInformativo}

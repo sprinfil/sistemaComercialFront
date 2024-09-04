@@ -55,7 +55,8 @@ export const AsignarOTMasiva = () => {
   const [operadorSeleccionado, setOperadorSeleccionado] = useState("");
   const { isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
     setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador,
-     arregloAsignarIndividualTomaAOperador, setLoadingTable, loadingTable, selectedAction, setSelectedAction, setDataAsignarOtIndividual} = ZustandFiltrosOrdenTrabajo();
+     arregloAsignarIndividualTomaAOperador, setLoadingTable, loadingTable, selectedAction, 
+     setSelectedAction, setDataAsignarOtIndividual, informacionAsignacionMasivaRecibidaPorFiltros, setInformacionAsignacionMasivaRecibidaPorFiltros} = ZustandFiltrosOrdenTrabajo();
 
 
 
@@ -208,7 +209,7 @@ const getOrdenesDeTrabajo = async () => {
 
       console.log("Tomas extraídas", tomas);
 
-      setInformacionRecibidaPorFiltros(tomas);
+      setInformacionAsignacionMasivaRecibidaPorFiltros(tomas);
     } else {
       console.log("No jala", response.data.ordenes_trabajo);
     }

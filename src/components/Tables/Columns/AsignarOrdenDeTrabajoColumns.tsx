@@ -98,7 +98,6 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Toma
-        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
@@ -110,7 +109,6 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Tipo
-        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
@@ -122,7 +120,6 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Estado
-        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
@@ -134,7 +131,6 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Creada
-        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
@@ -146,7 +142,6 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Concluida
-        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },

@@ -43,7 +43,7 @@ export const Monitores = () => {
         seleccionarCatalogo &&
         <>
           <div className='w-full h-[70vh] mt-[20px] flex flex-col items-center justify-center gap-5'>
-            <p>Selecciona un catálogo.</p>
+            <p>Selecciona un monitor.</p>
           </div>
         </>
       }

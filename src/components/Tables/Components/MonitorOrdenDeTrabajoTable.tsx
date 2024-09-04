@@ -16,7 +16,8 @@ export default function MonitorOrdenDeTrabajoTable() {
 
   const { setDataOrdenDeTrabajoMonitor, dataOrdenDeTrabajoMonitor, setLoadingTable,
     loadingTable,
-    informacionRecibidaPorFiltros, boolUsoFiltros, valorParaSaberSiUsaLaTablaDeFiltros, detalleOrdenDeTrabajoTomaMonitor2, setDetalleOrdenDeTrabajoTomaMonitor2 } = ZustandFiltrosOrdenTrabajo();
+    informacionRecibidaPorFiltros, boolUsoFiltros, valorParaSaberSiUsaLaTablaDeFiltros, detalleOrdenDeTrabajoTomaMonitor2, 
+    setDetalleOrdenDeTrabajoTomaMonitor2, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} = ZustandFiltrosOrdenTrabajo();
 
   const [abrirModal, setAbrirModal] = useState(false);
 
@@ -39,7 +40,7 @@ export default function MonitorOrdenDeTrabajoTable() {
   };
 
   console.log(dataOrdenDeTrabajoMonitor);
-  console.log(boolUsoFiltros, "SE USARON LOS FILTROS ", informacionRecibidaPorFiltros);
+  console.log(boolUsoFiltros, "SE USARON LOS FILTROS ", informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo);
 
   //metodo para las filas
 
@@ -66,16 +67,16 @@ export default function MonitorOrdenDeTrabajoTable() {
     return <div><Loader /></div>;
   }
 
-  console.log(detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0].modelo);
+  console.log(informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo);
   return (
 
     <div>
 
       {
         valorParaSaberSiUsaLaTablaDeFiltros ?
-          <DataTableMonitorOrdenDeTrabajo columns={columns2} data={informacionRecibidaPorFiltros} sorter='toma.codigo_toma' onRowClick={handleRowClick2} />
+          <DataTableMonitorOrdenDeTrabajo columns={columns2} data={informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} sorter='toma.codigo_toma' onRowClick={handleRowClick2} />
           :
-          <DataTableMonitorOrdenDeTrabajo columns={columns} data={dataOrdenDeTrabajoMonitor} sorter='nombre' onRowClick={handleRowClick2} />
+          <DataTableMonitorOrdenDeTrabajo columns={columns2} data={dataOrdenDeTrabajoMonitor} sorter='toma.codigo_toma' onRowClick={handleRowClick2} />
 
 
       }

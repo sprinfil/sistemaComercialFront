@@ -6,13 +6,23 @@ import MarcoFormFiltrosOT from '../../components/ui/MarcoFormFiltrosOT';
 import { LibroFilterComboBox } from '../../components/ui/LibroFilterComboBox';
 import { RutaFilterComboBox } from '../../components/ui/RutaFilterComboBox';
 import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt';
+import { Input } from '../../components/ui/input';
 
 const FiltrosAsignarOTMasiva = () => {
 
 
 
   //#regionVARIABLES PARA OBTENER EL VALOR DE LOS FILTROS
-  const{isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked, rutaBooleanForLibro} = ZustandFiltrosOrdenTrabajo();
+  const { isAsignadaChecked, setIsAsignadaChecked, 
+        isNoAsignadaChecked, setIsNoAsignadaChecked, 
+        rutaBooleanForLibro, 
+        isConcluidaChecked, setIsConcluidaChecked,
+        isCanceladaChecked, setIsCanceladaChecked,
+        isDomesticaChecked, setIsDomesticaChecked,
+        isComercialChecked, setIsComercialChecked,
+        isIndustrialChecked, setIsIndustrialChecked,
+        isEspecialChecked, setIsEspecialChecked, 
+      } = ZustandFiltrosOrdenTrabajo();
 
   //#end
 
@@ -54,7 +64,7 @@ const FiltrosAsignarOTMasiva = () => {
 
 
   return (
-<div className='overflow-auto min-h-[20vh]'>
+    <div className='overflow-auto min-h-[20vh]'>
       <div className='ml-5 mt-5 h-full p-3'>
 
         <div className='flex space-x-2'>
@@ -67,31 +77,57 @@ const FiltrosAsignarOTMasiva = () => {
 
         </div>
         <div className='flex flex-col mt-6 w-full'>
-        
-          <div className="text-lg font-semibold- mt-1">
+          <div className="text-lg font-semibold mt-1">
             Estado de la orden de trabajo
           </div>
-          <hr className="border-t border-border my-1"></hr>
-          <div className='flex space-x-[10vh] mb-2'>
+          <hr className="border-t border-border my-1" />
+
+          <div className='grid grid-cols-2 gap-x-[10vh] mb-2'>
             <div className='flex items-center space-x-2'>
               <div className="text-sm font-medium mb-2 mt-2">
                 Asignada
-                </div>
+              </div>
               <div className='ml-2'>
-                <Checkbox 
-                checked={isAsignadaChecked} 
-                onCheckedChange={setIsAsignadaChecked} 
+                <Checkbox
+                  checked={isAsignadaChecked}
+                  onCheckedChange={setIsAsignadaChecked}
                 />
-  
               </div>
             </div>
-            <div className='flex items-center space-x-2 ml-10'>
+
+            <div className='flex items-center space-x-2'>
               <div className="text-sm font-medium mb-2 mt-2">
-                No asignada</div>
-              <div className='ml-10'>
-                <Checkbox 
-                 checked={isNoAsignadaChecked} 
-                 onCheckedChange={setIsNoAsignadaChecked} />
+                No asignada
+              </div>
+              <div className='ml-2'>
+                <Checkbox
+                  checked={isNoAsignadaChecked}
+                  onCheckedChange={setIsNoAsignadaChecked}
+                />
+              </div>
+            </div>
+
+            <div className='flex items-center space-x-2'>
+              <div className="text-sm font-medium mb-2 mt-2">
+                Concluida
+              </div>
+              <div className='ml-2'>
+                <Checkbox
+                  checked={isConcluidaChecked}
+                  onCheckedChange={setIsConcluidaChecked}
+                />
+              </div>
+            </div>
+
+            <div className='flex items-center space-x-2'>
+              <div className="text-sm font-medium mb-2 mt-2">
+                Cancelada
+              </div>
+              <div className='ml-2'>
+                <Checkbox
+                  checked={isCanceladaChecked}
+                  onCheckedChange={setIsCanceladaChecked}
+                />
               </div>
             </div>
           </div>
@@ -103,32 +139,43 @@ const FiltrosAsignarOTMasiva = () => {
           <hr className="border-t border-border my-1"></hr>
           <div className=''>
 
-          <div className="grid grid-cols-2 gap-2 items-center justify-center">
-        <div className="flex items-center">
-          <div className="text-sm font-medium mb-2 mt-2">Doméstica</div>
-          <div className="ml-2">
-            <Checkbox />
-          </div>
-        </div>
-        <div className="flex items-center">
-          <div className="text-sm font-medium mb-2 mt-2">Comercial</div>
-          <div className="ml-2">
-            <Checkbox />
-          </div>
-        </div>
-        <div className="flex items-center">
-          <div className="text-sm font-medium mb-2 mt-2">Industrial</div>
-          <div className="ml-2">
-            <Checkbox />
-          </div>
-        </div>
-        <div className="flex items-center">
-          <div className="text-sm font-medium mb-2 mt-2">Especial</div>
-          <div className="ml-2">
-            <Checkbox />
-          </div>
-        </div>
-      </div>
+            <div className="grid grid-cols-2 gap-2 items-center justify-center">
+              <div className="flex items-center">
+                <div className="text-sm font-medium mb-2 mt-2">Doméstica</div>
+                <div className="ml-2">
+                  <Checkbox 
+                   checked={isDomesticaChecked}
+                   onCheckedChange={setIsDomesticaChecked}
+                   />
+                </div>
+              </div>
+              <div className="flex items-center">
+                <div className="text-sm font-medium mb-2 mt-2">Comercial</div>
+                <div className="ml-2">
+                  <Checkbox 
+                   checked={isComercialChecked}
+                   onCheckedChange={setIsComercialChecked}
+                   />
+                </div>
+              </div>
+              <div className="flex items-center">
+                <div className="text-sm font-medium mb-2 mt-2">Industrial</div>
+                <div className="ml-2">
+                  <Checkbox 
+                   checked={isIndustrialChecked}
+                   onCheckedChange={setIsIndustrialChecked}
+                   />
+                </div>
+              </div>
+              <div className="flex items-center">
+                <div className="text-sm font-medium mb-2 mt-2">Especial</div>
+                <div className="ml-2">
+                  <Checkbox 
+                   checked={isEspecialChecked}
+                   onCheckedChange={setIsEspecialChecked}/>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="text-lg font-semibold- mt-2">
@@ -155,18 +202,38 @@ const FiltrosAsignarOTMasiva = () => {
                 Libro
               </div>
               <div className='ml-3'>
-                
+
                 <LibroFilterComboBox
                   field={field2}
                   name="id_libro" // Puedes cambiar esto si es necesario
                   setCargoSeleccionado={handleSelect}
-                  disabled = {rutaBooleanForLibro} />
+                  disabled={rutaBooleanForLibro} />
 
               </div>
             </div>
 
           </div>
         </div>
+        <div className="text-lg font-semibold- mt-2">
+            Saldo
+          </div>
+          <hr className="border-t border-border my-1"></hr>
+          <div className=' flex space-x-5 items-center mt-5'>
+          <div className="text-sm font-medium mb-2">
+          Minimo
+            </div>
+          <div>
+          <Input className='w-[8vh]'/>
+
+          </div>
+          <div className="text-sm font-medium mb-2">
+          Maximo
+            </div>
+          <div>
+          <Input className='w-[8vh]'/>
+
+          </div>
+          </div>
       </div>
 
     </div>

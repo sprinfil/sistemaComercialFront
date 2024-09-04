@@ -16,6 +16,8 @@ interface FiltrosOrdenTrabajo {
   setIsAsignadaChecked: (isAsignadaChecked:boolean) => void;
   isNoAsignadaChecked: boolean;
   setIsNoAsignadaChecked: (isNoAsignadaChecked:boolean) => void;
+  isConcluidaChecked: boolean;
+  setIsConcluidaChecked: (isConcluidaChecked:boolean) => void;
   informacionRecibidaPorFiltros: []
   setInformacionRecibidaPorFiltros:(informacionRecibidaPorFiltros:[]) => void;
   idRutaSeleccionada: string;
@@ -50,6 +52,24 @@ interface FiltrosOrdenTrabajo {
   setLoadingTableOrdenesDeTrabajoHistorial: (loadingTable:boolean) => void;
   dataRegistroMedidorModalCerrarOT:ordenTrabajoCerrar[]
   setDataRegistroMedidorModalCerrarOT:(dataRegistroMedidorModalCerrarOT:ordenTrabajoCerrar[]) => void;
+  informacionRecibidaPorFiltrosGenerarOtMasiva: []
+  setInformacionRecibidaPorFiltrosGenerarOtMasiva:(informacionRecibidaPorFiltrosGenerarOtMasiva:[]) => void;
+  informacionAsignacionMasivaRecibidaPorFiltros: []
+  setInformacionAsignacionMasivaRecibidaPorFiltros:(informacionAsignacionMasivaRecibidaPorFiltros:[]) => void;
+  loadingTableModalAsignarOperadorTable: boolean;
+  setLoadingTableModalAsignarOperadorTable: (loadingTableModalAsignarOperadorTable:boolean) => void;
+  isCanceladaChecked: boolean;
+  setIsCanceladaChecked: (isCanceladaChecked:boolean) => void;
+  isDomesticaChecked: boolean;
+  setIsDomesticaChecked: (isDomesticaChecked:boolean) => void;
+  isComercialChecked: boolean;
+  setIsComercialChecked: (isComercialChecked:boolean) => void;
+  isIndustrialChecked: boolean;
+  setIsIndustrialChecked: (isIndustrialChecked:boolean) => void;
+  isEspecialChecked: boolean;
+  setIsEspecialChecked: (isEspecialChecked:boolean) => void;
+  informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo: []
+  setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo:(informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo:[]) => void;
 }
 
 export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => ({
@@ -91,5 +111,25 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setLoadingTableOrdenesDeTrabajoHistorial: (loadingTableOrdenesDeTrabajoHistorial) => set({loadingTableOrdenesDeTrabajoHistorial}),
   dataRegistroMedidorModalCerrarOT: [],
   setDataRegistroMedidorModalCerrarOT: (dataRegistroMedidorModalCerrarOT) => set({dataRegistroMedidorModalCerrarOT}),
+  informacionRecibidaPorFiltrosGenerarOtMasiva: [],
+  setInformacionRecibidaPorFiltrosGenerarOtMasiva: (informacionRecibidaPorFiltrosGenerarOtMasiva) => set({informacionRecibidaPorFiltrosGenerarOtMasiva}),
+  informacionAsignacionMasivaRecibidaPorFiltros: [],
+  setInformacionAsignacionMasivaRecibidaPorFiltros: (informacionAsignacionMasivaRecibidaPorFiltros) => set({informacionAsignacionMasivaRecibidaPorFiltros}),
+  loadingTableModalAsignarOperadorTable: false,
+  setLoadingTableModalAsignarOperadorTable: (loadingTableModalAsignarOperadorTable) => set({loadingTableModalAsignarOperadorTable}),
+  isConcluidaChecked: false,
+  setIsConcluidaChecked: (isConcluidaChecked) => set({isConcluidaChecked}),
+  isCanceladaChecked: false,
+  setIsCanceladaChecked: (isCanceladaChecked) => set({isCanceladaChecked}),
+  isDomesticaChecked: false,
+  setIsDomesticaChecked: (isDomesticaChecked) => set({isDomesticaChecked}),
+  isComercialChecked: false,
+  setIsComercialChecked: (isComercialChecked) => set({isComercialChecked}),
+  isIndustrialChecked: false,
+  setIsIndustrialChecked: (isIndustrialChecked) => set({isIndustrialChecked}),
+  isEspecialChecked: false,
+  setIsEspecialChecked: (isEspecialChecked) => set({isEspecialChecked}),
+  informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo: [],
+  setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo: (informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo) => set({informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo}),
 }));
 

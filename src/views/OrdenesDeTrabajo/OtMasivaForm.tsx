@@ -13,7 +13,10 @@ export const OtMasivaForm = () => {
 
 
   const { isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
-    setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador, setLoadingTable, loadingTable } = ZustandFiltrosOrdenTrabajo();
+    setInformacionRecibidaPorFiltros, 
+    informacionRecibidaPorFiltros,
+     arregloOrdenesDeTrabajoParaAsignarAOperador, 
+     setLoadingTable, loadingTable, setInformacionRecibidaPorFiltrosGenerarOtMasiva, informacionRecibidaPorFiltrosGenerarOtMasiva} = ZustandFiltrosOrdenTrabajo();
 
 
   const [abrirModal, setAbrirModal] = useState(false);
@@ -50,7 +53,7 @@ export const OtMasivaForm = () => {
         console.log("Tomas extraídas", tomas);
         setLoadingTable(false);
 
-        setInformacionRecibidaPorFiltros(tomas);
+        setInformacionRecibidaPorFiltrosGenerarOtMasiva(tomas);
       } else {
         console.log("No jala", response.data.ordenes_trabajo);
       }

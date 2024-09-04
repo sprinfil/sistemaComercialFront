@@ -17,7 +17,7 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
   const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma,} = ZustandGeneralUsuario();
   
   
-  const {informacionRecibidaPorFiltros, asignadasEnToma, loadingTable, setLoadingTable} = ZustandFiltrosOrdenTrabajo();
+  const {informacionRecibidaPorFiltros, asignadasEnToma, loadingTable, setLoadingTable, loadingTableModalAsignarOperadorTable, setLoadingTableModalAsignarOperadorTable} = ZustandFiltrosOrdenTrabajo();
       console.log("esto llego para asignar individual",usuariosEncontrados[0].tomas[0].codigo_toma);
       console.log("esto llego para asignar individual",usuariosEncontrados[0]);
   const [abrirModalInformativo, setAbrirModalInformativo] = useState(false);
@@ -55,7 +55,7 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
   };
 
   console.log(informacionRecibidaPorFiltros);
-  if (loadingTable) {
+  if (loadingTableModalAsignarOperadorTable) {
     return <div><Loader /></div>;
   }
 
@@ -66,10 +66,10 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
     <div>
       {
         asignadasEnToma ?
-        <DataTableAsignarOTIndividual2 columns={columns} data={informacionRecibidaPorFiltros} sorter='nombre' onRowClick={handleRowClick}/>
+        <DataTableAsignarOTIndividual2 columns={columns} data={informacionRecibidaPorFiltros} sorter='' onRowClick={handleRowClick}/>
 
         :
-        <DataTableAsignarOTIndividual columns={columns} data={data} sorter='nombre' onRowClick={handleRowClick}/>
+        <DataTableAsignarOTIndividual columns={columns} data={data} sorter='toma.codigo_toma' onRowClick={handleRowClick}/>
 
       }
       

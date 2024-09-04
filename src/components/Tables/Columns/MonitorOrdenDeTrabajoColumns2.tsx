@@ -30,6 +30,10 @@ export type MonitorOrden2 = {
     nombre:string
   }
   }
+  orden_trabajo_catalogo:
+  {
+    descripcion: string
+  }
   
 }
 
@@ -71,19 +75,24 @@ export const columns2: ColumnDef<MonitorOrden2>[] = [
       </Button>
     ),
   },
+
+
+
   {
-    accessorKey: "orden_trabajo_catalogo.descripcion",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Tipo
-        </Button>
-      )
+    accessorFn: (row) => {
+      return row.orden_trabajo_catalogo?.descripcion;
     },
+    id: "orden_trabajo_catalogo.descripcion",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+      Tipo
+      </Button>
+    ),
   },
+
   {
     accessorKey: "estado",
     header: ({ column }) => {
