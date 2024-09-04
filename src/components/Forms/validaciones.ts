@@ -114,3 +114,12 @@ export const cajaOperadorCatalogoSchema = z.object({
     })
   ),
 });
+
+
+
+//VALIDACIONES PARA CERRAR LAS OT
+export const cerrarOtSchema = z.object({
+  id: z.number(),
+  obervaciones: z.string().min(1, "Las obervaciones son requeridas."),
+  material_utilizado: z.string(),
+})

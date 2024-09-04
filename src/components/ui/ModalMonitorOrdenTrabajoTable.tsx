@@ -18,6 +18,9 @@ import { ZustandFiltrosOrdenTrabajo } from "../../contexts/ZustandFiltrosOt";
 import { zustandOrdenTrabajoStore } from "../../contexts/ZustandOrdenesDeTrabajoUsuario";
 import IconButton from "./IconButton";
 import { TrashIcon } from "lucide-react";
+import { MdOutlineCancel } from "react-icons/md";
+import ModalCerrarOT from "./ModalCerrarOT";
+import ModalCerrarOT2 from "./ModalCerrarOT2";
 
 
 const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
@@ -25,7 +28,7 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
   const {
     arregloCrearOrdenesDeTrabajo,
     setDataOrdenesDeTrabajoHistorialToma,
-    detalleOrdenDeTrabajoTomaMonitor2,setLoadingTable,setDataOrdenDeTrabajoMonitor
+    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor
   } = ZustandFiltrosOrdenTrabajo();
 
   const {
@@ -65,6 +68,20 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
 
   //SETEAMOS CADA QUE SE ENCUENTRE USUARIOS
 
+  const [abrirModal, setAbrirModal] = useState(false);
+  const [abrirModal2, setAbrirModal2] = useState(false);
+
+  const abrirModalGG = () => {
+    //setAnomalia(anomalia);
+    //setAccion("ver");
+    setAbrirModal(true);
+  };
+  const abrirModalGG2 = () => {
+    //setAnomalia(anomalia);
+    //setAccion("ver");
+    setAbrirModal2(true);
+  };
+
   useEffect(() => {
     setConsultaIdToma(usuariosEncontrados[0]);
   }, [usuariosEncontrados]);
@@ -90,32 +107,66 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
         `OrdenTrabajo/log_delete/${detalleOrdenDeTrabajoTomaMonitor2?.id}`
       );
       console.log(response);
-     
-    setLoadingTable(false);
 
-    setIsOpen(false);
+      setLoadingTable(false);
 
-    toast({
-      title: "¡Éxito!",
-      description: "La orden de trabajo se ha cancelado correctamente",
-      variant: "success",
-  })
-    getOrdenDeTrabajoMonitor();
+      setIsOpen(false);
+
+      toast({
+        title: "¡Éxito!",
+        description: "La orden de trabajo se ha cancelado correctamente",
+        variant: "success",
+      })
+      getOrdenDeTrabajoMonitor();
 
     } catch (response) {
-      console.log(response);  
+      console.log(response);
       toast({
         variant: "destructive",
         title: "Oh, no. Error",
         description: "No se pudo cancelar.",
         action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-    })
-    setLoadingTable(false);
+      })
+      setLoadingTable(false);
+
+    }
+  };
+  console.log("informacion obtenida desde la variable", detalleOrdenDeTrabajoTomaMonitor2.id_empleado_asigno);
+
+
+  const cerrarUnaOT = async () => {
+
+
+    setLoadingTable(true);
+    try {
+      const response = await axiosClient.put(`OrdenTrabajo/cerrar`, values);
+      console.log(response);
+
+      setLoadingTable(false);
+
+      setIsOpen(false);
+
+      toast({
+        title: "¡Éxito!",
+        description: "La orden de trabajo se ha cancelado correctamente",
+        variant: "success",
+      })
+      getOrdenDeTrabajoMonitor();
+
+    } catch (response) {
+      console.log(response);
+      toast({
+        variant: "destructive",
+        title: "Oh, no. Error",
+        description: "No se pudo cancelar.",
+        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+      })
+      setLoadingTable(false);
 
     }
   };
 
-  //console.log(detalleOrdenDeTrabajoTomaMonitor2.id);
+  console.log(detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0].accion);
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -128,6 +179,9 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
                 className="flex justify-end ml-[18vh]"
                 title="Cancelar orden de trabajo"
               ></div>
+              <div>
+
+              </div>
             </div>
           </AlertDialogTitle>
 
@@ -137,6 +191,33 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
               <IconButton onClick={cancelarOrdenDeTrabajo}>
                 <TrashIcon className="w-[2vh] h-[2vh] ml-2" />
               </IconButton>
+
+              {detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0].modelo == "medidores" &&
+              detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0].accion == "registrar" &&
+                <div>
+                  <IconButton title="Cerrar orden de trabajo" onClick={abrirModalGG}><MdOutlineCancel /></IconButton>
+                  <ModalCerrarOT
+                    isOpen={abrirModal}
+                    setIsOpen={setAbrirModal}
+                    method={""} />
+                </div>
+
+              }
+              {
+                detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0].modelo != "medidores" &&
+                <div>
+                  <IconButton title="Cerrar orden de trabajo" onClick={abrirModalGG2}><MdOutlineCancel /></IconButton>
+                  <ModalCerrarOT2
+                    isOpen={abrirModal2}
+                    setIsOpen={setAbrirModal2}
+                    method={""} />
+                </div>
+
+
+              }
+
+
+
             </div>
             <div className="p-4 bg-muted shadow-md rounded-md space-y-2 ">
               <div className="flex space-x-4 items-center">
@@ -164,11 +245,11 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
                 <div className="mt-[0.9vh]">
                   {detalleOrdenDeTrabajoTomaMonitor2?.created_at
                     ? new Date(
-                        detalleOrdenDeTrabajoTomaMonitor2.created_at
-                      ).toLocaleString("es-ES", {
-                        dateStyle: "short",
-                        timeStyle: "short",
-                      })
+                      detalleOrdenDeTrabajoTomaMonitor2.created_at
+                    ).toLocaleString("es-ES", {
+                      dateStyle: "short",
+                      timeStyle: "short",
+                    })
                     : "Fecha no disponible"}
                 </div>
               </div>

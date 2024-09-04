@@ -14,11 +14,11 @@ import { ZustandFiltrosOrdenTrabajo } from '../../../contexts/ZustandFiltrosOt.t
 
 export default function MonitorOrdenDeTrabajoTable() {
 
-  const {setDataOrdenDeTrabajoMonitor, dataOrdenDeTrabajoMonitor, setLoadingTable, 
-    loadingTable, 
-    informacionRecibidaPorFiltros,boolUsoFiltros, valorParaSaberSiUsaLaTablaDeFiltros,detalleOrdenDeTrabajoTomaMonitor2, setDetalleOrdenDeTrabajoTomaMonitor2} = ZustandFiltrosOrdenTrabajo();
+  const { setDataOrdenDeTrabajoMonitor, dataOrdenDeTrabajoMonitor, setLoadingTable,
+    loadingTable,
+    informacionRecibidaPorFiltros, boolUsoFiltros, valorParaSaberSiUsaLaTablaDeFiltros, detalleOrdenDeTrabajoTomaMonitor2, setDetalleOrdenDeTrabajoTomaMonitor2 } = ZustandFiltrosOrdenTrabajo();
 
-    const [abrirModal, setAbrirModal] = useState(false);
+  const [abrirModal, setAbrirModal] = useState(false);
 
 
   useEffect(() => {
@@ -43,14 +43,13 @@ export default function MonitorOrdenDeTrabajoTable() {
 
   //metodo para las filas
 
-  const handleRowClick = (monitor: MonitorOrden) =>
-  {
+  const handleRowClick = (monitor: MonitorOrden) => {
     //setAnomalia(anomalia);
     console.log("este es el monitor 1", monitor);
     setAbrirModal(true);
   };
 
-  
+
   const handleRowClick2 = (monitor2: MonitorOrden2) => {
     console.log("ESTE ES EL MONITOR 2", monitor2);
     if (!monitor2) {
@@ -60,31 +59,34 @@ export default function MonitorOrdenDeTrabajoTable() {
     setDetalleOrdenDeTrabajoTomaMonitor2(monitor2);
     setAbrirModal(true);
   };
-  
-    console.log("informacion obtenida desde la variable", detalleOrdenDeTrabajoTomaMonitor2);
+
+  //console.log("informacion obtenida desde la variable", detalleOrdenDeTrabajoTomaMonitor2);
 
   if (loadingTable) {
     return <div><Loader /></div>;
   }
 
+  console.log(detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0].modelo);
   return (
 
     <div>
-     
-     {
-      valorParaSaberSiUsaLaTablaDeFiltros ?
-      <DataTableMonitorOrdenDeTrabajo columns={columns2} data={informacionRecibidaPorFiltros} sorter='nombre' onRowClick={handleRowClick2}/>
-      :
-      <DataTableMonitorOrdenDeTrabajo columns={columns} data={dataOrdenDeTrabajoMonitor} sorter='nombre' onRowClick={handleRowClick2}/>
+
+      {
+        valorParaSaberSiUsaLaTablaDeFiltros ?
+          <DataTableMonitorOrdenDeTrabajo columns={columns2} data={informacionRecibidaPorFiltros} sorter='toma.codigo_toma' onRowClick={handleRowClick2} />
+          :
+          <DataTableMonitorOrdenDeTrabajo columns={columns} data={dataOrdenDeTrabajoMonitor} sorter='nombre' onRowClick={handleRowClick2} />
 
 
-     }
+      }
+      {
+        <ModalMonitorOrdenTrabajoTable
+          isOpen={abrirModal}
+          setIsOpen={setAbrirModal}
+          method={""}
+        />
+      }
 
-  <ModalMonitorOrdenTrabajoTable
-            isOpen={abrirModal}
-            setIsOpen={setAbrirModal}
-            method={""}
-          />
     </div>
   );
 }

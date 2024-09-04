@@ -13,7 +13,7 @@ export const Monitores = () => {
     {
       titulo: "Orden de trabajo",
       componente: <OrdenDeTrabajoMonitor />,
-      permission: "VerAnomalias"
+      permission: ""
     },
    
   ]

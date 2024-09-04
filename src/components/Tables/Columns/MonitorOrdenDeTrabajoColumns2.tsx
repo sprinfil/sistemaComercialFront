@@ -58,20 +58,19 @@ export const columns2: ColumnDef<MonitorOrden2>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "toma.codigo_toma",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Toma
-        </Button>
-      )
+    accessorFn: (row) => {
+      return row.toma?.codigo_toma;
     },
+    id: "toma.codigo_toma",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+      Toma
+      </Button>
+    ),
   },
- 
- 
   {
     accessorKey: "orden_trabajo_catalogo.descripcion",
     header: ({ column }) => {
