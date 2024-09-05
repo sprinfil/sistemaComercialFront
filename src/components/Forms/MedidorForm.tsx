@@ -33,11 +33,7 @@ import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import { Switch } from "../ui/switch.tsx";
 import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 import { useBreadcrumbStore } from "../../contexts/ZustandGeneralUsuario.tsx";
-import {  Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,} from "@radix-ui/react-select";
+
 
 
 
@@ -80,6 +76,7 @@ const MedidorForm = () => {
             marca: medidor != null ? medidor.marca : "",
             diametro: medidor != null ? medidor.diametro : "",
             tipo: medidor != null ? medidor.tipo : "",
+            lectura_inicial: medidor != null ? medidor.lectura_inicial : "",
             estatus: false,
         },
     })
@@ -164,6 +161,8 @@ const MedidorForm = () => {
 
     function onSubmit(values: z.infer<typeof medidorSchema>) {
         console.log("submit");
+
+        
         const estadoConvertido = values.estatus ? 'activo' : 'inactivo';
 
             const datosAEnviar = {
@@ -174,6 +173,8 @@ const MedidorForm = () => {
 
         setLoading(true);
         if (accion == "crear") {
+
+            
             axiosClient.post(`/medidor/nuevo`, datosAEnviar)
                 .then((response) => {
                     console.log(response)
@@ -186,6 +187,7 @@ const MedidorForm = () => {
                         marca: "",
                         diametro: "",
                         tipo: "",
+                        lectura_inicial: "",
                         estatus: false,
                     });
                     form.reset({
@@ -195,6 +197,7 @@ const MedidorForm = () => {
                         marca: "",
                         diametro: "",
                         tipo: "",
+                        lectura_inicial: "",
                         estatus: false,
                     });
                     getMedidores();
@@ -264,6 +267,7 @@ const MedidorForm = () => {
             const response = await axiosClient.get(`/medidores/toma/${usuariosEncontrados[0].tomas[0].id}`);
             setLoadingTable(false);
             setMedidores(response.data);
+            console.log(response.data)
         } catch (error) {
             setLoading(false);
             errorToast();
@@ -295,6 +299,7 @@ const MedidorForm = () => {
                 marca: "",
                 diametro: "",
                 tipo: "",
+                lectura_inicial: "", 
                 estatus: false,
             });
             setMedidor({});
@@ -309,6 +314,7 @@ const MedidorForm = () => {
                 marca: "",
                 diametro: "",
                 tipo: "",
+                lectura_inicial: "",          
                 estatus: false,
             });
             setMedidor({});
@@ -327,6 +333,7 @@ const MedidorForm = () => {
                 marca: "",
                 diametro: "",
                 tipo: "",
+                lectura_inicial: "",               
                 estado: false,
             });
             setMedidor({
@@ -336,6 +343,7 @@ const MedidorForm = () => {
                 marca: "",
                 diametro: "",
                 tipo: "",
+                lectura_inicial: "",           
                 estatus: false,
             });
         }
@@ -351,6 +359,7 @@ const MedidorForm = () => {
                 marca: medidor.marca,
                 diametro: medidor.diametro,
                 tipo: medidor.tipo,
+                lectura_inicial: medidor.lectura_inicial,           
                 estatus: medidor.estatus === "activo" // Convertir "activo" a true y "inactivo" a false
             });
         }
@@ -383,6 +392,7 @@ const MedidorForm = () => {
             marca: medidor.marca,
             diametro: medidor.diametro,
             tipo: medidor.tipo,
+            lectura_inicial: medidor.lectura_inicial,     
             estatus: medidor.estatus === "activo"  // 
         });
     },[medidor, usuariosEncontrados])
@@ -485,6 +495,25 @@ const MedidorForm = () => {
                                 </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="lectura_inicial"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Lectura inical</FormLabel>
+                                    <FormControl>
+                                        <Input readOnly={!abrirInput} placeholder="Escribe la lectura inicial" {...field} />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Lectura inicial.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        
+                        
                     <FormField
                             control={form.control}
                             name="estatus"

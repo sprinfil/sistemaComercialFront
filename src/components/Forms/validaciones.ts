@@ -134,6 +134,7 @@ export const medidorSchema = z.object({
   marca: z.string().min(1, "El Nombre es requerido"),
   diametro: z.string().min(1, "El Nombre es requerido"),
   tipo: z.string().min(1, "El Nombre es requerido"),
+  lectura_inicial: z.string().min(1, "El Nombre es requerido"),
   estatus: z.boolean()
 
 })

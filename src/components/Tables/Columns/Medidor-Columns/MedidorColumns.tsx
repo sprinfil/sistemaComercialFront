@@ -14,6 +14,7 @@ export type Medidor = {
   diametro: string;
   tipo: string;
   estatus: boolean;
+  lectura_inicial: string;
   nombreEstado: string;
 };
 
