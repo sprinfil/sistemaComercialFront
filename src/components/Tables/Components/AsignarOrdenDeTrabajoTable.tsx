@@ -20,29 +20,24 @@ export default function AsignarOrdenDeTrabajoTable() {
 
 
   console.log("esto llego para asignar individual",usuariosEncontrados);
-  // Definir getAnomalias usando useCallback para prevenir dependencias innecesarias
+
   const getAnomalias = useCallback(async () => {
     if (!usuariosEncontrados.length) return; // Asegúrate de que usuariosEncontrados tenga datos antes de proceder
-
     setLoadingTable(true);
-
-    // Limpiar el estado antes de la nueva consulta
-    setDataAsignarOtIndividual([]);
-
     try {
       const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0]?.tomas[0]?.codigo_toma}`);
-      console.log('Respuesta de la API:', response.data);
+      setLoadingTable(false);
+      console.log(response.data.data);
       setDataAsignarOtIndividual(response.data.data);
     } catch (error) {
-      console.error("Failed to fetch anomalias:", error);
-    } finally {
       setLoadingTable(false);
+      console.error("Failed to fetch anomalias:", error);
     }
   }, [usuariosEncontrados]); // Solo depende de usuariosEncontrados
 
   useEffect(() => {
-    // Solo llama a getAnomalias si usuariosEncontrados tiene contenido y no está en carga
-    if (usuariosEncontrados.length > 0 && !loadingTable) {
+    // Solo llama a getAnomalias si usuariosEncontrados tiene contenido y no ha sido llamada ya
+    if (usuariosEncontrados.length > 0) {
       getAnomalias();
     }
   }, [usuariosEncontrados, getAnomalias]);

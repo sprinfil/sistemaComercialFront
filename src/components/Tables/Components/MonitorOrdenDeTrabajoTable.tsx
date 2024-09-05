@@ -17,7 +17,8 @@ export default function MonitorOrdenDeTrabajoTable() {
   const { setDataOrdenDeTrabajoMonitor, dataOrdenDeTrabajoMonitor, setLoadingTable,
     loadingTable,
     informacionRecibidaPorFiltros, boolUsoFiltros, valorParaSaberSiUsaLaTablaDeFiltros, detalleOrdenDeTrabajoTomaMonitor2, 
-    setDetalleOrdenDeTrabajoTomaMonitor2, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo,setLoadingTableFiltrarOrdenDeTrabajoMasivas, loadingTableFiltrarOrdenDeTrabajoMasivas} = ZustandFiltrosOrdenTrabajo();
+    setDetalleOrdenDeTrabajoTomaMonitor2, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, 
+    setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo,setLoadingTableFiltrarOrdenDeTrabajoMasivas, loadingTableFiltrarOrdenDeTrabajoMasivas, setIsOpenPadreModalDetalleMonitorOT} = ZustandFiltrosOrdenTrabajo();
 
   const [abrirModal, setAbrirModal] = useState(false);
 
@@ -47,7 +48,7 @@ export default function MonitorOrdenDeTrabajoTable() {
   const handleRowClick = (monitor: MonitorOrden) => {
     //setAnomalia(anomalia);
     console.log("este es el monitor 1", monitor);
-    setAbrirModal(true);
+    setIsOpenPadreModalDetalleMonitorOT(true);
   };
 
 
@@ -58,7 +59,7 @@ export default function MonitorOrdenDeTrabajoTable() {
       return;
     }
     setDetalleOrdenDeTrabajoTomaMonitor2(monitor2);
-    setAbrirModal(true);
+    setIsOpenPadreModalDetalleMonitorOT(true);
   };
 
   //console.log("informacion obtenida desde la variable", detalleOrdenDeTrabajoTomaMonitor2);
@@ -81,11 +82,7 @@ export default function MonitorOrdenDeTrabajoTable() {
 
       }
       {
-        <ModalMonitorOrdenTrabajoTable
-          isOpen={abrirModal}
-          setIsOpen={setAbrirModal}
-          method={""}
-        />
+        <ModalMonitorOrdenTrabajoTable/>
       }
 
     </div>

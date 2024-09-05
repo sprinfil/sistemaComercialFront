@@ -23,12 +23,14 @@ import ModalCerrarOT from "./ModalCerrarOT";
 import ModalCerrarOT2 from "./ModalCerrarOT2";
 
 
-const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
+const ModalMonitorOrdenTrabajoTable = () => {
   const { toast } = useToast();
   const {
     arregloCrearOrdenesDeTrabajo,
     setDataOrdenesDeTrabajoHistorialToma,
-    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor
+    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor,setIsOpenHijoModalDetalleMonitorOT, 
+    isOpenPadreModalDetalleMonitorOT, setIsOpenPadreModalDetalleMonitorOT,
+    setIsOpenHijoFormularioModalDetalleMonitorOT, isOpenHijoFormularioModalDetalleMonitorOT
   } = ZustandFiltrosOrdenTrabajo();
 
   const {
@@ -74,12 +76,12 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
   const abrirModalGG = () => {
     //setAnomalia(anomalia);
     //setAccion("ver");
-    setAbrirModal(true);
+    setIsOpenHijoFormularioModalDetalleMonitorOT(true);
   };
   const abrirModalGG2 = () => {
     //setAnomalia(anomalia);
     //setAccion("ver");
-    setAbrirModal2(true);
+    setIsOpenHijoModalDetalleMonitorOT(true);
   };
 
   useEffect(() => {
@@ -169,7 +171,7 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
   console.log(detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.accion);
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+    <AlertDialog open={isOpenPadreModalDetalleMonitorOT} onOpenChange={setIsOpenPadreModalDetalleMonitorOT}>
       <AlertDialogContent className="max-w-[65vh]">
         <AlertDialogHeader>
           <AlertDialogTitle>
@@ -196,10 +198,7 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
               detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.accion == "registrar" &&
                 <div>
                   <IconButton title="Cerrar orden de trabajo" onClick={abrirModalGG}><MdOutlineCancel /></IconButton>
-                  <ModalCerrarOT
-                    isOpen={abrirModal}
-                    setIsOpen={setAbrirModal}
-                    method={""} />
+                  <ModalCerrarOT/>
                 </div>
 
               }
@@ -207,10 +206,7 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
                 detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.modelo != "medidores" &&
                 <div>
                   <IconButton title="Cerrar orden de trabajo" onClick={abrirModalGG2}><MdOutlineCancel /></IconButton>
-                  <ModalCerrarOT2
-                    isOpen={abrirModal2}
-                    setIsOpen={setAbrirModal2}
-                    method={""} />
+                  <ModalCerrarOT2 />
                 </div>
 
 
@@ -301,11 +297,11 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setIsOpen(false)}>
+          <AlertDialogCancel onClick={() => setIsOpenPadreModalDetalleMonitorOT(false)}>
             Cancelar
           </AlertDialogCancel>
 
-          <AlertDialogAction onClick={() => setIsOpen(false)}>
+          <AlertDialogAction onClick={() => setIsOpenPadreModalDetalleMonitorOT(false)}>
             Aceptar
           </AlertDialogAction>
         </AlertDialogFooter>

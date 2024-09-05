@@ -132,6 +132,7 @@ export const registroMedidotOtSchema = z.object({
   tipo: z.string(),
   estatus: z.boolean(),
   fecha_instalacion: z.string(),
+  lectura_inicial: z.string(),
 
 
 })

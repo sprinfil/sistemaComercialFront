@@ -55,7 +55,7 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
   };
 
   console.log(informacionRecibidaPorFiltros);
-  if (loadingTableModalAsignarOperadorTable) {
+  if (loadingTable) {
     return <div><Loader /></div>;
   }
 
@@ -66,7 +66,7 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
     <div>
       {
         asignadasEnToma ?
-        <DataTableAsignarOTIndividual2 columns={columns} data={informacionRecibidaPorFiltros} sorter='' onRowClick={handleRowClick}/>
+        <DataTableAsignarOTIndividual2 columns={columns} data={data} sorter='' onRowClick={handleRowClick}/>
 
         :
         <DataTableAsignarOTIndividual columns={columns} data={data} sorter='toma.codigo_toma' onRowClick={handleRowClick}/>

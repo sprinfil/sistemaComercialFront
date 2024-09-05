@@ -23,6 +23,7 @@ export type MonitorOrden2 = {
   descripcion: string
   facturable: string
   estado: boolean
+  
   toma: {
     codigo_toma: string
     libro:

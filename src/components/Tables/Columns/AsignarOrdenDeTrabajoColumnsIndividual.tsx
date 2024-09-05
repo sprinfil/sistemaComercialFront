@@ -95,7 +95,7 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.toma.clave_catastral;
+      return row?.toma?.clave_catastral;
     },
     id: "toma.clave_catastral",
     header: ({ column }) => (

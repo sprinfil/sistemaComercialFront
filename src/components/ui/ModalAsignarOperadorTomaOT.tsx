@@ -108,45 +108,71 @@ console.log(tipoOperacion);
       };
 
      
-      function onSubmit(values: z.infer<typeof OrdenDeTrabajoAsignarIndividualSchema>)
-      { 
-        
+      function onSubmit(values: z.infer<typeof OrdenDeTrabajoAsignarIndividualSchema>) { 
         const values2 = {
           id: arregloAsignarIndividualTomaAOperador[0]?.id,
           id_empleado_encargado: values.id_empleado_encargado
-        }
-    
+        };
+      
         const ordenes_trabajo = {
           ordenes_trabajo: [values2]
-        }
-    
-        console.log(ordenes_trabajo)
-    
-    
-    
-        try{
-          const response = axiosClient.put('/OrdenTrabajo/update', ordenes_trabajo)
-          console.log(response);
-          toast({
-            title: "¡Éxito!",
-            description: "La orden de trabajo se ha asignado correctamente",
-            variant: "success",
-            
-        })
-          setIsOpen(false);
-          getOrdenDeTrabajoDelUsuario();
-         
-        }
-        catch(response){
-          console.log(response);
-          toast({
-            variant: "destructive",
-            title: "Oh, no. Error",
-            description: "Algo salió mal.",
-            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-        })
-        }
-      };
+        };
+      
+        console.log(ordenes_trabajo);
+      
+        axiosClient.put('/OrdenTrabajo/update', ordenes_trabajo)
+          .then(response => {
+            // Si la respuesta es exitosa (status 200-299)
+            console.log(response);
+            toast({
+              title: "¡Éxito!",
+              description: "La orden de trabajo se ha asignado correctamente.",
+              variant: "success",
+            });
+            setIsOpen(false);
+            getOrdenDeTrabajoDelUsuario();
+          })
+          .catch(error => {
+            // Manejo de errores
+            console.log(error);
+      
+            // Verificar si el error es una respuesta de Axios
+            if (error.response) {
+              const statusCode = error.response.status;
+              const errorMessage = error.response.data?.message || "Ha ocurrido un error inesperado.";
+      
+              // Mostrar mensaje basado en el código de estado HTTP
+              if (statusCode === 500) {
+                toast({
+                  variant: "destructive",
+                  title: "Oh, no. Error",
+                  description: "Selecciona una orden de trabajo.",
+                  action: (
+                    <ToastAction altText="Try again">Intentar de nuevo</ToastAction>
+                  ),
+                });
+              } else {
+                // Otros códigos de estado
+                toast({
+                  variant: "destructive",
+                  title: "Oh, no. Error",
+                  description: errorMessage,
+                  action: (
+                    <ToastAction altText="Try again">Intentar de nuevo</ToastAction>
+                  ),
+                });
+              }
+            } else {
+              // Error no relacionado con la respuesta de Axios
+              toast({
+                variant: "destructive",
+                title: "Oh, no. Error",
+                description: "Algo salió mal.",
+                action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+              });
+            }
+          });
+      }
 
 
     return (

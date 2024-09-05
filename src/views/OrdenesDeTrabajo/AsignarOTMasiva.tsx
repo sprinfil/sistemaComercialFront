@@ -56,7 +56,7 @@ export const AsignarOTMasiva = () => {
   const { isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
     setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador,
      arregloAsignarIndividualTomaAOperador, setLoadingTable, loadingTable, selectedAction, 
-     setSelectedAction, setDataAsignarOtIndividual, informacionAsignacionMasivaRecibidaPorFiltros, setInformacionAsignacionMasivaRecibidaPorFiltros} = ZustandFiltrosOrdenTrabajo();
+     setSelectedAction, setDataAsignarOtIndividual, informacionAsignacionMasivaRecibidaPorFiltros, setInformacionAsignacionMasivaRecibidaPorFiltros,setboolControlDetalleUsuarioAsignarIndividual} = ZustandFiltrosOrdenTrabajo();
 
 
 
@@ -220,6 +220,11 @@ const getOrdenesDeTrabajo = async () => {
   }
 };
 
+const handleControlBuscarUsuarioIndividual = () => 
+{
+  setboolControlDetalleUsuarioAsignarIndividual(true);
+}
+
 
 return (
   <div>
@@ -254,7 +259,7 @@ return (
                 <div className='flex justify-center items-center'>
                   <ModalMasFiltros
                     trigger={
-                      <IconButton title="Más Filtros">
+                      <IconButton title="Más Filtros" onClick={handleControlBuscarUsuarioIndividual}>
                         <FaSearch />
                       </IconButton>
                     }

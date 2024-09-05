@@ -103,20 +103,35 @@ const ModalGenerarOrdenDeTrabajo = ({
       ],
     };
     console.log(values2);
+  
     try {
       const response = await axiosClient.post(`OrdenTrabajo/create`, values2);
-      setIsOpen(false);
-      setLoadingTable(false);
-      console.log(response);
-      toast({
-        title: "¡Éxito!",
-        description: "Se ha creado la orden de trabajo.",
-        variant: "success",
-      });
-      getOrdenDeTrabajoDelUsuario();
+  
+      if (response.status === 202) {
+        const errorMessage = response.data?.message || "Ha ocurrido un error inesperado.";
+  
+        toast({
+          variant: "destructive",
+          title: "Oh, no. Error",
+          description: errorMessage,
+          action: (
+            <ToastAction altText="Try again">Intentar de nuevo</ToastAction>
+          ),
+        });
+      } else {
+        setIsOpen(false);
+        setLoadingTable(false);
+        console.log(response);
+        toast({
+          title: "¡Éxito!",
+          description: "Se ha creado la orden de trabajo.",
+          variant: "success",
+        });
+        getOrdenDeTrabajoDelUsuario();
+      }
     } catch (error) {
       setLoadingTable(false);
-      console.log(error);
+      console.error("Error en la solicitud:", error);
       toast({
         variant: "destructive",
         title: "Oh, no. Error",

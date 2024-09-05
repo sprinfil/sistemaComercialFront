@@ -3,6 +3,7 @@ import { AsignarOrdenDeTrabajo } from '../components/Tables/Columns/AsignarOrden
 import { OrdenDeTrabajoCrearTomas } from '../components/Tables/Columns/OrdenDeTrabajoCrearTomas';
 import { OrdenDeTrabajo } from '../components/Tables/Columns/AsignarOrdenDeTrabajoColumnsIndividual';
 import { MonitorOrden2 } from '../components/Tables/Columns/MonitorOrdenDeTrabajoColumns2';
+import { BuscarUsuario } from "../components/Tables/Columns/ContratoConsultaUsuarioColumns";
 
 type ordenTrabajoCerrar =
 {
@@ -86,6 +87,20 @@ interface FiltrosOrdenTrabajo {
   setLoadingTablePonerOTMasivas: (loadingTablePonerOTMasivas:boolean) => void;
   loadingTableMonitor: boolean;
   setLoadingTableMonitor: (loadingTableMonitor:boolean) => void;
+  usuariosEncontradosParaAsignarIndividualmente: BuscarUsuario[];
+  setUsuariosEncontradosParaAsignarIndividualmente: (usuariosEncontradosParaAsignarIndividualmente: BuscarUsuario[]) => void;
+  boolControlDetalleUsuarioAsignarIndividual: boolean;
+  setboolControlDetalleUsuarioAsignarIndividual: (boolControlDetalleUsuarioAsignarIndividual: boolean) => void;
+  isOpenPadreModalDetalleMonitorOT: boolean;
+  setIsOpenPadreModalDetalleMonitorOT: (isOpenPadreModalDetalleMonitorOT: boolean) => void;
+  isOpenHijoModalDetalleMonitorOT: boolean;
+  setIsOpenHijoModalDetalleMonitorOT: (isOpenHijoModalDetalleMonitorOT: boolean) => void;
+  isOpenHijoFormularioModalDetalleMonitorOT: boolean;
+  setIsOpenHijoFormularioModalDetalleMonitorOT: (isOpenHijoFormularioModalDetalleMonitorOT: boolean) => void;
+  isOpenHijoFormularioModalMonitorOT: boolean;
+  setIsOpenHijoFormularioModalMonitorOT: (isOpenHijoFormularioModalMonitorOT: boolean) => void;
+
+  
 }
 
 export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => ({
@@ -119,7 +134,7 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setvalorParaSaberSiUsaLaTablaDeFiltros: (valorParaSaberSiUsaLaTablaDeFiltros) => set({valorParaSaberSiUsaLaTablaDeFiltros}),
   detalleOrdenDeTrabajoTomaMonitor2: [],
   setDetalleOrdenDeTrabajoTomaMonitor2: (detalleOrdenDeTrabajoTomaMonitor2) => set({detalleOrdenDeTrabajoTomaMonitor2}),
-  selectedAction: '',
+  selectedAction: 'masivamente',
   setSelectedAction: (selectedAction) => set({selectedAction}),
   dataAsignarOtIndividual: [],
   setDataAsignarOtIndividual: (dataAsignarOtIndividual) => set({dataAsignarOtIndividual}),
@@ -163,5 +178,17 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setLoadingTablePonerOTMasivas: (loadingTablePonerOTMasivas) => set({loadingTablePonerOTMasivas}),
   loadingTableMonitor: false,
   setLoadingTableMonitor: (loadingTableMonitor) => set({loadingTableMonitor}),
+    usuariosEncontradosParaAsignarIndividualmente: [],
+  setUsuariosEncontradosParaAsignarIndividualmente: (usuarios) => set({ usuariosEncontradosParaAsignarIndividualmente: usuarios }),
+  boolControlDetalleUsuarioAsignarIndividual: false,
+  setboolControlDetalleUsuarioAsignarIndividual: (boolControlDetalleUsuarioAsignarIndividual) => set({boolControlDetalleUsuarioAsignarIndividual}),
+  isOpenPadreModalDetalleMonitorOT: false,
+  setIsOpenPadreModalDetalleMonitorOT: (isOpenPadreModalDetalleMonitorOT) => set({isOpenPadreModalDetalleMonitorOT}),
+  isOpenHijoModalDetalleMonitorOT: false,
+  setIsOpenHijoModalDetalleMonitorOT: (isOpenHijoModalDetalleMonitorOT) => set({isOpenHijoModalDetalleMonitorOT}),
+  isOpenHijoFormularioModalDetalleMonitorOT: false,
+  setIsOpenHijoFormularioModalDetalleMonitorOT: (isOpenHijoFormularioModalDetalleMonitorOT) => set({isOpenHijoFormularioModalDetalleMonitorOT}),
+  isOpenHijoFormularioModalMonitorOT: false,
+  setIsOpenHijoFormularioModalMonitorOT: (isOpenHijoFormularioModalMonitorOT) => set({isOpenHijoFormularioModalMonitorOT}),
 }));
 

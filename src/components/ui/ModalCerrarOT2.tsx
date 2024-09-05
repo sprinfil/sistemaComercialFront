@@ -37,13 +37,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { cerrarOtSchema } from "../Forms/validaciones.ts";
 
-const ModalCerrarOT2 = ({ isOpen, setIsOpen, method }) => {
+const ModalCerrarOT2 = () => {
 
   const { toast } = useToast();
   const {
     arregloCrearOrdenesDeTrabajo,
     setDataOrdenesDeTrabajoHistorialToma,
-    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor
+    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor, setIsOpenHijoModalDetalleMonitorOT, isOpenHijoModalDetalleMonitorOT, setIsOpenPadreModalDetalleMonitorOT
   } = ZustandFiltrosOrdenTrabajo();
 
   const {
@@ -155,15 +155,41 @@ const ModalCerrarOT2 = ({ isOpen, setIsOpen, method }) => {
     }
   };
 
+  console.log(detalleOrdenDeTrabajoTomaMonitor2);
   function onSubmit(values: z.infer<typeof cerrarOtSchema>) {
-    console.log("valores ingresados", values);
 
-    axiosClient.post(`/AnomaliasCatalogo/create`, values)
+    const values2 = {
+      orden_trabajo: {
+        id: detalleOrdenDeTrabajoTomaMonitor2?.id,
+        id_empleado_asigno:  detalleOrdenDeTrabajoTomaMonitor2?.id_empleado_asigno,
+        id_orden_trabajo_catalogo: detalleOrdenDeTrabajoTomaMonitor2?.id_orden_trabajo_catalogo,
+        observaciones: values.obervaciones,
+        material_utilizado: values.material_utilizado,
+        genera_OT_encadenadas: false
+      }
+    }
+    console.log("valores ingresados", values2);
+
+    axiosClient.put(`OrdenTrabajo/cerrar`, values2)
       .then((response) => {
         console.log(response);
+        setIsOpenHijoModalDetalleMonitorOT(false);
+        setIsOpenPadreModalDetalleMonitorOT(false);
+        toast({
+          title: "¡Éxito!",
+          description: "La OT se  ha cerrado correctamente.",
+          variant: "success",
+
+      })
       })
       .catch((response) => {
         console.log(response);
+        toast({
+          variant: "destructive",
+          title: "Oh, no. Error",
+          description: "Algo pasó mal.",
+          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+      })
       });
   }
 
@@ -176,14 +202,9 @@ const ModalCerrarOT2 = ({ isOpen, setIsOpen, method }) => {
     },
   });
 
-  const handleca = () =>
-  {
-    setIsOpen(false);
-
-  }
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+    <AlertDialog open={isOpenHijoModalDetalleMonitorOT} onOpenChange={setIsOpenHijoModalDetalleMonitorOT}>
       <AlertDialogContent className="max-w-[65vh]">
         <AlertDialogHeader>
           <AlertDialogTitle>
@@ -228,7 +249,11 @@ const ModalCerrarOT2 = ({ isOpen, setIsOpen, method }) => {
                   )}
                 />
                 <div className="flex justify-end">
-                <Button type="submit" onClick={handleca}>Guardar</Button>
+                  <div className="flex space-x-5">
+                  <Button onClick={() => setIsOpenHijoModalDetalleMonitorOT(false)}>Cancelar </Button>
+                  <Button type="submit">Guardar</Button>
+                  </div>
+
 
                   </div>
               </form>

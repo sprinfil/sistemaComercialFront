@@ -38,13 +38,14 @@ import { z } from "zod";
 import { cerrarOtSchema } from "../Forms/validaciones.ts";
 import ModalRegistroOT from "./ModalRegistroOT.tsx";
 
-const ModalCerrarOT = ({ isOpen, setIsOpen, method }) => {
+const ModalCerrarOT = () => {
 
   const { toast } = useToast();
   const {
     arregloCrearOrdenesDeTrabajo,
     setDataOrdenesDeTrabajoHistorialToma,
-    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor, dataRegistroMedidorModalCerrarOT, setDataRegistroMedidorModalCerrarOT
+    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor, dataRegistroMedidorModalCerrarOT, setDataRegistroMedidorModalCerrarOT, setIsOpenHijoFormularioModalDetalleMonitorOT,
+    isOpenHijoFormularioModalDetalleMonitorOT, isOpenHijoFormularioModalMonitorOT, setIsOpenHijoFormularioModalMonitorOT
   } = ZustandFiltrosOrdenTrabajo();
 
   const {
@@ -99,7 +100,7 @@ const ModalCerrarOT = ({ isOpen, setIsOpen, method }) => {
   function onSubmit(values: z.infer<typeof cerrarOtSchema>) {
     console.log("valores ingresados", values);
     setDataRegistroMedidorModalCerrarOT(values);
-    setIsOpen(true);
+    setIsOpenHijoFormularioModalMonitorOT(true);
     setAbrirModal(true);
 
     
@@ -130,7 +131,7 @@ const ModalCerrarOT = ({ isOpen, setIsOpen, method }) => {
 
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+    <AlertDialog open={isOpenHijoFormularioModalDetalleMonitorOT} onOpenChange={setIsOpenHijoFormularioModalDetalleMonitorOT}>
     <AlertDialogContent className="max-w-[65vh]">
       <AlertDialogHeader>
         <AlertDialogTitle>
@@ -175,14 +176,15 @@ const ModalCerrarOT = ({ isOpen, setIsOpen, method }) => {
                 )}
               />
               <div className="flex justify-end">
+                  <div className="flex space-x-5">
+                <Button onClick={() => setIsOpenHijoFormularioModalDetalleMonitorOT(false)}>Cancelar </Button>
                 <Button type="submit">Guardar</Button>
+                </div>
+       
               </div>
             </form>
           </Form>
-          <ModalRegistroOT
-            isOpen={abrirModal}
-            setIsOpen={setAbrirModal}
-            method={""} />
+          <ModalRegistroOT />
         </AlertDialogDescription>
       </AlertDialogHeader>
     </AlertDialogContent>

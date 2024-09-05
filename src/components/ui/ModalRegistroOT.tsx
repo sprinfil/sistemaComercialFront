@@ -28,7 +28,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../../components/ui/form.tsx";
-import { Input } from '../../components/ui/input.tsx';
+import { Input } from "../../components/ui/input.tsx";
 import { Button } from "./button.tsx";
 import Loader from "./Loader.tsx";
 import { Textarea } from "./textarea.tsx";
@@ -36,14 +36,26 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { registroMedidotOtSchema } from "../Forms/validaciones.ts";
-
-const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
-
+import { Switch } from "./switch.tsx";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+const ModalRegistroOT = () => {
   const { toast } = useToast();
   const {
     arregloCrearOrdenesDeTrabajo,
     setDataOrdenesDeTrabajoHistorialToma,
-    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor, dataRegistroMedidorModalCerrarOT
+    detalleOrdenDeTrabajoTomaMonitor2,
+    setLoadingTable,
+    setDataOrdenDeTrabajoMonitor,
+    dataRegistroMedidorModalCerrarOT,
+    isOpenHijoFormularioModalMonitorOT,
+    setIsOpenHijoFormularioModalMonitorOT,
+    setIsOpenHijoFormularioModalDetalleMonitorOT,setLoadingTableFiltrarOrdenDeTrabajoMasivas,setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo
   } = ZustandFiltrosOrdenTrabajo();
 
   const {
@@ -80,58 +92,88 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
     setConsultaIdToma(usuariosEncontrados[0]);
   }, [usuariosEncontrados]);
 
-
   console.log(detalleOrdenDeTrabajoTomaMonitor2?.id);
-  let modelo = detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.modelo;
+  let modelo =
+    detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo
+      ?.orden_trabajo_accion[0]?.modelo;
   //aqui obtengo lo del modal anterIOR
-  console.log("informacion obtenida desde la variable", detalleOrdenDeTrabajoTomaMonitor2);
+  console.log(
+    "informacion obtenida desde la variable",
+    detalleOrdenDeTrabajoTomaMonitor2
+  );
+
+
+  const getOrdenDeTrabajoMonitor = async () => {
+    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
+    try {
+      const response = await axiosClient.get("OrdenTrabajo/NoAsignada");
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+      setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo(response.data.data);
+      console.log(response);
+    } catch (error) {
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+      console.error("Failed to fetch orden:", error);
+    }
+  };
+
 
   function onSubmit(values: z.infer<typeof registroMedidotOtSchema>) {
     console.log("valores ingresados", values);
+    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
     const values2 = {
-      orden_trabajo:
-      {
+      orden_trabajo: {
         id: detalleOrdenDeTrabajoTomaMonitor2?.id,
-        id_empleado_asigno:  detalleOrdenDeTrabajoTomaMonitor2?.id_empleado_asigno,
-        id_orden_trabajo_catalogo: detalleOrdenDeTrabajoTomaMonitor2?.id_orden_trabajo_catalogo,
+        id_empleado_asigno:
+          detalleOrdenDeTrabajoTomaMonitor2?.id_empleado_asigno,
+        id_orden_trabajo_catalogo:
+          detalleOrdenDeTrabajoTomaMonitor2?.id_orden_trabajo_catalogo,
         observaciones: dataRegistroMedidorModalCerrarOT?.obervaciones,
-        material_utilizado: dataRegistroMedidorModalCerrarOT?.material_utilizado,
-        genera_OT_encadenadas: false
+        material_utilizado:
+          dataRegistroMedidorModalCerrarOT?.material_utilizado,
+        genera_OT_encadenadas: false,
       },
-      modelos:
-      {
-        "medidores": 
-        {
-          numero_serie: values.numero_serie, 
+      modelos: {
+        medidores: {
+          numero_serie: values.numero_serie,
           marca: values.marca,
           diametro: values.diametro,
           tipo: values.tipo,
           estatus: values.estatus,
-         fecha_instalacion: values.fecha_instalacion,
-        }
-      }
-    }
-    
+          fecha_instalacion: values.fecha_instalacion,
+          lectura_inicial: values.lectura_inicial
+        },
+      },
+    };
+
     console.log(values2);
-    axiosClient.put(`/OrdenTrabajo/cerrar`, values2)
+    axiosClient
+      .put(`/OrdenTrabajo/cerrar`, values2)
       .then((response) => {
         console.log(response);
-        
-      toast({
-        title: "¡Éxito!",
-        description: "La orden de trabajo se ha cancelado correctamente",
-        variant: "success",
-      })
+
+        toast({
+          title: "¡Éxito!",
+          description: "La orden de trabajo se ha cerrado correctamente",
+          variant: "success",
+        });
+        setIsOpenHijoFormularioModalMonitorOT(false);
+        setIsOpenHijoFormularioModalDetalleMonitorOT(false);
+        getOrdenDeTrabajoMonitor();
+        setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
 
       })
-      .catch((response) => {
-        console.log(response);
+      .catch((error) => {
+        setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+        console.log(error);
+        const errorMessage = error.response?.data.message || "No se pudo cancelar";
         toast({
           variant: "destructive",
           title: "Oh, no. Error",
-          description: "No se pudo cancelar.",
-          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-        })
+          description: errorMessage,
+          action: (
+            <ToastAction altText="Try again">Intentar de nuevo</ToastAction>
+          ),
+        });
       });
   }
 
@@ -143,30 +185,32 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
       marca: "",
       diametro: "",
       tipo: "",
-      estatus: false,
-      fecha_instalacion:"",
-    
+      estatus: true,
+      fecha_instalacion: "",
+      lectura_inicial: "",
     },
   });
 
-  const handleca = () =>
-  {
-    setIsOpen(false);
-
-  }
+  const cerrar = () => {
+    setIsOpenHijoFormularioModalDetalleMonitorOT(false);
+  };
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+    <AlertDialog
+      open={isOpenHijoFormularioModalMonitorOT}
+      onOpenChange={setIsOpenHijoFormularioModalMonitorOT}
+    >
       <AlertDialogContent className="max-w-[120vh]">
         <AlertDialogHeader>
           <AlertDialogTitle>
-            <div className="flex space-x-2">
-              Registro de medidor 
-            </div>
+            <div className="flex space-x-2">Registro de medidor</div>
           </AlertDialogTitle>
           <AlertDialogDescription>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-2">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8 mt-2"
+              >
                 <FormField
                   control={form.control}
                   name="numero_serie"
@@ -174,11 +218,12 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
                     <FormItem>
                       <FormLabel>Numero de serie</FormLabel>
                       <FormControl>
-                        <Input placeholder="Escribe el numero de serie" {...field} />
+                        <Input
+                          placeholder="Escribe el numero de serie"
+                          {...field}
+                        />
                       </FormControl>
-                      <FormDescription>
-                        Numero de serie
-                      </FormDescription>
+                      <FormDescription>Numero de serie</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -190,10 +235,13 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
                     <FormItem>
                       <FormLabel>Marca</FormLabel>
                       <FormControl>
-                        <Input placeholder="Escribe la marca del medidor" {...field} />
+                        <Input
+                          placeholder="Escribe la marca del medidor"
+                          {...field}
+                        />
                       </FormControl>
                       <FormDescription>
-                       Escribe la marca del medidor 
+                        Escribe la marca del medidor
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -204,45 +252,92 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
                   name="diametro"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Diametro</FormLabel>
+                      <FormLabel>Diametro de la toma</FormLabel>
                       <FormControl>
-                        <Input placeholder="Escribe el diametro " {...field} />
+                      <Select
+                          onValueChange={(value) => field.onChange(value)}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecciona el diametro de la toma" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="2 pulgadas">2"</SelectItem>
+                            <SelectItem value="4 pulgadas">4"</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
-                      <FormDescription>
-                       Escribe el diametro
-                      </FormDescription>
+                      <FormDescription />
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                  <FormField
+                <FormField
                   control={form.control}
                   name="tipo"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tipo</FormLabel>
+                      <FormLabel>Tipo de medidor</FormLabel>
                       <FormControl>
-                        <Input placeholder="Escribe el tipo " {...field} />
+                        <Select
+                          onValueChange={(value) => field.onChange(value)}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecciona el tipo de medidor" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="electromagnetico">
+                              Electromagnético
+                            </SelectItem>
+                            <SelectItem value="digital">Digital</SelectItem>
+                            <SelectItem value="mecanico">Mecánico</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormDescription />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lectura_inicial"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Lectura inicial</FormLabel>
+                      <FormControl>
+                        <Input
+                        type="number"
+                          placeholder="Escribe la lectura inicial"
+                          {...field}
+                        />
                       </FormControl>
                       <FormDescription>
-                       Escribe el tipo
+                        Escribe la lectura inicial
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                 <FormField
+                <FormField
                   control={form.control}
                   name="estatus"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Estatus</FormLabel>
+                      <FormLabel className="">Estatus</FormLabel>
                       <FormControl>
-                        <Input placeholder="Escribe el tipo " {...field} />
+                        <Switch
+                          className="ml-2"
+                          checked={field.value}
+                          onCheckedChange={(checked) => field.onChange(checked)}
+                        />
                       </FormControl>
-                      <FormDescription>
-                       Activo
-                      </FormDescription>
+                      <FormDescription>Selecciona el estado.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -252,30 +347,38 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
                   name="fecha_instalacion"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Estatus</FormLabel>
+                      <FormLabel>Fecha de instalación</FormLabel>
                       <FormControl>
-                        <Input placeholder="Escribe el tipo " {...field} />
+                        <input
+                          type="datetime-local"
+                          {...field}
+                          className="shadcn-input p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ml-5"
+                        />
                       </FormControl>
                       <FormDescription>
-                       Fecha de instalacion
+                        Selecciona la fecha de instalación.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
-                <div className="flex justify-end">
-                <Button type="submit" onClick={handleca}>Guardar</Button>
 
-                  </div>
+                <div className="flex justify-end space-x-5">
+                <Button onClick={cerrar}>
+                    Cancelar
+                  </Button>
+                  <Button type="submit">
+                    Guardar
+                  </Button>
+                 
+                </div>
               </form>
             </Form>
           </AlertDialogDescription>
         </AlertDialogHeader>
-       
       </AlertDialogContent>
     </AlertDialog>
   );
-}
+};
 
 export default ModalRegistroOT;
