@@ -14,14 +14,8 @@ export type OrdenDeTrabajo = {
   nombre: string
   descripcion: string
   vigencias: string
-  servicio: string,
   momento_cargo: string
   genera_masiva: boolean
-  asigna_masiva: boolean
-  cancela_masiva: boolean,
-  cierra_masiva: boolean,
-  limite_ordenes: string,
-  publico_general: boolean,
   orden_trabajo_accion: orden_trabajo_accion[]
   ordenes_trabajo_cargos: orden_trabajo_cargos[]
   ordenes_trabajo_encadenadas: orden_trabajo_encadenadas[]
@@ -56,56 +50,42 @@ export type orden_trabajo_encadenadas = {
 
 
 export const columns: ColumnDef<OrdenDeTrabajo>[] = [
-  
   {
-    accessorFn: (row) => {
-      // Verifica la estructura de los datos en la consola
-      return row.orden_trabajo_catalogo?.descripcion;
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "nombre",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Nombre
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
     },
-    id: "orden_trabajo_catalogo.descripcion",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Tipo
-      </Button>
-    ),
   },
-  {
-    accessorKey: "estado",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Estado
-      </Button>
-    ),
-  },
-  {
-    accessorKey: "created_at",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Creada
-      </Button>
-    ),
-  },
-  {
-    accessorKey: "fecha_finalizada",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Finalización
-      </Button>
-    ),
-  },
- 
   {
     id: "actions",
     cell: ({ row }) => {

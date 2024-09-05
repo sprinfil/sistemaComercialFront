@@ -58,13 +58,11 @@ export function DataTableAsignarOTIndividual<TData, TValue>({
     saldoMinFiltro, saldoMaxFiltro,
   } = ZustandFiltrosOrdenTrabajo();
   const { usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT, idSeleccionadoTomaAsignacionOT, setIdSeleccionadoAsignarOrdenDeTrabajoToma, setInformacionRecibidaAsignarMasivamente} = ZustandGeneralUsuario();
-
   const table = useReactTable({
     data,
     columns,
     sorter,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,

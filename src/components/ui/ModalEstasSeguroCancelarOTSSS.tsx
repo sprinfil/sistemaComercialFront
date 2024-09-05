@@ -25,7 +25,7 @@ const ModalEstasSeguroCancelarOTSSS = ({ isOpen, setIsOpen, method }) => {
         loadingTable,
         setLoadingTable
     } = zustandOrdenTrabajoStore();
-    const { arregloCrearOrdenesDeTrabajo, setDataOrdenesDeTrabajoHistorialToma, informacionCerrarOtMasivamente} = ZustandFiltrosOrdenTrabajo();
+    const { arregloCrearOrdenesDeTrabajo, setDataOrdenesDeTrabajoHistorialToma, informacionCerrarOtMasivamente,setLoadingTableFiltrarOrdenDeTrabajoMasivas,setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} = ZustandFiltrosOrdenTrabajo();
 
 
     const { usuariosEncontrados, setUsuariosEncontrados, idSeleccionadoGenerarOrdenDETrabajoToma } = ZustandGeneralUsuario();
@@ -72,10 +72,24 @@ const ModalEstasSeguroCancelarOTSSS = ({ isOpen, setIsOpen, method }) => {
 
 
 console.log(informacionCerrarOtMasivamente);
+const getOrdenDeTrabajoMonitor = async () => {
+    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
+    try {
+      const response = await axiosClient.get("OrdenTrabajo/NoAsignada");
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+      setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo(response.data.data);
+      console.log(response);
+    } catch (error) {
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+      console.error("Failed to fetch orden:", error);
+    }
+  };
+
 
 const cancelarMasivamente = async () => {
 
-    
+    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
+
     const ids = informacionCerrarOtMasivamente.map(item => item.id);
 
     // Construye el objeto con la estructura deseada
@@ -88,9 +102,11 @@ const cancelarMasivamente = async () => {
     console.log(values);
 
     try {
-      const response = await axiosClient.delete("OrdenTrabajo/log_delete/masiva", values);
+      const response = await axiosClient.post("OrdenTrabajo/log_delete/masiva", values);
       console.log(response.data);  
       setIsOpen(false);
+      getOrdenDeTrabajoMonitor();
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
       toast({
         title: "¡Éxito!",
         description: "Se han cancelado masivamente",
@@ -100,6 +116,7 @@ const cancelarMasivamente = async () => {
     } 
     catch (response) {
        console.log(response)
+       setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
        toast({
         variant: "destructive",
         title: "Oh, no. Error",

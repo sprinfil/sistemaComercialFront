@@ -158,19 +158,23 @@ const ModalCerrarOT2 = () => {
   console.log(detalleOrdenDeTrabajoTomaMonitor2);
   function onSubmit(values: z.infer<typeof cerrarOtSchema>) {
 
-    const values2 = {
-      orden_trabajo: {
-        id: detalleOrdenDeTrabajoTomaMonitor2?.id,
-        id_empleado_asigno:  detalleOrdenDeTrabajoTomaMonitor2?.id_empleado_asigno,
-        id_orden_trabajo_catalogo: detalleOrdenDeTrabajoTomaMonitor2?.id_orden_trabajo_catalogo,
-        observaciones: values.obervaciones,
-        material_utilizado: values.material_utilizado,
-        genera_OT_encadenadas: false
-      }
-    }
-    console.log("valores ingresados", values2);
+  
+    const ordenes_trabajo =  [{
+      id: detalleOrdenDeTrabajoTomaMonitor2?.id,
+      id_empleado_asigno:  detalleOrdenDeTrabajoTomaMonitor2?.id_empleado_asigno,
+      id_orden_trabajo_catalogo: detalleOrdenDeTrabajoTomaMonitor2?.id_orden_trabajo_catalogo,
+      observaciones: values.obervaciones,
+      material_utilizado: values.material_utilizado,
+      genera_OT_encadenadas: false
+    }]
 
-    axiosClient.put(`OrdenTrabajo/cerrar`, values2)
+    const values3 = {
+      ordenes_trabajo: ordenes_trabajo
+    }
+ 
+    console.log("valores ingresados", values3);
+
+    axiosClient.put(`OrdenTrabajo/cerrar`, values3)
       .then((response) => {
         console.log(response);
         setIsOpenHijoModalDetalleMonitorOT(false);

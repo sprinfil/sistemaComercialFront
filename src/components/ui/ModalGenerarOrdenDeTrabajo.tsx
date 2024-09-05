@@ -144,65 +144,36 @@ const ModalGenerarOrdenDeTrabajo = ({
   };
 
   const GenerarOrdenDeTrabajoMasivaToma = async () => {
+    // Mapea el arreglo para crear el objeto con id_toma y id_orden_trabajo_catalogo
     const arreglo = arregloCrearOrdenesDeTrabajo.map((item) => ({
       id_toma: item.id,
       id_orden_trabajo_catalogo: idSeleccionadoGenerarOrdenDETrabajoToma,
     }));
+  
+    // Crea el objeto que se enviará en el cuerpo de la solicitud POST
     const values2 = {
       ordenes_trabajo: arreglo,
     };
+  
     console.log(values2);
+  
     try {
-      const response = await axiosClient.post(
-        `OrdenTrabajo/generar/masiva`,
-        values2
-      );
+      // Realiza la solicitud POST con axiosClient
+      const response = await axiosClient.post('OrdenTrabajo/generar/masiva', values2);
+  
+      // Cierra el modal o realiza alguna acción relacionada
       setIsOpen(false);
+  
+      // Maneja la respuesta y muestra un mensaje de éxito
       console.log(response.data);
       toast({
         title: "¡Éxito!",
         description: "Se ha creado la orden masiva de trabajo.",
         variant: "success",
       });
-
-      // Para acceder a los mensajes de error:
-      const errores = response.data; // Accede al array de errores
-
-      // Usa map para extraer los mensajes de error
-      const mensajesDeError = errores.map((errorObj) => errorObj.Error);
-
-      // Muestra los mensajes de error en la consola
-      console.log(mensajesDeError);
-
-      // Opcional: Mostrar los errores en un toast o en la UI
-      mensajesDeError.forEach((mensaje) => {
-        // Muestra un toast para cada mensaje de error
-        toast({
-          variant: "destructive",
-          title: "Oh, no. Error",
-          description: mensaje, // Muestra cada mensaje de error
-          action: (
-            <ToastAction altText="Try again">Intentar de nuevo</ToastAction>
-          ),
-        });
-      
-        // Si necesitas una lógica específica para ciertos mensajes, puedes usar una condición
-        if (mensaje.includes("supera el límite")) {
-          // Acción específica si el mensaje contiene cierto texto
-          console.log("Error específico detectado:", mensaje);
-      
-          // Muestra un toast específico si el error coincide con la condición
-          toast({
-            variant: "destructive",
-            title: "Error específico",
-            description: mensaje, // Usa el mensaje original en el toast
-            action: (
-              <ToastAction altText="Try again">Intentar de nuevo</ToastAction>
-            ),
-          });
-        }
-      });
+  
     } catch (error) {
+      // Maneja errores y muestra un mensaje de error
       console.log(error);
       toast({
         variant: "destructive",

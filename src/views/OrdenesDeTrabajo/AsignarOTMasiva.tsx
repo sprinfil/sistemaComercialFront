@@ -56,7 +56,15 @@ export const AsignarOTMasiva = () => {
   const { isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
     setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador,
      arregloAsignarIndividualTomaAOperador, setLoadingTable, loadingTable, selectedAction, 
-     setSelectedAction, setDataAsignarOtIndividual, informacionAsignacionMasivaRecibidaPorFiltros, setInformacionAsignacionMasivaRecibidaPorFiltros,setboolControlDetalleUsuarioAsignarIndividual} = ZustandFiltrosOrdenTrabajo();
+     setSelectedAction, setDataAsignarOtIndividual, informacionAsignacionMasivaRecibidaPorFiltros, 
+     setInformacionAsignacionMasivaRecibidaPorFiltros,setboolControlDetalleUsuarioAsignarIndividual,
+     isConcluidaChecked, setIsConcluidaChecked,
+     isCanceladaChecked, setIsCanceladaChecked,
+     isDomesticaChecked, setIsDomesticaChecked,
+     isComercialChecked, setIsComercialChecked,
+     isIndustrialChecked, setIsIndustrialChecked,
+     isEspecialChecked, setIsEspecialChecked,  idLibroFiltro, idRutaFiltro,
+     saldoMinFiltro, saldoMaxFiltro} = ZustandFiltrosOrdenTrabajo();
 
 
 
@@ -196,6 +204,14 @@ const getOrdenesDeTrabajo = async () => {
   const values = {
     asignada: isAsignadaChecked,
     no_asignada: isNoAsignadaChecked,
+    domestica: isDomesticaChecked,
+    comercial: isComercialChecked,
+    industrial: isIndustrialChecked,
+    especial: isEspecialChecked,
+    ruta_id: idRutaFiltro,
+    libro_id: idLibroFiltro,
+    saldo_min: saldoMinFiltro,
+    saldo_max: saldoMaxFiltro
   }
   console.log("VALORES ENVIADOS", values);
   setLoadingTable(true);

@@ -476,10 +476,9 @@ const OrdenDeTrabajoAccionesForm = () => {
                          </SelectTrigger>
                          <SelectContent>
                            <SelectItem value="toma">Tomas</SelectItem>
-                           <SelectItem value="medidor">Medidor</SelectItem>
+                           <SelectItem value="medidores">Medidor</SelectItem>
                            <SelectItem value="contratos">Contratos</SelectItem>
                            <SelectItem value="usuario">Usuario</SelectItem>
-
                          </SelectContent>
                        </Select>
                      )}

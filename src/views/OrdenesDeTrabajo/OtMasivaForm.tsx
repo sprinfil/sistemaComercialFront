@@ -48,10 +48,10 @@ export const OtMasivaForm = () => {
   const getOrdenesDeTrabajo = async () => {
     setLoadingTableMonitor(true);
     const values = {
-      asignada: isAsignadaChecked,
-      no_asignada: isNoAsignadaChecked,
-      concluida: isConcluidaChecked,
-      cancelada: isCanceladaChecked,
+      asignada: "",
+      no_asignada: "",
+      concluida: "",
+      cancelada: "",
       domestica: isDomesticaChecked,
       comercial: isComercialChecked,
       industrial: isIndustrialChecked,
@@ -63,12 +63,12 @@ export const OtMasivaForm = () => {
     }
     console.log("VALORES ENVIADOS", values);
     try {
-      const response = await axiosClient.post("OrdenTrabajo/filtros", values);
+      const response = await axiosClient.post("Toma/tipo/", values);
       console.log(response);
 
 
-      if (Array.isArray(response.data.ordenes_trabajo)) {
-        const tomas = response.data.ordenes_trabajo.map((item: any) => item.toma);
+      if (Array.isArray(response.data.tomas)) {
+        const tomas = response.data.tomas.map((item: any) => item);
 
         console.log("Tomas extraídas", tomas);
         setLoadingTableMonitor(false);
