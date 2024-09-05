@@ -17,7 +17,7 @@ export default function MonitorOrdenDeTrabajoTable() {
   const { setDataOrdenDeTrabajoMonitor, dataOrdenDeTrabajoMonitor, setLoadingTable,
     loadingTable,
     informacionRecibidaPorFiltros, boolUsoFiltros, valorParaSaberSiUsaLaTablaDeFiltros, detalleOrdenDeTrabajoTomaMonitor2, 
-    setDetalleOrdenDeTrabajoTomaMonitor2, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} = ZustandFiltrosOrdenTrabajo();
+    setDetalleOrdenDeTrabajoTomaMonitor2, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo,setLoadingTableFiltrarOrdenDeTrabajoMasivas, loadingTableFiltrarOrdenDeTrabajoMasivas} = ZustandFiltrosOrdenTrabajo();
 
   const [abrirModal, setAbrirModal] = useState(false);
 
@@ -27,14 +27,14 @@ export default function MonitorOrdenDeTrabajoTable() {
   }, []);
 
   const getOrdenDeTrabajoMonitor = async () => {
-    setLoadingTable(true);
+    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
     try {
       const response = await axiosClient.get("OrdenTrabajo/NoAsignada");
-      setLoadingTable(false);
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
       setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo(response.data.data);
       console.log(response);
     } catch (error) {
-      setLoadingTable(false);
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
       console.error("Failed to fetch orden:", error);
     }
   };
@@ -63,7 +63,7 @@ export default function MonitorOrdenDeTrabajoTable() {
 
   //console.log("informacion obtenida desde la variable", detalleOrdenDeTrabajoTomaMonitor2);
 
-  if (loadingTable) {
+  if (loadingTableFiltrarOrdenDeTrabajoMasivas) {
     return <div><Loader /></div>;
   }
 

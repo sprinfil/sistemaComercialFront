@@ -12,13 +12,13 @@ export default function OrdenDeTrabajoCrearTomasTable() {
 
 
 
-  const {informacionRecibidaPorFiltros, loadingTable, setLoadingTable, informacionRecibidaPorFiltrosGenerarOtMasiva} = ZustandFiltrosOrdenTrabajo();
+  const {informacionRecibidaPorFiltros, loadingTable, setLoadingTable, informacionRecibidaPorFiltrosGenerarOtMasiva, setLoadingTableMonitor, loadingTableMonitor} = ZustandFiltrosOrdenTrabajo();
 
   useEffect(() => {
     if (loadingTable) {
-      setLoadingTable(true);
+      setLoadingTableMonitor(true);
     } else {
-      setLoadingTable(false);
+      setLoadingTableMonitor(false);
     }
   }, [informacionRecibidaPorFiltrosGenerarOtMasiva]);
   //metodo para las filas
@@ -38,7 +38,7 @@ export default function OrdenDeTrabajoCrearTomasTable() {
 
     <div>
       {
-        loadingTable ? <Loader/>
+        loadingTableMonitor ? <Loader/>
         :
         <DataTableGenerarOrden columns={columns} data={informacionRecibidaPorFiltrosGenerarOtMasiva} sorter='nombre' onRowClick={handleRowClick}/>
 

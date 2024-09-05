@@ -19,11 +19,15 @@ export default function AsignarOrdenDeTrabajoTable() {
   const {setSelectedAction, selectedAction, dataAsignarOtIndividual, setDataAsignarOtIndividual, setLoadingTable, loadingTable} = ZustandFiltrosOrdenTrabajo();
 
 
-  //console.log("esto llego para asignar individual",usuariosEncontrados[0]?.tomas[0].codigo_toma);
+  console.log("esto llego para asignar individual",usuariosEncontrados[0]?.tomas[0]?.codigo_toma);
 
     useEffect(() => {
-      getAnomalias();
-    }, [selectedAction]);
+      if(usuariosEncontrados)
+      {
+        getAnomalias();
+
+      }
+    }, [usuariosEncontrados]);
 
     const [data,setData] = useState({});
   

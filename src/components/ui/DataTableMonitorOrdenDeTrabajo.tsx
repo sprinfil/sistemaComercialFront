@@ -55,8 +55,8 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
     isComercialChecked, setIsComercialChecked,
     isIndustrialChecked, setIsIndustrialChecked,
     isEspecialChecked, setIsEspecialChecked,
-    idLibroFiltro, idRutaFiltro,
-    saldoMinFiltro, saldoMaxFiltro,
+    idLibroFiltro, idRutaFiltro, setIdLibroFiltro, setIdRutaFiltro,
+    saldoMinFiltro, saldoMaxFiltro,setLoadingTableFiltrarOrdenDeTrabajoMasivas,
     setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} = ZustandFiltrosOrdenTrabajo();
   const table = useReactTable({
     data,
@@ -93,7 +93,7 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
 
   //METODO DE FILTRACION PARA CONSEGUIR LAS ORDENES DE TRABAJO Y PODER ASIGNARLAS
   const getOrdenesDeTrabajo = async () => {
-    setLoadingTable(true);
+    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
     const values = {
       
       asignada: isAsignadaChecked,
@@ -115,19 +115,21 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
       const response = await axiosClient.post("OrdenTrabajo/filtros", values);
       console.log(response);
       setvalorParaSaberSiUsaLaTablaDeFiltros(true);
-      setLoadingTable(false);
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
 
       if (Array.isArray(response.data.ordenes_trabajo)) {
         const tomas = response.data.ordenes_trabajo.map((item: any) => item);
 
         console.log("Tomas extraídas", tomas);
         setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo(tomas);
+        setIdLibroFiltro("");
+        setIdRutaFiltro("");
       } else {
         console.log("No jala", response.data.ordenes_trabajo);
       }
 
     } catch (error) {
-      setLoadingTable(false);
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
       console.error("Failed to fetch anomalias:", error);
     }
   };

@@ -70,16 +70,22 @@ interface FiltrosOrdenTrabajo {
   setIsEspecialChecked: (isEspecialChecked:boolean) => void;
   informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo: []
   setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo:(informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo:[]) => void;
-  idRutaFiltro: number;
-  setIdRutaFiltro: (idRutaFiltro:number) => void;
-  idLibroFiltro: number;
-  setIdLibroFiltro: (idLibroFiltro:number) => void;
+  idRutaFiltro: string;
+  setIdRutaFiltro: (idRutaFiltro:string) => void;
+  idLibroFiltro: string;
+  setIdLibroFiltro: (idLibroFiltro:string) => void;
   saldoMinFiltro:  string;
   setSaldoMinFiltro: (saldoMinFiltro:string) => void;
   saldoMaxFiltro:  string;
   setSaldoMaxFiltro: (saldoMaxFiltro:string) => void;
   informacionRecibidaAsignarMasivamente: []
   setInformacionRecibidaAsignarMasivamente:(informacionRecibidaAsignarMasivamente:[]) => void;
+  loadingTableFiltrarOrdenDeTrabajoMasivas: boolean;
+  setLoadingTableFiltrarOrdenDeTrabajoMasivas: (loadingTableFiltrarOrdenDeTrabajoMasivas:boolean) => void;
+  loadingTablePonerOTMasivas: boolean;
+  setLoadingTablePonerOTMasivas: (loadingTablePonerOTMasivas:boolean) => void;
+  loadingTableMonitor: boolean;
+  setLoadingTableMonitor: (loadingTableMonitor:boolean) => void;
 }
 
 export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => ({
@@ -141,9 +147,9 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setIsEspecialChecked: (isEspecialChecked) => set({isEspecialChecked}),
   informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo: [],
   setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo: (informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo) => set({informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo}),
-  idRutaFiltro: 0,
+  idRutaFiltro: "",
   setIdRutaFiltro: (idRutaFiltro) => set({idRutaFiltro}),
-  idLibroFiltro: 0,
+  idLibroFiltro: "",
   setIdLibroFiltro: (idLibroFiltro) => set({idLibroFiltro}),
   saldoMinFiltro: "",
   setSaldoMinFiltro: (saldoMinFiltro) => set({saldoMinFiltro}),
@@ -151,5 +157,11 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setSaldoMaxFiltro: (saldoMaxFiltro) => set({saldoMaxFiltro}),
   informacionRecibidaAsignarMasivamente: [],
   setInformacionRecibidaAsignarMasivamente: (informacionRecibidaAsignarMasivamente) => set({informacionRecibidaAsignarMasivamente}),
+  loadingTableFiltrarOrdenDeTrabajoMasivas: false,
+  setLoadingTableFiltrarOrdenDeTrabajoMasivas: (loadingTableFiltrarOrdenDeTrabajoMasivas) => set({loadingTableFiltrarOrdenDeTrabajoMasivas}),
+  loadingTablePonerOTMasivas: false,
+  setLoadingTablePonerOTMasivas: (loadingTablePonerOTMasivas) => set({loadingTablePonerOTMasivas}),
+  loadingTableMonitor: false,
+  setLoadingTableMonitor: (loadingTableMonitor) => set({loadingTableMonitor}),
 }));
 
