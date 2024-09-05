@@ -133,15 +133,9 @@ const OrdenDeTrabajoForm = () => {
             id: 0,
             nombre: "",
             descripcion: "",
-            servicio: "",
             vigencias: "",
             momento_cargo: "0",
-            genera_masiva: false,
-            limite_ordenes: false,
-            asigna_masiva:  false,
-            cancela_masiva:  false,
-            cierra_masiva:  false,
-            publico_general:  false,
+            genera_masiva: false
         },
     })
   
@@ -152,29 +146,18 @@ const OrdenDeTrabajoForm = () => {
          type Orden_trabajo_catalogo = {
             nombre: string;
             descripcion: string;
-            servicio: string;
             vigencias: string;
             momento_cargo: string;
             genera_masiva: boolean;
-            asigna_masiva: boolean;
-            cancela_masiva: boolean;
-            cierra_masiva: boolean;
-            publico_general: boolean;
-
         };
     
         // Creación del objeto orden_trabajo_catalogo
         let orden_trabajo_catalogo: Orden_trabajo_catalogo = {
             nombre: values.nombre,
             descripcion: values.descripcion,
-            servicio: values.servicio,
             vigencias: values.vigencias,
             momento_cargo: values.momento_cargo,
-            genera_masiva: values.genera_masiva,
-            asigna_masiva: values.asigna_masiva,
-            cancela_masiva:values.cancela_masiva,
-            cierra_masiva:values.cierra_masiva,
-            publico_general:values.publico_general,
+            genera_masiva: values.genera_masiva
         };
 
         let data = {orden_trabajo_catalogo};
@@ -443,8 +426,6 @@ const OrdenDeTrabajoForm = () => {
         }
     };
 
-    console.log(form.getValues());
-
     return (
         <>
             <div className="overflow-auto">
@@ -526,26 +507,7 @@ const OrdenDeTrabajoForm = () => {
                                     </FormItem>
                                 )}
                             />
-                             <FormField
-                                control={form.control}
-                                name="servicio"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Servicio</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                readOnly={!abrirInput}
-                                                placeholder="Escribe el servicio"
-                                                {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Escribe el servicio
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />                           
-                             <FormField
+                            <FormField
                                 control={form.control}
                                 name="vigencias"
                                 render={({ field }) => (
@@ -617,26 +579,7 @@ const OrdenDeTrabajoForm = () => {
                                 )}
                             />
 
-                                <FormField
-                                control={form.control}
-                                name="limite_ordenes"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Limite de ordenes</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                readOnly={!abrirInput}
-                                                placeholder="Escribe el limite de ordenes."
-                                                type="number"
-                                                {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Escribe el limite de ordenes
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+
 
                             <FormField
                                 control={form.control}
@@ -671,139 +614,6 @@ const OrdenDeTrabajoForm = () => {
                                     </FormItem>
                                 )}
                             />
-                             <FormField
-                                control={form.control}
-                                name="asigna_masiva"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="items-center">¿Genera asignación masiva?</FormLabel>
-                                        <FormControl className="ml-4">
-                                            {
-                                                bloquear ? <Switch
-                                                    checked={field.value}
-                                                    onCheckedChange={(checked) => field.onChange(checked)
-
-                                                    }
-                                                    
-                                                /> :
-                                                    <Switch
-                                                    disabled
-                                                        checked={field.value}
-                                                        onCheckedChange={(checked) => field.onChange(checked)
-
-                                                        }
-
-                                                    />
-                                            }
-
-                                        </FormControl>
-                                        <FormDescription>
-                                            Aquí puedes activar si tiene carga masiva.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="cancela_masiva"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="items-center">¿Tiene cancelación masiva?</FormLabel>
-                                        <FormControl className="ml-4">
-                                            {
-                                                bloquear ? <Switch
-                                                    checked={field.value}
-                                                    onCheckedChange={(checked) => field.onChange(checked)
-
-                                                    }
-                                                    
-                                                /> :
-                                                    <Switch
-                                                    disabled
-                                                        checked={field.value}
-                                                        onCheckedChange={(checked) => field.onChange(checked)
-
-                                                        }
-
-                                                    />
-                                            }
-
-                                        </FormControl>
-                                        <FormDescription>
-                                            Aquí puedes activar si tiene carga masiva.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                             <FormField
-                                control={form.control}
-                                name="cierra_masiva"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="items-center">¿Tiene cierre masivo?</FormLabel>
-                                        <FormControl className="ml-4">
-                                            {
-                                                bloquear ? <Switch
-                                                    checked={field.value}
-                                                    onCheckedChange={(checked) => field.onChange(checked)
-
-                                                    }
-                                                    
-                                                /> :
-                                                    <Switch
-                                                    disabled
-                                                        checked={field.value}
-                                                        onCheckedChange={(checked) => field.onChange(checked)
-
-                                                        }
-
-                                                    />
-                                            }
-
-                                        </FormControl>
-                                        <FormDescription>
-                                            Aquí puedes activar si tiene carga masiva.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                             <FormField
-                                control={form.control}
-                                name="publico_general"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="items-center">¿Va para publico en general?</FormLabel>
-                                        <FormControl className="ml-4">
-                                            {
-                                                bloquear ? <Switch
-                                                    checked={field.value}
-                                                    onCheckedChange={(checked) => field.onChange(checked)
-
-                                                    }
-                                                    
-                                                /> :
-                                                    <Switch
-                                                    disabled
-                                                        checked={field.value}
-                                                        onCheckedChange={(checked) => field.onChange(checked)
-
-                                                        }
-
-                                                    />
-                                            }
-
-                                        </FormControl>
-                                        <FormDescription>
-                                            Aquí puedes activar si tiene carga masiva.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
 
                            
 
