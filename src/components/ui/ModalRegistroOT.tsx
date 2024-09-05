@@ -106,7 +106,8 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
           marca: values.marca,
           diametro: values.diametro,
           tipo: values.tipo,
-
+          estatus: values.estatus,
+         fecha_instalacion: values.fecha_instalacion,
         }
       }
     }
@@ -141,7 +142,10 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
       numero_serie: "",
       marca: "",
       diametro: "",
-      tipo: ""
+      tipo: "",
+      estatus: false,
+      fecha_instalacion:"",
+    
     },
   });
 
@@ -222,6 +226,38 @@ const ModalRegistroOT = ({ isOpen, setIsOpen, method }) => {
                       </FormControl>
                       <FormDescription>
                        Escribe el tipo
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="estatus"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Estatus</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Escribe el tipo " {...field} />
+                      </FormControl>
+                      <FormDescription>
+                       Activo
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="fecha_instalacion"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Estatus</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Escribe el tipo " {...field} />
+                      </FormControl>
+                      <FormDescription>
+                       Fecha de instalacion
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

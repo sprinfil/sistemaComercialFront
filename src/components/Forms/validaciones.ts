@@ -130,4 +130,8 @@ export const registroMedidotOtSchema = z.object({
   marca: z.string(),
   diametro: z.string(),
   tipo: z.string(),
+  estatus: z.boolean(),
+  fecha_instalacion: z.string(),
+
+
 })
