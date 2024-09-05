@@ -9,7 +9,7 @@ import InformaciónGeneral from './VistasDetalleUsuario/InformaciónGeneral';
 import InformacionFiscal from './VistasDetalleUsuario/InformacionFiscal';
 import CrearOrdenDeTrabajo from './VistasDetalleUsuario/CrearOrdenDeTrabajo';
 import { GestionMedidores } from './VistasDetalleUsuario/GestionMedidores.tsx';
-import ConveniosAplicables from './VistasDetalleUsuario/ConveniosAplicables.tsx';
+import CargosUsuario from './VistasDetalleUsuario/CargosUsuario.tsx';
 import TomasUsuario from './VistasDetalleUsuario/TomasUsuario';
 import { BreadCrumbDetalleTomaUsuario } from '../../../components/ui/breadCrumbDetalleTomaUsuario.tsx';
 import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
@@ -56,8 +56,8 @@ export const TomaUsuarioDetalle = () => {
           pantalla: <GestionMedidores/>
         },
         {
-          nombre: "Convenios",
-          pantalla: <ConveniosAplicables/>
+          nombre: "Cargos",
+          pantalla: <CargosUsuario/>
         },
       ]
     }
