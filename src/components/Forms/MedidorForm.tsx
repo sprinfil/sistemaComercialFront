@@ -314,7 +314,7 @@ const MedidorForm = () => {
                 marca: "",
                 diametro: "",
                 tipo: "",
-                lectura_inicial: "",          
+                lectura_inicial: "",        
                 estatus: false,
             });
             setMedidor({});
@@ -333,8 +333,8 @@ const MedidorForm = () => {
                 marca: "",
                 diametro: "",
                 tipo: "",
-                lectura_inicial: "",               
-                estado: false,
+                lectura_inicial: "",             
+                estatus: false,
             });
             setMedidor({
                 id: 0,
@@ -343,7 +343,7 @@ const MedidorForm = () => {
                 marca: "",
                 diametro: "",
                 tipo: "",
-                lectura_inicial: "",           
+                lectura_inicial: "",        
                 estatus: false,
             });
         }
@@ -359,7 +359,7 @@ const MedidorForm = () => {
                 marca: medidor.marca,
                 diametro: medidor.diametro,
                 tipo: medidor.tipo,
-                lectura_inicial: medidor.lectura_inicial,           
+                lectura_inicial: medidor.lectura_inicial,      
                 estatus: medidor.estatus === "activo" // Convertir "activo" a true y "inactivo" a false
             });
         }
@@ -511,6 +511,9 @@ const MedidorForm = () => {
                                 </FormItem>
                             )}
                         />
+
+
+
 
                         
                         
