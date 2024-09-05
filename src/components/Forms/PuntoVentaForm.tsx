@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axiosClient from "../../axios-client";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import Loader from "../../components/ui/Loader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UpdateIcon, MagnifyingGlassIcon, PlusIcon, HamburgerMenuIcon, CrossCircledIcon, ExternalLinkIcon, GearIcon, EraserIcon } from '@radix-ui/react-icons';
+import { UpdateIcon, MagnifyingGlassIcon, PlusIcon, HamburgerMenuIcon, CrossCircledIcon, ExternalLinkIcon, GearIcon, ScissorsIcon, EraserIcon, ReaderIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx"; // Asegúrate de que esta ruta sea correcta
 import Modal from "../ui/Modal.tsx";
 import { useStateContext } from "../../contexts/ContextConcepto.tsx";
@@ -20,10 +20,14 @@ import search_image from "../../img/search.svg"
 
 import { BuscarUsuario } from "../Tables/Columns/ContratoConsultaUsuarioColumns.tsx";
 import { Skeleton } from "../ui/skeleton.tsx";
+import { ModalRetiroCaja } from "../ui/ModalRetiroCaja.tsx";
+import { ModalCorteCaja } from "../ui/ModalCorteCaja.tsx";
 import { ConfigurarCajaModal } from "../ui/ConfigurarCajaModal.tsx";
 import ModalCargarConcepto from "../ui/ModalCargarConcepto.tsx";
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { ModalMetodoPago } from "../ui/ModalMetodoPago.tsx";
+import ModalHistorialPagos from "../ui/ModalHistorialPagos.tsx";
 const PuntoVentaForm = () => {
 
   const { toast } = useToast()
@@ -34,35 +38,39 @@ const PuntoVentaForm = () => {
   const [pendingCargos, setPendingCargos] = useState([]);
   const [selectedCargos, setSelectedCargos] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [conceptos, setConceptos] = useState<Concepto[]>([]); // Define el tipo de estado
-  const [loadingTable, setLoadingTable] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cerrarForm, setCerrarForm] = useState(false);
-  const [mostrarCodigoUsuario, setMostrarCodigoUsuario] = useState(false);
   const [cargos_usuario, set_cargos_usuario] = useState(null);
   const [error, setError] = useState<string | null>(null);
-  const { usuariosEncontrados, dataCajaUser, setDataCajaUser, booleanCerrarModalFiltros } = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
-  // Estado para almacenar las cantidades a abonar
+  const { dataCajaUser, setDataCajaUser, booleanCerrarModalFiltros } = ZustandGeneralUsuario(); //SI JALA LOS USUARIOS ENCONTRADOS
+  const [open_metodo_pago_modal, set_open_metodo_pago_modal] = useState(false);
+  const input_user_ref = useRef();
   const [amountsToPay, setAmountsToPay] = useState<{ [id: string]: number }>({});
-  console.log("ESTO LLEGO XDDD", dataCajaUser);
+  const [all_cargos_usuario, set_all_cargos_usuario] = useState();
+  //const [openModal , setopenModal ] = useState(false);
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(event.target.value);
   };
-  console.log('AVER QUE LE MANDA EN TOMA:', dataCajaUser[0]?.usuario?.nombre || "NO");
-  console.log("a ver si se deberia abrir el codgio", mostrarCodigoUsuario);
 
   useEffect(() => {
     setDataToma({});
-
-    //setSelectedCargos([]);
-    console.log(dataCajaUser);
+    setSelectedCargos([]);
     setCargosData(null);
     setPagosData(null);
     //const usuario_tomas = await axiosClient.get(`/o`)
     get_usuario_cargos();
 
-    console.log(cargos_usuario);
   }, [dataCajaUser])
+
+  useEffect(()=>{
+    let cargos_usuario_temp = cargos_usuario?.cargos_vigentes?.map(cargo => cargo) || [];
+    let cargos_tomas = [];
+    cargos_usuario?.tomas.map(toma => {
+      toma.cargos_vigentes.map(cargo => {
+          cargos_tomas.push(cargo);
+      })
+    })
+    set_all_cargos_usuario([...cargos_usuario_temp, ...cargos_tomas]);
+  },[cargos_usuario])
 
   /*
     const get_usuario_cargos = async () => {
@@ -77,8 +85,14 @@ const PuntoVentaForm = () => {
   */
 
   const get_usuario_cargos = async () => {
-    const cargos_usuario_fetch = await axiosClient.get(`/usuarios/consultar/cargos/${dataCajaUser[0].id}`);
+    setSelectedCargos([]);
+    const cargos_usuario_fetch = await axiosClient.get(`/usuarios/consultar/cargos/${dataCajaUser[0]?.id}`);
     set_cargos_usuario(cargos_usuario_fetch.data);
+    //console.log(cargos_usuario_fetch.data)
+    
+    cargos_usuario_fetch.data.cargos_vigentes.map(cargo =>{
+      handleCargoSelect(cargo, dataCajaUser[0], true);
+    })
 
     if (cargos_usuario_fetch?.data?.tomas?.length == 1) {
       cargos_usuario_fetch.data.tomas.map((toma, index) => {
@@ -87,24 +101,20 @@ const PuntoVentaForm = () => {
         })
       })
     }
-
   }
 
-  const fetchdataUser = async () => {
+  const fetchdataUser = async (codigo_toma = null) => {
+    setSelectedCargos([]);
     handleClear();
     setLoading(true);
     setError(null);
+
+    let codigo = codigo_toma != null ? codigo_toma : userInput;
+
     try {
-      const userResponse = await axiosClient.get(`/Toma/codigo/${userInput}`);
-      const cargosResponse = await axiosClient.get(`/Toma/cargos/${userInput}`);
-      const pagosResponse = await axiosClient.get(`/Toma/pagos/${userInput}`);
-      console.log(userResponse);
-      console.log(
-        "Datos recibidos:",
-        userResponse.data,
-        cargosResponse.data.data,
-        pagosResponse.data
-      );
+      const userResponse = await axiosClient.get(`/Toma/codigo/${codigo}`);
+      const cargosResponse = await axiosClient.get(`/Toma/cargos/${codigo}`);
+      const pagosResponse = await axiosClient.get(`/Toma/pagos/${codigo}`);
 
       if (userResponse.data) {
         setDataToma(userResponse.data);
@@ -115,15 +125,17 @@ const PuntoVentaForm = () => {
 
       if (cargosResponse.data.data) {
         setCargosData(cargosResponse.data.data);
-        console.log(cargosResponse)
         // Filtrar cargos pendientes
 
-        const filteredCargos = cargosResponse.data.data.filter(cargo => cargo.estado === 'pendiente');
+        let filteredCargos = cargosResponse.data.data.filter(cargo => cargo.estado === 'pendiente');
+        filteredCargos = filteredCargos.sort((a, b) => a.concepto.prioridad_abono - b.concepto.prioridad_abono)
+
         setPendingCargos(filteredCargos);
-        console.log("pending cargos: " + JSON.stringify(filteredCargos))
+
         filteredCargos.map((cargo, index) => {
           handleCargoSelect(cargo, userResponse.data, true);
         })
+
       }
 
       if (pagosResponse.data) {
@@ -156,19 +168,44 @@ const PuntoVentaForm = () => {
     setDataCajaUser({});
   };
 
-  const handleCargoSelect = (cargo, entidad = null, busqueda = false) => {
-    console.log(cargo);
+  const handleCargoSelect = (cargo, entidad = null, busqueda = false, tipo = "") => {
+
+
     setSelectedCargos(prevSelectedCargos => {
       let newCargo = {};
+      let entidad_temp;
       const isAlreadySelected = prevSelectedCargos.some(c => c.id === cargo.id);
       if (isAlreadySelected) {
+
+        let prioridades = selectedCargos.map(cargo_temp => cargo_temp.concepto.prioridad_abono);
+
+        const maximo = Math.max(...prioridades);
+
         if (!busqueda) {
-          if (!cargo.concepto.prioridad_abono == 1) {
-            return prevSelectedCargos.filter(c => c.id !== cargo.id);
+          if (cargo.concepto.prioridad_abono > maximo || cargo.concepto.prioridad_abono == maximo) {
+            if (cargo.concepto.prioridad_por_antiguedad == 1) {
+              let facturaciones = selectedCargos.filter(c => c.concepto.prioridad_por_antiguedad == 1 && c.id != cargo.id)
+              const fechaFacturacion = new Date(cargo.fecha_cargo);
+              const esMasReciente = facturaciones.every(c => new Date(c.fecha_cargo) < fechaFacturacion);
+              if (esMasReciente) {
+                return prevSelectedCargos.filter(c => c.id !== cargo.id);
+              } else {
+                //ESTE CONCEPTO NO SE PUEDE QUITAR
+                toast({
+                  //variant: "destructive",
+                  title: "Debes Quitar los conceptos con menor prioridad de antiguedad",
+                  action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                })
+                return [...prevSelectedCargos];
+              }
+            } else {
+              //ESTE CONCEPTO SI SE PUEDE QUITAR
+              return prevSelectedCargos.filter(c => c.id !== cargo.id);
+            }
           } else {
-            //ESTE CONCEPTO ES DE PRIORIDAD 1 NO SE PUEDE QUITAR
+            //ESTE CONCEPTO NO SE PUEDE QUITAR
             toast({
-              variant: "destructive",
+              //variant: "destructive",
               title: "Concepto Obligatorio",
               description: "Este concepto no se puede quitar",
               action: <ToastAction altText="Try again">Aceptar</ToastAction>,
@@ -179,29 +216,138 @@ const PuntoVentaForm = () => {
           return [...prevSelectedCargos];
         }
       } else {
-        let entidad_temp;
-        if (entidad.id_codigo_toma != null) {
-          entidad_temp = entidad?.id_codigo_toma;
-        } else {
-          entidad_temp = entidad?.nombre;
-        }
+
+        entidad_temp = entidad?.codigo_toma;
         newCargo = { ...cargo, entidad: entidad_temp };
-        return [...prevSelectedCargos, newCargo];
+
+        let minimo;
+        // Obtener todas las prioridades y las seleccionadas
+        let todas_prioridades;
+
+        if (tipo != "usuario") {
+          todas_prioridades = pendingCargos?.map(cargo_temp => cargo_temp.concepto.prioridad_abono) || [];
+        } else {
+          let cargos_usuario_temp = cargos_usuario.cargos_vigentes?.map(cargo_temp => cargo_temp.concepto.prioridad_abono) || [];
+          let cargos_tomas = [];
+          cargos_usuario.tomas.map(toma => {
+            toma.cargos_vigentes.map(cargo => {
+              cargos_tomas.push(cargo.concepto.prioridad_abono);
+            })
+          })
+
+          todas_prioridades = [...cargos_usuario_temp, ...cargos_tomas];
+          console.log(todas_prioridades)
+        }
+
+        let prioridades_seleccionadas = selectedCargos?.map(cargo_temp => cargo_temp.concepto.prioridad_abono) || [];
+
+        if (selectedCargos?.length == 0) {
+          minimo = Math.min(...todas_prioridades);
+        } else {
+          let nuevas_prioridades = quitarElementos(todas_prioridades, prioridades_seleccionadas);
+          minimo = Math.min(...nuevas_prioridades);
+        }
+
+        if (cargo.concepto.prioridad_abono == minimo || cargo.concepto.prioridad_abono < minimo) {
+
+          //PRIORIDAD POR ANTIGUEDAD
+          if (cargo.concepto.prioridad_por_antiguedad == 1) {
+            let cargos_prioridad_por_antiguedad;
+            if (tipo != "usuario") {
+              cargos_prioridad_por_antiguedad = pendingCargos.filter(cargo => cargo.concepto.prioridad_por_antiguedad == 1);
+            } else {
+              let cargos_usuario_temp = cargos_usuario.cargos_vigentes?.map(cargo => cargo.concepto.prioridad_por_antiguedad == 1) || [];
+              let cargos_tomas = [];
+              cargos_usuario.tomas.map(toma => {
+                toma.cargos_vigentes.map(cargo => {
+                  if (cargo.concepto.prioridad_por_antiguedad == 1) {
+                    cargos_tomas.push(cargo);
+                  }
+                })
+              })
+              cargos_prioridad_por_antiguedad = [...cargos_usuario_temp, ...cargos_tomas];
+            }
+
+            const fecha_cargo = new Date(cargo.fecha_cargo);
+            let abajo = cargos_prioridad_por_antiguedad.filter(c => new Date(c.fecha_cargo) < fecha_cargo);
+
+            let todosEstanPresentes = abajo.every(elemento => selectedCargos.includes(elemento));
+            let error = false;
+
+            if (abajo.length > 0) {
+              abajo.map(cargo_abajo => {
+                error = true;
+                selectedCargos.map(cargo => {
+                  if (cargo_abajo.id == cargo.id) {
+                    error = false;
+                  }
+                })
+              })
+            }
+            if (!error) {
+              return [...prevSelectedCargos, newCargo];
+            } else {
+              //ESTE CONCEPTO NO SE PUEDE AGREGAR
+              toast({
+                //variant: "destructive",
+                title: "Hay Conceptos con prioridad de antiguedad mayor",
+                action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+              })
+              return [...prevSelectedCargos];
+            }
+
+          } else {
+            if (entidad?.codigo_toma != null) {
+              return [...prevSelectedCargos, newCargo];
+            } else {
+              entidad_temp = entidad?.nombre;
+              newCargo = { ...cargo, entidad: entidad_temp };
+              return [...prevSelectedCargos, newCargo];
+            }
+          }
+
+        } else {
+          //ESTE CONCEPTO NO SE PUEDE AGREGAR
+          toast({
+            title: "Hay Conceptos de mayor prioridad",
+            description: "Selecciona todos los conceptos con mayor prioridad",
+            action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+          })
+          return [...prevSelectedCargos];
+        }
       }
     });
+
   };
+
+  function quitarElementos(arreglo, elementosAQuitar) {
+    // Creamos una copia del arreglo para no modificar el original
+    let resultado = [...arreglo];
+
+    // Iteramos sobre cada elemento en el arreglo de elementos a quitar
+    elementosAQuitar.forEach(elemento => {
+      // Encontramos el índice del primer elemento coincidente
+      const index = resultado.indexOf(elemento);
+      // Si existe, lo eliminamos
+      if (index !== -1) {
+        resultado.splice(index, 1);
+      }
+    });
+
+    return resultado;
+  }
 
   const handleF5Press = (event: KeyboardEvent) => {
-    if (event.key === 'F5') {
+    if (event.key === 'F1') {
       event.preventDefault(); // Prevenir recarga de página
-      handleSearch(); // Llamar a la función de pago
+      iniciar_proceso_pago();
+    }
+
+    if (event.key === 'F2') {
+      event.preventDefault(); // Prevenir recarga de página
+      input_user_ref.current.focus();
     }
   };
-
-
-
-
-
 
   useEffect(() => {
     window.addEventListener('keydown', handleF5Press);
@@ -229,68 +375,33 @@ const PuntoVentaForm = () => {
   };
 
   const calculateTotal = () => {
-    return selectedCargos.reduce((acc, cargo) => acc + parseFloat(cargo.monto || 0), 0);
+    return selectedCargos.reduce((acc, cargo) => acc + parseFloat(cargo.monto_pendiente || 0), 0);
+  };
+
+  const calculateTotalIva = () => {
+    return selectedCargos.reduce((acc, cargo) => acc + parseFloat(cargo.iva || 0), 0);
   };
 
   const calculateTotalAbonado = () => {
     return selectedCargos.reduce((acc, cargo) => acc + (parseFloat(amountsToPay[cargo.id] || 0)), 0);
   };
 
-  interface Concepto {
-    nombre: string;
-  }
-  const getConceptos = async (): Promise<Concepto[]> => {
-    try {
-      console.log('Fetching conceptos...');
-      const response = await axiosClient.get<{ data: Concepto[] }>('/Concepto'); // Ajusta la URL según tu API
-      console.log('Response received:', response);
-
-      const data = response.data.data; // Accede al array dentro de la propiedad 'data'
-      console.log('Data extracted:', data);
-
-      if (Array.isArray(data)) {
-        const conceptos = data.map(item => ({ nombre: item.nombre }));
-        console.log('Conceptos processed:', conceptos);
-        return conceptos; // Devuelve solo el campo 'nombre'
-      } else {
-        console.error('La respuesta no es un array:', data);
-        return [];
-      }
-    } catch (error) {
-      console.error('Error obteniendo conceptos:', error);
-      return [];
-    }
-  };
-
   const limpiar_cargos_seleccionados = (cargos) => {
-    cargos.map((cargo, index)=>{
+    cargos.map((cargo, index) => {
       handleCargoSelect(cargo);
     })
   }
 
-  const openModal = async () => {
-    console.log('Opening modal...');
-    const conceptosList = await getConceptos(); // Llama a getConceptos cuando se abre el modal
-    console.log('Conceptos list obtained:', conceptosList);
-
-    setConceptos(conceptosList); // Establece los conceptos obtenidos
-    setIsModalOpen(true); // Abre el modal
-    console.log('Modal state set to open.');
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false); // Cierra el modal
-    console.log('Modal state set to closed.');
-  };
+  const iniciar_proceso_pago = () => {
+    set_open_metodo_pago_modal(true);
+  }
 
   const totalAcumulado = calculateTotal();
   const totalAbonado = calculateTotalAbonado();
   const totalRestante = totalAcumulado - totalAbonado;
-
-
+  const total_iva = calculateTotalIva();
 
   useEffect(() => {
-    console.log(dataToma);
 
   }, [dataToma, dataCajaUser]);
 
@@ -298,19 +409,43 @@ const PuntoVentaForm = () => {
     <div className="flex flex-col relative">
       <div className="h-10 justify-center flex items-center rounded-sm">
         <div className="left-4  h-[30px] bg-muted absolute p-3 rounded-md flex items-center">
-          <IconButton>
-            <ExternalLinkIcon />
-          </IconButton>
           <ConfigurarCajaModal
             trigger={<IconButton>
               <GearIcon />
             </IconButton>}
           >
           </ConfigurarCajaModal>
+          <ModalRetiroCaja
+            trigger={
+              <IconButton title="Retiro de caja">
+                <ExternalLinkIcon />
+              </IconButton>
+            }
+            setdataUser={setDataToma}
+            cerrarForm={booleanCerrarModalFiltros}
+          />
+          <ModalCorteCaja
+            trigger={
+              <IconButton title="Corte de caja">
+                <ScissorsIcon />
+              </IconButton>
+            }
+            setdataUser={setDataToma}
+            cerrarForm={booleanCerrarModalFiltros}
+          />
+
+          <ModalHistorialPagos
+            trigger={<IconButton>
+              <ReaderIcon />
+            </IconButton>} />
+
 
         </div>
-        <p className="whitespace-nowrap">Número de toma</p>
+        <p className="whitespace-nowrap mr-3">Número de toma (F2)</p>
         <Input
+          ref={input_user_ref}
+          type="number"
+
           className="h-8 ml-1 mr-1 w-96"
           value={userInput}
           onChange={handleInputChange}
@@ -323,6 +458,7 @@ const PuntoVentaForm = () => {
           <UpdateIcon className="w-[20px] h-[20px]" />
         </IconButton>
 
+
         <ModalMasFiltros
           trigger={
             <IconButton title="Más Filtros">
@@ -332,6 +468,10 @@ const PuntoVentaForm = () => {
           setdataUser={setDataToma}
           cerrarForm={booleanCerrarModalFiltros}
         />
+
+
+
+
       </div>
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex min-h-[78vh] max-h-[78vh] px-2">
@@ -351,13 +491,14 @@ const PuntoVentaForm = () => {
               <Skeleton className="w-full h-[5vh]" />
             </div>
             <div className="w-full flex gap-2 mt-4">
-              <Skeleton className="h-[60vh] w-[50%]" />
-              <Skeleton className="h-[60vh] w-[50%]" />
+              <Skeleton className="h-[68vh] w-[50%]" />
+              <Skeleton className="h-[68vh] w-[50%]" />
             </div>
           </div>
         </div>}
         {!loading && !error && (dataCajaUser?.length > 0 || dataToma?.id) && (
-          <div className=" rounded-sm w-[60%] ml-1 mr-1 mt-2 overflow-auto">
+          <div className="rounded-sm w-[60%] ml-1 mr-1 mt-2 overflow-auto">
+
             <Tabs defaultValue="general">
               <TabsList>
                 <TabsTrigger value="general">General</TabsTrigger>
@@ -370,6 +511,7 @@ const PuntoVentaForm = () => {
                 {dataToma && !dataCajaUser[0] ?
                   (
                     <>
+
                       <div className="flex gap-5 mt-5">
                         <div className="relative w-[50%]">
                           <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
@@ -417,7 +559,7 @@ const PuntoVentaForm = () => {
                                 <div className="font-semibold mb-2">Servicio de agua y alcantarillado:</div>
                               </div>
                               <div className="px-4">
-                                <div className="mb-2">{dataToma?.id_codigo_toma}</div>
+                                <div className="mb-2">{dataToma?.codigo_toma}</div>
                                 <div className="mb-2">{dataToma?.clave_catastral}</div>
                                 <div className="mb-2">{dataToma?.estatus}</div>
                                 <div className="mb-2">{dataToma?.calle}</div>
@@ -439,11 +581,9 @@ const PuntoVentaForm = () => {
                     </>
                   )
                   :
-                  dataCajaUser[0] && dataToma?.id_codigo_toma != "" && !dataCajaUser[0]?.usuario?.nombre &&
+                  dataCajaUser[0] && dataToma?.codigo_toma != "" && !dataCajaUser[0]?.usuario?.nombre &&
                   <div className="justify-center ml-5 mr-5 mt-5">
                     <div className="relative">
-                      {
-                      }
                       <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
                         Información de Usuario
                       </div>
@@ -515,6 +655,7 @@ const PuntoVentaForm = () => {
                 {dataCajaUser[0]?.usuario?.nombre &&
                   (
                     <>
+
                       <div className="flex gap-5 mt-5 px-5">
                         <div className="relative w-[50%]">
                           <div className="absolute -top-3 left-3 bg-background px-2 text-sm font-semibold">
@@ -562,7 +703,7 @@ const PuntoVentaForm = () => {
                                 <div className="font-semibold mb-2">Servicio de agua y alcantarillado:</div>
                               </div>
                               <div className="px-4">
-                                <div className="mb-2">{dataCajaUser[0]?.id_codigo_toma}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.codigo_toma}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.clave_catastral}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.estatus}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.calle}</div>
@@ -624,7 +765,7 @@ const PuntoVentaForm = () => {
                                 Concepto
                               </th>
                               <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                Monto
+                                Monto + IVA
                               </th>
                               <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Estado
@@ -632,25 +773,31 @@ const PuntoVentaForm = () => {
                               <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Fecha de Cargo
                               </th>
+                              <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Prioridad
+                              </th>
                             </tr>
                           </thead>
                           <tbody className=" divide-y divide-border">
                             {pendingCargos.map((cargo, index) => (
                               <tr key={index} onClick={() => handleCargoSelect(cargo, dataToma)} className="cursor-pointer transition-all duration-200 hover:bg-muted">
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                  <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} className="w-[30px] h-[30px]"/>
+                                  <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} className="w-[30px] h-[30px]" />
                                 </td>
                                 <td className="px-2 py-4 whitespace-normal text-sm  break-words">
                                   {cargo.nombre}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                  ${cargo.monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                  ${(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                   {cargo.estado}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                   {cargo.fecha_cargo}
+                                </td>
+                                <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                  {cargo.concepto.prioridad_abono}
                                 </td>
                               </tr>
                             ))}
@@ -674,9 +821,16 @@ const PuntoVentaForm = () => {
                               <div className="shadow-md border rounded-sm p-4 max-h-96 overflow-y-auto bg-background">
                                 <div className="w-full flex items-center justify-end">
                                   <div className="w-[60px] mb-[10px]">
-                                    <IconButton onClick={openModal} title="open">
-                                      <PlusIcon className="w-[20px] h-[20px]" />
-                                    </IconButton>
+                                    <ModalCargarConcepto
+                                      trigger={
+                                        <IconButton title="open">
+                                          <PlusIcon className="w-[20px] h-[20px]" />
+                                        </IconButton>}
+                                      dueño={dataCajaUser[0]}
+                                      handleCargoSelect={handleCargoSelect}
+                                      modelo_dueno="usuario"
+                                      actualizar_cargos_usuario={get_usuario_cargos}
+                                    />
                                   </div>
                                 </div>
 
@@ -698,13 +852,16 @@ const PuntoVentaForm = () => {
                                       <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                         Fecha de Cargo
                                       </th>
+                                      <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                        Prioridad
+                                      </th>
                                     </tr>
                                   </thead>
                                   <tbody className=" divide-y divide-gray-200">
                                     {cargos_usuario.cargos_vigentes.map((cargo, index) => (
-                                      <tr key={index} onClick={() => handleCargoSelect(cargo, cargos_usuario)} className="cursor-pointer ">
+                                      <tr key={index} onClick={() => handleCargoSelect(cargo, cargos_usuario, false, "usuario")} className="cursor-pointer ">
                                         <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                          <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
+                                          <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} className="w-[30px] h-[30px]" />
                                         </td>
                                         <td className="px-2 py-4 whitespace-normal text-sm  break-words">
                                           {cargo.nombre}
@@ -717,6 +874,9 @@ const PuntoVentaForm = () => {
                                         </td>
                                         <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                           {cargo.fecha_cargo}
+                                        </td>
+                                        <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                          {cargo.concepto.prioridad_abono}
                                         </td>
                                       </tr>
                                     ))}
@@ -733,17 +893,25 @@ const PuntoVentaForm = () => {
                       {
                         cargos_usuario.tomas.map((toma, index) => (
                           <>
-                            <AccordionItem value={`toma-${toma.id_codigo_toma}`}>
-                              <AccordionTrigger>Cargos Toma {toma.id_codigo_toma} {toma.colonia} {toma.calle}</AccordionTrigger>
+                            <AccordionItem value={`toma-${toma.codigo_toma}`}>
+                              <AccordionTrigger>Cargos Toma {toma.codigo_toma} {toma.colonia} {toma.calle}</AccordionTrigger>
                               <AccordionContent>
                                 <>
                                   <div className="relative">
                                     <div className="shadow-md border rounded-sm p-4 max-h-96 overflow-y-auto bg-background">
                                       <div className="w-full flex items-center justify-end">
                                         <div className="w-[60px] mb-[10px]">
-                                          <IconButton onClick={openModal} title="open">
-                                            <PlusIcon className="w-[20px] h-[20px]" />
-                                          </IconButton>
+                                          <ModalCargarConcepto
+                                            trigger={
+                                              <IconButton title="open">
+                                                <PlusIcon className="w-[20px] h-[20px]" />
+                                              </IconButton>}
+                                            dueño={toma}
+                                            handleCargoSelect={handleCargoSelect}
+                                            modelo_dueno="toma"
+                                            actualizar_cargos_usuario={get_usuario_cargos}
+
+                                          />
                                         </div>
                                       </div>
 
@@ -765,13 +933,16 @@ const PuntoVentaForm = () => {
                                             <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                               Fecha de Cargo
                                             </th>
+                                            <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                              Prioridad
+                                            </th>
                                           </tr>
                                         </thead>
                                         <tbody className=" divide-y divide-gray-200">
                                           {toma.cargos_vigentes.map((cargo, index) => (
-                                            <tr key={index} onClick={() => handleCargoSelect(cargo, toma)} className="cursor-pointer ">
+                                            <tr key={index} onClick={() => handleCargoSelect(cargo, toma, false, "usuario")} className="cursor-pointer ">
                                               <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                                                <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} />
+                                                <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} className="w-[30px] h-[30px]" />
                                               </td>
                                               <td className="px-2 py-4 whitespace-normal text-sm  break-words">
                                                 {cargo.nombre}
@@ -784,6 +955,9 @@ const PuntoVentaForm = () => {
                                               </td>
                                               <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                                 {cargo.fecha_cargo}
+                                              </td>
+                                              <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                                {cargo.concepto.prioridad_abono}
                                               </td>
                                             </tr>
                                           ))}
@@ -867,7 +1041,7 @@ const PuntoVentaForm = () => {
 
         <div className="flex-grow mt-1 relative -top-4">
           {selectedCargos.length > 0 ? (
-            <div className="mt-2 rounded-sm max-h-[55vh] h-[55vh]  overflow-y-auto border">
+            <div className="shadow-md mt-2 rounded-sm max-h-[55vh] h-[55vh]  overflow-y-auto border no-scrollbar">
               <table className="w-full table-fixed">
                 <thead className="bg-muted  sticky top-0">
                   <tr>
@@ -879,10 +1053,14 @@ const PuntoVentaForm = () => {
                       Usuario / Toma
                     </th>
                     <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                      Monto
+                      Monto + IVA
+                    </th>
+
+                    <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                      Prioridad
                     </th>
                     <th>
-                      <Button onClick={() => {limpiar_cargos_seleccionados(selectedCargos)}}><EraserIcon className="text-white" /></Button>
+                      <Button onClick={() => { limpiar_cargos_seleccionados(selectedCargos) }}><EraserIcon className="text-white" /></Button>
                     </th>
                   </tr>
                 </thead>
@@ -896,7 +1074,10 @@ const PuntoVentaForm = () => {
                         {cargo?.entidad}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                        ${cargo.monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ${(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                        {cargo.concepto.prioridad_abono}
                       </td>
                       <td className="">
                         <div className="max-w-[50px]" onClick={() => handleCargoSelect(cargo)}>
@@ -918,12 +1099,46 @@ const PuntoVentaForm = () => {
             </>
           )}
         </div>
-        <div className="w-full h-[14vh] px-5 flex items-center justify-end bg-muted">
-          <div className="mr-[50px] text-[3vw]">TOTAL</div> <div className="text-[3vw]">${totalRestante.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+        <div className="w-full h-[14vh] text-[2vw] px-5 flex flex-col items-end justify-center bg-muted shadow-md">
+
+          <div className=" flex gap-3">
+            <div className="">TOTAL</div>
+            ${(totalRestante).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+
         </div>
-        <Button onClick={() => alert('PAGAR(F5)')}>
-          PAGAR(F5)
+        <Button onClick={() => { (iniciar_proceso_pago()) }}>
+          PAGAR(F1)
         </Button>
+        {!loading && !error && (dataCajaUser?.length > 0 || dataToma?.id) &&
+          <>
+            <ModalMetodoPago
+              open_modal={open_metodo_pago_modal}
+              set_open_modal={set_open_metodo_pago_modal}
+              total={totalRestante}
+              total_iva={total_iva}
+              cargos={selectedCargos}
+              dueno={dataToma}
+              update_data={fetchdataUser}
+              all_cargos={pendingCargos}
+            />
+          </>}
+        {
+          dataCajaUser[0] && dataToma?.codigo_toma != "" && !dataCajaUser[0]?.usuario?.nombre &&
+          <>
+            <ModalMetodoPago
+              open_modal={open_metodo_pago_modal}
+              set_open_modal={set_open_metodo_pago_modal}
+              total={totalRestante}
+              total_iva={total_iva}
+              cargos={selectedCargos}
+              dueno={dataCajaUser[0]}
+              update_data={get_usuario_cargos}
+              all_cargos={all_cargos_usuario}
+              modelo_dueno="usuario"
+            />
+          </>
+        }
       </div>
     </div>
   );

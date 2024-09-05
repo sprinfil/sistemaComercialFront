@@ -24,6 +24,8 @@ import Loader from './Loader.tsx';
 type Status = {
     value: string;
     label: string;
+    disabled?: boolean; // Añadido parámetro disabled
+
 };
 
 type ConceptosComboBoxNewProps = {
@@ -31,7 +33,7 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void;
 };
 
-export const DisparaOtraOTComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado }: ConceptosComboBoxNewProps) => {
+export const DisparaOtraOTComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado, disabled = false }: ConceptosComboBoxNewProps) => {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([]);
     const [open, setOpen] = React.useState(false);
@@ -57,7 +59,6 @@ export const DisparaOtraOTComboBox = ({ field, form, name = "id_concepto", setCa
     };
     
 
-
     return (
         <div>
             <Popover>
@@ -70,6 +71,7 @@ export const DisparaOtraOTComboBox = ({ field, form, name = "id_concepto", setCa
                                 "w-full justify-between",
                                 !field.value && "text-muted-foreground"
                             )}
+                            disabled={disabled}
                         >
                             {field.value
                                 ? languages.find(

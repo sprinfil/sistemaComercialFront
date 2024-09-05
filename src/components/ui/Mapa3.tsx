@@ -217,7 +217,7 @@ export const Mapa3 = () => {
                                         lng: toma.posicion.coordinates[0]  // Longitud
                                     },
                                     map: hide_all_tomas ? null : map,
-                                    title: `Toma: ${toma.id_codigo_toma}`,
+                                    title: `Toma: ${toma.codigo_toma}`,
                                     icon: {
                                         url: `${grifo}`,
                                         scaledSize: new google.maps.Size(35, 35),
@@ -232,7 +232,7 @@ export const Mapa3 = () => {
                                 // Crear una etiqueta utilizando InfoWindow
                                 const infoWindow = new google.maps.InfoWindow({
                                     content: `<div class="text-black">
-                                <strong>Código de Toma: ${toma.id_codigo_toma}</strong></br>
+                                <strong>Código de Toma: ${toma.codigo_toma}</strong></br>
                                 <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
                                 <strong>Código Postal: ${toma.codigo_postal}</strong></br>
                                 <strong>Colonia: ${toma.colonia}</strong></br>
@@ -292,7 +292,7 @@ export const Mapa3 = () => {
         rutas.forEach(ruta => {
             ruta.libros.forEach(libro => {
                 libro.tomas.forEach(toma => {
-                    if (toma.id_codigo_toma == searchQuery) {
+                    if (toma.codigo_toma == searchQuery) {
                         /* TOMA INFO */
                         foundToma = toma;
                         const marker = new google.maps.Marker({
@@ -301,7 +301,7 @@ export const Mapa3 = () => {
                                 lng: toma.posicion.coordinates[0]  // Longitud
                             },
                             map: map,
-                            title: `Toma: ${toma.id_codigo_toma}`, // Puedes agregar un título o descripción si está disponible
+                            title: `Toma: ${toma.codigo_toma}`, // Puedes agregar un título o descripción si está disponible
                             icon: {
                                 url: `${grifo}`,
                                 scaledSize: new google.maps.Size(35, 35),
@@ -312,7 +312,7 @@ export const Mapa3 = () => {
                         // Crear una etiqueta utilizando InfoWindow
                         const infoWindow = new google.maps.InfoWindow({
                             content: `<div class="text-black">
-                            <strong>Código de Toma: ${toma.id_codigo_toma}</strong></br>
+                            <strong>Código de Toma: ${toma.codigo_toma}</strong></br>
                             <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
                             <strong>Código Postal: ${toma.codigo_postal}</strong></br>
                             <strong>Colonia: ${toma.colonia}</strong></br>

@@ -25,14 +25,19 @@ import { BuscarUsuarioComboBox } from "../../../../components/ui/BuscarUsuarioCo
 import { Import } from "lucide-react";
 import { ZustandGeneralUsuario } from "../../../../contexts/ZustandGeneralUsuario.tsx";
 import ContratoConsultaTomaTable from "../../../../components/Tables/Components/ContratoConsultaTomaTable.tsx";
-interface BuscarUsuarioProps
-{
+import { Pencil2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { TbFilterPlus } from "react-icons/tb";
+import { TiUserAdd } from "react-icons/ti";
+import IconButton from "../../../../components/ui/IconButton.tsx";
+
+
+interface BuscarUsuarioProps {
     navegacion: string;
     botonCrearUsuario: boolean;
-    tipoAccion:string;
+    tipoAccion: string;
 }
 
-export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAccion}: BuscarUsuarioProps) => {
+export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAccion }: BuscarUsuarioProps) => {
 
     const { toast } = useToast()
     const [loading, setLoading] = useState(false);
@@ -43,13 +48,11 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
     const [filtroSeleccionado, setFiltroSeleccionado] = useState("");
 
     //variables globales del zustand
-    const {nombreBuscado, setNombreBuscado, 
-        nombreSeleccionado, setNombreSeleccionado, 
-        usuariosEncontrados, setUsuariosEncontrados, 
-        accion, setAccion, setFindUserOrToma, findUserOrToma,setToma, setBooleanCodigoDeToma, toma,setDataCajaUser,
-        setBooleanCerrarModalFiltros
+    const { nombreBuscado, setNombreBuscado,
+        nombreSeleccionado, setNombreSeleccionado,
+        usuariosEncontrados, setUsuariosEncontrados,
+        accion, setAccion, setFindUserOrToma, findUserOrToma, setToma, setBooleanCodigoDeToma, toma
 
-    
     } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
 
     console.log("este es la accion pare " + accion);
@@ -63,7 +66,7 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
         },
     })
 
- //#region TOAST(MENSAJES)   
+    //#region TOAST(MENSAJES)   
 
     //Funcion de errores para el Toast
     function errorToast() {
@@ -85,13 +88,13 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
     }
-//#endregion
+    //#endregion
 
     function onSubmit(values: z.infer<typeof BuscarContratacionSchema>) {
         console.log(values);
         setLoading(true);
         setUsuariosEncontrados([]);
-        
+
         const criterio = values.nombre.trim();
 
         let endpoint = "";
@@ -112,193 +115,179 @@ export const BuscarUsuarioForm = ({navegacion, botonCrearUsuario = true, tipoAcc
                 setFiltroSeleccionado("3");
                 setFindUserOrToma(false);
                 break;
-                case "4":
-                    endpoint = `/usuarios/consultaDireccion/${criterio}`;
-                    setFiltroSeleccionado("4");
-                    setMostrarTablaTomaUsuario(true);
-                    setmostrarTablaUsuario(false);
-                    setFindUserOrToma(true);
-                    break;
-                    case "5":
-                    endpoint = `/Tomas/codigo/${criterio}`;
-                    setFiltroSeleccionado("5");
-                    setMostrarTablaTomaUsuario(true);
-                    setmostrarTablaUsuario(false);
-                    setFindUserOrToma(true);
-                    break;
+            case "4":
+                endpoint = `/usuarios/consultaDireccion/${criterio}`;
+                setFiltroSeleccionado("4");
+                setMostrarTablaTomaUsuario(true);
+                setmostrarTablaUsuario(false);
+                setFindUserOrToma(true);
+                break;
+            case "5":
+                endpoint = `/Tomas/codigo/${criterio}`;
+                setFiltroSeleccionado("5");
+                setMostrarTablaTomaUsuario(true);
+                setmostrarTablaUsuario(false);
+                setFindUserOrToma(true);
+                break;
             default:
                 setLoading(false);
                 console.log("Filtro no válido");
                 return;
         }
 
-        
-                    
-                // PARA EJECUTAR LA CONSULTA
-                axiosClient.get(endpoint)
-                    .then(response => {
-                        let results;
-                        switch(values.filtro)
-                        {   
-                            case "1":
-                                results = response.data.data;
-                                console.log(response.data.data);
-                                setUsuariosEncontrados(response.data.data);
-                                if (results.length > 0) {
-                                    setNombreBuscado(values.nombre);
-                                    setUsuariosEncontrados(results);
-                                    setDataCajaUser(results);
-                                    if (results.length === 1) {
-                                        setBooleanCerrarModalFiltros(false);
-                                        if (tipoAccion === "verUsuarioDetalle") {
-                                            navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
-                                        } else if (tipoAccion === "crearContratacionUsuario") {
-                                            navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
-                                        }
-                                    } else {
-                                        setmostrarTablaUsuario(true);
-                                    }
-                                } else {
-                                    noUsuarioEncontrado();
-                                    setmostrarTablaUsuario(false);
-                                }
-                            break;
-                            case "2":
-                                const result = response.data;
-                                if (result) {
-                                    setNombreBuscado(values.nombre); 
-                                    console.log("este es el result", result);
-                                    setUsuariosEncontrados([result]); 
-                                    setDataCajaUser([result]); 
-                                    
-                                    if(usuariosEncontrados.length == 1){
-                                        setBooleanCerrarModalFiltros(false);
-                                        if (tipoAccion === "verUsuarioDetalle") {
-                                            navigate("/usuario", { state: { contratoBuscarUsuario: result } });
-                                        } else if (tipoAccion === "crearContratacionUsuario") {
-                                            navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: result } });
-                                        }
-                                    }
-                                    
-                                } else {
-                                    noUsuarioEncontrado();
-                                    setmostrarTablaUsuario(false);
-                                }
-                                break;
-
-                            case "3":
-                                results = response.data.data;
-                                console.log(response.data.data);
-                                setUsuariosEncontrados(response.data.data);
-                                setDataCajaUser(results);
-                                if (results.length > 0) {
-                                    setNombreBuscado(values.nombre);
-                                    setUsuariosEncontrados(results);
-                                    if (results.length === 1) {
-                                        setBooleanCerrarModalFiltros(false);
-                                        if (tipoAccion === "verUsuarioDetalle") {
-                                            navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
-                                        } else if (tipoAccion === "crearContratacionUsuario") {
-                                            navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
-                                        }
-                                    } else {
-                                        setmostrarTablaUsuario(true);
-                                    }
-                                } else {
-                                    noUsuarioEncontrado();
-                                    setmostrarTablaUsuario(false);
-                                }
-                            break;
-
-                            case "4":
-                                results = response.data.data;
-                                console.log(response.data.data);
-                                setDataCajaUser(results);
-                                setUsuariosEncontrados(response.data.data);
-                                if (results.length > 0) {
-                                    setNombreBuscado(values.nombre);
-                                    setUsuariosEncontrados(results);
-                                    if (results.length === 1) {
-                                        setBooleanCerrarModalFiltros(false);
-                                        if (tipoAccion === "verUsuarioDetalle") {
-                                            navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
-                                        } else if (tipoAccion === "crearContratacionUsuario") {
-                                            navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
-                                        }
-                                    } else {
-                                        setmostrarTablaUsuario(true);
-                                    }
-                                } else {
-                                    noUsuarioEncontrado();
-                                    setmostrarTablaUsuario(false);
-                                }
-                            break;
 
 
-                            case "5":
-                            console.log("entro al filtro 5");
-                            results = response.data;
-                            console.log("a esta enpoint entro",endpoint);
-                            setToma(response.data);
-                            setDataCajaUser(results);
-                            setBooleanCodigoDeToma(true);
-                            if (results.length > 0) {
-                                setNombreBuscado(values.nombre);
-                                setUsuariosEncontrados(results);
-                                if (results.length === 1) {
-                                    setBooleanCerrarModalFiltros(false);
-                                    if (tipoAccion === "verUsuarioDetalle") {
-                                        navigate("/usuario/toma", { state: { contratoBuscarUsuario: results[0] } });
-                                    } else if (tipoAccion === "crearContratacionUsuario") {
-                                        navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
-                                    }
-                                } else {
-                                    setmostrarTablaUsuario(true);
+        // PARA EJECUTAR LA CONSULTA
+        axiosClient.get(endpoint)
+            .then(response => {
+                let results;
+                switch (values.filtro) {
+                    case "1":
+                        results = response.data.data;
+                        console.log(response.data.data);
+                        setUsuariosEncontrados(response.data.data);
+                        if (results.length > 0) {
+                            setNombreBuscado(values.nombre);
+                            setUsuariosEncontrados(results);
+                            if (results.length === 1) {
+                                if (tipoAccion === "verUsuarioDetalle") {
+                                    navigate("/usuario/toma", { state: { contratoBuscarUsuario: results[0] } });
+                                } else if (tipoAccion === "crearContratacionUsuario") {
+                                    navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
                                 }
                             } else {
-                                noUsuarioEncontrado();
-                                setmostrarTablaUsuario(false);
+                                setmostrarTablaUsuario(true);
                             }
-                            break;
-
-                            default:
-                                setLoading(false);
-                                console.log("Filtro no válido");
-                                return;
+                        } else {
+                            noUsuarioEncontrado();
+                            setmostrarTablaUsuario(false);
                         }
-                       
-                        setAccion(tipoAccion);
-                    })
-                    .catch(err => {
-                        setErrors(err);
-                        
-                    })
-                    .finally(() => {
+                        break;
+                    case "2":
+                        const result = response.data;
+                        if (result) {
+                            setNombreBuscado(values.nombre);
+                            setUsuariosEncontrados([result]);
+                            if (usuariosEncontrados.length == 1) {
+                                if (tipoAccion === "verUsuarioDetalle") {
+                                    navigate("/usuario", { state: { contratoBuscarUsuario: result } });
+                                } else if (tipoAccion === "crearContratacionUsuario") {
+                                    navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: result } });
+                                }
+                            }
+
+                        } else {
+                            noUsuarioEncontrado();
+                            setmostrarTablaUsuario(false);
+                        }
+                        break;
+
+                    case "3":
+                        results = response.data.data;
+                        console.log(response.data.data);
+                        setUsuariosEncontrados(response.data.data);
+                        if (results.length > 0) {
+                            setNombreBuscado(values.nombre);
+                            setUsuariosEncontrados(results);
+                            if (results.length === 1) {
+                                if (tipoAccion === "verUsuarioDetalle") {
+                                    navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                } else if (tipoAccion === "crearContratacionUsuario") {
+                                    navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                }
+                            } else {
+                                setmostrarTablaUsuario(true);
+                            }
+                        } else {
+                            noUsuarioEncontrado();
+                            setmostrarTablaUsuario(false);
+                        }
+                        break;
+
+                    case "4":
+                        results = response.data.data;
+                        console.log(response.data.data);
+                        setUsuariosEncontrados(response.data.data);
+                        if (results.length > 0) {
+                            setNombreBuscado(values.nombre);
+                            setUsuariosEncontrados(results);
+                            if (results.length === 1) {
+                                if (tipoAccion === "verUsuarioDetalle") {
+                                    navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                } else if (tipoAccion === "crearContratacionUsuario") {
+                                    navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                }
+                            } else {
+                                setmostrarTablaUsuario(true);
+                            }
+                        } else {
+                            noUsuarioEncontrado();
+                            setmostrarTablaUsuario(false);
+                        }
+                        break;
+
+
+                    case "5":
+                        console.log("entro al filtro 5");
+                        results = response.data;
+                        console.log("a esta enpoint entro", endpoint);
+                        setToma(response.data);
+                        setBooleanCodigoDeToma(true);
+                        if (results.length > 0) {
+                            setNombreBuscado(values.nombre);
+                            setUsuariosEncontrados(results);
+                            if (results.length === 1) {
+                                if (tipoAccion === "verUsuarioDetalle") {
+                                    navigate("/usuario/toma", { state: { contratoBuscarUsuario: results[0] } });
+                                } else if (tipoAccion === "crearContratacionUsuario") {
+                                    navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                }
+                            } else {
+                                setmostrarTablaUsuario(true);
+                            }
+                        } else {
+                            noUsuarioEncontrado();
+                            setmostrarTablaUsuario(false);
+                        }
+                        break;
+
+                    default:
                         setLoading(false);
-                    });        
-            
-                    
+                        console.log("Filtro no válido");
+                        return;
+                }
+
+                setAccion(tipoAccion);
+            })
+            .catch(err => {
+                setErrors(err);
+
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+
+
     }
-    
+
 
     useEffect(() => {
-        
-        const numObject = usuariosEncontrados != null ? usuariosEncontrados.length: 0;
+
+        const numObject = usuariosEncontrados != null ? usuariosEncontrados.length : 0;
         console.log("Número de usuarios encontrados:", numObject);
         if (numObject > 1) {
             setmostrarTablaUsuario(true);
         } else if (numObject === 1) {
             setmostrarTablaUsuario(false);
         } else {
-            setmostrarTablaUsuario(false); 
+            setmostrarTablaUsuario(false);
         }
 
 
     }, [usuariosEncontrados, navigate, navegacion, toma]);
 
 
-function handleNavigationCrearUsuario ()
-    {
+    function handleNavigationCrearUsuario() {
 
         navigate('/CrearUsuario');
     }
@@ -306,87 +295,107 @@ function handleNavigationCrearUsuario ()
     return (
         <ContextProvider>
             <div>
-            <div className=' w-full rounded-md border border-border  shadow-inherit p-10 h-[55vh]'>
-                <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                    <div className="text-muted-foreground text-[20px]">Consultar al usuario</div>
-                
-                    <FormField
-                        control={form.control}
-                        name="filtro"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Filtrar por:</FormLabel>
-                                <BuscarUsuarioComboBox form={form} field={field} name="filtro" setCargoSeleccionado={setNombreSeleccionado}/>
-                                <FormDescription>
-                                {/* AQUI PUEDE IR DESCRIPCIÓN DEBAJO DEL INPUT EN EL FORM */}
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="nombre"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>
-                                    {nombreSeleccionado === "Nombre" && "Escribe el nombre del usuario"}
-                                    {nombreSeleccionado === "Codigo usuario" && "Escribe el código del usuario"}
+                <div className='mt-5 ml-[5vh] w-[100vh] rounded-md border border-border  shadow-inherit p-6 h-[20vh] '>
+                    <Form {...form}>
+                        <div className="justify-center items-center">
+                         
+                            <div className="flex space-x-2">
+                                <div className="w-[200vh] mr-[180]">
+                                <div className="text-muted-foreground text-[20px] mb-5">Consultar al usuario </div>
+                                </div>
+                                {
+                                    botonCrearUsuario &&
+                                    <div className="flex items-center mb-5 w-[3.5] h-[3.5vh]" onClick={handleNavigationCrearUsuario}>
+                                    <IconButton><TiUserAdd className="w-[3.5] h-[3.5vh]" /></IconButton>
+                                    </div>
+                                }
+                            </div>
+                                
+                        </div>
+                   
+                       
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                            <div className="flex space-x-2">
+                                <div className="w-[50vh] mr-5">
+
+                                    <FormField
+                                        control={form.control}
+                                        name="filtro"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Filtrar por:</FormLabel>
+                                                <BuscarUsuarioComboBox form={form} field={field} name="filtro" setCargoSeleccionado={setNombreSeleccionado} />
+                                                <FormDescription>
+                                                    {/* AQUI PUEDE IR DESCRIPCIÓN DEBAJO DEL INPUT EN EL FORM */}
+                                                </FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+
+                                <div className="w-[50vh]">
+                                    {nombreSeleccionado === "Nombre, Código de usuario, Código de toma" && "Nombre, Código de usuario, Código de toma"}
+                                    {nombreSeleccionado === "Código usuario" && "Escribe el código del usuario"}
                                     {nombreSeleccionado === "Correo" && "Escribe el correo del usuario"}
                                     {nombreSeleccionado === "Dirección" && "Escribe la dirección de la toma"}
-                                    {nombreSeleccionado === "Codigo toma" && "Escribe el código de la toma"}
+                                    {nombreSeleccionado === "Código toma" && "Escribe el código de la toma"}
+                                    <FormField
+                                        control={form.control}
+                                        name="nombre"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
 
-                                </FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Escribe la información requerida" {...field} />
-                                </FormControl>
-                                <FormDescription>
-                                {/* AQUI PUEDE IR DESCRIPCIÓN DEBAJO DEL INPUT EN EL FORM */}
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-            
-            <div className="flex justify-end items-end gap-2 mt-10px">
-                        <Button type="submit">Aceptar</Button>
-                        {
-                            botonCrearUsuario && <Button type="button" onClick={handleNavigationCrearUsuario}>Crear usuario</Button>
-                        }
-                    </div>
-                </form>
-            </Form>
-        </div>
 
-        {mostrarTablaUsuario&&filtroSeleccionado == "1" && <h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona un usuario.</h1>}
-        {mostrarTablaUsuario&&filtroSeleccionado == "2" && <h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona un usuario.</h1>}
-        {mostrarTablaUsuario&&filtroSeleccionado == "3" && <h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona un usuario.</h1>}
-        {mostrarTablaTomaUsuario&&filtroSeleccionado == "4"&&<h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona la toma del usuario.</h1>}
-        {mostrarTablaTomaUsuario&&filtroSeleccionado == "5"&&<h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona la toma del usuario.</h1>}
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Escribe la información requerida" {...field} />
+                                                </FormControl>
+                                                <FormDescription>
+                                                    {/* AQUI PUEDE IR DESCRIPCIÓN DEBAJO DEL INPUT EN EL FORM */}
+                                                </FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
 
-        {
-            
-        mostrarTablaUsuario &&  filtroSeleccionado == "1" && <ContratoConsultaUsuarioTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
-        }
-        {
+                                </div>
+                                <div className="mt-8">
+                                    <Button type="submit" className=""><MagnifyingGlassIcon /></Button>
 
-        mostrarTablaUsuario &&  filtroSeleccionado == "2" && <ContratoConsultaUsuarioTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
-        }
-        {
 
-        mostrarTablaUsuario &&  filtroSeleccionado == "3" && <ContratoConsultaUsuarioTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
-        }
+                                </div>
+                            </div>
 
-        {
-        mostrarTablaTomaUsuario && filtroSeleccionado == "4" && <ContratoConsultaTomaTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
-        }
-        
-        {
-        mostrarTablaTomaUsuario && filtroSeleccionado == "5" && <ContratoConsultaTomaTable accion2 = {tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado = {filtroSeleccionado}/>
-        }
-            
-        </div>
+
+
+
+                        </form>
+                    </Form>
+                </div>
+                {
+
+                    mostrarTablaUsuario && filtroSeleccionado == "1" && <ContratoConsultaUsuarioTable accion2={tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado={filtroSeleccionado} />
+                }
+                {
+
+                    mostrarTablaUsuario && filtroSeleccionado == "2" && <ContratoConsultaUsuarioTable accion2={tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado={filtroSeleccionado} />
+                }
+                {
+
+                    mostrarTablaUsuario && filtroSeleccionado == "3" && <ContratoConsultaUsuarioTable accion2={tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado={filtroSeleccionado} />
+                }
+
+                {
+                    mostrarTablaTomaUsuario && filtroSeleccionado == "4" && <ContratoConsultaTomaTable accion2={tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado={filtroSeleccionado} />
+                }
+
+                {
+                    mostrarTablaTomaUsuario && filtroSeleccionado == "5" && <ContratoConsultaTomaTable accion2={tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado={filtroSeleccionado} />
+                }
+
+            </div>
         </ContextProvider>
 
 

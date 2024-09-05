@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -16,16 +16,13 @@ import axiosClient from '../../axios-client';
 import dayjs from 'dayjs';
 
 
-const ModalCargarConcepto = ({ trigger, dueño, setCargos, handleCargoSelect }) => {
+const ModalCargarConcepto = ({ trigger, dueño, setCargos = null, handleCargoSelect, modelo_dueno = "toma", actualizar_cargos_usuario = null }) => {
 
     const [selected_concepto, set_selected_concepto] = useState({});
+    const monto_input = useRef();
 
     const cargar_cargo_directo = () => {
-
-        let tarifas = selected_concepto?.tarifas;
-        const monto = parseFloat(tarifas?.filter(tarifa => tarifa.id_tipo_toma == dueño.tipo_toma)[0].monto);
-        //const hoy = dayjs().format('YYYY-MM-DD');
-        console.log(monto)
+        const monto = parseFloat(monto_input.current.value);
         let data = {
             cargos: [
                 {
@@ -34,15 +31,22 @@ const ModalCargarConcepto = ({ trigger, dueño, setCargos, handleCargoSelect }) 
                 },
             ],
             id_dueno: dueño.id,
-            modelo_dueno: "toma",
+            modelo_dueno: modelo_dueno,
             id_origen: 1,
             modelo_origen: "caja"
         }
 
         axiosClient.post("/cargo/generarDirecto", data)
             .then((response) => {
+                console.log(response.data.data)
                 handleCargoSelect(response.data.data, dueño);
-                actualizar_cargos();
+
+                if (actualizar_cargos_usuario) {
+                    actualizar_cargos_usuario();
+                } else {
+                    actualizar_cargos();
+                }
+
             }).catch((response) => {
                 console.log(response)
             })
@@ -52,13 +56,30 @@ const ModalCargarConcepto = ({ trigger, dueño, setCargos, handleCargoSelect }) 
         const cargosResponse = await axiosClient.get(`/cargos/porModelo/pendientes`, {
             params: {
                 id_dueno: dueño.id,
-                modelo_dueno: "toma"
+                modelo_dueno: modelo_dueno
             }
         });
         if (cargosResponse.data) {
-            setCargos(cargosResponse.data);
+            let filteredCargos = cargosResponse.data.filter(cargo => cargo.estado === 'pendiente');
+            filteredCargos = filteredCargos.sort((a, b) => a.concepto.prioridad_abono - b.concepto.prioridad_abono)
+            setCargos(filteredCargos);
         }
     }
+
+    useEffect(() => {
+        let tarifas = selected_concepto?.tarifas;
+        let monto = 0;
+        if(modelo_dueno == "usuario"){
+            console.log(tarifas)
+            monto = parseFloat(tarifas?.filter(tarifa => tarifa.id_tipo_toma == 5)[0]?.monto);
+        }else{
+            monto = parseFloat(tarifas?.filter(tarifa => tarifa.id_tipo_toma == dueño.id_tipo_toma)[0]?.monto);
+        }
+        if (monto_input.current) {
+            monto_input.current.value = monto;
+            selected_concepto.pide_monto == 1 ? monto_input.current.disabled = false : monto_input.current.disabled = true;
+        }
+    }, [selected_concepto])
 
     return (
         <div>
@@ -72,6 +93,19 @@ const ModalCargarConcepto = ({ trigger, dueño, setCargos, handleCargoSelect }) 
                     <>
                         <div >
                             <ComboBoxCargosCargables set={set_selected_concepto} />
+                            <p className='text-[14px] mt-5'>Monto (No Incluye IVA)</p>
+                            <input ref={monto_input} type="number" className='bg-background border p-2 mt-2 w-full rounded-md outline-none' placeholder='Monto' />
+                            {
+                                selected_concepto?.pide_monto == 1 ?
+                                    <>
+                                        <p className='text-[14px] m-1 text-blue-500'>Monto Variable</p>
+                                    </>
+                                    :
+                                    <>
+                                        <p className='text-[14px] m-1 text-red-500'>Monto Fijo</p>
+                                    </>
+                            }
+
                         </div>
                     </>
                     <AlertDialogFooter>

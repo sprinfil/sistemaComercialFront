@@ -68,7 +68,16 @@ interface GeneralUsuario {
  setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo: number) => void;
  accionGeneradaEntreTabs: string,
   setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs: string) => void;
-
+  idSeleccionadoGenerarOrdenDETrabajoToma: number | null;
+  setIdSeleccionadoGenerarOrdenDETrabajoToma: (idSeleccionadoGenerarOrdenDETrabajoToma: number) => void;
+  idSeleccionadoTomaAsignacionOT: number | null;
+  setIdSeleccionadoTomaAsignacionOT: (idSeleccionadoTomaAsignacionOT: number) => void;
+  controlTablaOperadorOTIndividual: boolean;
+  setControlTablaOperadorOTIndividual:(controlTablaOperadorOTIndividual: boolean) => void;
+  idSeleccionadoAsignarOrdenDeTrabajoToma: number | null;
+  setIdSeleccionadoAsignarOrdenDeTrabajoToma: (idSeleccionadoAsignarOrdenDeTrabajoToma: number) => void;
+  abrirModalInformativo: boolean
+  setAbrirModalInformativo: (abrirModalInformativo: boolean) => void;
 }
 
 export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
@@ -115,5 +124,15 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
  setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo) => set({idSeleccionadoConfiguracionOrdenDeTrabajo}),
  accionGeneradaEntreTabs: '',
  setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs) => set({accionGeneradaEntreTabs}),
+ idSeleccionadoGenerarOrdenDETrabajoToma: null,
+ setIdSeleccionadoGenerarOrdenDETrabajoToma: (idSeleccionadoGenerarOrdenDETrabajoToma: number) => set({idSeleccionadoGenerarOrdenDETrabajoToma}),
+ idSeleccionadoTomaAsignacionOT: null,
+ setIdSeleccionadoTomaAsignacionOT: (idSeleccionadoTomaAsignacionOT: number) => set({idSeleccionadoTomaAsignacionOT}),
+ controlTablaOperadorOTIndividual: false,
+ setControlTablaOperadorOTIndividual:(controlTablaOperadorOTIndividual) => set({controlTablaOperadorOTIndividual}),
+ idSeleccionadoAsignarOrdenDeTrabajoToma: null,
+ setIdSeleccionadoAsignarOrdenDeTrabajoToma: (idSeleccionadoAsignarOrdenDeTrabajoToma: number) => set({idSeleccionadoAsignarOrdenDeTrabajoToma}),
+ abrirModalInformativo: false,
+ setAbrirModalInformativo:(abrirModalInformativo) => set({abrirModalInformativo}),
 }));
 

@@ -75,7 +75,24 @@ const CajaOperadoresForm = () => {
     const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_operador:number}[]>([{ id: 0, id_operador: 0}]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
+    const [control, setControl] = useState(false);
 
+
+
+    console.log(caja);
+    console.log(accionGeneradaEntreTabs);
+
+
+
+
+
+
+
+
+    console.log(caja);
+   
+
+    console.log(accionGeneradaEntreTabs);
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0 
             ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1 
@@ -165,7 +182,7 @@ const CajaOperadoresForm = () => {
             })),
         });
     }
-}, [totalAccionesComponente, accion]);
+}, [totalAccionesComponente, accionGeneradaEntreTabs]);
 
     const onSubmit = async (values: CajaOperadores) => {
         console.log(values);
@@ -260,65 +277,78 @@ const CajaOperadoresForm = () => {
 
     
     
-      useEffect(() => {
+    useEffect(() => {
         if (accionGeneradaEntreTabs === "eliminar") {
-          setAbrirInput(false);
+            setAbrirInput(false);
+            setControl(false);
+            return;
         }
-        if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
-          setAbrirInput(true);
-          setErrors({});
-          setCaja({
-            id: 0,
-            nombre: "",
-            descripcion: "ninguna",
-          });
-        }
-        if (accionGeneradaEntreTabs === "ver") {
-          setAbrirInput(false);
-          setErrors({});
-          setAccion("");
-        
-          // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
-          //SUS PROPIEDADDES
-          // Transformación de datos
-                const verOperadores = Array.isArray(caja.operadorAsignado) ?
-                caja.operadorAsignado.map(item => ({
-                id: item.id,
-                id_operador: item.id_operador,
-                })) : [];
-
-                // Reseteo del formulario
-                form.reset({
-                    operadores_asignados: verOperadores,
-                });
-
-                // Actualización del estado y depuración
-                setTotalAccionesComponente(verOperadores);
-                console.log("Estos son los operadores:", verOperadores);
-                console.log("Valores del formulario después del reset:", form.getValues());
-        }
-        
     
-        if (accion === "editar") {
-          setAbrirInput(true);
-          setErrors({});
+        if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
+            setAbrirInput(true);
+            setControl(false);
+            setErrors({});
+            setCaja({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
+            return;
         }
-      }, [accion, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
+    
+        if (accionGeneradaEntreTabs === "ver" || accionGeneradaEntreTabs === "editar") {
+            setAbrirInput(true);
+            setErrors({});
+    
+            // Transformación de datos para el formulario
+            const verOperadores = Array.isArray(caja.operadorAsignado) ?
+                caja.operadorAsignado.map(item => ({
+                    id: item.id,
+                    id_operador: item.id_operador,
+                })) : [];
+    
+            // Manejo de la acción "ver"
+            if (accionGeneradaEntreTabs === "ver") {
+                setControl(true);
+                form.reset({
+                    operadores_asignados: verOperadores
+                });
+            }
+    
+            // Manejo de la acción "editar"
+            if (accionGeneradaEntreTabs === "editar") {
+                setControl(false);
+                form.reset({
+                    operadores_asignados: verOperadores
+                });
+            }
+    
+            // Actualización del estado si los datos cambiaron
+            if (JSON.stringify(verOperadores) !== JSON.stringify(totalAccionesComponente)) {
+                setTotalAccionesComponente(verOperadores);
+            }
+    
+            console.log("Estos son los operadores:", verOperadores);
+            console.log("Valores del formulario después del reset:", form.getValues());
+        }
+    }, [accionGeneradaEntreTabs, caja, idSeleccionadoConfiguracionOrdenDeTrabajo,form]);
+    
+    
 
 
-    const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
+    const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-border';
 
     //console.log("a ver que datos manda el form", form.getValues());
 
     return (
         <div>
             <div className="overflow-auto">
-                <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+                <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {caja.nombre_caja && <p className="text-muted-foreground text-[20px]">{caja.nombre_caja}</p>}
+                            {caja?.nombre_caja && <p className="text-muted-foreground text-[20px]">{caja?.nombre_caja}</p>}
                         </div>
-                        {caja.nombre_caja && (
+                        {caja?.nombre_caja && (
                             <>
                                 <Modal
                                     method={onDelete}
@@ -332,7 +362,7 @@ const CajaOperadoresForm = () => {
                                 {
                                     accionGeneradaEntreTabs == "editar" &&
                                     <div onClick={handleAddComponent}>
-                                        <a title="Agregar nueva acción">
+                                        <a title="Agregar nuevo operador">
                                             <IconButton>
                                                 <PlusCircledIcon className='w-[20px] h-[20px]' />
                                             </IconButton>
@@ -341,7 +371,7 @@ const CajaOperadoresForm = () => {
                                 }
 
                                 <div onClick={() => setAccionGeneradaEntreTabs("editar")}>
-                                    <a title="Modificar ordenes">
+                                    <a title="Actualizar operadores">
                                         <IconButton>
                                             <Pencil2Icon className="w-[20px] h-[20px]" />
                                         </IconButton>
@@ -354,8 +384,8 @@ const CajaOperadoresForm = () => {
                 {totalAccionesComponente.length < 1 
                 && 
                 <div className="flex justify-center mt-[20vh]">
-                     {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o mas operadores.</p> : 
-              <p className="text-muted-foreground text-[20px]">Sin operadores</p>
+                     {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o más operadores.</p> : 
+              <p className="text-muted-foreground text-[20px]">Sin operadores.</p>
              }
 
                     </div>
@@ -366,8 +396,7 @@ const CajaOperadoresForm = () => {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {totalAccionesComponente.map((accion, index) => {
-                            console.log(index);
-                            console.log(index.id);
+                    
                             return (
                                 <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
                                      <div className="text-sm font-medium mb-3">
@@ -382,7 +411,7 @@ const CajaOperadoresForm = () => {
                                                 render={({ field }) => (
 
                                             
-                                                    <CajaComboBox form={form} field={field} name={`operadores_asignados.${index}.id_operador`} setCargoSeleccionado={setConceptoSeleccionado}/>
+                                                    <CajaComboBox form={form} field={field} name={`operadores_asignados.${index}.id_operador`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control}/>
                                                 )}
                                             />
                                         </div>

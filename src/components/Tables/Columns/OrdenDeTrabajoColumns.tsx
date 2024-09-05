@@ -19,6 +19,10 @@ export type OrdenDeTrabajo = {
   orden_trabajo_accion: orden_trabajo_accion[]
   ordenes_trabajo_cargos: orden_trabajo_cargos[]
   ordenes_trabajo_encadenadas: orden_trabajo_encadenadas[]
+  orden_trabajo_catalogo:
+  {
+    descripcion: string;
+  }
 
 }
 
@@ -46,19 +50,56 @@ export type orden_trabajo_encadenadas = {
 
 
 export const columns: ColumnDef<OrdenDeTrabajo>[] = [
+  
   {
-    accessorKey: "nombre",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Nombre
-        </Button>
-      )
+    accessorFn: (row) => {
+      // Verifica la estructura de los datos en la consola
+      return row.orden_trabajo_catalogo.descripcion;
     },
+    id: "orden_trabajo_catalogo.descripcion",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Tipo
+      </Button>
+    ),
   },
+  {
+    accessorKey: "estado",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Estado
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "created_at",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Creada
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "fecha_finalizada",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Finalización
+      </Button>
+    ),
+  },
+ 
   {
     id: "actions",
     cell: ({ row }) => {

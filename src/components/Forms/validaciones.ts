@@ -27,11 +27,22 @@ export const ajusteSchema = z.object({
 
 //VALIDACIONES AJUSTE
 export const conceptoSchema = z.object({
-    id: z.number(),
-    nombre: z.string().min(1, "El Nombre es requerido"),
-    descripcion: z.string(),
-    prioridad_abono: z.number().min(1, "La prioridad debe ser minimo a 1").max(10, "La prioridad no puede ser mayor a 10"),
-    genera_iva: z.string(),
+  id: z.number(),
+  nombre: z.string(),
+  descripcion: z.string(),
+  prioridad_abono: z.number(),
+  abonable: z.number(), // Asegúrate de que estas propiedades estén incluidas
+  tarifa_fija: z.number().optional(),
+  cargo_directo: z.number().optional(),
+  genera_orden: z.number().optional(),
+  genera_orden_data: z.number().optional(),
+  genera_recargo: z.number().optional(),
+  concepto_rezago: z.number().optional(),
+  pide_monto: z.number().optional(),
+  bonificable: z.number().optional(),
+  recargo: z.string().optional(),
+  genera_iva: z.string(),
+  estado: z.boolean()
 })
 //VALIDACIONES DESCUENTOS
 export const descuentoSchema = z.object({
@@ -114,3 +125,15 @@ export const cajaOperadorCatalogoSchema = z.object({
     })
   ),
 });
+
+//VALIDACIONES Medidor
+export const medidorSchema = z.object({
+  id: z.number(),
+  id_toma: z.number(),
+  numero_serie: z.string().min(1, "El Nombre es requerido"),
+  marca: z.string().min(1, "El Nombre es requerido"),
+  diametro: z.string().min(1, "El Nombre es requerido"),
+  tipo: z.string().min(1, "El Nombre es requerido"),
+  estatus: z.boolean()
+
+})

@@ -382,7 +382,7 @@ const OrdenDeTrabajoAccionesForm = () => {
           {totalAccionesComponente.length < 1
             &&
             <div className="flex justify-center mt-[20vh]">
-             {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega una o mas acciones.</p> : 
+             {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega una o más acciones.</p> : 
               <p className="text-muted-foreground text-[20px]">Sin acciones.</p>
              }
 
@@ -392,7 +392,7 @@ const OrdenDeTrabajoAccionesForm = () => {
             {totalAccionesComponente.map((item, index) => (
 
               <div key={item.id} className={`p-4 border ${borderColor} rounded-md`}>
-
+                <p>Acción {index + 1}</p>
                 <div className="flex justify-end mb-5">
                   <button type="button" onClick={() => handleRemoveComponent(item.id)}>
                     <a title="Borrar acción">
@@ -408,6 +408,29 @@ const OrdenDeTrabajoAccionesForm = () => {
                   Selecciona una acción.
                 </div>
                   <div className="w-[65vh]">
+                    {
+                      accionGeneradaEntreTabs == "ver" ? 
+                      <Controller
+                      name={`orden_trabajo_accion.${index}.accion`}
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                        disabled
+                          onValueChange={(value) => field.onChange((value))}
+                          value={(field.value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona una acción" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="registrar">Registrar</SelectItem>
+                            <SelectItem value="modificar">Modificar</SelectItem>
+                            <SelectItem value="quitar">Quitar</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    :
                     <Controller
                       name={`orden_trabajo_accion.${index}.accion`}
                       control={control}
@@ -427,6 +450,8 @@ const OrdenDeTrabajoAccionesForm = () => {
                         </Select>
                       )}
                     />
+                    }
+                    
                   </div>
                   </div>
               
@@ -434,29 +459,54 @@ const OrdenDeTrabajoAccionesForm = () => {
 
                   <div className="w-full">
                     <div className="text-sm font-medium mb-2">
-                      Selecciona un modelo.
+                      Selecciona una entidad.
                     </div>
-                    <Controller
-                      name={`orden_trabajo_accion.${index}.modelo`}
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          onValueChange={(value) => field.onChange((value))}
-                          value={(field.value)}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecciona un modelo" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="toma">Tomas</SelectItem>
-                            <SelectItem value="medidor">Medidor</SelectItem>
-                            <SelectItem value="contratos">Contratos</SelectItem>
-                            <SelectItem value="usuario">Usuario</SelectItem>
+                    {accionGeneradaEntreTabs == "ver" ?
+                     <Controller
+                     name={`orden_trabajo_accion.${index}.modelo`}
+                     control={control}
+                     render={({ field }) => (
+                       <Select
+                       disabled
+                         onValueChange={(value) => field.onChange((value))}
+                         value={(field.value)}
+                       >
+                         <SelectTrigger>
+                           <SelectValue placeholder="Selecciona una entidad" />
+                         </SelectTrigger>
+                         <SelectContent>
+                           <SelectItem value="toma">Tomas</SelectItem>
+                           <SelectItem value="medidor">Medidor</SelectItem>
+                           <SelectItem value="contratos">Contratos</SelectItem>
+                           <SelectItem value="usuario">Usuario</SelectItem>
 
-                          </SelectContent>
-                        </Select>
-                      )}
-                    />
+                         </SelectContent>
+                       </Select>
+                     )}
+                   />
+                  :
+                  <Controller
+                  name={`orden_trabajo_accion.${index}.modelo`}
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={(value) => field.onChange((value))}
+                      value={(field.value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona un modelo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="toma">Tomas</SelectItem>
+                        <SelectItem value="medidor">Medidor</SelectItem>
+                        <SelectItem value="contratos">Contratos</SelectItem>
+                        <SelectItem value="usuario">Usuario</SelectItem>
+
+                      </SelectContent>
+                    </Select>
+                  )}
+                /> }
+                   
                   </div>
 
                 </div>
@@ -464,6 +514,28 @@ const OrdenDeTrabajoAccionesForm = () => {
                   <div className="text-sm font-medium mb-2">
                     Selecciona un campo.
                   </div>
+                  {
+                    accionGeneradaEntreTabs == "ver" ?
+                    <Controller
+                    name={`orden_trabajo_accion.${index}.campo`}
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        disabled
+                        onValueChange={(value) => field.onChange((value))}
+                        value={(field.value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecciona un campo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="estatus">Estatus</SelectItem>
+                          <SelectItem value="tipo_contratacion">Tipo de contratación</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  :
                   <Controller
                     name={`orden_trabajo_accion.${index}.campo`}
                     control={control}
@@ -482,6 +554,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                       </Select>
                     )}
                   />
+                  }
                 </div>
               </div>
             ))}
