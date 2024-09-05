@@ -46,8 +46,18 @@ export function DataTableAsignarOTIndividual<TData, TValue>({
   );
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
   const [control, setControl] = React.useState(false);
-  const { setAsignadasEnToma, asignadasEnToma, setInformacionRecibidaPorFiltros, setLoadingTableModalAsignarOperadorTable} = ZustandFiltrosOrdenTrabajo();
-  const { usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT, idSeleccionadoTomaAsignacionOT, setIdSeleccionadoAsignarOrdenDeTrabajoToma, } = ZustandGeneralUsuario();
+  const { setAsignadasEnToma, asignadasEnToma, setInformacionRecibidaPorFiltros, setLoadingTableModalAsignarOperadorTable,
+    isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
+    isConcluidaChecked, setIsConcluidaChecked,
+    isCanceladaChecked, setIsCanceladaChecked,
+    isDomesticaChecked, setIsDomesticaChecked,
+    isComercialChecked, setIsComercialChecked,
+    isIndustrialChecked, setIsIndustrialChecked,
+    isEspecialChecked, setIsEspecialChecked,
+    idLibroFiltro, idRutaFiltro,
+    saldoMinFiltro, saldoMaxFiltro,
+  } = ZustandFiltrosOrdenTrabajo();
+  const { usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT, idSeleccionadoTomaAsignacionOT, setIdSeleccionadoAsignarOrdenDeTrabajoToma, setInformacionRecibidaAsignarMasivamente} = ZustandGeneralUsuario();
 
   const table = useReactTable({
     data,
@@ -87,8 +97,18 @@ export function DataTableAsignarOTIndividual<TData, TValue>({
   const getOrdenesDeTrabajo = async () => {
     setLoadingTableModalAsignarOperadorTable(true);
     const values = {
-      asignada: asignadasEnToma,
-      toma_id: usuariosEncontrados[0].tomas[0].id
+      asignada: isAsignadaChecked,
+      no_asignada: isNoAsignadaChecked,
+      concluida: isConcluidaChecked,
+      cancelada: isCanceladaChecked,
+      domestica: isDomesticaChecked,
+      comercial: isComercialChecked,
+      industrial: isIndustrialChecked,
+      especial: isEspecialChecked,
+      ruta_id: idRutaFiltro,
+      libro_id: idLibroFiltro,
+      saldo_min: saldoMinFiltro,
+      saldo_max: saldoMaxFiltro
     }
     console.log("VALORES ENVIADOS", values);
     try {
@@ -98,7 +118,7 @@ export function DataTableAsignarOTIndividual<TData, TValue>({
       setLoadingTableModalAsignarOperadorTable(false);
 
       if (Array.isArray(response.data.ordenes_trabajo)) {
-        const tomas = response.data.ordenes_trabajo.map((item: any) => item);
+        const tomas = response.data.ordenes_trabajo.map((item: any) => item.toma);
 
         console.log("Tomas extraídas", tomas);
 

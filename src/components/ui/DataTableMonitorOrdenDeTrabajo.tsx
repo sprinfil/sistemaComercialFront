@@ -54,7 +54,10 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
     isDomesticaChecked, setIsDomesticaChecked,
     isComercialChecked, setIsComercialChecked,
     isIndustrialChecked, setIsIndustrialChecked,
-    isEspecialChecked, setIsEspecialChecked, setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} = ZustandFiltrosOrdenTrabajo();
+    isEspecialChecked, setIsEspecialChecked,
+    idLibroFiltro, idRutaFiltro,
+    saldoMinFiltro, saldoMaxFiltro,
+    setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} = ZustandFiltrosOrdenTrabajo();
   const table = useReactTable({
     data,
     columns,
@@ -94,7 +97,17 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
     const values = {
       
       asignada: isAsignadaChecked,
-      domestica: isDomesticaChecked
+      no_asignada: isNoAsignadaChecked,
+      concluida: isConcluidaChecked,
+      cancelada: isCanceladaChecked,
+      domestica: isDomesticaChecked,
+      comercial: isComercialChecked,
+      industrial: isIndustrialChecked,
+      especial: isEspecialChecked,
+      ruta_id: idRutaFiltro,
+      libro_id: idLibroFiltro,
+      saldo_min: saldoMinFiltro,
+      saldo_max: saldoMaxFiltro
 
     }
     console.log("VALORES ENVIADOS", values);

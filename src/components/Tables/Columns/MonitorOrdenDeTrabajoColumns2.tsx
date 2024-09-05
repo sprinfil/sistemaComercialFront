@@ -119,9 +119,7 @@ export const columns2: ColumnDef<MonitorOrden2>[] = [
       );
     },
     cell: ({ row }) => {
-      const date = new Date(row.original.created_at);
-      const formattedDate = date.toISOString().split('T')[0];
-      return <span>{formattedDate}</span>;
+   
     },
   },
   {

@@ -70,6 +70,16 @@ interface FiltrosOrdenTrabajo {
   setIsEspecialChecked: (isEspecialChecked:boolean) => void;
   informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo: []
   setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo:(informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo:[]) => void;
+  idRutaFiltro: number;
+  setIdRutaFiltro: (idRutaFiltro:number) => void;
+  idLibroFiltro: number;
+  setIdLibroFiltro: (idLibroFiltro:number) => void;
+  saldoMinFiltro:  string;
+  setSaldoMinFiltro: (saldoMinFiltro:string) => void;
+  saldoMaxFiltro:  string;
+  setSaldoMaxFiltro: (saldoMaxFiltro:string) => void;
+  informacionRecibidaAsignarMasivamente: []
+  setInformacionRecibidaAsignarMasivamente:(informacionRecibidaAsignarMasivamente:[]) => void;
 }
 
 export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => ({
@@ -131,5 +141,15 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setIsEspecialChecked: (isEspecialChecked) => set({isEspecialChecked}),
   informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo: [],
   setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo: (informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo) => set({informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo}),
+  idRutaFiltro: 0,
+  setIdRutaFiltro: (idRutaFiltro) => set({idRutaFiltro}),
+  idLibroFiltro: 0,
+  setIdLibroFiltro: (idLibroFiltro) => set({idLibroFiltro}),
+  saldoMinFiltro: "",
+  setSaldoMinFiltro: (saldoMinFiltro) => set({saldoMinFiltro}),
+  saldoMaxFiltro: "",
+  setSaldoMaxFiltro: (saldoMaxFiltro) => set({saldoMaxFiltro}),
+  informacionRecibidaAsignarMasivamente: [],
+  setInformacionRecibidaAsignarMasivamente: (informacionRecibidaAsignarMasivamente) => set({informacionRecibidaAsignarMasivamente}),
 }));
 

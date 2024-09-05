@@ -16,7 +16,17 @@ export const OtMasivaForm = () => {
     setInformacionRecibidaPorFiltros, 
     informacionRecibidaPorFiltros,
      arregloOrdenesDeTrabajoParaAsignarAOperador, 
-     setLoadingTable, loadingTable, setInformacionRecibidaPorFiltrosGenerarOtMasiva, informacionRecibidaPorFiltrosGenerarOtMasiva} = ZustandFiltrosOrdenTrabajo();
+     setLoadingTable, loadingTable, 
+     setInformacionRecibidaPorFiltrosGenerarOtMasiva,
+     isConcluidaChecked, setIsConcluidaChecked,
+     isCanceladaChecked, setIsCanceladaChecked,
+     isDomesticaChecked, setIsDomesticaChecked,
+     isComercialChecked, setIsComercialChecked,
+     isIndustrialChecked, setIsIndustrialChecked,
+     isEspecialChecked, setIsEspecialChecked,
+     idLibroFiltro, idRutaFiltro,
+     saldoMinFiltro, saldoMaxFiltro,
+      informacionRecibidaPorFiltrosGenerarOtMasiva} = ZustandFiltrosOrdenTrabajo();
 
 
   const [abrirModal, setAbrirModal] = useState(false);
@@ -40,6 +50,16 @@ export const OtMasivaForm = () => {
     const values = {
       asignada: isAsignadaChecked,
       no_asignada: isNoAsignadaChecked,
+      concluida: isConcluidaChecked,
+      cancelada: isCanceladaChecked,
+      domestica: isDomesticaChecked,
+      comercial: isComercialChecked,
+      industrial: isIndustrialChecked,
+      especial: isEspecialChecked,
+      ruta_id: idRutaFiltro,
+      libro_id: idLibroFiltro,
+      saldo_min: saldoMinFiltro,
+      saldo_max: saldoMaxFiltro
     }
     console.log("VALORES ENVIADOS", values);
     try {

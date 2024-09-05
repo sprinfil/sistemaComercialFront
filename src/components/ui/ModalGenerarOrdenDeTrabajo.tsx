@@ -164,7 +164,7 @@ const ModalGenerarOrdenDeTrabajo = ({ isOpen, setIsOpen, method, tipoOperacion }
 
     return (
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-            <AlertDialogContent >
+            <AlertDialogContent className="max-w-[90vh]">
                 <AlertDialogHeader>
 
                     {tipoOperacion == "masiva" ?

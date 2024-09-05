@@ -166,7 +166,7 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
     }
   };
 
-  console.log(detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0].accion);
+  console.log(detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.accion);
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -192,8 +192,8 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
                 <TrashIcon className="w-[2vh] h-[2vh] ml-2" />
               </IconButton>
 
-              {detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0].modelo == "medidores" &&
-              detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0].accion == "registrar" &&
+              {detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.modelo == "medidores" &&
+              detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.accion == "registrar" &&
                 <div>
                   <IconButton title="Cerrar orden de trabajo" onClick={abrirModalGG}><MdOutlineCancel /></IconButton>
                   <ModalCerrarOT
@@ -204,7 +204,7 @@ const ModalMonitorOrdenTrabajoTable = ({ isOpen, setIsOpen, method }) => {
 
               }
               {
-                detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0].modelo != "medidores" &&
+                detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.modelo != "medidores" &&
                 <div>
                   <IconButton title="Cerrar orden de trabajo" onClick={abrirModalGG2}><MdOutlineCancel /></IconButton>
                   <ModalCerrarOT2

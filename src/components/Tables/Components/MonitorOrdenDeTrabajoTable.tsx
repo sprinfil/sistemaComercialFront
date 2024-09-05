@@ -17,7 +17,7 @@ export default function MonitorOrdenDeTrabajoTable() {
   const { setDataOrdenDeTrabajoMonitor, dataOrdenDeTrabajoMonitor, setLoadingTable,
     loadingTable,
     informacionRecibidaPorFiltros, boolUsoFiltros, valorParaSaberSiUsaLaTablaDeFiltros, detalleOrdenDeTrabajoTomaMonitor2, 
-    setDetalleOrdenDeTrabajoTomaMonitor2, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} = ZustandFiltrosOrdenTrabajo();
+    setDetalleOrdenDeTrabajoTomaMonitor2, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} = ZustandFiltrosOrdenTrabajo();
 
   const [abrirModal, setAbrirModal] = useState(false);
 
@@ -31,7 +31,7 @@ export default function MonitorOrdenDeTrabajoTable() {
     try {
       const response = await axiosClient.get("OrdenTrabajo/NoAsignada");
       setLoadingTable(false);
-      setDataOrdenDeTrabajoMonitor(response.data.data);
+      setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo(response.data.data);
       console.log(response);
     } catch (error) {
       setLoadingTable(false);
@@ -76,7 +76,7 @@ export default function MonitorOrdenDeTrabajoTable() {
         valorParaSaberSiUsaLaTablaDeFiltros ?
           <DataTableMonitorOrdenDeTrabajo columns={columns2} data={informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} sorter='toma.codigo_toma' onRowClick={handleRowClick2} />
           :
-          <DataTableMonitorOrdenDeTrabajo columns={columns2} data={dataOrdenDeTrabajoMonitor} sorter='toma.codigo_toma' onRowClick={handleRowClick2} />
+          <DataTableMonitorOrdenDeTrabajo columns={columns2} data={informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} sorter='toma.codigo_toma' onRowClick={handleRowClick2} />
 
 
       }

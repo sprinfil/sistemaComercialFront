@@ -47,13 +47,24 @@ export type orden_trabajo_encadenadas = {
 
 export const columns: ColumnDef<OrdenDeTrabajo>[] = [
   {
+    accessorKey: "nombre",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Tipo
+      </Button>
+    ),
+  },
+  {
     accessorKey: "descripcion",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Tipo de orden de trabajo
+        Descripción
       </Button>
     ),
   },
