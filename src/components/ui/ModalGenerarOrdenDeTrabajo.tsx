@@ -135,7 +135,7 @@ const ModalGenerarOrdenDeTrabajo = ({
       toast({
         variant: "destructive",
         title: "Oh, no. Error",
-        description: "La anomalía ya existe.",
+        description: "Algo paso mal.",
         action: (
           <ToastAction altText="Try again">Intentar de nuevo</ToastAction>
         ),

@@ -57,22 +57,21 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
     isEspecialChecked, setIsEspecialChecked,
     idLibroFiltro, idRutaFiltro, setIdLibroFiltro, setIdRutaFiltro,
     saldoMinFiltro, saldoMaxFiltro,setLoadingTableFiltrarOrdenDeTrabajoMasivas,
-    setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} = ZustandFiltrosOrdenTrabajo();
-  const table = useReactTable({
-    data,
-    columns,
-    sorter,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      sorting,
-      columnFilters,
-    },
-  });
+    setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionCerrarOtMasivamente} = ZustandFiltrosOrdenTrabajo();
+    const table = useReactTable({
+      data,
+      columns,
+      sorter,
+      getCoreRowModel: getCoreRowModel(),
+      onSortingChange: setSorting,
+      getSortedRowModel: getSortedRowModel(),
+      onColumnFiltersChange: setColumnFilters,
+      getFilteredRowModel: getFilteredRowModel(),
+      state: {
+        sorting,
+        columnFilters,
+      },
+    });
 
   const handleRowClick = (rowId: string, rowData: TData) => {
     setSelectedRow(rowId);
@@ -137,6 +136,7 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
 
 
 console.log(informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo);
+console.log(informacionCerrarOtMasivamente);
 
   return (
     <div className="">
@@ -247,24 +247,7 @@ console.log(informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo);
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Anterior
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Siguiente
-        </Button>
-      </div>
+      
     </div>
   );
 }

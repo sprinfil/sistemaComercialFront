@@ -69,6 +69,7 @@ export default function MonitorOrdenDeTrabajoTable() {
   }
 
   console.log(informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo);
+  
   return (
 
     <div>

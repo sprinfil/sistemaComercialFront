@@ -4,7 +4,6 @@ import { OrdenDeTrabajoCrearTomas } from '../components/Tables/Columns/OrdenDeTr
 import { OrdenDeTrabajo } from '../components/Tables/Columns/AsignarOrdenDeTrabajoColumnsIndividual';
 import { MonitorOrden2 } from '../components/Tables/Columns/MonitorOrdenDeTrabajoColumns2';
 import { BuscarUsuario } from "../components/Tables/Columns/ContratoConsultaUsuarioColumns";
-
 type ordenTrabajoCerrar =
 {
   id: number,
@@ -99,7 +98,8 @@ interface FiltrosOrdenTrabajo {
   setIsOpenHijoFormularioModalDetalleMonitorOT: (isOpenHijoFormularioModalDetalleMonitorOT: boolean) => void;
   isOpenHijoFormularioModalMonitorOT: boolean;
   setIsOpenHijoFormularioModalMonitorOT: (isOpenHijoFormularioModalMonitorOT: boolean) => void;
-
+  informacionCerrarOtMasivamente: MonitorOrden2[]
+  setInformacionCerrarOtMasivamente:(informacionCerrarOtMasivamente:MonitorOrden2[]) => void;
   
 }
 
@@ -190,5 +190,7 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setIsOpenHijoFormularioModalDetalleMonitorOT: (isOpenHijoFormularioModalDetalleMonitorOT) => set({isOpenHijoFormularioModalDetalleMonitorOT}),
   isOpenHijoFormularioModalMonitorOT: false,
   setIsOpenHijoFormularioModalMonitorOT: (isOpenHijoFormularioModalMonitorOT) => set({isOpenHijoFormularioModalMonitorOT}),
+  informacionCerrarOtMasivamente: [],
+  setInformacionCerrarOtMasivamente: (usuarios) => set({ informacionCerrarOtMasivamente: usuarios }),
 }));
 

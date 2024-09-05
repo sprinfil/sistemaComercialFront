@@ -18,14 +18,14 @@ import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt';
 import { zustandOrdenTrabajoStore } from '../../contexts/ZustandOrdenesDeTrabajoUsuario';
 import IconButton from './IconButton';
 import { TrashIcon } from 'lucide-react';
-const ModalEstasSeguroCancelarMasivamenteOT = ({ isOpen, setIsOpen, method }) => {
+const ModalEstasSeguroCancelarOTSSS = ({ isOpen, setIsOpen, method }) => {
 
     const { toast } = useToast()
     const {
         loadingTable,
         setLoadingTable
     } = zustandOrdenTrabajoStore();
-    const { arregloCrearOrdenesDeTrabajo, setDataOrdenesDeTrabajoHistorialToma, informacionCerrarOtMasivamente, setLoadingTableFiltrarOrdenDeTrabajoMasivas, setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} = ZustandFiltrosOrdenTrabajo();
+    const { arregloCrearOrdenesDeTrabajo, setDataOrdenesDeTrabajoHistorialToma, informacionCerrarOtMasivamente} = ZustandFiltrosOrdenTrabajo();
 
 
     const { usuariosEncontrados, setUsuariosEncontrados, idSeleccionadoGenerarOrdenDETrabajoToma } = ZustandGeneralUsuario();
@@ -69,55 +69,37 @@ const ModalEstasSeguroCancelarMasivamenteOT = ({ isOpen, setIsOpen, method }) =>
 
     }, [usuariosEncontrados]);
 
-    const getOrdenDeTrabajoMonitor = async () => {
-        setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
-        try {
-          const response = await axiosClient.get("OrdenTrabajo/NoAsignada");
-          setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
-          setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo(response.data.data);
-          console.log(response);
-        } catch (error) {
-          setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
-          console.error("Failed to fetch orden:", error);
-        }
-      };
+
 
 console.log(informacionCerrarOtMasivamente);
 
-const cerrarMasivamente = async () => {
-    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
-    const ordenes_trabajo = informacionCerrarOtMasivamente.map((item) => ({
-         id: item.id,
-         genera_OT_encadenadas:false
+const cancelarMasivamente = async () => {
 
-      }));
-
-      const dataToSend = {
-        ordenes_trabajo: ordenes_trabajo
-      };
     
-     
-    
-      console.log('Datos a enviar:', dataToSend);
+    const ids = informacionCerrarOtMasivamente.map(item => item.id);
 
-    console.log(ordenes_trabajo); 
+    // Construye el objeto con la estructura deseada
+    const values = {
+        ordenes_trabajo: {
+            id: ids
+        }
+    };
+
+    console.log(values);
 
     try {
-      const response = await axiosClient.put("OrdenTrabajo/cerrar/masiva", dataToSend);
+      const response = await axiosClient.delete("OrdenTrabajo/log_delete/masiva", values);
       console.log(response.data);  
       setIsOpen(false);
       toast({
         title: "¡Éxito!",
-        description: "Se han cerrado masivamente",
+        description: "Se han cancelado masivamente",
         variant: "success",
 
     })
-    getOrdenDeTrabajoMonitor();
-    setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
     } 
     catch (response) {
        console.log(response)
-       setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
        toast({
         variant: "destructive",
         title: "Oh, no. Error",
@@ -134,20 +116,20 @@ const cerrarMasivamente = async () => {
 
                     <AlertDialogTitle>
 
-                   ¿Estas seguro que deseas cerrar las ordenes de trabajo seleccionadas?
+                   ¿Estas seguro que deseas cancelar las ordenes de trabajo seleccionadas?
     
 
                     </AlertDialogTitle>
 
                     <AlertDialogDescription>
-                    Se van a cerrar las ordenes de trabajo seleccionadas
+                    Se van a cancelar las ordenes de trabajo seleccionadas.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel onClick={() => setIsOpen(false)}>Cancelar</AlertDialogCancel>
 
 
-                    <AlertDialogAction onClick={cerrarMasivamente}>
+                    <AlertDialogAction onClick={cancelarMasivamente}>
                         Aceptar
                     </AlertDialogAction>
 
@@ -158,4 +140,4 @@ const cerrarMasivamente = async () => {
     );
 }
 
-export default ModalEstasSeguroCancelarMasivamenteOT;
+export default ModalEstasSeguroCancelarOTSSS;
