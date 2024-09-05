@@ -241,8 +241,8 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
           {/* Información de la Caja */}
           <div className="p-4 border-t">
             <div className="flex items-center justify-between mt-4">
-              <p className="text-sm font-medium">Total calculado:</p>
-              <p className="text-sm">${totalAmount.toFixed(2)}</p>
+              <p className="text-[3vw]">Total calculado:</p>
+              <div className='p-3 bg-muted rounded-md shadow-md'><p className="text-[5vw]">${totalAmount.toFixed(2)}</p></div>
             </div>
           </div>
 

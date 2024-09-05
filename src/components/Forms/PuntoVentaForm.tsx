@@ -28,6 +28,7 @@ import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import { ModalMetodoPago } from "../ui/ModalMetodoPago.tsx";
 import ModalHistorialPagos from "../ui/ModalHistorialPagos.tsx";
+import ModalVerPago from "../ui/ModalVerPago.tsx";
 const PuntoVentaForm = () => {
 
   const { toast } = useToast()
@@ -45,7 +46,16 @@ const PuntoVentaForm = () => {
   const input_user_ref = useRef();
   const [amountsToPay, setAmountsToPay] = useState<{ [id: string]: number }>({});
   const [all_cargos_usuario, set_all_cargos_usuario] = useState();
+  const [toggle_ver_pago, set_toggle_ver_pago] = useState(false);
+  const [ver_selected_pago, set_ver_selected_pago] = useState([]);
   //const [openModal , setopenModal ] = useState(false);
+  const [pagos_usuario, set_pagos_usuario] = useState(null);
+  const [pagos_loading, set_pagos_loading] = useState(false);
+
+  const handle_toggle_ver_pago = (pago) => {
+    set_toggle_ver_pago(true);
+    set_ver_selected_pago(pago);
+  }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(event.target.value);
@@ -61,16 +71,16 @@ const PuntoVentaForm = () => {
 
   }, [dataCajaUser])
 
-  useEffect(()=>{
+  useEffect(() => {
     let cargos_usuario_temp = cargos_usuario?.cargos_vigentes?.map(cargo => cargo) || [];
     let cargos_tomas = [];
     cargos_usuario?.tomas.map(toma => {
       toma.cargos_vigentes.map(cargo => {
-          cargos_tomas.push(cargo);
+        cargos_tomas.push(cargo);
       })
     })
     set_all_cargos_usuario([...cargos_usuario_temp, ...cargos_tomas]);
-  },[cargos_usuario])
+  }, [cargos_usuario])
 
   /*
     const get_usuario_cargos = async () => {
@@ -85,12 +95,13 @@ const PuntoVentaForm = () => {
   */
 
   const get_usuario_cargos = async () => {
+    get_usuario_pagos();
     setSelectedCargos([]);
     const cargos_usuario_fetch = await axiosClient.get(`/usuarios/consultar/cargos/${dataCajaUser[0]?.id}`);
     set_cargos_usuario(cargos_usuario_fetch.data);
     //console.log(cargos_usuario_fetch.data)
-    
-    cargos_usuario_fetch.data.cargos_vigentes.map(cargo =>{
+
+    cargos_usuario_fetch.data.cargos_vigentes.map(cargo => {
       handleCargoSelect(cargo, dataCajaUser[0], true);
     })
 
@@ -100,6 +111,24 @@ const PuntoVentaForm = () => {
           handleCargoSelect(cargo, toma, true);
         })
       })
+    }
+  }
+
+  const get_usuario_pagos = async () => {
+    set_pagos_loading(true);
+    try {
+      let usuario_pagos_fetch = await axiosClient.get("pagos/porModelo", {
+        params: {
+          id_dueno: dataCajaUser[0]?.id,
+          modelo_dueno: "usuario"
+        }
+      })
+      set_pagos_usuario(usuario_pagos_fetch.data);
+      set_pagos_loading(false);
+    }
+    catch (err) {
+      console.log(err);
+      set_pagos_loading(false);
     }
   }
 
@@ -139,7 +168,8 @@ const PuntoVentaForm = () => {
       }
 
       if (pagosResponse.data) {
-        setPagosData(pagosResponse.data);
+        setPagosData(pagosResponse.data.data);
+        console.log(pagosResponse.data)
       }
     } catch (error) {
       console.error("Failed to fetch data:", error);
@@ -158,6 +188,7 @@ const PuntoVentaForm = () => {
 
   const handleClear = () => {
     set_cargos_usuario(null);
+    set_pagos_usuario(null);
     setUserInput("");
     setDataToma(null);
     setCargosData(null);
@@ -731,8 +762,6 @@ const PuntoVentaForm = () => {
 
               </TabsContent>
 
-
-
               <TabsContent value="cargos">
                 <div className="">
                   {cargosData && (
@@ -984,7 +1013,6 @@ const PuntoVentaForm = () => {
 
               </TabsContent>
 
-
               {pagosData && (
                 <TabsContent value="pagos">
                   <div className="relative mt-2">
@@ -1012,7 +1040,7 @@ const PuntoVentaForm = () => {
                         </thead>
                         <tbody className=" divide-y divide-border">
                           {pagosData.map((pago, index) => (
-                            <tr key={index} className="cursor-pointer transition-all duration-200 hover:bg-muted">
+                            <tr key={index} className="cursor-pointer transition-all duration-200 hover:bg-muted" onClick={() => { handle_toggle_ver_pago(pago) }}>
                               <td className="px-2 py-4 whitespace-normal text-sm  break-words">
                                 {pago.fecha_pago}
                               </td>
@@ -1033,6 +1061,67 @@ const PuntoVentaForm = () => {
                   </div>
                 </TabsContent>
               )}
+
+
+              {pagos_usuario && (
+                <TabsContent value="pagos">
+                  {
+                    pagos_loading ?
+                      <>
+                        <Loader>
+
+                        </Loader>
+                      </>
+                      :
+                      <>
+                        <div className="relative mt-2">
+                          <div className="flex justify-between items-center  h-[40px]">
+                            <div className=" bg-background text-sm font-semibold">
+                              Información de Pagos
+                            </div>
+                          </div>
+                          <div className="mt-6 select-none border rounded-sm h-[60vh] overflow-y-auto bg-background">
+                            <table className="w-full table-fixed">
+                              <thead className="bg-muted sticky top-0">
+                                <tr>
+                                  <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                    Fecha
+                                  </th>
+                                  <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                    Método de pago
+                                  </th>
+                                  <th className="px-2 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                    Total
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className=" divide-y divide-border">
+                                {pagos_usuario.map((pago, index) => (
+                                  <tr key={index} className="cursor-pointer transition-all duration-200 hover:bg-muted" onClick={() => { handle_toggle_ver_pago(pago) }}>
+                                    <td className="px-2 py-4 whitespace-normal text-sm  break-words">
+                                      {pago.fecha_pago}
+                                    </td>
+                                    <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                      {pago.forma_pago}
+                                    </td>
+                                    <td className="px-2 py-4 whitespace-nowrap text-sm ">
+                                      ${pago.total_pagado.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                              <div>
+
+                              </div>
+                            </table>
+                          </div>
+                        </div>
+                      </>
+                  }
+
+                </TabsContent>
+              )}
+
             </Tabs>
           </div>
         )}
@@ -1139,6 +1228,11 @@ const PuntoVentaForm = () => {
             />
           </>
         }
+        <ModalVerPago
+          open={toggle_ver_pago}
+          selected_pago={ver_selected_pago}
+          set_open={set_toggle_ver_pago}
+        />
       </div>
     </div>
   );
