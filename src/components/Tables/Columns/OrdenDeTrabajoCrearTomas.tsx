@@ -23,6 +23,7 @@ export type OrdenDeTrabajoCrearTomas = {
   descripcion: string
   facturable: string
   estado: boolean
+  saldo: string
 }
 
 
@@ -98,6 +99,17 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
     ),
   },
   {
+    accessorKey: "usuario.nombre",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Nombre del usuario
+      </Button>
+    ),
+  },
+  {
     accessorKey: "direccion_completa",
     header: ({ column }) => (
       <Button
@@ -108,6 +120,8 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
       </Button>
     ),
   },
+ 
+  
   {
     accessorKey: "tipo_toma.nombre",
     header: ({ column }) => (
@@ -120,7 +134,7 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
     ),
   },
   {
-    accessorKey: "tipo_toma.saldo",
+    accessorKey: "saldo",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -130,6 +144,7 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
       </Button>
     ),
   },
+  
   {
     id: "actions",
     cell: ({ row }) => {

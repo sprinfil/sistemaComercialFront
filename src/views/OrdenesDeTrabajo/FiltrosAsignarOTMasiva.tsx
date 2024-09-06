@@ -324,47 +324,53 @@ const handleChangeCodigoDeToma = (event) => {
 
           
         </div>
-        <div className="text-lg font-semibold- mt-2">Fechas de ordenes de trabajo</div>
-        <hr className="border-t border-border my-1" />
-        <div className="">
-          <div className="text-sm font-medium mb-2 mt-2">Tipo de fecha</div>
-          <div>
-          <Select
-          onValueChange={(value) => setIsFechaTipo(value)}
-          value={isFechaTipo}
-      >
-          <SelectTrigger>
-              <SelectValue placeholder="Selecciona el tipo de fecha" />
-          </SelectTrigger>
-          <SelectContent>
-              <SelectItem value="fecha de generación">Fecha de generación</SelectItem>
-              <SelectItem value="fecha_asignacion">Fecha de asignación</SelectItem>
-              <SelectItem value="fecha_finalizada ">Fecha de finalización</SelectItem>
-          </SelectContent>
-          </Select>
-          </div>
-          <div className="text-sm font-medium mb-2 mt-2">Fecha de inicio</div>
-          <div>
-          <input
-                type="datetime-local"
-                value={isDesdeFecha}
-                onChange={handleChangeDesdeFecha}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-
-            />
-          </div>
-          <div className="text-sm font-medium mb-2 mt-2">Fecha de fin</div>
-          <div>
-          <input
-                type="datetime-local"
-                value={isHastaFecha}
-                onChange={handleChangeHastaFecha}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-
-            />
-          </div>
+        {!isOrdenesTrabajoRoute && (
+          <>
+          <div className="text-lg font-semibold- mt-5">Fechas de ordenes de trabajo</div>
+         <hr className="border-t border-border my-1" />
+         <div className="">
+           <div className="text-sm font-medium mb-2 mt-5">Tipo de fecha</div>
+           <div>
+           <Select
+           onValueChange={(value) => setIsFechaTipo(value)}
+           value={isFechaTipo}
+       >
+           <SelectTrigger>
+               <SelectValue placeholder="Selecciona el tipo de fecha" />
+           </SelectTrigger>
+           <SelectContent>
+               <SelectItem value="fecha de generación">Fecha de generación</SelectItem>
+               <SelectItem value="fecha_asignacion">Fecha de asignación</SelectItem>
+               <SelectItem value="fecha_finalizada ">Fecha de finalización</SelectItem>
+           </SelectContent>
+           </Select>
+           </div>
+           <div className="text-sm font-medium mb-2 mt-2">Fecha de inicio</div>
+           <div>
+           <input
+                 type="datetime-local"
+                 value={isDesdeFecha}
+                 onChange={handleChangeDesdeFecha}
+                 className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+ 
+             />
+           </div>
+           <div className="text-sm font-medium mb-2 mt-2">Fecha de fin</div>
+           <div>
+           <input
+                 type="datetime-local"
+                 value={isHastaFecha}
+                 onChange={handleChangeHastaFecha}
+                 className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+ 
+             />
+           </div>
+           
+         </div>
+          </>
           
-        </div>
+        )} 
+       
       </div>
     </div>
   );

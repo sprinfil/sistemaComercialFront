@@ -26,12 +26,14 @@ export type MonitorOrden2 = {
   created_at: string
   toma: {
     codigo_toma: string
+    saldo: string
     libro:
   {
     nombre:string
   }
   usuario:{
     nombre_completo: string
+    nombre: string
   }
   }
   orden_trabajo_catalogo:
@@ -113,6 +115,35 @@ export const columns2: ColumnDef<MonitorOrden2>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
       Toma
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "toma.usuario.nombre",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Nombre
+      </Button>
+    ),
+    cell: ({ row }) => {
+      console.log("Nombre:", row?.original?.toma?.usuario?.nombre); // Verifica si el saldo es accesible
+      return <span>{ row?.original?.toma?.usuario?.nombre}</span>;
+    }
+  },
+  {
+    accessorFn: (row) => {
+      return row.toma?.saldo;
+    },
+    id: "toma.saldo",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+      Saldo
       </Button>
     ),
   },

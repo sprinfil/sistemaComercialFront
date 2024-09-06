@@ -25,6 +25,7 @@ export type AsignarOrdenDeTrabajo = {
   descripcion: string
   facturable: string
   estado: boolean
+  saldo: string
 }
 
 
@@ -102,6 +103,28 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
     ),
   },
   {
+    accessorKey: "toma.usuario.nombre",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Nombre del usuario
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "toma.direccion_completa",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Dirección
+      </Button>
+    ),
+  },
+  {
     accessorKey: "orden_trabajo_catalogo.nombre",
     header: ({ column }) => (
       <Button
@@ -109,6 +132,17 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Tipo
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "toma.saldo",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Saldo
       </Button>
     ),
   },

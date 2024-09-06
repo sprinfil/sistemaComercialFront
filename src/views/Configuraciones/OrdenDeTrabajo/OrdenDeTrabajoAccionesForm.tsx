@@ -464,11 +464,45 @@ const OrdenDeTrabajoAccionesForm = () => {
                 </div>
 
                 <div className="w-full flex space-x-2">
-                  <div>
+                <div className="w-full">
                     <div className="text-sm font-medium mb-2">
+                      Selecciona una entidad.
+                    </div>
+                    <Controller
+                      name={`orden_trabajo_accion.${index}.modelo`}
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          disabled={accionGeneradaEntreTabs === "ver"}
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            handleModeloChange(value);
+                          }}
+                          value={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona una entidad" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {opcionesEntidades.map((entidad) => (
+                              <SelectItem key={entidad} value={entidad}>
+                                {entidad.charAt(0).toUpperCase() + entidad.slice(1)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                  </div>
+                </div>
+                  <div>
+
+                
+
+                    <div className="text-sm font-medium mb-2 mt-2">
                       Selecciona una acción.
                     </div>
-                    <div className="w-[65vh]">
+                    <div className="w-full">
                       {accionGeneradaEntreTabs === "ver" ? (
                         <Controller
                           name={`orden_trabajo_accion.${index}.accion`}
@@ -520,37 +554,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                     </div>
                   </div>
 
-                  <div className="w-full">
-                    <div className="text-sm font-medium mb-2">
-                      Selecciona una entidad.
-                    </div>
-                    <Controller
-                      name={`orden_trabajo_accion.${index}.modelo`}
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          disabled={accionGeneradaEntreTabs === "ver"}
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                            handleModeloChange(value);
-                          }}
-                          value={field.value}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecciona una entidad" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {opcionesEntidades.map((entidad) => (
-                              <SelectItem key={entidad} value={entidad}>
-                                {entidad.charAt(0).toUpperCase() + entidad.slice(1)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    />
-                  </div>
-                </div>
+                 
 
                 <div className="w-full mt-5">
                   <div className="text-sm font-medium mb-2">
