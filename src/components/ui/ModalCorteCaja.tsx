@@ -28,7 +28,7 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
 
 
   const [billetesCentavos, setBilletesCentavos] = useState({
-    0.10: 0,
+    0.05: 0,
     0.20: 0,
     0.50: 0,
     20: 0,
@@ -38,6 +38,8 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
     500: 0,
     1000: 0,
   });
+
+
   const [monedas, setMonedas] = useState({
     1: 0,
     2: 0,
@@ -58,16 +60,15 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
   const [total_tarjeta_debito, set_total_tarjetas_debito] = useState();
   const [total_cheques, set_total_cheques] = useState();
   const [total_efectivo, set_total_efectivo] = useState();
+  const [total_transferencia, set_total_transferencia] = useState();
   const [total_esperado_caja, set_total_esperado_caja] = useState(0);
-  const { session_caja } = ZustandPuntoVenta();
-
+  const { session_caja, session_caja_completo } = ZustandPuntoVenta();
 
   function successToastCreado() {
     toast({
       title: "¡Éxito!",
       description: "La caja se ha cerrado correctamenta",
       variant: "success",
-
     })
   }
 
@@ -95,7 +96,7 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
       console.error(error);
     }
   };
-  console.log(pagos)
+
   const imprimir_ticket_corte_caja = () => {
     console.log(session_caja) 
     let ticket_data_original = {
@@ -139,22 +140,22 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
     setIsFirstModalOpen(open);
     if (open) {
       setBilletesCentavos({
-        0.10: 0,
-        0.20: 0,
-        0.50: 0,
-        20: 0,
-        50: 0,
-        100: 0,
-        200: 0,
-        500: 0,
-        1000: 0,
+        0.05: session_caja_completo.cantidad_centavo_10 || 0,
+        0.20: session_caja_completo.cantidad_centavo_20 || 0,
+        0.50: session_caja_completo.cantidad_centavo_50 || 0,
+        20: session_caja_completo.cantidad_billete_20   || 0,
+        50: session_caja_completo.cantidad_billete_50 || 0,
+        100: session_caja_completo.cantidad_billete_100 || 0,
+        200: session_caja_completo.cantidad_billete_200 || 0,
+        500: session_caja_completo.cantidad_billete_500 || 0,
+        1000: session_caja_completo.cantidad_billete_1000 || 0,
       });
       setMonedas({
-        1: 0,
-        2: 0,
-        5: 0,
-        10: 0,
-        20: 0,
+        1: session_caja_completo.cantidad_moneda_1 || 0,
+        2: session_caja_completo.cantidad_moneda_2 || 0,
+        5: session_caja_completo.cantidad_moneda_5 || 0,
+        10: session_caja_completo.cantidad_moneda_10 || 0,
+        20: session_caja_completo.cantidad_moneda_20 || 0,
       });
       setTotalTarjetas(0);
       setTotalCheques(0);
@@ -170,7 +171,7 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
   const handleConfirmAndClose = async () => {
     try {
       const corteData = {
-        cantidad_centavo_10: billetesCentavos[0.10],
+        cantidad_centavo_10: billetesCentavos[0.05],
         cantidad_centavo_20: billetesCentavos[0.20],
         cantidad_centavo_50: billetesCentavos[0.50],
         cantidad_moneda_1: monedas[1],
@@ -253,10 +254,11 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
   };
 
   const fetch_pagos = () => {
+
     axiosClient.get("/cajas/pagos", {
       params: {
         id_caja: session_caja.id
-      }
+      } 
     })
       .then((response) => {
         set_pagos(response.data);
@@ -265,19 +267,21 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
         let total_cheques_temp: any = 0;
         let total_tarjeta_credito_temp: any = 0;
         let total_tarjeta_debito_temp: any = 0;
+        let total_transferencia_temp: any = 0;
 
         response.data.map((pago: any) => {
           total_efectivo_temp += (pago.forma_pago == "efectivo" ? parseFloat(pago.total_abonado) : 0);
           total_cheques_temp += (pago.forma_pago == "cheque" ? parseFloat(pago.total_abonado) : 0);
           total_tarjeta_credito_temp += (pago.forma_pago == "tarjeta_credito" ? parseFloat(pago.total_abonado) : 0);
           total_tarjeta_debito_temp += (pago.forma_pago == "tarjeta_debito" ? parseFloat(pago.total_abonado) : 0);
+          total_transferencia_temp += (pago.forma_pago == "transferencia" ? parseFloat(pago.total_abonado) : 0);
         })
 
         set_total_efectivo(total_efectivo_temp);
         set_total_tarjeta_credito(total_tarjeta_credito_temp);
         set_total_tarjetas_debito(total_tarjeta_debito_temp);
         set_total_cheques(total_cheques_temp);
-
+        set_total_transferencia(total_transferencia_temp);
 
       }).catch((response) => {
         console.log(response)
@@ -346,9 +350,9 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
             {/* Conteo de Centavos */}
             <div className="space-y-4">
               <p className="text-sm font-medium mb-2">Ingrese la cantidad de centavos:</p>
-              {[0.10, 0.20, 0.50].map(denomination => (
+              {[0.05, 0.20, 0.50].map(denomination => (
                 <div key={denomination} className="flex items-center space-x-4">
-                  <label className="block text-sm font-medium w-1/2">Centavos de ${denomination}:</label>
+                  <label className="block text-sm font-medium w-1/2">Centavos de ${denomination.toFixed(2)}:</label>
                   <input
                     type="text"
                     value={billetesCentavos[denomination]}
@@ -394,13 +398,13 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
           <div className="p-1 border-gray-200">
             <div className='p-3 rounded-md my-5'>
               {
-                !cajaInfo && !total_efectivo &&
+                !cajaInfo &&
                 <>
                   <Skeleton className='w-full h-[40vh]' />
                 </>
               }
               {
-                cajaInfo && total_efectivo &&
+                cajaInfo && 
                 <>
                   <Table>
                     <TableBody className="text-[20px]">
@@ -439,6 +443,12 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
                         <TableCell>Total Tarjeta Debito</TableCell>
                         <TableCell>
                           $ {total_tarjeta_debito?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "<<Sin datos>>"}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Total Transferencia</TableCell>
+                        <TableCell>
+                          $ {total_transferencia?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "<<Sin datos>>"}
                         </TableCell>
                       </TableRow>
                       <TableRow>

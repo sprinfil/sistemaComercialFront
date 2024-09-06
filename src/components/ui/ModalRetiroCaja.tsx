@@ -15,7 +15,7 @@ import { ToastAction } from '@radix-ui/react-toast';
 
 export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja }) => {
   const [billetesCentavos, setBilletesCentavos] = useState({
-    0.10: 0,
+    0.05: 0,
     0.20: 0,
     0.50: 0,
     20: 0,
@@ -62,7 +62,7 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
     setIsFirstModalOpen(open);
     if (open) {
       setBilletesCentavos({
-        0.10: 0,
+        0.05: 0,
         0.20: 0,
         0.50: 0,
         20: 0,
@@ -89,7 +89,7 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
   const handleConfirmAndClose = async () => {
     const data = {
       id_caja_catalogo: cajaSesionId, // Utiliza el prop idSesionCaja
-      cantidad_centavo_10: billetesCentavos[0.10] || 0,
+      cantidad_centavo_10: billetesCentavos[0.05] || 0,
       cantidad_centavo_20: billetesCentavos[0.20] || 0,
       cantidad_centavo_50: billetesCentavos[0.50] || 0,
       cantidad_moneda_1: monedas[1] || 0,
@@ -218,10 +218,10 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
               <p className="text-sm font-medium mb-2">
                 Ingrese la cantidad de centavos:
               </p>
-              {[0.10, 0.20, 0.50].map(denomination => (
+              {[0.05, 0.20, 0.50].map(denomination => (
                 <div key={denomination} className="flex items-center space-x-4">
                   <label className="block text-sm font-medium w-1/2">
-                    Centavos de ${denomination}:
+                    Centavos de ${denomination.toFixed(2)}:
                   </label>
                   <input
                     type="text"
