@@ -55,7 +55,14 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
     isEspecialChecked, setIsEspecialChecked,
     idLibroFiltro, idRutaFiltro, setIdLibroFiltro, setIdRutaFiltro,
     saldoMinFiltro, saldoMaxFiltro,setLoadingTableFiltrarOrdenDeTrabajoMasivas,
-    setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionCerrarOtMasivamente} = ZustandFiltrosOrdenTrabajo();
+    setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionCerrarOtMasivamente,isFechaTipo,
+    setIsFechaTipo,
+    isHastaFecha,
+    setIsHastaFecha,
+    isDesdeFecha,
+    setIsDesdeFecha,
+    isCodigoDeTomaFiltro,
+    setIsCodigoDeTomaFiltro} = ZustandFiltrosOrdenTrabajo();
   
   const table = useReactTable({
     data,
@@ -95,7 +102,11 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
       ruta_id: idRutaFiltro,
       libro_id: idLibroFiltro,
       saldo_min: saldoMinFiltro,
-      saldo_max: saldoMaxFiltro
+      saldo_max: saldoMaxFiltro,
+      fecha_tipo:  isFechaTipo,
+      fecha_inicio :isDesdeFecha ,
+      fecha_fin:isHastaFecha,
+      codigo_toma:isCodigoDeTomaFiltro
     };
     console.log("VALORES ENVIADOS", values);
     try {
@@ -164,18 +175,18 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
           <Input
             placeholder="Buscar creacion"
             type="text"
-            value={(table.getColumn(`estado`)?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn(`created_at`)?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn(`estado`)?.setFilterValue(event.target.value)
+              table.getColumn(`created_at`)?.setFilterValue(event.target.value)
             }
             className="w-[22vh] border border-gray-300 rounded-md p-2"
           />
           <Input
             placeholder="Buscar concluida"
             type="text"
-            value={(table.getColumn(`estado`)?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn(`fecha_finalizada`)?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn(`estado`)?.setFilterValue(event.target.value)
+              table.getColumn(`fecha_finalizada`)?.setFilterValue(event.target.value)
             }
             className="w-[22vh] border border-gray-300 rounded-md p-2"
           />

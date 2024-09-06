@@ -73,7 +73,7 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
         <DataTableAsignarOTIndividual2 columns={columns} data={data} sorter='' onRowClick={handleRowClick}/>
 
         :
-        <DataTableAsignarOTIndividual columns={columns} data={data} sorter='toma.codigo_toma' onRowClick={handleRowClick}/>
+        <DataTableAsignarOTIndividual2 columns={columns} data={data} sorter='' onRowClick={handleRowClick}/>
 
       }
       

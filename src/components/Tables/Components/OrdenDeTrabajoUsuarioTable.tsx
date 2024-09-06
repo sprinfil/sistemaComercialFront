@@ -10,6 +10,7 @@ import { zustandOrdenTrabajoStore } from '../../../contexts/ZustandOrdenesDeTrab
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
 import { ZustandFiltrosOrdenTrabajo } from '../../../contexts/ZustandFiltrosOt.tsx';
 import ModalDetalleOrdenTrabajoTomaEnBuscarUsuario from '../../ui/ModalDetalleOrdenTrabajoTomaEnBuscarUsuario.tsx';
+import { EscogerOrdenDeTrabajoDataTableModalDetalle } from '../../ui/EscogerOrdenDeTrabajoDataTableModalDetalle.tsx';
 export default function OrdenDeTrabajoUsuarioTable() {
 
   const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma} = ZustandGeneralUsuario();
@@ -28,7 +29,10 @@ export default function OrdenDeTrabajoUsuarioTable() {
   const [data,setData] = useState({})
   const [bool, setBool] = useState(false);
   useEffect(() => {
-    getOrdenDeTrabajoDelUsuario();
+    
+      getOrdenDeTrabajoDelUsuario();
+
+    
   }, []);
 
   const getOrdenDeTrabajoDelUsuario = async () => {
@@ -64,7 +68,7 @@ const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
       {
         loadingTableOrdenesDeTrabajoHistorial ? <Loader/>
         :
-        <EscogerOrdenDeTrabajoDataTable columns={columns} data={dataOrdenesDeTrabajoHistorialToma} sorter='orden_trabajo_catalogo.nombre' onRowClick={HandleClickRow}/>
+        <EscogerOrdenDeTrabajoDataTableModalDetalle columns={columns} data={dataOrdenesDeTrabajoHistorialToma} sorter='orden_trabajo_catalogo.nombre' onRowClick={HandleClickRow}/>
 
       }
       <ModalDetalleOrdenTrabajoTomaEnBuscarUsuario/>

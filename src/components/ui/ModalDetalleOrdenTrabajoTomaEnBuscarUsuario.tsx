@@ -32,7 +32,8 @@ const ModalDetalleOrdenTrabajoTomaEnBuscarUsuario = () => {
     detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor,setIsOpenHijoModalDetalleMonitorOT, 
     isOpenPadreModalDetalleMonitorOT, setIsOpenPadreModalDetalleMonitorOT,
     setIsOpenHijoFormularioModalDetalleMonitorOT, isOpenHijoFormularioModalDetalleMonitorOT, detalleOrdenDeTrabajoTomaMonitor2etalleOrdenDeTrabajoTomaMonitor2,
-    informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, setLoadingTableFiltrarOrdenDeTrabajoMasivas, setAbrirModalInformacionTomaDetalleUsuarioToma, abrirModalInformacionTomaDetalleUsuarioToma,informacionModalDetalleEnToma 
+    informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, setLoadingTableFiltrarOrdenDeTrabajoMasivas, setAbrirModalInformacionTomaDetalleUsuarioToma, 
+    abrirModalInformacionTomaDetalleUsuarioToma,informacionModalDetalleEnToma, setLoadingTableOrdenesDeTrabajoHistorial
   } = ZustandFiltrosOrdenTrabajo();
 
   const {
@@ -90,12 +91,14 @@ const ModalDetalleOrdenTrabajoTomaEnBuscarUsuario = () => {
     setConsultaIdToma(usuariosEncontrados[0]);
   }, [usuariosEncontrados]);
 
-
+console.log(usuariosEncontrados[0]?.tomas[0]?.codigo_toma)
   const getOrdenDeTrabajoMonitor = async () => {
     setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
     try {
-      const response = await axiosClient.get("OrdenTrabajo/NoAsignada");
+      const response = await axiosClient.get(`Toma/ordenesTrabajo/${usuariosEncontrados[0]?.tomas[0]?.codigo_toma}`);
       setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+      setAbrirModalInformacionTomaDetalleUsuarioToma(false);
+      setDataOrdenesDeTrabajoHistorialToma(response.data.data);
       setDataOrdenDeTrabajoMonitor(response.data.data);
       console.log(response);
     } catch (error) {
@@ -107,24 +110,25 @@ const ModalDetalleOrdenTrabajoTomaEnBuscarUsuario = () => {
   console.log(detalleOrdenDeTrabajoTomaMonitor2);
 
   const cancelarOrdenDeTrabajo = async () => {
-    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
+    setLoadingTableOrdenesDeTrabajoHistorial(true);
     const values2 = {
-      id: detalleOrdenDeTrabajoTomaMonitor2?.id
+      id: informacionModalDetalleEnToma?.id
     }
 
     console.log(values2);
     try {
       const response = await axiosClient.post(`OrdenTrabajo/log_delete/`, values2);
       console.log(response);
-
-      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
-
+      
 
       toast({
         title: "¡Éxito!",
         description: "La orden de trabajo se ha cancelado correctamente",
         variant: "success",
       })
+      setAbrirModalInformacionTomaDetalleUsuarioToma(false);
+      setLoadingTableOrdenesDeTrabajoHistorial(false);
+
       getOrdenDeTrabajoMonitor();
 
     } catch (response) {
@@ -135,7 +139,7 @@ const ModalDetalleOrdenTrabajoTomaEnBuscarUsuario = () => {
         description: "No se pudo cancelar.",
         action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
       })
-      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+      setLoadingTableOrdenesDeTrabajoHistorial(false);
 
     }
   };

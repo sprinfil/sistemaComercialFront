@@ -153,9 +153,7 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
 
       return (
         <div onClick={() => { setAnomalia(anomalia); setAccion("ver") }}>
-          <IconButton>
-            <EyeOpenIcon className="w-[20px] h-[20px]" />
-          </IconButton>
+         
         </div>
       );
     },

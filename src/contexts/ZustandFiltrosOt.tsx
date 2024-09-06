@@ -106,6 +106,14 @@ interface FiltrosOrdenTrabajo {
   setIconoBuscarGenerarOrdenMasivaControl: (iconoBuscarGenerarOrdenMasivaControl: boolean) => void;
   informacionModalDetalleEnToma: []
   setInformacionModalDetalleEnToma:(informacionModalDetalleEnToma:[]) => void;
+  isFechaTipo:  string;
+  setIsFechaTipo: (isFechaTipo:string) => void;
+  isDesdeFecha:  string;
+  setIsDesdeFecha: (isDesdeFecha:string) => void;
+  isHastaFecha:  string;
+  setIsHastaFecha: (isHastaFecha:string) => void;
+  isCodigoDeTomaFiltro:  string;
+  setIsCodigoDeTomaFiltro: (isCodigoDeTomaFiltro:string) => void;
 }
 
 export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => ({
@@ -203,5 +211,13 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setIconoBuscarGenerarOrdenMasivaControl: (iconoBuscarGenerarOrdenMasivaControl) => set({iconoBuscarGenerarOrdenMasivaControl}),
   informacionModalDetalleEnToma: [],
   setInformacionModalDetalleEnToma: (informacionModalDetalleEnToma) => set({informacionModalDetalleEnToma}),
+  isFechaTipo: "",
+  setIsFechaTipo: (isFechaTipo) => set({isFechaTipo}),
+  isDesdeFecha: "",
+  setIsDesdeFecha: (isDesdeFecha) => set({isDesdeFecha}),
+  isHastaFecha: "",
+  setIsHastaFecha: (isHastaFecha) => set({isHastaFecha}),
+  isCodigoDeTomaFiltro: "",
+  setIsCodigoDeTomaFiltro: (isCodigoDeTomaFiltro) => set({isCodigoDeTomaFiltro}),
 }));
 

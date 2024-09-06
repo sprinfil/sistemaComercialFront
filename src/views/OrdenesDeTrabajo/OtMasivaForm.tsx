@@ -27,7 +27,15 @@ export const OtMasivaForm = () => {
      isEspecialChecked, setIsEspecialChecked,
      idLibroFiltro, idRutaFiltro,
      saldoMinFiltro, saldoMaxFiltro,
-      informacionRecibidaPorFiltrosGenerarOtMasiva,loadingTablePonerOTMasivas, setLoadingTablePonerOTMasivas, setLoadingTableMonitor} = ZustandFiltrosOrdenTrabajo();
+      informacionRecibidaPorFiltrosGenerarOtMasiva,loadingTablePonerOTMasivas, setLoadingTablePonerOTMasivas, setLoadingTableMonitor,
+      isFechaTipo,
+      setIsFechaTipo,
+      isHastaFecha,
+      setIsHastaFecha,
+      isDesdeFecha,
+      setIsDesdeFecha,
+      isCodigoDeTomaFiltro,
+      setIsCodigoDeTomaFiltro} = ZustandFiltrosOrdenTrabajo();
 
 
   const [abrirModal, setAbrirModal] = useState(false);
@@ -60,7 +68,11 @@ export const OtMasivaForm = () => {
       ruta_id: idRutaFiltro,
       libro_id: idLibroFiltro,
       saldo_min: saldoMinFiltro,
-      saldo_max: saldoMaxFiltro
+      saldo_max: saldoMaxFiltro,
+      fecha_tipo:  isFechaTipo,
+      fecha_inicio :isDesdeFecha ,
+      fecha_fin:isHastaFecha,
+      codigo_toma:isCodigoDeTomaFiltro,
     }
     console.log("VALORES ENVIADOS", values);
     try {

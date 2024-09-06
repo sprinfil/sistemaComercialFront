@@ -129,9 +129,9 @@ export function DataTableAsignarOTIndividual2<TData, TValue>({
              <Input
               placeholder="Buscar tipo"
               type="text"
-              value={(table.getColumn(`orden_trabajo_catalogo.descripcion`)?.getFilterValue() as string) ?? ""}
+              value={(table.getColumn(`orden_trabajo_catalogo.tipo`)?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
-                table.getColumn(`orden_trabajo_catalogo.descripcion`)?.setFilterValue(event.target.value)
+                table.getColumn(`orden_trabajo_catalogo.tipo`)?.setFilterValue(event.target.value)
               }
               className="w-[20vh] border border-gray-300 rounded-md p-2 mt-2 ml-2"
             />
@@ -163,14 +163,7 @@ export function DataTableAsignarOTIndividual2<TData, TValue>({
               }
               className="w-[20vh] border border-gray-300 rounded-md p-2 mt-2 ml-2"
             />
-            <div className="flex items-center space-x-2">
-              <div className="text-sm font-medium mt-1">Ver ordenes de trabajo asignadas</div>
-              <Checkbox
-                checked={asignadasEnToma}
-                onCheckedChange={setAsignadasEnToma}
-                onClick={getOrdenesDeTrabajo}
-              />
-            </div>
+            
           </div>
         )}
       </div>

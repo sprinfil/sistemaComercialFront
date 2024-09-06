@@ -147,11 +147,20 @@ export function DataTableAsignarOTIndividual<TData, TValue>({
         {control && (
           <div className="flex space-x-5 mb-8 border shadow-sm w-full h-[9vh] p-2 justify-center">
              <Input
+              placeholder="Buscar toma"
+              type="text"
+              value={(table.getColumn(`orden_trabajo_catalogo.toma.codigo_toma`)?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn(`orden_trabajo_catalogo.toma.codigo_toma`)?.setFilterValue(event.target.value)
+              }
+              className="w-[20vh] border border-gray-300 rounded-md p-2 mt-2 ml-2"
+            />
+             <Input
               placeholder="Buscar tipo"
               type="text"
-              value={(table.getColumn(`orden_trabajo_catalogo.descripcion`)?.getFilterValue() as string) ?? ""}
+              value={(table.getColumn(`orden_trabajo_catalogo.tipo`)?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
-                table.getColumn(`orden_trabajo_catalogo.descripcion`)?.setFilterValue(event.target.value)
+                table.getColumn(`orden_trabajo_catalogo.tipo`)?.setFilterValue(event.target.value)
               }
               className="w-[20vh] border border-gray-300 rounded-md p-2 mt-2 ml-2"
             />

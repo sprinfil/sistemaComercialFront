@@ -64,7 +64,14 @@ export const AsignarOTMasiva = () => {
      isComercialChecked, setIsComercialChecked,
      isIndustrialChecked, setIsIndustrialChecked,
      isEspecialChecked, setIsEspecialChecked,  idLibroFiltro, idRutaFiltro,
-     saldoMinFiltro, saldoMaxFiltro} = ZustandFiltrosOrdenTrabajo();
+     saldoMinFiltro, saldoMaxFiltro,  isFechaTipo,
+     setIsFechaTipo,
+     isHastaFecha,
+     setIsHastaFecha,
+     isDesdeFecha,
+     setIsDesdeFecha,
+     isCodigoDeTomaFiltro,
+     setIsCodigoDeTomaFiltro } = ZustandFiltrosOrdenTrabajo();
 
 
 
@@ -211,7 +218,11 @@ const getOrdenesDeTrabajo = async () => {
     ruta_id: idRutaFiltro,
     libro_id: idLibroFiltro,
     saldo_min: saldoMinFiltro,
-    saldo_max: saldoMaxFiltro
+    saldo_max: saldoMaxFiltro,
+    fecha_tipo:  isFechaTipo,
+    fecha_inicio :isDesdeFecha ,
+    fecha_fin:isHastaFecha,
+    codigo_toma:isCodigoDeTomaFiltro
   }
   console.log("VALORES ENVIADOS", values);
   setLoadingTable(true);

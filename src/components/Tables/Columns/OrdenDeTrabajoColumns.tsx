@@ -63,7 +63,7 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
       // Verifica la estructura de los datos en la consola
       return row.orden_trabajo_catalogo?.descripcion;
     },
-    id: "orden_trabajo_catalogo.nombre",
+    id: "orden_trabajo_catalogo.tipo",
     header: ({ column }) => (
       <Button
         variant="ghost"

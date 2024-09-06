@@ -733,7 +733,7 @@ const OrdenDeTrabajoForm = () => {
                                             <SelectItem value="generar">Al Generar</SelectItem>
                                             <SelectItem value="asignar">Al Asignar</SelectItem>
                                             <SelectItem value="concluir">Al Concluir</SelectItem>
-                                            <SelectItem value="no genera">No genera cargo</SelectItem>
+                                            <SelectItem value="No genera">No genera cargo</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         :
@@ -750,7 +750,7 @@ const OrdenDeTrabajoForm = () => {
                                             <SelectItem value="generar">Al Generar</SelectItem>
                                             <SelectItem value="asignar">Al Asignar</SelectItem>
                                             <SelectItem value="concluir">Al Concluir</SelectItem>
-                                            <SelectItem value="no genera">No genera cargo</SelectItem>
+                                            <SelectItem value="No genera">No genera cargo</SelectItem>
                                         </SelectContent>
                                     </Select>
                                         }
@@ -803,7 +803,7 @@ const OrdenDeTrabajoForm = () => {
                                 name="asigna_masiva"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="items-center">¿Asigna masiva?</FormLabel>
+                                        <FormLabel className="items-center">¿Asigna masivamente?</FormLabel>
                                         <FormControl className="ml-4">
                                             {
                                                 bloquear ? <Switch
@@ -825,7 +825,7 @@ const OrdenDeTrabajoForm = () => {
 
                                         </FormControl>
                                         <FormDescription>
-                                            Aquí puedes activar si tiene carga masiva.
+                                            Aquí puedes activar si asigna masivamente.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -836,7 +836,7 @@ const OrdenDeTrabajoForm = () => {
                                 name="cancela_masiva"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="items-center">¿Cancela masiva?</FormLabel>
+                                        <FormLabel className="items-center">¿Cancela masivamente?</FormLabel>
                                         <FormControl className="ml-4">
                                             {
                                                 bloquear ? <Switch
@@ -858,7 +858,7 @@ const OrdenDeTrabajoForm = () => {
 
                                         </FormControl>
                                         <FormDescription>
-                                            Aquí puedes activar si tiene carga masiva.
+                                            Aquí puedes activar si cancela masivamanete.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -892,7 +892,7 @@ const OrdenDeTrabajoForm = () => {
 
                                         </FormControl>
                                         <FormDescription>
-                                            Aquí puedes activar si tiene carga masiva.
+                                            Aquí puedes activar si tiene cierre masivo.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>

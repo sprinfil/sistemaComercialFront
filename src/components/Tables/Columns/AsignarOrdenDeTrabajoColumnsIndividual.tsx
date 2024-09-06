@@ -14,6 +14,7 @@ export type OrdenDeTrabajo = {
   codigo_toma: string
   estado: string
   clave_catastral: string
+  fecha_finalizada: string
   toma:
   {
     codigo_toma: string
@@ -112,7 +113,7 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
       // Verifica la estructura de los datos en la consola
       return row.orden_trabajo_catalogo?.descripcion;
     },
-    id: "orden_trabajo_catalogo.descripcion",
+    id: "orden_trabajo_catalogo.tipo",
     header: ({ column }) => (
       <Button
         variant="ghost"

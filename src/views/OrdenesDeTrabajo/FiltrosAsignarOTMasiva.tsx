@@ -2,13 +2,21 @@ import React, { useState } from "react";
 import { FiFilter } from "react-icons/fi";
 import { Checkbox } from "@/components/ui/checkbox";
 import MarcoForm from "../../components/ui/MarcoForm";
+import { MdCleaningServices } from "react-icons/md";
 import MarcoFormFiltrosOT from "../../components/ui/MarcoFormFiltrosOT";
 import { LibroFilterComboBox } from "../../components/ui/LibroFilterComboBox";
 import { RutaFilterComboBox } from "../../components/ui/RutaFilterComboBox";
 import { ZustandFiltrosOrdenTrabajo } from "../../contexts/ZustandFiltrosOt";
 import { Input } from "../../components/ui/input";
 import { useLocation } from "react-router-dom";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import IconButton from "../../components/ui/IconButton";
 const FiltrosAsignarOTMasiva = () => {
   //#regionVARIABLES PARA OBTENER EL VALOR DE LOS FILTROS
   const {
@@ -37,6 +45,14 @@ const FiltrosAsignarOTMasiva = () => {
     setSaldoMinFiltro,
     saldoMaxFiltro,
     setSaldoMaxFiltro,
+    isFechaTipo,
+    setIsFechaTipo,
+    isHastaFecha,
+    setIsHastaFecha,
+    isDesdeFecha,
+    setIsDesdeFecha,
+    isCodigoDeTomaFiltro,
+    setIsCodigoDeTomaFiltro
   } = ZustandFiltrosOrdenTrabajo();
 
   //#end
@@ -47,7 +63,41 @@ const FiltrosAsignarOTMasiva = () => {
 
   const isOrdenesTrabajoRoute = location.pathname === "/crear/orden/masiva"; //PARA QUE NO ME APAREZCAN LOS FILTROS DE ARRIBA
 
+  const limpiar = () => {
+    setIsAsignadaChecked(false);
+    setIsNoAsignadaChecked(false);
+    setIsConcluidaChecked(false);
+    setIsCanceladaChecked(false);
+    setIsDomesticaChecked(false);
+    setIsComercialChecked(false);
+    setIsIndustrialChecked(false);
+    setIsEspecialChecked(false);
+    setIdRutaFiltro("");
+    setIdLibroFiltro("");
+    setSaldoMinFiltro("");
+    setSaldoMaxFiltro("");
+    setIsFechaTipo("");
+    setIsHastaFecha("");
+    setIsDesdeFecha("");
+    setIsCodigoDeTomaFiltro("");
+}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+  console.log("Desde: ",isDesdeFecha, "Hasta", isHastaFecha);
+
+console.log(isFechaTipo);
   const handleInputChangeMin = (event) => {
     setSaldoMinFiltro(event.target.value);
   };
@@ -81,17 +131,36 @@ const FiltrosAsignarOTMasiva = () => {
     },
   };
 
-  console.log(saldoMaxFiltro);
+  const handleChangeHastaFecha = (event) => {
+    setIsHastaFecha(event.target.value);
+};
+
+const handleChangeDesdeFecha = (event) => {
+  setIsDesdeFecha(event.target.value);
+};
+
+const handleChangeCodigoDeToma = (event) => {
+  setIsCodigoDeTomaFiltro(event.target.value);
+};
+
+
+
+  console.log(isCodigoDeTomaFiltro);
 
   return (
     <div className="overflow-auto min-h-[20vh]">
       <div className="ml-5 mt-5 h-full p-3">
-        <div className="flex space-x-2">
-          <div>
-            <FiFilter className="w-[3vh] h-[3vh]" />
-          </div>
-          <div>Filtros</div>
-        </div>
+      <div className="flex items-center">
+    <div>
+        <FiFilter className="w-[3vh] h-[3vh]" />
+    </div>
+    <div className="text-sm font-medium">Filtros</div>
+    <div className="ml-[30vh]">
+        <IconButton onClick={limpiar}>
+            <MdCleaningServices />
+        </IconButton>
+    </div>
+</div>
   
         {!isOrdenesTrabajoRoute && (
           <div>
@@ -189,6 +258,22 @@ const FiltrosAsignarOTMasiva = () => {
           </div>
         </div>
   
+        <div className="text-lg font-semibold- mt-2">Codigo de toma</div>
+        <hr className="border-t border-border my-1" />
+        <div className="mt-2">
+          <div className="flex items-center space-x-2">
+            <div className="text-sm font-medium mb-2 mt-2">Toma</div>
+            <div className="ml-2">
+            <Input
+                value={isCodigoDeTomaFiltro}
+                onChange={handleChangeCodigoDeToma}
+                placeholder="Escribe algo..."
+            />
+            </div>
+          </div>
+          
+        </div>
+        
         <div className="text-lg font-semibold- mt-2">Ruta y libro</div>
         <hr className="border-t border-border my-1" />
         <div className="mt-2">
@@ -236,6 +321,49 @@ const FiltrosAsignarOTMasiva = () => {
               onChange={handleInputChangeMax}
             />
           </div>
+
+          
+        </div>
+        <div className="text-lg font-semibold- mt-2">Fechas de ordenes de trabajo</div>
+        <hr className="border-t border-border my-1" />
+        <div className="">
+          <div className="text-sm font-medium mb-2 mt-2">Tipo de fecha</div>
+          <div>
+          <Select
+          onValueChange={(value) => setIsFechaTipo(value)}
+          value={isFechaTipo}
+      >
+          <SelectTrigger>
+              <SelectValue placeholder="Selecciona el tipo de fecha" />
+          </SelectTrigger>
+          <SelectContent>
+              <SelectItem value="fecha de generación">Fecha de generación</SelectItem>
+              <SelectItem value="fecha_asignacion">Fecha de asignación</SelectItem>
+              <SelectItem value="fecha_finalizada ">Fecha de finalización</SelectItem>
+          </SelectContent>
+          </Select>
+          </div>
+          <div className="text-sm font-medium mb-2 mt-2">Fecha de inicio</div>
+          <div>
+          <input
+                type="datetime-local"
+                value={isDesdeFecha}
+                onChange={handleChangeDesdeFecha}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+            />
+          </div>
+          <div className="text-sm font-medium mb-2 mt-2">Fecha de fin</div>
+          <div>
+          <input
+                type="datetime-local"
+                value={isHastaFecha}
+                onChange={handleChangeHastaFecha}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+            />
+          </div>
+          
         </div>
       </div>
     </div>

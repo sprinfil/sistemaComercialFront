@@ -98,7 +98,7 @@ export function BreadCrumbDetalleUsuario() {
               <li>
                 <Link to="/usuario/toma">
                   <p className="text-[15px] font-medium ml-4">
-                    Toma: {consultaNombreToma?.tomas[0]?.calle|| 'Nombre no disponible'}
+                    Toma: {consultaNombreToma?.tomas[0]?.codigo_toma|| 'Nombre no disponible'}
                   </p>
                 </Link>
               </li>

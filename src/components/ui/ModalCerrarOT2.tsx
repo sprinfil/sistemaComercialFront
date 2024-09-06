@@ -43,7 +43,8 @@ const ModalCerrarOT2 = () => {
   const {
     arregloCrearOrdenesDeTrabajo,
     setDataOrdenesDeTrabajoHistorialToma,
-    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor, setIsOpenHijoModalDetalleMonitorOT, isOpenHijoModalDetalleMonitorOT, setIsOpenPadreModalDetalleMonitorOT
+    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor, setIsOpenHijoModalDetalleMonitorOT, isOpenHijoModalDetalleMonitorOT,
+     setIsOpenPadreModalDetalleMonitorOT, setLoadingTableFiltrarOrdenDeTrabajoMasivas, setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo
   } = ZustandFiltrosOrdenTrabajo();
 
   const {
@@ -80,18 +81,7 @@ const ModalCerrarOT2 = () => {
     setConsultaIdToma(usuariosEncontrados[0]);
   }, [usuariosEncontrados]);
 
-  const getOrdenDeTrabajoMonitor = async () => {
-    setLoadingTable(true);
-    try {
-      const response = await axiosClient.get("OrdenTrabajo/NoAsignada");
-      setLoadingTable(false);
-      setDataOrdenDeTrabajoMonitor(response.data.data);
-      console.log(response);
-    } catch (error) {
-      setLoadingTable(false);
-      console.error("Failed to fetch orden:", error);
-    }
-  };
+  
 
   const cancelarOrdenDeTrabajo = async () => {
     setLoadingTable(true);
@@ -155,6 +145,22 @@ const ModalCerrarOT2 = () => {
     }
   };
 
+  
+  const getOrdenDeTrabajoMonitor = async () => {
+    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
+    try {
+      const response = await axiosClient.get("OrdenTrabajo/NoAsignada");
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+      setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo(response.data.data);
+      console.log(response);
+    } catch (error) {
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+      console.error("Failed to fetch orden:", error);
+    }
+  };
+
+  
+
   console.log(detalleOrdenDeTrabajoTomaMonitor2);
   function onSubmit(values: z.infer<typeof cerrarOtSchema>) {
 
@@ -179,6 +185,7 @@ const ModalCerrarOT2 = () => {
         console.log(response);
         setIsOpenHijoModalDetalleMonitorOT(false);
         setIsOpenPadreModalDetalleMonitorOT(false);
+        getOrdenDeTrabajoMonitor();
         toast({
           title: "¡Éxito!",
           description: "La OT se  ha cerrado correctamente.",
