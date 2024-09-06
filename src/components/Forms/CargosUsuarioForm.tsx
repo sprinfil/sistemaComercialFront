@@ -58,7 +58,7 @@ const CargosUsuarioForm = () => {
                             <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Monto</th>
                             <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Estado</th>
                             <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Fecha de Cargo</th>
-                            <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Prioridad</th>
+                            
                         </tr>
                     </thead>
                     <tbody className="bg-background">
@@ -69,7 +69,7 @@ const CargosUsuarioForm = () => {
                                     <td className="px-2 py-3">{cargo.monto}</td>
                                     <td className="px-2 py-3">{cargo.estado}</td>
                                     <td className="px-2 py-3">{cargo.fechaCargo}</td>
-                                    <td className="px-2 py-3">{cargo.prioridad}</td>
+                                    
                                 </tr>
                             ))
                         ) : (

@@ -111,21 +111,21 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
             )}
             <div className="overflow-hidden mb-4">
               <div className={`transition-all duration-300 ease-in-out ${isTable1Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
-                <table className="w-full table-fixed border border-gray-200">
+                <table className="w-full table-fixed border border-muted">
                   <thead
-                    className="bg-gray-200 cursor-pointer"
+                    className="bg-muted cursor-pointer"
                     onClick={() => handleHeaderClick(1)}
                   >
                     <tr>
                       <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Ajustes Disponibles</th>
                     </tr>
                   </thead>
-                  <tbody className={`bg-white ${isTable1Collapsed ? 'hidden' : ''}`}>
+                  <tbody className={`bg-background ${isTable1Collapsed ? 'hidden' : ''}`}>
                     {ajustes.length > 0 ? (
                       ajustes.map((ajuste: any) => (
                         <tr
                           key={ajuste.id}
-                          className={`cursor-pointer hover:bg-gray-100 ${selectedAjuste?.id === ajuste.id ? 'bg-gray-200' : ''}`}
+                          className={`cursor-pointer hover:bg-muted ${selectedAjuste?.id === ajuste.id ? 'bg-muted' : ''}`}
                           onClick={() => handleRowClick(ajuste)}
                         >
                           <td className="px-4 py-2">{ajuste.nombre}</td>
@@ -144,21 +144,21 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
             {/* Table 2 */}
             <div className="overflow-hidden mb-4">
               <div className={`transition-all duration-300 ease-in-out ${isTable2Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
-                <table className="w-full table-fixed border border-gray-200">
+                <table className="w-full table-fixed border border-muted">
                   <thead
-                    className="bg-gray-200 cursor-pointer"
+                    className="bg-muted cursor-pointer"
                     onClick={() => handleHeaderClick(2)}
                   >
                     <tr>
                       <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Cargos Ajustables</th>
                     </tr>
                   </thead>
-                  <tbody className={`bg-white ${isTable2Collapsed ? 'hidden' : ''}`}>
+                  <tbody className={`bg-background ${isTable2Collapsed ? 'hidden' : ''}`}>
                     {additionalData.length > 0 ? (
                       additionalData.map((data: any) => (
                         <tr
                           key={data.id}
-                          className="cursor-pointer hover:bg-gray-100"
+                          className="cursor-pointer hover:bg-muted"
                           onClick={() => handleAdditionalDataClick(data)}
                         >
                           <td className="px-4 py-2">{data.name}</td>
@@ -177,16 +177,16 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
             {/* Table 3 */}
             <div className="overflow-hidden mb-4">
               <div className={`transition-all duration-300 ease-in-out ${isTable3Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
-                <table className="w-full table-fixed border border-gray-200">
+                <table className="w-full table-fixed border border-muted">
                   <thead
-                    className="bg-gray-200 cursor-pointer"
+                    className="bg-muted cursor-pointer"
                     onClick={() => handleHeaderClick(3)}
                   >
                     <tr>
                       <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Configurar Ajuste</th>
                     </tr>
                   </thead>
-                  <tbody className={`bg-white ${isTable3Collapsed ? 'hidden' : ''}`}>
+                  <tbody className={`bg-background ${isTable3Collapsed ? 'hidden' : ''}`}>
                     {moreData.length > 0 ? (
                       moreData.map((data: any) => (
                         <tr key={data.id}>

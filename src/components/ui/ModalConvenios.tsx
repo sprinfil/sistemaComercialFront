@@ -106,27 +106,27 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
           <div>
             {selectedConvenio && (
               <div className="mt-4">
-                <p className="font-semibold">Convenio Seleccionado:</p>
+                <p className="font-semibold">Convenio     :</p>
                 <p><strong>{selectedConvenio.nombre}</strong></p>
               </div>
             )}
             <div className="overflow-hidden mb-4">
               <div className={`transition-all duration-300 ease-in-out ${isTable1Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
-                <table className="w-full table-fixed border border-gray-200">
+                <table className="w-full table-fixed border border-muted">
                   <thead
-                    className="bg-gray-200 cursor-pointer"
+                    className="bg-muted cursor-pointer"
                     onClick={() => handleHeaderClick(1)}
                   >
                     <tr>
                       <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Convenios Disponibles</th>
                     </tr>
                   </thead>
-                  <tbody className={`bg-white ${isTable1Collapsed ? 'hidden' : ''}`}>
+                  <tbody className={`bg-background ${isTable1Collapsed ? 'hidden' : ''}`}>
                     {convenios.length > 0 ? (
                       convenios.map((convenio: any) => (
                         <tr
                           key={convenio.id}
-                          className={`cursor-pointer hover:bg-gray-100 ${selectedConvenio?.id === convenio.id ? 'bg-gray-200' : ''}`}
+                          className={`cursor-pointer hover:bg-muted ${selectedConvenio?.id === convenio.id ? 'bg-muted' : ''}`}
                           onClick={() => handleRowClick(convenio)}
                         >
                           <td className="px-4 py-2">{convenio.nombre}</td>
@@ -145,21 +145,21 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
             {/* Table 2 */}
             <div className="overflow-hidden mb-4">
               <div className={`transition-all duration-300 ease-in-out ${isTable2Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
-                <table className="w-full table-fixed border border-gray-200">
+                <table className="w-full table-fixed border border-muted">
                   <thead
-                    className="bg-gray-200 cursor-pointer"
+                    className="bg-muted cursor-pointer"
                     onClick={() => handleHeaderClick(2)}
                   >
                     <tr>
                       <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Cargos conveniables</th>
                     </tr>
                   </thead>
-                  <tbody className={`bg-white ${isTable2Collapsed ? 'hidden' : ''}`}>
+                  <tbody className={`bg-background ${isTable2Collapsed ? 'hidden' : ''}`}>
                     {additionalData.length > 0 ? (
                       additionalData.map((data: any) => (
                         <tr
                           key={data.id}
-                          className="cursor-pointer hover:bg-gray-100"
+                          className="cursor-pointer hover:bg-muted"
                           onClick={() => handleAdditionalDataClick(data)}
                         >
                           <td className="px-4 py-2">{data.name}</td>
@@ -178,16 +178,16 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
             {/* Table 3 */}
             <div className="overflow-hidden mb-4">
               <div className={`transition-all duration-300 ease-in-out ${isTable3Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
-                <table className="w-full table-fixed border border-gray-200">
+                <table className="w-full table-fixed border border-muted">
                   <thead
-                    className="bg-gray-200 cursor-pointer"
+                    className="bg-muted cursor-pointer"
                     onClick={() => handleHeaderClick(3)}
                   >
                     <tr>
                       <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Configurar convenio</th>
                     </tr>
                   </thead>
-                  <tbody className={`bg-white ${isTable3Collapsed ? 'hidden' : ''}`}>
+                  <tbody className={`bg-background ${isTable3Collapsed ? 'hidden' : ''}`}>
                     {moreData.length > 0 ? (
                       moreData.map((data: any) => (
                         <tr key={data.id}>
