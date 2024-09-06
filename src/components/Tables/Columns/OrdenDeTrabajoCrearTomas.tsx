@@ -98,35 +98,13 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
     ),
   },
   {
-    accessorKey: "calle",
+    accessorKey: "direccion_completa",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Calle
-      </Button>
-    ),
-  },
-  {
-    accessorKey: "numero_casa",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        #
-      </Button>
-    ),
-  },
-  {
-    accessorKey: "colonia",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Colonia
+        Dirección
       </Button>
     ),
   },

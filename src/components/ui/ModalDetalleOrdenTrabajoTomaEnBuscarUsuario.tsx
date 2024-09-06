@@ -21,6 +21,7 @@ import { TrashIcon } from "lucide-react";
 import { MdOutlineCancel } from "react-icons/md";
 import ModalCerrarOT from "./ModalCerrarOT";
 import ModalCerrarOT2 from "./ModalCerrarOT2";
+import MarcoFormDetalleOtMonitor from "./MarcoFormDetalleOtMonitor";
 
 
 const ModalDetalleOrdenTrabajoTomaEnBuscarUsuario = () => {
@@ -31,7 +32,7 @@ const ModalDetalleOrdenTrabajoTomaEnBuscarUsuario = () => {
     detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor,setIsOpenHijoModalDetalleMonitorOT, 
     isOpenPadreModalDetalleMonitorOT, setIsOpenPadreModalDetalleMonitorOT,
     setIsOpenHijoFormularioModalDetalleMonitorOT, isOpenHijoFormularioModalDetalleMonitorOT, detalleOrdenDeTrabajoTomaMonitor2etalleOrdenDeTrabajoTomaMonitor2,
-    informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, setLoadingTableFiltrarOrdenDeTrabajoMasivas, setAbrirModalInformacionTomaDetalleUsuarioToma, abrirModalInformacionTomaDetalleUsuarioToma,
+    informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, setLoadingTableFiltrarOrdenDeTrabajoMasivas, setAbrirModalInformacionTomaDetalleUsuarioToma, abrirModalInformacionTomaDetalleUsuarioToma,informacionModalDetalleEnToma 
   } = ZustandFiltrosOrdenTrabajo();
 
   const {
@@ -172,12 +173,13 @@ const ModalDetalleOrdenTrabajoTomaEnBuscarUsuario = () => {
     }
   };
 
-  console.log(detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.accion);
+  
+  console.log(informacionModalDetalleEnToma);
 
   return (
     <AlertDialog open={abrirModalInformacionTomaDetalleUsuarioToma} onOpenChange={setAbrirModalInformacionTomaDetalleUsuarioToma}>
-      <AlertDialogContent className="max-w-[65vh]">
-        <AlertDialogHeader>
+    <AlertDialogContent className="max-w-[90vw] max-h-[90vh] overflow-auto p-4">
+    <AlertDialogHeader>
           <AlertDialogTitle>
             <div className="flex space-x-2">
               Información de la orden de trabajo
@@ -192,8 +194,7 @@ const ModalDetalleOrdenTrabajoTomaEnBuscarUsuario = () => {
           </AlertDialogTitle>
 
           <AlertDialogDescription>
-            <div className="flex items-center space-x-2">
-              <div className="text-xl">Toma</div>
+            <div className="flex items-center space-x-2 ml-[180vh]">
               <IconButton onClick={cancelarOrdenDeTrabajo} title="Cancelar orden de trabajo">
                 <TrashIcon className="w-[2vh] h-[2vh] ml-2" />
               </IconButton>
@@ -219,85 +220,118 @@ const ModalDetalleOrdenTrabajoTomaEnBuscarUsuario = () => {
 
 
             </div>
-            <div className="p-4 bg-muted shadow-md rounded-md space-y-2 ">
-              <div className="flex space-x-4 items-center">
-                <p className="text-lg font-semibold">Codigo de toma: </p>
-                <div className="mt-[0.9vh]">
-                  {usuariosEncontrados[0]?.tomas[0]?.codigo_toma}
+            <div className="p-4 space-y-7">
+            {/* Información de la toma */}
+            <MarcoFormDetalleOtMonitor title="Información de la toma">
+                <div className="grid grid-cols-1 gap-y-2">
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Código de toma:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                        {informacionModalDetalleEnToma?.toma?.codigo_toma}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Clave catastral:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                        {informacionModalDetalleEnToma?.toma?.clave_catastral}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Calle:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                        {informacionModalDetalleEnToma?.toma?.calle}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Número de casa:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                        {informacionModalDetalleEnToma?.toma?.numero_casa}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Colonia:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                        {informacionModalDetalleEnToma?.toma?.colonia}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Ruta:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                        {informacionModalDetalleEnToma?.toma?.ruta?.nombre}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Libro:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                        {informacionModalDetalleEnToma?.toma?.libro?.nombre}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Tipo de toma:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                        {informacionModalDetalleEnToma?.toma?.tipo_toma?.nombre}
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div className="flex space-x-4">
-                <p className="text-lg font-semibold">Tipo de OT:</p>
-                <div className="mt-[0.9vh]">
-                  {
-                    detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo
-                      ?.descripcion
-                  }
-                </div>
-              </div>
-              <div className="flex space-x-4">
-                <p className="text-lg font-semibold ">Estado de la OT:</p>
-                <div>{detalleOrdenDeTrabajoTomaMonitor2?.estado}</div>
-              </div>
+            </MarcoFormDetalleOtMonitor>
+             {/* Información de la orden de trabajo */}
+             <MarcoFormDetalleOtMonitor title="Información de la orden de trabajo">
+                <div className="grid grid-cols-1 gap-y-4">
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Tipo de OT:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                            {informacionModalDetalleEnToma?.orden_trabajo_catalogo?.descripcion}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Estado de la OT:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                            {informacionModalDetalleEnToma?.estado}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Creación de la OT:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                        {informacionModalDetalleEnToma?.created_at}
 
-              <div className="flex space-x-4">
-                <p className="text-lg font-semibold ">Creación de la OT:</p>
-                <div className="mt-[0.9vh]">
-                  {detalleOrdenDeTrabajoTomaMonitor2?.created_at
-                    ? new Date(
-                      detalleOrdenDeTrabajoTomaMonitor2.created_at
-                    ).toLocaleString("es-ES", {
-                      dateStyle: "short",
-                      timeStyle: "short",
-                    })
-                    : "Fecha no disponible"}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Fecha finalizada:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                        {informacionModalDetalleEnToma?.fecha_finalizada}
+                        </div>
+                    </div>
                 </div>
-              </div>
+            </MarcoFormDetalleOtMonitor>
+          
+            <MarcoFormDetalleOtMonitor title="Operadores">
+                <div className="grid grid-cols-1 gap-y-4 m2">
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">La creo:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                            {informacionModalDetalleEnToma?.empleado_genero?.nombre_completo}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">La asigno:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                            {informacionModalDetalleEnToma?.empleadoAsigno?.nombre_completo}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">El encargado de hacerla:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                        {informacionModalDetalleEnToma?.empleadoEncargado?.nombre_completo}
 
-              <div className="flex space-x-2">
-                <p className="text-lg font-semibold ">Fecha finalizada:</p>
-                <div className="mt-[0.9vh]">
-                  {detalleOrdenDeTrabajoTomaMonitor2?.fecha_finalizada}
+                        </div>
+                    </div>
+                   
                 </div>
-              </div>
+            </MarcoFormDetalleOtMonitor>
 
-              <div className="flex space-x-2">
-                <p className="text-lg font-semibold ">Clave catastral:</p>
-                <div className="mt-[0.9vh]">
-                  {detalleOrdenDeTrabajoTomaMonitor2?.toma?.clave_catastral}
-                </div>
-              </div>
-              <div className="flex space-x-2">
-                <p className="text-lg font-semibold ">Calle:</p>
-                <div className="mt-[0.9vh]">
-                  {detalleOrdenDeTrabajoTomaMonitor2?.toma?.calle}
-                </div>
-              </div>
-              <div className="flex space-x-2">
-                <p className="text-lg font-semibold ">Numero de casa:</p>
-                <div className="mt-[0.9vh]">
-                  {detalleOrdenDeTrabajoTomaMonitor2?.toma?.numero_casa}
-                </div>
-              </div>
-              <div className="flex space-x-2">
-                <p className="text-lg font-semibold ">Colonia:</p>
-                <div className="mt-[0.9vh]">
-                  {detalleOrdenDeTrabajoTomaMonitor2?.toma?.colonia}
-                </div>
-              </div>
-              <div className="flex space-x-2">
-                <p className="text-lg font-semibold ">Ruta:</p>
-                <div className="mt-[0.9vh]">
-                  {detalleOrdenDeTrabajoTomaMonitor2?.toma?.libro?.nombre}
-                </div>
-              </div>
-              <div className="flex space-x-2">
-                <p className="text-lg font-semibold ">Tipo de toma:</p>
-                <div className="mt-[0.9vh]">
-                  {detalleOrdenDeTrabajoTomaMonitor2?.toma?.tipo_toma?.nombre}
-                </div>
-              </div>
-            </div>
+
+           </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

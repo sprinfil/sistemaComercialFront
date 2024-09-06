@@ -175,11 +175,11 @@ const ModalMonitorOrdenTrabajoTable = () => {
     }
   };
 
-  console.log(detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.accion);
+  console.log(detalleOrdenDeTrabajoTomaMonitor2.id_empleado_asigno);
 
   return (
     <AlertDialog open={isOpenPadreModalDetalleMonitorOT} onOpenChange={setIsOpenPadreModalDetalleMonitorOT}>
-    <AlertDialogContent className="max-w-[90vw] max-h-[100vh] overflow-auto p-4">
+    <AlertDialogContent className="max-w-[90vw] max-h-[90vh] overflow-auto p-4">
     <AlertDialogHeader>
           <AlertDialogTitle>
             <div className="flex space-x-2">
@@ -221,7 +221,7 @@ const ModalMonitorOrdenTrabajoTable = () => {
 
 
             </div>
-            <div className="p-4 space-y-4">
+            <div className="p-4 space-y-7">
             {/* Información de la toma */}
             <MarcoFormDetalleOtMonitor title="Información de la toma">
                 <div className="grid grid-cols-1 gap-y-2">
@@ -288,12 +288,7 @@ const ModalMonitorOrdenTrabajoTable = () => {
                     <div className="flex flex-col md:flex-row md:items-center">
                         <p className="text-lg font-semibold w-1/3">Creación de la OT:</p>
                         <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.created_at
-                                ? new Date(detalleOrdenDeTrabajoTomaMonitor2.created_at).toLocaleString("es-ES", {
-                                    dateStyle: "short",
-                                    timeStyle: "short",
-                                })
-                                : "Fecha no disponible"}
+                            {detalleOrdenDeTrabajoTomaMonitor2?.created_at}
                         </div>
                     </div>
                     <div className="flex flex-col md:flex-row md:items-center">
@@ -302,6 +297,30 @@ const ModalMonitorOrdenTrabajoTable = () => {
                             {detalleOrdenDeTrabajoTomaMonitor2?.fecha_finalizada}
                         </div>
                     </div>
+                </div>
+            </MarcoFormDetalleOtMonitor>
+            <MarcoFormDetalleOtMonitor title="Operadores">
+                <div className="grid grid-cols-1 gap-y-4 m2">
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">La creo:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                            {detalleOrdenDeTrabajoTomaMonitor2?.empleado_genero?.nombre_completo}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">La asigno:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                            {detalleOrdenDeTrabajoTomaMonitor2?.empleadoAsigno?.nombre_completo}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">El encargado de hacerla:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                        {detalleOrdenDeTrabajoTomaMonitor2?.empleadoEncargado?.nombre_completo}
+
+                        </div>
+                    </div>
+                   
                 </div>
             </MarcoFormDetalleOtMonitor>
         </div>

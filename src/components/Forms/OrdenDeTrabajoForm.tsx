@@ -468,7 +468,7 @@ const OrdenDeTrabajoForm = () => {
               
             });
         }
-    }, [accionGeneradaEntreTabs]);
+    }, [accionGeneradaEntreTabs, ordenDeTrabajo.nombre]);
 
 
 
@@ -685,7 +685,7 @@ const OrdenDeTrabajoForm = () => {
                                                 {...field} />
                                         </FormControl>
                                         <FormDescription>
-                                            La vigencia de la orden de trabajo.
+                                        Escribe la vigencia en dias de la orden de trabajo.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -730,10 +730,10 @@ const OrdenDeTrabajoForm = () => {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="generar">Generar</SelectItem>
-                                                <SelectItem value="asignar">Asignar</SelectItem>
-                                                <SelectItem value="concluir">Concluir</SelectItem>
-                                                <SelectItem value="no genera">No genera</SelectItem>
+                                            <SelectItem value="generar">Al Generar</SelectItem>
+                                            <SelectItem value="asignar">Al Asignar</SelectItem>
+                                            <SelectItem value="concluir">Al Concluir</SelectItem>
+                                            <SelectItem value="no genera">No genera cargo</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         :
@@ -747,10 +747,10 @@ const OrdenDeTrabajoForm = () => {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="generar">Generar</SelectItem>
-                                            <SelectItem value="asignar">Asignar</SelectItem>
-                                            <SelectItem value="concluir">Concluir</SelectItem>
-                                            <SelectItem value="no genera">No genera</SelectItem>
+                                            <SelectItem value="generar">Al Generar</SelectItem>
+                                            <SelectItem value="asignar">Al Asignar</SelectItem>
+                                            <SelectItem value="concluir">Al Concluir</SelectItem>
+                                            <SelectItem value="no genera">No genera cargo</SelectItem>
                                         </SelectContent>
                                     </Select>
                                         }
@@ -836,7 +836,7 @@ const OrdenDeTrabajoForm = () => {
                                 name="cancela_masiva"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="items-center">¿Asigna masiva?</FormLabel>
+                                        <FormLabel className="items-center">¿Cancela masiva?</FormLabel>
                                         <FormControl className="ml-4">
                                             {
                                                 bloquear ? <Switch
@@ -870,7 +870,7 @@ const OrdenDeTrabajoForm = () => {
                                 name="cierra_masiva"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="items-center">¿Asigna masiva?</FormLabel>
+                                        <FormLabel className="items-center">¿Cierra masiva?</FormLabel>
                                         <FormControl className="ml-4">
                                             {
                                                 bloquear ? <Switch
@@ -905,7 +905,7 @@ const OrdenDeTrabajoForm = () => {
                                 name="publico_general"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="items-center">¿Asigna masiva?</FormLabel>
+                                        <FormLabel className="items-center">¿Va para público en general?</FormLabel>
                                         <FormControl className="ml-4">
                                             {
                                                 bloquear ? <Switch
@@ -927,32 +927,13 @@ const OrdenDeTrabajoForm = () => {
 
                                         </FormControl>
                                         <FormDescription>
-                                            Aquí puedes activar si tiene carga masiva.
+                                            Aquí puedes activar si va para público en general
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                             <FormField
-                                control={form.control}
-                                name="vigencias"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Vigencia</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                readOnly={!abrirInput}
-                                                placeholder="Escribe la vigencia en dias de la orden de trabajo."
-                                                type="number"
-                                                {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            La vigencia de la orden de trabajo.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                           
 
                            
 

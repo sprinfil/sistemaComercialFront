@@ -37,6 +37,7 @@ export type orden_trabajo_accion = {
   accion: string
   modelo: string
   campo:string
+  valor: string
 }
 
 export type orden_trabajo_cargos = {
@@ -112,13 +113,13 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
       const OrdenDeTrabajo = row.original
       const { setOrdenDeTrabajo, setAccion } = useStateContext();
       const { setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
-      const {setAbrirModalInformacionTomaDetalleUsuarioToma} = ZustandFiltrosOrdenTrabajo();
+      const {setAbrirModalInformacionTomaDetalleUsuarioToma, setInformacionModalDetalleEnToma} = ZustandFiltrosOrdenTrabajo();
       const handleAbrir = () => 
       {
         setAbrirModalInformacionTomaDetalleUsuarioToma(true);
       }
       return (
-        <div onClick={()=>{setOrdenDeTrabajo(OrdenDeTrabajo);setAccionGeneradaEntreTabs("ver")}}>
+        <div onClick={()=>{setOrdenDeTrabajo(OrdenDeTrabajo);setAccionGeneradaEntreTabs("ver");setInformacionModalDetalleEnToma(OrdenDeTrabajo)}}>
           <IconButton onClick={handleAbrir}>
             <EyeOpenIcon className="w-[20px] h-[20px]"/>
           </IconButton>

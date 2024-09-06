@@ -17,6 +17,7 @@ export default function OrdenDeTrabajoUsuarioTable() {
     loadingTableOrdenesDeTrabajoHistorial, setAbrirModalInformacionTomaDetalleUsuarioToma} = ZustandFiltrosOrdenTrabajo();
       console.log("esto llego para asignar individual",usuariosEncontrados[0]?.tomas[0]?.codigo_toma);
       console.log("esto llego para asignar individual",usuariosEncontrados[0]);
+      
   const {
     ordenDeTrabajos,
     setOrdenDeTrabajos,

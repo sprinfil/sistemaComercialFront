@@ -104,7 +104,8 @@ interface FiltrosOrdenTrabajo {
   setAbrirModalInformacionTomaDetalleUsuarioToma: (abrirModalInformacionTomaDetalleUsuarioToma: boolean) => void;
   iconoBuscarGenerarOrdenMasivaControl: boolean;
   setIconoBuscarGenerarOrdenMasivaControl: (iconoBuscarGenerarOrdenMasivaControl: boolean) => void;
-  
+  informacionModalDetalleEnToma: []
+  setInformacionModalDetalleEnToma:(informacionModalDetalleEnToma:[]) => void;
 }
 
 export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => ({
@@ -200,5 +201,7 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setAbrirModalInformacionTomaDetalleUsuarioToma: (abrirModalInformacionTomaDetalleUsuarioToma) => set({abrirModalInformacionTomaDetalleUsuarioToma}),
   iconoBuscarGenerarOrdenMasivaControl: false,
   setIconoBuscarGenerarOrdenMasivaControl: (iconoBuscarGenerarOrdenMasivaControl) => set({iconoBuscarGenerarOrdenMasivaControl}),
+  informacionModalDetalleEnToma: [],
+  setInformacionModalDetalleEnToma: (informacionModalDetalleEnToma) => set({informacionModalDetalleEnToma}),
 }));
 
