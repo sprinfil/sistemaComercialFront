@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axiosClient from '../../axios-client';
 import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario.tsx';
 import ModalConvenio from '../ui/ModalConvenios.tsx';
-import ModalAjustes from '../ui/ModalAjuste.tsx';
+import ModalAjuste from '../ui/ModalAjuste.tsx';
 import Loader from '../ui/Loader.tsx';
 
 const CargosUsuarioForm = () => {
@@ -86,7 +86,7 @@ const CargosUsuarioForm = () => {
                     title="Convenios"
                     onConfirm={handleConvenioConfirm}
                 />
-                <ModalAjustes
+                <ModalAjuste
                     trigger={<button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Ajustes</button>}
                     title="Ajustes"
                     onConfirm={handleAjustesConfirm}
