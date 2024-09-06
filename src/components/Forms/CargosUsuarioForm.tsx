@@ -47,6 +47,39 @@ const CargosUsuarioForm = () => {
 
     return (
         <div>
+            
+            {loading ? (
+                <Loader />
+            ) : (
+                <table className="w-full table-fixed">
+                    <thead className="bg-muted">
+                        <tr>
+                            <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Concepto</th>
+                            <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Monto</th>
+                            <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Estado</th>
+                            <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Fecha de Cargo</th>
+                            <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Prioridad</th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-background">
+                        {cargos.length > 0 ? (
+                            cargos.map((cargo, index) => (
+                                <tr key={index}>
+                                    <td className="px-2 py-3">{cargo.concepto}</td>
+                                    <td className="px-2 py-3">{cargo.monto}</td>
+                                    <td className="px-2 py-3">{cargo.estado}</td>
+                                    <td className="px-2 py-3">{cargo.fechaCargo}</td>
+                                    <td className="px-2 py-3">{cargo.prioridad}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="5" className="px-2 py-3 text-center">No hay cargos disponibles.</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            )}
             <div className="mb-4 flex justify-end gap-2">
                 <ModalConvenio
                     trigger={<button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Convenios</button>}
@@ -59,38 +92,6 @@ const CargosUsuarioForm = () => {
                     onConfirm={handleAjustesConfirm}
                 />
             </div>
-            {loading ? (
-                <Loader />
-            ) : (
-            <table className="w-full table-fixed">
-                <thead className="bg-muted">
-                    <tr>
-                        <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Concepto</th>
-                        <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Monto</th>
-                        <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Estado</th>
-                        <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Fecha de Cargo</th>
-                        <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Prioridad</th>
-                    </tr>
-                </thead>
-                <tbody className="bg-background">
-                    {cargos.length > 0 ? (
-                        cargos.map((cargo, index) => (
-                            <tr key={index}>
-                                <td className="px-2 py-3">{cargo.concepto}</td>
-                                <td className="px-2 py-3">{cargo.monto}</td>
-                                <td className="px-2 py-3">{cargo.estado}</td>
-                                <td className="px-2 py-3">{cargo.fechaCargo}</td>
-                                <td className="px-2 py-3">{cargo.prioridad}</td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="5" className="px-2 py-3 text-center">No hay cargos disponibles.</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-            )}
         </div>
     );
 }

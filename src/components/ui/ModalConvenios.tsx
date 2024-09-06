@@ -25,9 +25,10 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedConvenio, setSelectedConvenio] = useState<any | null>(null);
-  const [isTable1Collapsed, setIsTable1Collapsed] = useState(false);
-  const [isTable2Collapsed, setIsTable2Collapsed] = useState(false);
-  const [isTable3Collapsed, setIsTable3Collapsed] = useState(false);
+  const [selectedAdditionalData, setSelectedAdditionalData] = useState<any | null>(null);
+  const [isTable1Collapsed, setIsTable1Collapsed] = useState(true); // Initially collapsed
+  const [isTable2Collapsed, setIsTable2Collapsed] = useState(true); // Initially collapsed
+  const [isTable3Collapsed, setIsTable3Collapsed] = useState(true); // Initially collapsed
 
   useEffect(() => {
     setLoading(true);
@@ -41,11 +42,11 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
         console.error('API Error:', err);
         setLoading(false);
       });
-  }, []);
+  }, [selectedConvenio]);
 
   useEffect(() => {
     if (selectedConvenio) {
-      axiosClient.get('/AdditionalData') // Replace with the actual API endpoint
+      axiosClient.get('/AdditionalData')
         .then(({ data }) => {
           setAdditionalData(data.data);
         })
@@ -56,8 +57,8 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   }, [selectedConvenio]);
 
   useEffect(() => {
-    if (selectedConvenio) {
-      axiosClient.get('/MoreData') // Replace with the actual API endpoint
+    if (selectedAdditionalData) {
+      axiosClient.get('/MoreData')
         .then(({ data }) => {
           setMoreData(data.data);
         })
@@ -65,27 +66,35 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
           console.error('Error al obtener más datos:', err);
         });
     }
-  }, [selectedConvenio]);
+  }, [selectedAdditionalData]);
 
   const handleRowClick = (convenio: any) => {
     setSelectedConvenio(convenio);
-    setIsTable1Collapsed(true); // Cierra la primera tabla al seleccionar un convenio
+    setIsTable1Collapsed(true);  // Collapse Table 1
+    setIsTable2Collapsed(false); // Expand Table 2
+  };
+
+  const handleAdditionalDataClick = (data: any) => {
+    setSelectedAdditionalData(data);
+    setIsTable2Collapsed(true);  // Collapse Table 2
+    setIsTable3Collapsed(false); // Expand Table 3
   };
 
   const handleHeaderClick = (table: number) => {
     if (table === 1) {
-      setIsTable1Collapsed(!isTable1Collapsed); // Alterna entre expandir y colapsar la primera tabla
+      setIsTable1Collapsed(!isTable1Collapsed); 
     } else if (table === 2) {
-      setIsTable2Collapsed(!isTable2Collapsed); // Alterna entre expandir y colapsar la segunda tabla
+      setIsTable2Collapsed(!isTable2Collapsed); 
     } else {
-      setIsTable3Collapsed(!isTable3Collapsed); // Alterna entre expandir y colapsar la tercera tabla
+      setIsTable3Collapsed(!isTable3Collapsed); 
     }
   };
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent className="max-w-4xl mx-auto p-6">
+      {/* Adjust the width using w-[80vw] */}
+      <AlertDialogContent className="w-[90vw] max-w-none ">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-lg font-semibold">{title}</AlertDialogTitle>
         </AlertDialogHeader>
@@ -95,6 +104,12 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
           <p className="text-red-500">{error}</p>
         ) : (
           <div>
+            {selectedConvenio && (
+              <div className="mt-4">
+                <p className="font-semibold">Convenio Seleccionado:</p>
+                <p><strong>{selectedConvenio.nombre}</strong></p>
+              </div>
+            )}
             <div className="overflow-hidden mb-4">
               <div className={`transition-all duration-300 ease-in-out ${isTable1Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
                 <table className="w-full table-fixed border border-gray-200">
@@ -127,6 +142,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
               </div>
             </div>
 
+            {/* Table 2 */}
             <div className="overflow-hidden mb-4">
               <div className={`transition-all duration-300 ease-in-out ${isTable2Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
                 <table className="w-full table-fixed border border-gray-200">
@@ -141,8 +157,12 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
                   <tbody className={`bg-white ${isTable2Collapsed ? 'hidden' : ''}`}>
                     {additionalData.length > 0 ? (
                       additionalData.map((data: any) => (
-                        <tr key={data.id}>
-                          <td className="px-4 py-2">{data.name}</td> {/* Adjust according to your actual data */}
+                        <tr
+                          key={data.id}
+                          className="cursor-pointer hover:bg-gray-100"
+                          onClick={() => handleAdditionalDataClick(data)}
+                        >
+                          <td className="px-4 py-2">{data.name}</td>
                         </tr>
                       ))
                     ) : (
@@ -155,6 +175,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
               </div>
             </div>
 
+            {/* Table 3 */}
             <div className="overflow-hidden mb-4">
               <div className={`transition-all duration-300 ease-in-out ${isTable3Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
                 <table className="w-full table-fixed border border-gray-200">
@@ -170,7 +191,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
                     {moreData.length > 0 ? (
                       moreData.map((data: any) => (
                         <tr key={data.id}>
-                          <td className="px-4 py-2">{data.name}</td> {/* Adjust according to your actual data */}
+                          <td className="px-4 py-2">{data.name}</td>
                         </tr>
                       ))
                     ) : (
@@ -182,7 +203,6 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
                 </table>
               </div>
             </div>
-
           </div>
         )}
         <AlertDialogFooter>
