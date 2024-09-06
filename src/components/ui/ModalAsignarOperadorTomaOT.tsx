@@ -146,7 +146,7 @@ console.log(tipoOperacion);
                 toast({
                   variant: "destructive",
                   title: "Oh, no. Error",
-                  description: "Selecciona una orden de trabajo.",
+                  description: "No se pudo asignar",
                   action: (
                     <ToastAction altText="Try again">Intentar de nuevo</ToastAction>
                   ),

@@ -30,6 +30,9 @@ export type MonitorOrden2 = {
   {
     nombre:string
   }
+  usuario:{
+    nombre_completo: string
+  }
   }
   orden_trabajo_catalogo:
   {
@@ -113,8 +116,6 @@ export const columns2: ColumnDef<MonitorOrden2>[] = [
       </Button>
     ),
   },
-
-
 
   {
     accessorFn: (row) => {

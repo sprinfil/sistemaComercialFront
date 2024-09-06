@@ -89,20 +89,20 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
         {control && (
           <div className="flex space-x-5">
             <Input
-          placeholder="Buscar..."
+          placeholder="Buscar tipo..."
           type="text"
-          value={(table.getColumn('orden_trabajo_catalogo.nombre')?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn('nombre')?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn('orden_trabajo_catalogo.nombre')?.setFilterValue(event.target.value)
+            table.getColumn('nombre')?.setFilterValue(event.target.value)
           }
           className="w-full"
         />
         <Input
-          placeholder="Buscar..."
+          placeholder="Buscar descripcion..."
           type="text"
-          value={(table.getColumn('estado')?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn('descripcion')?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn('estado')?.setFilterValue(event.target.value)
+            table.getColumn('descripcion')?.setFilterValue(event.target.value)
           }
           className="w-full"
         />

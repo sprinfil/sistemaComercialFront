@@ -232,6 +232,12 @@ const ModalMonitorOrdenTrabajoTable = () => {
                         </div>
                     </div>
                     <div className="flex flex-col md:flex-row md:items-center">
+                        <p className="text-lg font-semibold w-1/3">Nombre del usuario:</p>
+                        <div className="mt-1 md:mt-0 w-2/3">
+                            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.usuario?.nombre_completo}
+                        </div>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center">
                         <p className="text-lg font-semibold w-1/3">Clave catastral:</p>
                         <div className="mt-1 md:mt-0 w-2/3">
                             {detalleOrdenDeTrabajoTomaMonitor2?.toma?.clave_catastral}
