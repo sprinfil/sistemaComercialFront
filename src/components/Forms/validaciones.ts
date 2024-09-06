@@ -30,7 +30,7 @@ export const conceptoSchema = z.object({
   id: z.number(),
   nombre: z.string(),
   descripcion: z.string(),
-  prioridad_abono: z.number(),
+  prioridad_abono: z.string(),
   abonable: z.number(), // Asegúrate de que estas propiedades estén incluidas
   tarifa_fija: z.number().optional(),
   cargo_directo: z.number().optional(),

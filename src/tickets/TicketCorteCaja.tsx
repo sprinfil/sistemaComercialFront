@@ -14,10 +14,10 @@ function format_metodo_pago(pago: string): string {
         return "Efectivo";
     }
     if (pago == "tarjeta_credito") {
-        return "Tarjeta Credito";
+        return "T. Credito";
     }
     if (pago == "tarjeta_debito") {
-        return "Tarjeta Debito";
+        return "T. Debito";
     }
     if (pago == "cheque") {
         return "Cheque";
@@ -76,6 +76,16 @@ export default function estructura_ticket(data) {
     estructura_ticket.push([formatLine(`Tarjeta Credito`, `$ ${data?.total_tarjeta_credito.toFixed(2)}`), `LT`])
     estructura_ticket.push([formatLine(`Tarjeta Debito`, `$ ${data?.total_tarjeta_debito.toFixed(2)}`), `LT`])
     estructura_ticket.push([formatLine(`Cheques`, `$ ${data?.total_cheques.toFixed(2)}`), `LT`])
+    estructura_ticket.push([``, `CT`, `B`])
+    estructura_ticket.push([`_________________________________________`, `LT`, `B`])
+    estructura_ticket.push([``, `CT`, `B`])
+    estructura_ticket.push([``, `CT`, `B`])
+    estructura_ticket.push([``, `CT`, `B`])
+    estructura_ticket.push([``, `CT`, `B`])
+    estructura_ticket.push([``, `CT`, `B`])
+    estructura_ticket.push([``, `CT`, `B`])
+    estructura_ticket.push([`____________________________`, `CT`, `B`])
+    estructura_ticket.push([`FIRMA DEL CAJERO`, `CT`, `B`])
     return estructura_ticket;
 }
 

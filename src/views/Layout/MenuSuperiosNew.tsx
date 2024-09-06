@@ -30,7 +30,7 @@ import  logo_menu  from "../../img/logosapamenusuperiornew.png"
 export const MenuSuperiosNew = () => {
     const { setToken, setUser, user, permissions, setPermissions, setServerStatus } = useStateContext();
     const { set_titulo, set_icono, titulo } = subMenuZustand();
-    const [loading_permissions, set_loading_permissions] = useState(false);
+    const [loading_permissions, set_loading_permissions] = useState(true);
 
     const logout = (e: MouseEvent<SVGSVGElement>): void => {
         e.preventDefault();
@@ -50,7 +50,7 @@ export const MenuSuperiosNew = () => {
 
     useEffect(() => {
         getPermissions();
-    }, [user]);
+    }, []);
 
 
     //obtener los permisos del usuario
