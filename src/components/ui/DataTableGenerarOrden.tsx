@@ -117,7 +117,7 @@ export function DataTableGenerarOrden<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No resultados.
+                  Filta primero las tomas.
                 </TableCell>
               </TableRow>
             )}

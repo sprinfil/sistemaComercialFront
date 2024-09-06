@@ -97,7 +97,7 @@ export const LibroFilterComboBox = ({ field, name = "id_concepto", setCargoSelec
                                             onSelect={() => {
                                                 // Update the field value here
                                                 field.onChange({ target: { value: language.value } });
-                                                setCargoSeleccionado(language.label);
+                                                setCargoSeleccionado(language.value);
                                                 setOpen(false);
                                             }}
                                         >

@@ -55,7 +55,23 @@ export const AsignarOTMasiva = () => {
   const [operadorSeleccionado, setOperadorSeleccionado] = useState("");
   const { isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
     setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador,
-     arregloAsignarIndividualTomaAOperador, setLoadingTable, loadingTable, selectedAction, setSelectedAction, setDataAsignarOtIndividual} = ZustandFiltrosOrdenTrabajo();
+     arregloAsignarIndividualTomaAOperador, setLoadingTable, loadingTable, selectedAction, 
+     setSelectedAction, setDataAsignarOtIndividual, informacionAsignacionMasivaRecibidaPorFiltros, 
+     setInformacionAsignacionMasivaRecibidaPorFiltros,setboolControlDetalleUsuarioAsignarIndividual,
+     isConcluidaChecked, setIsConcluidaChecked,
+     isCanceladaChecked, setIsCanceladaChecked,
+     isDomesticaChecked, setIsDomesticaChecked,
+     isComercialChecked, setIsComercialChecked,
+     isIndustrialChecked, setIsIndustrialChecked,
+     isEspecialChecked, setIsEspecialChecked,  idLibroFiltro, idRutaFiltro,
+     saldoMinFiltro, saldoMaxFiltro,  isFechaTipo,
+     setIsFechaTipo,
+     isHastaFecha,
+     setIsHastaFecha,
+     isDesdeFecha,
+     setIsDesdeFecha,
+     isCodigoDeTomaFiltro,
+     setIsCodigoDeTomaFiltro } = ZustandFiltrosOrdenTrabajo();
 
 
 
@@ -195,6 +211,18 @@ const getOrdenesDeTrabajo = async () => {
   const values = {
     asignada: isAsignadaChecked,
     no_asignada: isNoAsignadaChecked,
+    domestica: isDomesticaChecked,
+    comercial: isComercialChecked,
+    industrial: isIndustrialChecked,
+    especial: isEspecialChecked,
+    ruta_id: idRutaFiltro,
+    libro_id: idLibroFiltro,
+    saldo_min: saldoMinFiltro,
+    saldo_max: saldoMaxFiltro,
+    fecha_tipo:  isFechaTipo,
+    fecha_inicio :isDesdeFecha ,
+    fecha_fin:isHastaFecha,
+    codigo_toma:isCodigoDeTomaFiltro
   }
   console.log("VALORES ENVIADOS", values);
   setLoadingTable(true);
@@ -208,7 +236,7 @@ const getOrdenesDeTrabajo = async () => {
 
       console.log("Tomas extraídas", tomas);
 
-      setInformacionRecibidaPorFiltros(tomas);
+      setInformacionAsignacionMasivaRecibidaPorFiltros(tomas);
     } else {
       console.log("No jala", response.data.ordenes_trabajo);
     }
@@ -218,6 +246,11 @@ const getOrdenesDeTrabajo = async () => {
     setLoadingTable(false);
   }
 };
+
+const handleControlBuscarUsuarioIndividual = () => 
+{
+  setboolControlDetalleUsuarioAsignarIndividual(true);
+}
 
 
 return (
@@ -242,7 +275,7 @@ return (
                 <SelectValue placeholder="Selecciona el tipo de orden de trabajo." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="individual">Individual</SelectItem>
+               {/** <SelectItem value="individual">Individual</SelectItem>*/} 
                 <SelectItem value="masivamente">Masivamente</SelectItem>
               </SelectContent>
             </Select>
@@ -253,7 +286,7 @@ return (
                 <div className='flex justify-center items-center'>
                   <ModalMasFiltros
                     trigger={
-                      <IconButton title="Más Filtros">
+                      <IconButton title="Más Filtros" onClick={handleControlBuscarUsuarioIndividual}>
                         <FaSearch />
                       </IconButton>
                     }

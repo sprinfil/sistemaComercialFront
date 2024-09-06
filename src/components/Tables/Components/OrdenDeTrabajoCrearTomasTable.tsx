@@ -12,8 +12,15 @@ export default function OrdenDeTrabajoCrearTomasTable() {
 
 
 
-  const {informacionRecibidaPorFiltros, loadingTable} = ZustandFiltrosOrdenTrabajo();
+  const {informacionRecibidaPorFiltros, loadingTable, setLoadingTable, informacionRecibidaPorFiltrosGenerarOtMasiva, setLoadingTableMonitor, loadingTableMonitor} = ZustandFiltrosOrdenTrabajo();
 
+  useEffect(() => {
+    if (loadingTable) {
+      setLoadingTableMonitor(true);
+    } else {
+      setLoadingTableMonitor(false);
+    }
+  }, [informacionRecibidaPorFiltrosGenerarOtMasiva]);
   //metodo para las filas
 
   const handleRowClick = (anomalia: OrdenDeTrabajoCrearTomas) =>
@@ -31,9 +38,9 @@ export default function OrdenDeTrabajoCrearTomasTable() {
 
     <div>
       {
-        loadingTable ? <Loader/>
+        loadingTableMonitor ? <Loader/>
         :
-        <DataTableGenerarOrden columns={columns} data={informacionRecibidaPorFiltros} sorter='nombre' onRowClick={handleRowClick}/>
+        <DataTableGenerarOrden columns={columns} data={informacionRecibidaPorFiltrosGenerarOtMasiva} sorter='codigo_toma' onRowClick={handleRowClick}/>
 
       }
     </div>

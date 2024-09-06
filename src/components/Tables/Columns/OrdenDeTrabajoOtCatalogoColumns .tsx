@@ -19,6 +19,10 @@ export type OrdenDeTrabajo = {
   orden_trabajo_accion: orden_trabajo_accion[]
   ordenes_trabajo_cargos: orden_trabajo_cargos[]
   ordenes_trabajo_encadenadas: orden_trabajo_encadenadas[]
+  orden_trabajo_catalogo:
+  {
+    descripcion: string;
+  }
 
 }
 
@@ -47,26 +51,40 @@ export type orden_trabajo_encadenadas = {
 
 export const columns: ColumnDef<OrdenDeTrabajo>[] = [
   {
-    accessorKey: "nombre",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Tipo
-      </Button>
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
     ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
   },
   {
-    accessorKey: "descripcion",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Descripción
-      </Button>
-    ),
+    accessorKey: "nombre",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Nombre
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     id: "actions",
@@ -76,7 +94,9 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
       const { setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
       return (
         <div onClick={()=>{setOrdenDeTrabajo(OrdenDeTrabajo);setAccionGeneradaEntreTabs("ver")}}>
-        
+          <IconButton>
+            <EyeOpenIcon className="w-[20px] h-[20px]"/>
+          </IconButton>
         </div>
       )
     },

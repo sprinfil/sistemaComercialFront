@@ -14,11 +14,13 @@ import { ZustandFiltrosOrdenTrabajo } from '../../../contexts/ZustandFiltrosOt.t
 
 export default function MonitorOrdenDeTrabajoTable() {
 
-  const {setDataOrdenDeTrabajoMonitor, dataOrdenDeTrabajoMonitor, setLoadingTable, 
-    loadingTable, 
-    informacionRecibidaPorFiltros,boolUsoFiltros, valorParaSaberSiUsaLaTablaDeFiltros,detalleOrdenDeTrabajoTomaMonitor2, setDetalleOrdenDeTrabajoTomaMonitor2} = ZustandFiltrosOrdenTrabajo();
+  const { setDataOrdenDeTrabajoMonitor, dataOrdenDeTrabajoMonitor, setLoadingTable,
+    loadingTable,
+    informacionRecibidaPorFiltros, boolUsoFiltros, valorParaSaberSiUsaLaTablaDeFiltros, detalleOrdenDeTrabajoTomaMonitor2, 
+    setDetalleOrdenDeTrabajoTomaMonitor2, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, 
+    setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo,setLoadingTableFiltrarOrdenDeTrabajoMasivas, loadingTableFiltrarOrdenDeTrabajoMasivas, setIsOpenPadreModalDetalleMonitorOT} = ZustandFiltrosOrdenTrabajo();
 
-    const [abrirModal, setAbrirModal] = useState(false);
+  const [abrirModal, setAbrirModal] = useState(false);
 
 
   useEffect(() => {
@@ -26,31 +28,30 @@ export default function MonitorOrdenDeTrabajoTable() {
   }, []);
 
   const getOrdenDeTrabajoMonitor = async () => {
-    setLoadingTable(true);
+    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
     try {
       const response = await axiosClient.get("OrdenTrabajo/NoAsignada");
-      setLoadingTable(false);
-      setDataOrdenDeTrabajoMonitor(response.data.data);
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+      setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo(response.data.data);
       console.log(response);
     } catch (error) {
-      setLoadingTable(false);
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
       console.error("Failed to fetch orden:", error);
     }
   };
 
   console.log(dataOrdenDeTrabajoMonitor);
-  console.log(boolUsoFiltros, "SE USARON LOS FILTROS ", informacionRecibidaPorFiltros);
+  console.log(boolUsoFiltros, "SE USARON LOS FILTROS ", informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo);
 
   //metodo para las filas
 
-  const handleRowClick = (monitor: MonitorOrden) =>
-  {
+  const handleRowClick = (monitor: MonitorOrden) => {
     //setAnomalia(anomalia);
     console.log("este es el monitor 1", monitor);
-    setAbrirModal(true);
+    setIsOpenPadreModalDetalleMonitorOT(true);
   };
 
-  
+
   const handleRowClick2 = (monitor2: MonitorOrden2) => {
     console.log("ESTE ES EL MONITOR 2", monitor2);
     if (!monitor2) {
@@ -58,33 +59,32 @@ export default function MonitorOrdenDeTrabajoTable() {
       return;
     }
     setDetalleOrdenDeTrabajoTomaMonitor2(monitor2);
-    setAbrirModal(true);
   };
-  
-    console.log("informacion obtenida desde la variable", detalleOrdenDeTrabajoTomaMonitor2);
 
-  if (loadingTable) {
+  //console.log("informacion obtenida desde la variable", detalleOrdenDeTrabajoTomaMonitor2);
+
+  if (loadingTableFiltrarOrdenDeTrabajoMasivas) {
     return <div><Loader /></div>;
   }
 
+  console.log(informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo);
+  
   return (
 
     <div>
-     
-     {
-      valorParaSaberSiUsaLaTablaDeFiltros ?
-      <DataTableMonitorOrdenDeTrabajo columns={columns2} data={informacionRecibidaPorFiltros} sorter='nombre' onRowClick={handleRowClick2}/>
-      :
-      <DataTableMonitorOrdenDeTrabajo columns={columns} data={dataOrdenDeTrabajoMonitor} sorter='nombre' onRowClick={handleRowClick2}/>
+
+      {
+        valorParaSaberSiUsaLaTablaDeFiltros ?
+          <DataTableMonitorOrdenDeTrabajo columns={columns2} data={informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} sorter='toma.codigo_toma' onRowClick={handleRowClick2} />
+          :
+          <DataTableMonitorOrdenDeTrabajo columns={columns2} data={informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} sorter='toma.codigo_toma' onRowClick={handleRowClick2} />
 
 
-     }
+      }
+      {
+        <ModalMonitorOrdenTrabajoTable/>
+      }
 
-  <ModalMonitorOrdenTrabajoTable
-            isOpen={abrirModal}
-            setIsOpen={setAbrirModal}
-            method={""}
-          />
     </div>
   );
 }

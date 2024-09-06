@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import axiosClient from '../../axios-client.ts';
 import Loader from './Loader.tsx';
 import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt.tsx';
+
 type Status = {
     value: string;
     label: string;
@@ -33,7 +34,8 @@ export const RutaFilterComboBox = ({ field, name = "id_concepto", setCargoSelecc
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([]);
     const [open, setOpen] = React.useState(false);
-    const {setidRutaSeleccionada, setRutaBooleanForLibro, rutaBooleanForLibro} = ZustandFiltrosOrdenTrabajo();
+    const { setidRutaSeleccionada, setRutaBooleanForLibro, rutaBooleanForLibro } = ZustandFiltrosOrdenTrabajo();
+
     React.useEffect(() => {
         getConcepto();
     }, []);
@@ -46,8 +48,8 @@ export const RutaFilterComboBox = ({ field, name = "id_concepto", setCargoSelecc
                 value: concepto.id,
                 label: concepto.nombre,
             }));
-            setLanguages(conceptos);
-           
+            // Añadir una opción vacía al principio
+            setLanguages([{ value: '', label: 'Limpiar selección' }, ...conceptos]);
         } catch (error) {
             console.error("Failed to fetch concepto:", error);
         } finally {
@@ -55,15 +57,13 @@ export const RutaFilterComboBox = ({ field, name = "id_concepto", setCargoSelecc
         }
     };
 
-    
-   React.useEffect(() => {
-    if (field.value) {
-        setRutaBooleanForLibro(false); 
-    } else {
-        setRutaBooleanForLibro(true); 
-    }
-}, [field.value]);
-
+    React.useEffect(() => {
+        if (field.value) {
+            setRutaBooleanForLibro(false);
+        } else {
+            setRutaBooleanForLibro(true);
+        }
+    }, [field.value]);
 
     return (
         <div>
@@ -80,7 +80,7 @@ export const RutaFilterComboBox = ({ field, name = "id_concepto", setCargoSelecc
                     >
                         {field.value
                             ? languages.find((language) => language.value === field.value)?.label
-                            : ""}
+                            : "Selecciona una ruta"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
@@ -98,9 +98,9 @@ export const RutaFilterComboBox = ({ field, name = "id_concepto", setCargoSelecc
                                             value={language.label}
                                             key={language.value}
                                             onSelect={() => {
-                                                // Update the field value here
+                                                // Si el valor es vacío, limpiar el campo
                                                 field.onChange({ target: { value: language.value } });
-                                                setCargoSeleccionado(language.label);
+                                                setCargoSeleccionado(language.value);
                                                 setidRutaSeleccionada(language.value);
                                                 setOpen(false);
                                             }}

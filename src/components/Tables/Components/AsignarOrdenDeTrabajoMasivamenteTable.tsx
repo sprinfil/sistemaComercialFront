@@ -13,7 +13,7 @@ import ModalInformacionOtToma from '../../ui/ModalInformaciónOtToma.tsx';
 import { ZustandFiltrosOrdenTrabajo } from '../../../contexts/ZustandFiltrosOt.tsx';
 export default function AsignarOrdenDeTrabajoMasivamenteTable() {
 
-  const {informacionRecibidaPorFiltros,setSelectedAction, selectedAction, loadingTable, setLoadingTable} = ZustandFiltrosOrdenTrabajo();
+  const {informacionRecibidaPorFiltros,setSelectedAction, selectedAction, loadingTable, setLoadingTable,informacionAsignacionMasivaRecibidaPorFiltros} = ZustandFiltrosOrdenTrabajo();
     
   const [abrirModalInformativo, setAbrirModalInformativo] = useState(false);
  
@@ -34,7 +34,7 @@ export default function AsignarOrdenDeTrabajoMasivamenteTable() {
     console.log(usuarioToma);
 
   };
-  console.log(informacionRecibidaPorFiltros);
+  console.log(informacionAsignacionMasivaRecibidaPorFiltros);
 
   return (
 
@@ -47,7 +47,7 @@ export default function AsignarOrdenDeTrabajoMasivamenteTable() {
       ) : (
         <DataTableAsignarOTIndividual
           columns={columns}
-          data={informacionRecibidaPorFiltros}
+          data={informacionAsignacionMasivaRecibidaPorFiltros}
           sorter='nombre'
           onRowClick={handleRowClick}
         />

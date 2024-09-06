@@ -23,6 +23,7 @@ export type OrdenDeTrabajoCrearTomas = {
   descripcion: string
   facturable: string
   estado: boolean
+  saldo: string
 }
 
 
@@ -98,38 +99,29 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
     ),
   },
   {
-    accessorKey: "calle",
+    accessorKey: "usuario.nombre",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Calle
+        Nombre del usuario
       </Button>
     ),
   },
   {
-    accessorKey: "numero_casa",
+    accessorKey: "direccion_completa",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        #
+        Dirección
       </Button>
     ),
   },
-  {
-    accessorKey: "colonia",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Colonia
-      </Button>
-    ),
-  },
+ 
+  
   {
     accessorKey: "tipo_toma.nombre",
     header: ({ column }) => (
@@ -142,15 +134,26 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
     ),
   },
   {
+    accessorKey: "saldo",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Saldo
+      </Button>
+    ),
+  },
+  
+  {
     id: "actions",
     cell: ({ row }) => {
       //const anomalia = row.original;
       //const { setAnomalia, setAccion } = useStateContext();
 
       return (
-          <IconButton>
-            <EyeOpenIcon className="w-[20px] h-[20px]" />
-          </IconButton>
+          <>
+          </>
       );
     },
   },

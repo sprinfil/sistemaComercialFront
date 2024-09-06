@@ -25,6 +25,7 @@ export type AsignarOrdenDeTrabajo = {
   descripcion: string
   facturable: string
   estado: boolean
+  saldo: string
 }
 
 
@@ -98,7 +99,28 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Toma
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "toma.usuario.nombre",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Nombre del usuario
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "toma.direccion_completa",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Dirección
       </Button>
     ),
   },
@@ -110,7 +132,17 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Tipo
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+  },
+  {
+    accessorKey: "toma.saldo",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Saldo
       </Button>
     ),
   },
@@ -122,7 +154,6 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Estado
-        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
@@ -134,7 +165,6 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Creada
-        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
@@ -146,7 +176,6 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Concluida
-        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
@@ -158,9 +187,7 @@ export const columns: ColumnDef<AsignarOrdenDeTrabajo>[] = [
 
       return (
         <div onClick={() => { setAnomalia(anomalia); setAccion("ver") }}>
-          <IconButton>
-            <EyeOpenIcon className="w-[20px] h-[20px]" />
-          </IconButton>
+         
         </div>
       );
     },

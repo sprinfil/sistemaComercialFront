@@ -30,7 +30,7 @@ interface DataTableProps<TData, TValue> {
   onRowClick?: (row: TData) => void;
 }
 
-export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
+export function EscogerOrdenDeTrabajoDataTableModalDetalle<TData, TValue>({
   columns,
   data,
   sorter,
@@ -91,22 +91,30 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
             <Input
           placeholder="Buscar tipo..."
           type="text"
-          value={(table.getColumn('nombre')?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn('orden_trabajo_catalogo.tipo')?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn('nombre')?.setFilterValue(event.target.value)
+            table.getColumn('orden_trabajo_catalogo.tipo')?.setFilterValue(event.target.value)
           }
           className="w-full"
         />
         <Input
-          placeholder="Buscar descripcion..."
+          placeholder="Buscar estado..."
           type="text"
-          value={(table.getColumn('descripcion')?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn('estado')?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn('descripcion')?.setFilterValue(event.target.value)
+            table.getColumn('estado')?.setFilterValue(event.target.value)
           }
           className="w-full"
         />
-           
+           <Input
+          placeholder="Buscar creación..."
+          type="text"
+          value={(table.getColumn('created_at')?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn('created_at')?.setFilterValue(event.target.value)
+          }
+          className="w-full"
+        />
           </div>
         )}
       </div>
