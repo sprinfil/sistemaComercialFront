@@ -27,7 +27,7 @@ const ModalGenerarOrdenDeTrabajo = ({
   const {
     arregloCrearOrdenesDeTrabajo,
     setDataOrdenesDeTrabajoHistorialToma,
-    setLoadingTableOrdenesDeTrabajoHistorial,
+    setLoadingTableOrdenesDeTrabajoHistorial,setLoadingTableMonitor
   } = ZustandFiltrosOrdenTrabajo();
 
   console.log(tipoOperacion);
@@ -144,6 +144,7 @@ const ModalGenerarOrdenDeTrabajo = ({
   };
 
   const GenerarOrdenDeTrabajoMasivaToma = async () => {
+    setLoadingTableMonitor(true);
     // Mapea el arreglo para crear el objeto con id_toma y id_orden_trabajo_catalogo
     const arreglo = arregloCrearOrdenesDeTrabajo.map((item) => ({
       id_toma: item.id,
@@ -158,13 +159,10 @@ const ModalGenerarOrdenDeTrabajo = ({
     console.log(values2);
   
     try {
-      // Realiza la solicitud POST con axiosClient
       const response = await axiosClient.post('OrdenTrabajo/generar/masiva', values2);
   
-      // Cierra el modal o realiza alguna acción relacionada
-      setIsOpen(false);
+      setLoadingTableMonitor(false);
   
-      // Maneja la respuesta y muestra un mensaje de éxito
       console.log(response.data);
       toast({
         title: "¡Éxito!",
@@ -173,7 +171,7 @@ const ModalGenerarOrdenDeTrabajo = ({
       });
   
     } catch (error) {
-      // Maneja errores y muestra un mensaje de error
+      setLoadingTableMonitor(false);
       console.log(error);
       toast({
         variant: "destructive",
@@ -204,8 +202,8 @@ const ModalGenerarOrdenDeTrabajo = ({
             </div>
           </AlertDialogTitle>
           <AlertDialogDescription>
-            <EscogerOrdenDeTrabajoTable />
-            {/*LA TABLA PARA ESCOGER ORDEN DE TRABAJO*/}
+            <EscogerOrdenDeTrabajoTable />            {/*LA TABLA PARA ESCOGER ORDEN DE TRABAJO*/}
+
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

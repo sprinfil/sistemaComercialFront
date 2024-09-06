@@ -100,6 +100,10 @@ interface FiltrosOrdenTrabajo {
   setIsOpenHijoFormularioModalMonitorOT: (isOpenHijoFormularioModalMonitorOT: boolean) => void;
   informacionCerrarOtMasivamente: MonitorOrden2[]
   setInformacionCerrarOtMasivamente:(informacionCerrarOtMasivamente:MonitorOrden2[]) => void;
+  abrirModalInformacionTomaDetalleUsuarioToma: boolean;
+  setAbrirModalInformacionTomaDetalleUsuarioToma: (abrirModalInformacionTomaDetalleUsuarioToma: boolean) => void;
+  iconoBuscarGenerarOrdenMasivaControl: boolean;
+  setIconoBuscarGenerarOrdenMasivaControl: (iconoBuscarGenerarOrdenMasivaControl: boolean) => void;
   
 }
 
@@ -192,5 +196,9 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setIsOpenHijoFormularioModalMonitorOT: (isOpenHijoFormularioModalMonitorOT) => set({isOpenHijoFormularioModalMonitorOT}),
   informacionCerrarOtMasivamente: [],
   setInformacionCerrarOtMasivamente: (usuarios) => set({ informacionCerrarOtMasivamente: usuarios }),
+  abrirModalInformacionTomaDetalleUsuarioToma: false,
+  setAbrirModalInformacionTomaDetalleUsuarioToma: (abrirModalInformacionTomaDetalleUsuarioToma) => set({abrirModalInformacionTomaDetalleUsuarioToma}),
+  iconoBuscarGenerarOrdenMasivaControl: false,
+  setIconoBuscarGenerarOrdenMasivaControl: (iconoBuscarGenerarOrdenMasivaControl) => set({iconoBuscarGenerarOrdenMasivaControl}),
 }));
 

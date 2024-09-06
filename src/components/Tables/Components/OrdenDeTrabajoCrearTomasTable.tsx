@@ -40,7 +40,7 @@ export default function OrdenDeTrabajoCrearTomasTable() {
       {
         loadingTableMonitor ? <Loader/>
         :
-        <DataTableGenerarOrden columns={columns} data={informacionRecibidaPorFiltrosGenerarOtMasiva} sorter='nombre' onRowClick={handleRowClick}/>
+        <DataTableGenerarOrden columns={columns} data={informacionRecibidaPorFiltrosGenerarOtMasiva} sorter='codigo_toma' onRowClick={handleRowClick}/>
 
       }
     </div>

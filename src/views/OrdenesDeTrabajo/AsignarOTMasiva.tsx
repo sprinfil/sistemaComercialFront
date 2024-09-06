@@ -264,7 +264,7 @@ return (
                 <SelectValue placeholder="Selecciona el tipo de orden de trabajo." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="individual">Individual</SelectItem>
+               {/** <SelectItem value="individual">Individual</SelectItem>*/} 
                 <SelectItem value="masivamente">Masivamente</SelectItem>
               </SelectContent>
             </Select>

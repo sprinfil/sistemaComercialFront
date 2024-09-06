@@ -142,15 +142,25 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
     ),
   },
   {
+    accessorKey: "tipo_toma.saldo",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Saldo
+      </Button>
+    ),
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       //const anomalia = row.original;
       //const { setAnomalia, setAccion } = useStateContext();
 
       return (
-          <IconButton>
-            <EyeOpenIcon className="w-[20px] h-[20px]" />
-          </IconButton>
+          <>
+          </>
       );
     },
   },

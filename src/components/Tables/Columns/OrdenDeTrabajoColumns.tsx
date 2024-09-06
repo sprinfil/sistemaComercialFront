@@ -6,7 +6,7 @@ import {EyeOpenIcon } from '@radix-ui/react-icons';
 import { useStateContext } from "../../../contexts/ContextOrdenDeTrabajo"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario";
-
+import { ZustandFiltrosOrdenTrabajo } from "../../../contexts/ZustandFiltrosOt";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type OrdenDeTrabajo = {
@@ -62,7 +62,7 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
       // Verifica la estructura de los datos en la consola
       return row.orden_trabajo_catalogo?.descripcion;
     },
-    id: "orden_trabajo_catalogo.descripcion",
+    id: "orden_trabajo_catalogo.nombre",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -112,9 +112,14 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
       const OrdenDeTrabajo = row.original
       const { setOrdenDeTrabajo, setAccion } = useStateContext();
       const { setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
+      const {setAbrirModalInformacionTomaDetalleUsuarioToma} = ZustandFiltrosOrdenTrabajo();
+      const handleAbrir = () => 
+      {
+        setAbrirModalInformacionTomaDetalleUsuarioToma(true);
+      }
       return (
         <div onClick={()=>{setOrdenDeTrabajo(OrdenDeTrabajo);setAccionGeneradaEntreTabs("ver")}}>
-          <IconButton>
+          <IconButton onClick={handleAbrir}>
             <EyeOpenIcon className="w-[20px] h-[20px]"/>
           </IconButton>
         </div>

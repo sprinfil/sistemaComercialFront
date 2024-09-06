@@ -23,7 +23,7 @@ export type MonitorOrden2 = {
   descripcion: string
   facturable: string
   estado: boolean
-  
+  created_at: string
   toma: {
     codigo_toma: string
     libro:
@@ -146,42 +146,41 @@ export const columns2: ColumnDef<MonitorOrden2>[] = [
   },
   {
     accessorKey: "created_at",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Creación
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-   
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Fecha de creación
+      </Button>
+    ),
   },
   {
     accessorKey: "fecha_finalizada",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Concluida
-        </Button>
-      )
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Fecha de finalización
+      </Button>
+    ),
   },
+
   {
     id: "actions",
     cell: ({ row }) => {
       const anomalia = row.original
-      const { setAnomalia, setAccion } = useStateContext();
-      
+      const { setAnomalia, setAccion } = useStateContext()
+      const {setIsOpenPadreModalDetalleMonitorOT} =  ZustandFiltrosOrdenTrabajo();
+      const handleAbrirEnOjo = () => 
+      {
+        setIsOpenPadreModalDetalleMonitorOT(true);
+
+      }
       return (
         <div onClick={()=>{setAnomalia(anomalia);setAccion("ver")}}>
-          <IconButton>
+          <IconButton onClick={handleAbrirEnOjo}>
             <EyeOpenIcon className="w-[20px] h-[20px]"/>
           </IconButton>
         </div>

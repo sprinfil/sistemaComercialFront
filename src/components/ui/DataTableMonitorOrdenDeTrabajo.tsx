@@ -25,6 +25,7 @@ import { FaSearch } from "react-icons/fa";
 import { TbFilterPlus } from "react-icons/tb";
 import { ZustandFiltrosOrdenTrabajo } from "../../contexts/ZustandFiltrosOt";
 import axiosClient from "../../axios-client";
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -39,10 +40,8 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
   onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [selectedRow, setSelectedRow] = React.useState<string | null>(null);
   const [control, setControl] = React.useState(false);
   const { isAsignadaChecked, setIsAsignadaChecked, 
     isNoAsignadaChecked, setIsNoAsignadaChecked,
@@ -57,20 +56,21 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
     idLibroFiltro, idRutaFiltro, setIdLibroFiltro, setIdRutaFiltro,
     saldoMinFiltro, saldoMaxFiltro,setLoadingTableFiltrarOrdenDeTrabajoMasivas,
     setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionCerrarOtMasivamente} = ZustandFiltrosOrdenTrabajo();
-    const table = useReactTable({
-      data,
-      columns,
-      sorter,
-      getCoreRowModel: getCoreRowModel(),
-      onSortingChange: setSorting,
-      getSortedRowModel: getSortedRowModel(),
-      onColumnFiltersChange: setColumnFilters,
-      getFilteredRowModel: getFilteredRowModel(),
-      state: {
-        sorting,
-        columnFilters,
-      },
-    });
+  
+  const table = useReactTable({
+    data,
+    columns,
+    sorter,
+    getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      sorting,
+      columnFilters,
+    },
+  });
 
   const handleRowClick = (rowId: string, rowData: TData) => {
     setSelectedRow(rowId);
@@ -78,22 +78,12 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
   };
 
   const handleControl = () => {
-
-    if (boolUsoFiltros) {
-      setBoolUsoFiltros(false);
-    }
-    else {
-      setBoolUsoFiltros(true);
-
-    }
+    setBoolUsoFiltros(!boolUsoFiltros);
   }
 
-
-  //METODO DE FILTRACION PARA CONSEGUIR LAS ORDENES DE TRABAJO Y PODER ASIGNARLAS
   const getOrdenesDeTrabajo = async () => {
     setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
     const values = {
-      
       asignada: isAsignadaChecked,
       no_asignada: isNoAsignadaChecked,
       concluida: isConcluidaChecked,
@@ -106,18 +96,15 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
       libro_id: idLibroFiltro,
       saldo_min: saldoMinFiltro,
       saldo_max: saldoMaxFiltro
-
-    }
+    };
     console.log("VALORES ENVIADOS", values);
     try {
       const response = await axiosClient.post("OrdenTrabajo/filtros", values);
       console.log(response);
       setvalorParaSaberSiUsaLaTablaDeFiltros(true);
       setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
-
       if (Array.isArray(response.data.ordenes_trabajo)) {
         const tomas = response.data.ordenes_trabajo.map((item: any) => item);
-
         console.log("Tomas extraídas", tomas);
         setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo(tomas);
         setIdLibroFiltro("");
@@ -125,32 +112,28 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
       } else {
         console.log("No jala", response.data.ordenes_trabajo);
       }
-
     } catch (error) {
       setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
       console.error("Failed to fetch anomalias:", error);
     }
   };
 
-
-
-console.log(informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo);
-console.log(informacionCerrarOtMasivamente);
+  console.log(informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo);
+  console.log(informacionCerrarOtMasivamente);
 
   return (
-    <div className="">
-      <div className="p-4">
-        <div className="flex items-center space-x-4 mb-4 bg-muted w-[12vh] rounded-xl">
-          <IconButton title="Buscar" onClick={getOrdenesDeTrabajo}>
-            <FaSearch />
-          </IconButton>
-          <IconButton title="Ver más filtros" onClick={handleControl}>
-            <TbFilterPlus className="w-[2.5vh] h-[2.5vh]" />
-          </IconButton>
-        </div>
+    <div className="p-4">
+      <div className="flex items-center space-x-4 mb-4 bg-muted w-[12vh] rounded-xl mkl">
+        <IconButton title="Buscar" onClick={getOrdenesDeTrabajo}>
+          <FaSearch className="ml-2"/>
+        </IconButton>
+        <IconButton title="Ver más filtros" onClick={handleControl}>
+          <TbFilterPlus className="w-[2.5vh] h-[2.5vh]" />
+        </IconButton>
+      </div>
 
-        {boolUsoFiltros && (
-          <div className="flex space-x-10 border shadow-transparent- p-4 w-full h-[10vh] justify-center">
+      {boolUsoFiltros && (
+        <div className="flex space-x-10 border shadow-transparent- p-6 w-full h-[10vh] justify-center mb-[3vh]">
           <Input
             placeholder="Buscar codigo de toma"
             type="text"
@@ -197,25 +180,23 @@ console.log(informacionCerrarOtMasivamente);
             className="w-[22vh] border border-gray-300 rounded-md p-2"
           />
         </div>
-        )}
-      </div>
-      <div className="rounded-md border h-full overflow-auto">
+      )}
+
+      <div className="rounded-md border h-full overflow-auto max-h-[70vh]">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                    </TableHead>
-                  );
-                })}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -226,8 +207,7 @@ console.log(informacionCerrarOtMasivamente);
                 <TableRow
                   key={row.id}
                   onClick={() => handleRowClick(row.id, row.original)}
-                  className={`cursor-pointer hover:bg-border ${selectedRow === row.id ? "bg-border" : ""
-                    }`}
+                  className={`cursor-pointer hover:bg-border ${selectedRow === row.id ? "bg-border" : ""}`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -246,8 +226,6 @@ console.log(informacionCerrarOtMasivamente);
           </TableBody>
         </Table>
       </div>
-      
     </div>
   );
 }
-

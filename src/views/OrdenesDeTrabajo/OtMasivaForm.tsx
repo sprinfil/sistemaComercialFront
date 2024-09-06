@@ -5,6 +5,7 @@ import OrdenDeTrabajoCrearTomasTable from '../../components/Tables/Components/Or
 import ModalGenerarOrdenDeTrabajo from '../../components/ui/ModalGenerarOrdenDeTrabajo'
 import { Button } from '../../components/ui/button'
 import { FaSearch } from 'react-icons/fa'
+import { SiGooglesearchconsole } from "react-icons/si";
 import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt'
 import axiosClient from '../../axios-client'
 export const OtMasivaForm = () => {
@@ -91,17 +92,15 @@ export const OtMasivaForm = () => {
         <div className='flex space-x-2  relative'>
           <p className="text-xl text-[20px] font-medium">Generar ordenes de trabajo masivas</p>
           <div className='flex items-center ml-[2vh] absolute right-2' title='Seleccionar orden de trabajo'>
-            <IconButton onClick={handleGenerarOrdenDeTrabajo}><MdContentPasteSearch className='w-[4vh] h-[4vh]' /></IconButton>
+            <IconButton onClick={handleGenerarOrdenDeTrabajo}><SiGooglesearchconsole className='w-[4vh] h-[4vh]' /></IconButton>
           </div>
         </div>
 
         <div className=''>
           <p className="text-[20px] mt-5 ">
             <div className='flex space-x-2'>
-              <h2 className="text-[20px]">
-                Filtrar
-              </h2>
-              <div className='w-[5vh]' onClick={getOrdenesDeTrabajo}>
+              
+              <div className='w-[5vh] bg-muted rounded-lg' onClick={getOrdenesDeTrabajo}>
                 <IconButton title="Buscar">
                   <FaSearch />
                 </IconButton>

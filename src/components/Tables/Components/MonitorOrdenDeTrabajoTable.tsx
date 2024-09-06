@@ -59,7 +59,6 @@ export default function MonitorOrdenDeTrabajoTable() {
       return;
     }
     setDetalleOrdenDeTrabajoTomaMonitor2(monitor2);
-    setIsOpenPadreModalDetalleMonitorOT(true);
   };
 
   //console.log("informacion obtenida desde la variable", detalleOrdenDeTrabajoTomaMonitor2);

@@ -20,6 +20,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import IconButton from "./IconButton";
+import { TbFilterPlus } from "react-icons/tb";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -39,6 +41,7 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
     []
   );
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
+  const [control, setControl] = React.useState<boolean | null>(null); // Estado para la fila seleccionada
 
   const table = useReactTable({
     data,
@@ -61,20 +64,53 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
     onRowClick?.(rowData);
   };
 
+  const handleControl = () =>
+  {
+    if(control)
+    {
+      setControl(false);
+    }
+    else
+    {
+      setControl(true);
+
+    }
+  }
+
   return (
     <div className="">
-      <div className="flex items-center py-4">
-        <Input
+   <div className="flex flex-col items-start space-y-2">
+        <div className="flex items-center space-x-4 ">
+          <IconButton title="Ver más filtros" onClick={handleControl}>
+            <TbFilterPlus className="w-[2.5vh] h-[2.5vh]" />
+          </IconButton>
+        </div>
+
+        {control && (
+          <div className="flex space-x-5">
+            <Input
           placeholder="Buscar..."
           type="text"
-          value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn('orden_trabajo_catalogo.nombre')?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
+            table.getColumn('orden_trabajo_catalogo.nombre')?.setFilterValue(event.target.value)
           }
           className="w-full"
         />
+        <Input
+          placeholder="Buscar..."
+          type="text"
+          value={(table.getColumn('estado')?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn('estado')?.setFilterValue(event.target.value)
+          }
+          className="w-full"
+        />
+           
+          </div>
+        )}
       </div>
-      <div className="rounded-md border overflow-auto max-h-[50vh]">
+      <div className="rounded-md border overflow-auto max-h-[50vh] mt-5">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

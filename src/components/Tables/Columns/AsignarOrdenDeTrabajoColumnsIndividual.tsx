@@ -169,9 +169,7 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
 
       return (
         <div onClick={()=>{setOrdenDeTrabajo(OrdenDeTrabajo);setAccionGeneradaEntreTabs("ver");}}>
-          <IconButton>
-            <EyeOpenIcon className="w-[20px] h-[20px]" onClick={() => handleAbrir()}/>
-          </IconButton>
+        
         </div>
       )
     },

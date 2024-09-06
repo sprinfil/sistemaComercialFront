@@ -14,10 +14,13 @@ import ModalInformacionOtToma from '../../ui/ModalInformaciónOtToma.tsx';
 import { ZustandFiltrosOrdenTrabajo } from '../../../contexts/ZustandFiltrosOt.tsx';
 export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
 
-  const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma,} = ZustandGeneralUsuario();
+  const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma
+
+  } = ZustandGeneralUsuario();
   
   
-  const {informacionRecibidaPorFiltros, asignadasEnToma, loadingTable, setLoadingTable, loadingTableModalAsignarOperadorTable, setLoadingTableModalAsignarOperadorTable} = ZustandFiltrosOrdenTrabajo();
+  const {informacionRecibidaPorFiltros, asignadasEnToma, loadingTable, setLoadingTable, loadingTableModalAsignarOperadorTable, 
+    setLoadingTableModalAsignarOperadorTable, setArregloAsignarIndividualTomaAOperador, arregloAsignarIndividualTomaAOperador, idSeleccionadoAsignarOrdenDeTrabajoToma} = ZustandFiltrosOrdenTrabajo();
       console.log("esto llego para asignar individual",usuariosEncontrados[0].tomas[0].codigo_toma);
       console.log("esto llego para asignar individual",usuariosEncontrados[0]);
   const [abrirModalInformativo, setAbrirModalInformativo] = useState(false);
@@ -43,7 +46,7 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
 
   console.log(data);
 
-  const handleRowClick = (usuarioToma: BuscarUsuario) =>
+  const handleRowClick = (usuarioToma: AsignarOrdenDeTrabajo) =>
   {
 
     //este es el id de la toma seleccionada
@@ -51,8 +54,9 @@ export default function AsignarOrdenDeTrabajoIndividualEnDetalleUsuarioTable() {
     //setAccion("ver");
     
     //setAbrirModalInformativo(true);
-    setIdSeleccionadoAsignarOrdenDeTrabajoToma(usuarioToma.tomas[0].id)
+    setIdSeleccionadoAsignarOrdenDeTrabajoToma(usuarioToma?.tomas[0]?.id)
   };
+  console.log(idSeleccionadoAsignarOrdenDeTrabajoToma);
 
   console.log(informacionRecibidaPorFiltros);
   if (loadingTable) {
