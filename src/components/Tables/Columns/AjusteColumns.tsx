@@ -21,7 +21,7 @@ export type Ajuste = {
   id: number
   nombre: string
   descripcion: string
-  estado: string
+  estado: boolean
 }
 
 

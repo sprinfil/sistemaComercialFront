@@ -161,7 +161,7 @@ export const ModalImportarGeoJson = ({ updateData, open, toggle_open}) => {
                                 <div className='mt-[10px]'><input type="file" onChange={handleFileChange} /></div>
                                 <div className='mt-[20px] flex gap-2'>
                                     <input type="checkbox" className='w-[20px]' onClick={() => { toggle_limpiar_poligonos(); }} />
-                                    <p>Limpiar Los registros Actuales (esto eliminará todos los poligonos actuales)</p>
+                                    <p>Limpiar los registros Actuales (esto eliminará todos los polígonos actuales)</p>
                                 </div>
                             </div>
 

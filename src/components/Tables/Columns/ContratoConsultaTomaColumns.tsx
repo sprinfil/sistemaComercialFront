@@ -12,6 +12,7 @@ export type BuscarTomaUsuario = {
   clave_catastral: string
   numero_casa: string
   colonia: string
+  calle: string
   entre_calle_1: string
   entre_calle_2: string
   codigo_postal: string
@@ -32,7 +33,8 @@ export type Usuario = {
 
 export const columns: ColumnDef<BuscarTomaUsuario>[] = [
   {
-    accessorKey: "usuario.nombre",
+    accessorFn: (row) => row.usuario?.nombre,
+    id: "usuario.nombre",
     header: ({ column }) => {
       return (
         <Button
@@ -41,11 +43,12 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
         >
           Nombre
         </Button>
-      )
+      );
     },
   },
   {
-    accessorKey: "usuario.apellido_paterno",
+    accessorFn: (row) => row.usuario?.apellido_paterno,
+    id: "usuario.apellido_paterno",
     header: ({ column }) => {
       return (
         <Button
@@ -58,7 +61,8 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
     },
   },
   {
-    accessorKey: "usuario.apellido_materno",
+    accessorFn: (row) => row.usuario?.apellido_materno,
+    id: "usuario.apellido_materno",
     header: ({ column }) => {
       return (
         <Button
@@ -71,7 +75,8 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
     },
   },
   {
-    accessorKey: "usuario.telefono",
+    accessorFn: (row) => row.usuario?.apellido_materno,
+    id: "usuario.telefono",
     header: ({ column }) => {
       return (
         <Button
@@ -84,7 +89,8 @@ export const columns: ColumnDef<BuscarTomaUsuario>[] = [
     },
   },
   {
-    accessorKey: "usuario.correo",
+    accessorFn: (row) => row.usuario?.apellido_materno,
+    id: "usuario.correo",
     header: ({ column }) => {
       return (
         <Button

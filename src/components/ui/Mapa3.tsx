@@ -17,12 +17,13 @@ import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
 import { BuscarTomaUsuario, Usuario } from '../Tables/Columns/ContratoConsultaTomaColumns';
 import grifo from "../../img/grifo-de-agua.png"
 import { EyeIcon } from 'lucide-react';
+import { TomaPorUsuario } from '../Tables/Columns/TomaPorUsuarioColumns';
 import { useBreadcrumbStore } from "../../contexts/ZustandGeneralUsuario";
 
 export const Mapa3 = () => {
     const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
-    const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma} = ZustandGeneralUsuario();
-    const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas } = PoligonosZustand();
+    const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma, setFindUserMapaGeo, setToma} = ZustandGeneralUsuario();
+    const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas, set_ruta_visibility, set_libro_visibility } = PoligonosZustand();
     const navigate = useNavigate();
     const { setRutas, rutas } = useStateContext();
     const [map, set_map] = useState(null);
@@ -37,6 +38,7 @@ export const Mapa3 = () => {
     const search_input = useRef(null);
     const [hide_all_polygons, set_hide_all_polygons] = useState(false);
     const [hide_all_tomas, set_hide_all_tomas] = useState(false);
+    const [hide_all_tomas_bool, set_hide_all_tomas_bool] = useState(false);
 
     const getRutas = async () => {
         set_loading_rutas(true);
@@ -127,7 +129,9 @@ export const Mapa3 = () => {
 
             return ruta.libros.map((libro) => {
 
-                if (libro.polygon && libro_visibility[libro.id] && libro.polygon.coordinates[0].length > 0 && !loading_rutas && !hide_all_polygons) {
+                console.log(libro_visibility)
+
+                if (libro.polygon && libro_visibility[libro.id] && libro.polygon.coordinates[0].length > 0 && !loading_rutas) {
 
                     let polygonCoordinates = libro.polygon.coordinates[0].map((punto) => (
                         {
@@ -203,53 +207,56 @@ export const Mapa3 = () => {
 
                     if (libro.tomas.length > 0) {
                         libro.tomas.map((toma, index) => {
-                            console.log(toma)
+                            if (toma.posicion) {
+                                console.log(toma)
 
-                            /* TOMA INFO */
-                            const marker = new google.maps.Marker({
-                                position: {
-                                    lat: toma.posicion.coordinates[1], // Latitud
-                                    lng: toma.posicion.coordinates[0]  // Longitud
-                                },
-                                map: hide_all_tomas ? null : map,
-                                title: `Toma: ${toma.id_codigo_toma}`,
-                                icon: {
-                                    url: `${grifo}`,
-                                    scaledSize: new google.maps.Size(35, 35),
-                                    anchor: new google.maps.Point(25, 25)
+                                /* TOMA INFO */
+                                const marker = new google.maps.Marker({
+                                    position: {
+                                        lat: toma.posicion.coordinates[1], // Latitud
+                                        lng: toma.posicion.coordinates[0]  // Longitud
+                                    },
+                                    map: hide_all_tomas ? null : map,
+                                    title: `Toma: ${toma.codigo_toma}`,
+                                    icon: {
+                                        url: `${grifo}`,
+                                        scaledSize: new google.maps.Size(35, 35),
+                                        anchor: new google.maps.Point(25, 25)
+                                    }
+                                    // Puedes agregar un título o descripción si está disponible
+                                });
+                                if (hide_all_polygons) {
+                                    marker.setMap(null);
                                 }
-                                // Puedes agregar un título o descripción si está disponible
-                            });
-                            if(hide_all_polygons){
-                                marker.setMap(null);
+                                newTomasMarkers.push(marker);
+                                // Crear una etiqueta utilizando InfoWindow
+                                const infoWindow = new google.maps.InfoWindow({
+                                    content: `<div class="text-black">
+                                <strong>Código de Toma: ${toma.codigo_toma}</strong></br>
+                                <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
+                                <strong>Código Postal: ${toma.codigo_postal}</strong></br>
+                                <strong>Colonia: ${toma.colonia}</strong></br>
+                                <strong>Número de casa: ${toma.numero_casa}</strong></br>
+                                <button id="view-details-btn">Ver Detalles</button>
+                                </div>`, // Texto de la etiqueta
+                                });
+
+                                // O mostrarla al hacer clic en el marcador
+                                marker.addListener('click', () => {
+                                    infoWindow.open(map, marker);
+                                });
+                                // Agregar un listener para el botón dentro de la InfoWindow
+                                google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
+                                    const button = document.getElementById('view-details-btn');
+                                    if (button) {
+                                        button.addEventListener('click', () => {
+                                            handleViewDetails(toma);
+                                        });
+                                    }
+                                });
+                                /* TOMA INFO */
                             }
-                            newTomasMarkers.push(marker);
-                            // Crear una etiqueta utilizando InfoWindow
-                            const infoWindow = new google.maps.InfoWindow({
-                                content: `<div class="text-black">
-                            <strong>Código de Toma: ${toma.id_codigo_toma}</strong></br>
-                            <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
-                            <strong>Código Postal: ${toma.codigo_postal}</strong></br>
-                            <strong>Colonia: ${toma.colonia}</strong></br>
-                            <strong>Número de casa: ${toma.numero_casa}</strong></br>
-                            <button id="view-details-btn">Ver Detalles</button>
-                            </div>`, // Texto de la etiqueta
-                            });
 
-                            // O mostrarla al hacer clic en el marcador
-                            marker.addListener('click', () => {
-                                infoWindow.open(map, marker);
-                            });
-                            // Agregar un listener para el botón dentro de la InfoWindow
-                            google.maps.event.addListenerOnce(infoWindow, 'domready', () => {
-                                const button = document.getElementById('view-details-btn');
-                                if (button) {
-                                    button.addEventListener('click', () => {
-                                        handleViewDetails(toma);
-                                    });
-                                }
-                            });
-                            /* TOMA INFO */
                         })
                     }
 
@@ -261,37 +268,19 @@ export const Mapa3 = () => {
         setPolygons(newPolygons.map(p => p.polygon));
         setOverlays(newPolygons.map(p => p.labelOverlay));
 
-    }, [libro_visibility, hide_all_polygons]);
+    }, [libro_visibility, ruta_visibility]);
 
     const toggle_modo_edicion = () => {
         set_editando(!editando);
     };
 
-    const handleViewDetails = (toma) => {
-        const usuario: Usuario = {
-            id: toma.usuario.id,
-            nombre: toma.usuario.nombre,
-            apellido_paterno: toma.usuario.apellido_paterno,
-            apellido_materno: toma.usuario.apellido_materno,
-            telefono: toma.usuario.telefono,
-            correo: toma.usuario.correo,
-            curp: toma.usuario.curp,
-        }
-        const tomaOb: BuscarTomaUsuario = {
-            id: toma.id,
-            clave_catastral: toma.clave_catastral,
-            numero_casa: toma.numero_casa,
-            colonia: toma.colonia,
-            entre_calle_1: toma.entre_calle_1,
-            entre_calle_2: toma.entre_calle_2,
-            codigo_postal: toma.codigo_postal,
-            localidad: toma.localidad,
-            usuario: usuario
-        };
-        setTomaUsuariosEncontrados([tomaOb]);
+    const handleViewDetails = (toma: TomaPorUsuario) => {
+        console.log(toma);
+        setToma(toma);
         console.log(tomaUsuariosEncontrados);
         setFindUserOrToma(true);
         setMostrarSiguiente(true);
+        setFindUserMapaGeo(true);
         navigate("/usuario/toma");
     };
 
@@ -303,7 +292,7 @@ export const Mapa3 = () => {
         rutas.forEach(ruta => {
             ruta.libros.forEach(libro => {
                 libro.tomas.forEach(toma => {
-                    if (toma.id_codigo_toma == searchQuery) {
+                    if (toma.codigo_toma == searchQuery) {
                         /* TOMA INFO */
                         foundToma = toma;
                         const marker = new google.maps.Marker({
@@ -312,18 +301,18 @@ export const Mapa3 = () => {
                                 lng: toma.posicion.coordinates[0]  // Longitud
                             },
                             map: map,
-                            title: `Toma: ${toma.id_codigo_toma}`, // Puedes agregar un título o descripción si está disponible
+                            title: `Toma: ${toma.codigo_toma}`, // Puedes agregar un título o descripción si está disponible
                             icon: {
                                 url: `${grifo}`,
                                 scaledSize: new google.maps.Size(35, 35),
                                 anchor: new google.maps.Point(25, 25)
                             }
                         });
-                        map.setZoom(20); 
+                        map.setZoom(20);
                         // Crear una etiqueta utilizando InfoWindow
                         const infoWindow = new google.maps.InfoWindow({
                             content: `<div class="text-black">
-                            <strong>Código de Toma: ${toma.id_codigo_toma}</strong></br>
+                            <strong>Código de Toma: ${toma.codigo_toma}</strong></br>
                             <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
                             <strong>Código Postal: ${toma.codigo_postal}</strong></br>
                             <strong>Colonia: ${toma.colonia}</strong></br>
@@ -369,8 +358,32 @@ export const Mapa3 = () => {
     };
 
     const handle_hide_all_polygons = () => {
-        set_hide_all_polygons(!hide_all_polygons);
+  
+        let new_libro_visibility = {};
+        rutas.forEach(ruta => {
+            ruta.libros.forEach(libro => {
+                if(!hide_all_tomas_bool){
+                    new_libro_visibility[libro.id] = false;
+                }else{
+                    new_libro_visibility[libro.id] = true;
+                }
+            });
+        });
+        set_libro_visibility(new_libro_visibility);
+    
+        let new_ruta_visibility = {};
+        rutas.forEach(ruta => {
+            if(!hide_all_tomas_bool){
+                new_ruta_visibility[ruta.id] = false;
+            }else{
+                new_ruta_visibility[ruta.id] = true;
+            }
+        });
+        set_ruta_visibility(new_ruta_visibility);
+        set_hide_all_tomas_bool(!hide_all_tomas_bool);
+   
     }
+
     const handle_hide_all_tomas = () => {
         set_hide_all_tomas(!hide_all_tomas);
     }
@@ -411,16 +424,17 @@ export const Mapa3 = () => {
                                 <IconButton>
                                     <div className='flex gap-2 items-center text-[10px]'>
                                         Polígonos
-                                        {hide_all_polygons && <><EyeClosedIcon className='w-[15px] h-[15px]' /></>}
-                                        {!hide_all_polygons && <><EyeIcon className='w-[15px] h-[15px]' /></>}
+                                        {hide_all_tomas_bool && <><EyeClosedIcon className='w-[15px] h-[15px]' /></>}
+                                        {!hide_all_tomas_bool && <><EyeIcon className='w-[15px] h-[15px]' /></>}
                                     </div>
                                 </IconButton>
                             </div>
                         </>
                     }
-                          {
+                    {
                         !loading_rutas &&
                         <>
+                            {/*
                             <div onClick={handle_hide_all_tomas}>
                                 <IconButton>
                                     <div className='flex gap-2 items-center text-[10px]'>
@@ -430,6 +444,8 @@ export const Mapa3 = () => {
                                     </div>
                                 </IconButton>
                             </div>
+                         */}
+
                         </>
                     }
 

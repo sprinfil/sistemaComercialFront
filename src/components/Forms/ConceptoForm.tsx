@@ -42,6 +42,11 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+import { OrdenDeTrabajoComboBox } from "../ui/OrdenDeTrabajoComboBox.tsx";
+import { OrdenesDeTrabajoComboBox } from "../ui/OrdenesDeTrabajoComboBox.tsx";
+import { ConceptoRezagoComboBox } from "../ui/ConceptoRezagoComboBox.tsx";
+
+
 
 const ConceptoForm = () => {
     const formTarifa = useRef(null);
@@ -62,6 +67,8 @@ const ConceptoForm = () => {
     const [isAbonable, setIsAbonable] = useState(false);
     const [isTarifaFija, setIsTarifaFija] = useState(false);
 
+    const [ordenDeTrabajoSeleccionada, setOrdenDeTrabajoSeleccionada] = useState<string | null>(null);
+    const [conceptoRezago, setConceptoRezago] = useState<string | null>(null);
 
     const handleChange = (checked) => {
         const nuevoEstado = checked ? 'Activo' : 'Inactivo';
@@ -151,13 +158,20 @@ const ConceptoForm = () => {
         resolver: zodResolver(conceptoSchema),
         defaultValues: {
             id: concepto.id,
-            nombre: concepto.nombre,
-            descripcion: concepto.descripcion,
-            prioridad_abono: concepto.prioridad_abono,
-            abonable: concepto.abonable,
-            tarifa_fija: concepto.tarifa_fija,
-            cargo_directo: concepto.cargo_directo,
-            genera_iva: concepto.genera_iva,
+            nombre: "",
+            descripcion: "",
+            prioridad_abono: "1",
+            abonable: concepto.abonable === 1 ? 1 : 0,
+            tarifa_fija: concepto.tarifa_fija === 1 ? 1 : 0,
+            cargo_directo: concepto.cargo_directo === 1 ? 1 : 0,
+            genera_orden: concepto.genera_orden === 1 ? 1 : 0,
+            genera_orden_data: concepto.genera_orden_data === 1 ? 1 : 0,
+            genera_recargo: concepto.genera_recargo === 1 ? 1 : 0,
+            concepto_rezago: concepto.concepto_rezago === 1 ? 1 : 0,
+            pide_monto: concepto.pide_monto === 1 ? 1 : 0,
+            bonificable: concepto.bonificable === 1 ? 1 : 0,
+            recargo: concepto.recargo === "1" ? "1" : "0",
+            genera_iva: "inactivo",
             estado: false
         },
     })
@@ -165,7 +179,6 @@ const ConceptoForm = () => {
 
 
     function onSubmit(values) {
-
         const estadoConvertido = values.estado ? 'activo' : 'inactivo';
 
             // Verifica los valores antes de la conversión
@@ -197,15 +210,19 @@ const ConceptoForm = () => {
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
-                            prioridad_abono: 1,
+                            prioridad_abono: "1",
                             genera_iva: "0",
+                            recargo:"1",
+
                         });
                         form.reset({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
-                            prioridad_abono: 1,
+                            prioridad_abono: "1",
                             genera_iva: "0",
+                            recargo:"1",
+
                         });
                         setAccion("creado")
                         getConcepto();
@@ -277,8 +294,9 @@ const ConceptoForm = () => {
                     id: 0,
                     nombre: "",
                     descripcion: "ninguna",
-                    prioridad_abono: 1,
+                    prioridad_abono: "1",
                     genera_iva: "0",
+                    recargo:"1",
                 });
                 getConcepto();
                 successToastRestaurado();
@@ -297,8 +315,8 @@ const ConceptoForm = () => {
         try {
             const response = await axiosClient.get("/Concepto");
             setLoadingTable(false);
-            setConceptos(response.data.data);
-            console.log(response.data.data);
+            setConceptos(response.data);
+            console.log(response.data);
         } catch (error) {
             setLoadingTable(false);
             console.error("Fallo la consulta del concepto:", error);
@@ -318,7 +336,12 @@ const ConceptoForm = () => {
             console.error("Fallo la eliminación:", error);
         }
     };
+   
+    
+    
+    
 
+    
     //Actualizar el formulario
     useEffect(() => {
         setcontrol(false);
@@ -327,7 +350,17 @@ const ConceptoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                prioridad_abono: 1,
+                prioridad_abono: "1",
+                abonable:0,
+                tarifa_fija:0,
+                cargo_directo:0,
+                genera_orden: 0,
+                genera_recargo: 0,
+                concepto_rezago: 0,
+                pide_monto: 0,
+                bonificable:0,
+                recargo:"1",
+                estado: false,
             });
             setConcepto({});
             setAbrirInput(false);
@@ -342,17 +375,37 @@ const ConceptoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                prioridad_abono: 1,
+                prioridad_abono: "1",
                 genera_iva: "0",
+                abonable:0,
+                tarifa_fija:0,
+                cargo_directo:0,
+                genera_orden:0,
+                genera_recargo: 0,
+                concepto_rezago: 0,
+                pide_monto: 0,
+                bonificable:0,
+                recargo:"1",
+                estado: false,
 
             });
             setConcepto({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                prioridad_abono: 1,
+                prioridad_abono: "1",
                 genera_iva: "0",
-            })
+                abonable:0,
+                tarifa_fija:0,
+                cargo_directo:0,
+                genera_orden:0,
+                genera_recargo: 0,
+                concepto_rezago: 0,
+                pide_monto: 0,
+                bonificable:0,
+                recargo:"1",
+                estado: false
+            });
             setcontrol(true);
         }
         if (accion == "creado") {
@@ -360,7 +413,18 @@ const ConceptoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                prioridad_abono: "1",
                 genera_iva: "0",
+                abonable:0,
+                tarifa_fija:0,
+                cargo_directo:0,
+                genera_orden:0,
+                genera_recargo: 0,
+                concepto_rezago: 0,
+                pide_monto: 0,
+                bonificable:0,
+                recargo:"1",
+                estado: false,
             });
             setConcepto({});
             setAbrirInput(false);
@@ -370,64 +434,164 @@ const ConceptoForm = () => {
             setErrors({});
             setAccion("");
 
+            //#region CONVERCIONES
+                // VER QUE LLEGA DE LA BASE DE DATOS
+                console.log("Este es el estado recibido desde la base de datos:", concepto.estado);
+
+                // CONVERTIR STRING A BOOLEANO
+                const valorDesdeBaseDeDatos: string = concepto.estado as unknown as string; 
+                const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
+
+                //COMPROBAR LA CONVERCIÓN
+                console.log("Este es el valor booleano convertido:", valorBooleano);
+
+                // OBTENER LA CONVERCIÓN
+                setValorConversionBool(valorBooleano);
+
+                //console.log("este es la conversion booleana", valorConversionBool);
 
 
-            // VER QUE LLEGA DE LA BASE DE DATOS
-            console.log("Este es el estado recibido desde la base de datos:", concepto.estado);
+                //SEGUNDA CONVERCION
 
-            // CONVERTIR STRING A BOOLEANO
-            const valorDesdeBaseDeDatos: string = concepto.estado as unknown as string; 
-            const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
+                // CONVERTIR EL NUMERO A STRING(ESO RECIBE EL SELECT)
 
-            //COMPROBAR LA CONVERCIÓN
-            console.log("Este es el valor booleano convertido:", valorBooleano);
+                // Valor recibido de la base de datos
+                //VALOR ABONABLE
+                    const valorAbonableConsultado: number = concepto.abonable;
+                    // Convertir número a cadena
+                    const valorAbonableConvertido: string = valorAbonableConsultado === 1 ? '1' : '0';
+                    console.log("Esto es lo que llega de la BD:", valorAbonableConsultado);
+                    console.log("Esto es lo que llega de la BD valorAbonableConvertido:", valorAbonableConvertido);
+                //VALOR tarifa_fija 
+                    const valorTarifaFijaConsultado: number = concepto.tarifa_fija;
+                    // Convertir número a cadena
+                    const valorvalorTarifaFijaConvertido: string = valorTarifaFijaConsultado === 1 ? '1' : '0';
+                    console.log("Esto es lo que llega de la BD:", valorTarifaFijaConsultado);
+                    console.log("Esto es lo que llega de la BD valorvalorTarifaFijaConvertido:", valorvalorTarifaFijaConvertido);
 
-            // OBTENER LA CONVERCIÓN
-            setValorConversionBool(valorBooleano);
+                    //VALOR tarifa_fija 
+                const valorCargoDirecto: number = concepto.cargo_directo;
+                // Convertir número a cadena
+                const valorCargoDirectoConvertido: string = valorCargoDirecto === 1 ? '1' : '0';
+                console.log("Esto es lo que llega de la BD:", valorCargoDirecto);
+                console.log("Esto es lo que llega de la BD valorCargoDirectoConvertido:", valorCargoDirectoConvertido);
+                
 
- 
-                        
+                    //VALOR genera orden 
+                    const valorGeneraOrden: number = concepto.genera_orden;
+                    // Convertir número a cadena
+                    const valorGeneraOrdenConvertido: string = valorGeneraOrden === 1 ? '1' : '0';
+                    console.log("Esto es lo que llega de la BD:", valorGeneraOrden);
+                    console.log("Esto es lo que llega de la BD valorCargoDirectoConvertido:", valorGeneraOrdenConvertido);
 
-        
-            console.log("este es la conversion booleana", valorConversionBool);
+                        //VALOR genera RECARGO 
+                        const valorGeneraRecargo: number = concepto.genera_recargo;
+                        // Convertir número a cadena
+                        const valorGeneraRecargoConvertido: string = valorGeneraRecargo === 1 ? '1' : '0';
+                        console.log("Esto es lo que llega de la BD:", valorGeneraRecargo);
+                        console.log("Esto es lo que llega de la BD valorCargoDirectoConvertido:", valorGeneraRecargoConvertido);
+
+
+                        //VALOR genera RECARGO 
+                        const valorConceptoRezago: number = concepto.concepto_rezago;
+                        // Convertir número a cadena
+                        const valorConceptoRezagoConvertido: string = valorConceptoRezago === 1 ? '1' : '0';
+                        console.log("Esto es lo que llega de la BD:", valorConceptoRezago);
+                        console.log("Esto es lo que llega de la BD valorCargoDirectoConvertido:", valorConceptoRezagoConvertido);
+                            //#endregion
+           
+
             form.reset({
                 id: concepto.id,
                 nombre: concepto.nombre,
                 descripcion: concepto.descripcion,
                 prioridad_abono: concepto.prioridad_abono,
                 genera_iva: String(concepto.genera_iva),
-                abonable: concepto.abonable,
-                tarifa_fija: concepto.tarifa_fija,
-                cargo_directo: concepto.cargo_directo,
-                estado: valorBooleano
+                abonable:  valorAbonableConvertido,
+                tarifa_fija: valorvalorTarifaFijaConvertido,
+                cargo_directo: valorCargoDirectoConvertido,
+                genera_orden:  Number(concepto.genera_orden),
+                genera_recargo:valorGeneraRecargoConvertido,
+                concepto_rezago:Number(concepto.concepto_rezago),
+                pide_monto: concepto.pide_monto,
+                bonificable: concepto.bonificable,
+                recargo: concepto.recargo,
+                estado: valorConversionBool
 
             });
-            console.log(concepto);
             setcontrol(false);
+            console.log(concepto);
 
         }
         if (accion == "editar") {
             setAbrirInput(true);
             setErrors({});
+            form.reset({
+                id: concepto.id,
+                nombre: concepto.nombre,
+                descripcion: concepto.descripcion,
+                prioridad_abono: String(concepto.prioridad_abono), 
+                genera_iva: String(concepto.genera_iva), 
+                abonable: Number(concepto.abonable), 
+                tarifa_fija: Number(concepto.tarifa_fija),
+                cargo_directo: Number(concepto.cargo_directo),
+                genera_orden:  Number(concepto.genera_orden),
+                genera_recargo:Number(concepto.genera_recargo),
+                concepto_rezago:Number(concepto.concepto_rezago),
+                pide_monto: concepto.pide_monto,
+                bonificable: concepto.bonificable,
+                recargo: concepto.recargo,
+                estado: valorConversionBool
+              });
             setcontrol(true);
+            console.log("este es el concepto al editar", concepto);
 
         }
-    }, [accion]);
+    }, [accion, form.reset, concepto.estado, valorConversionBool]);
 
     const handleFormSubmit = () => {
+        console.log(form.getValues());
         form.handleSubmit(onSubmit)();
     };
 
     const handleTarifaFormSubmit = () => {
-        console.log("hola");
+        
+        
         onSubmitTarifa();
     };
+
+
+    useEffect(() => {
+        
+        form.reset({
+            id: concepto.id,
+            nombre: concepto.nombre,
+            descripcion: concepto.descripcion,
+            prioridad_abono: String(concepto.prioridad_abono), 
+            genera_iva: String(concepto.genera_iva), 
+            abonable: Number(concepto.abonable), 
+            tarifa_fija: Number(concepto.tarifa_fija),
+            cargo_directo: Number(concepto.cargo_directo),
+            genera_orden:  Number(concepto.genera_orden),
+            genera_recargo:Number(concepto.genera_recargo),
+            concepto_rezago:Number(concepto.concepto_rezago),
+            pide_monto: concepto.pide_monto,
+            bonificable: concepto.bonificable,
+            recargo: concepto.recargo,
+            estado: valorConversionBool
+          });
+
+
+      }, [valorConversionBool]);
+    
+    
+
 
     return (
 
         <div className="overflow-auto">
 
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+            <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
                         {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo concepto</p>}
@@ -496,7 +660,7 @@ const ConceptoForm = () => {
                                         <FormControl>
                                             <Input
                                                 id="string"
-                                                type="string"
+                                                type="number"
                                                 min={1}
                                                 max={10}
                                                 readOnly={!abrirInput}
@@ -555,33 +719,33 @@ const ConceptoForm = () => {
                                     <FormItem>
                                         <FormLabel>Abonable</FormLabel>
                                         {control ? <Select
-                                            onValueChange={(value) => field.onChange(value === 'si')}
-                                            defaultValue={field.value ? 'si' : 'no'}
-                                            >
+                                           onValueChange={(value) => field.onChange(Number(value))}
+                                           value={String(field.value)}
+                                           >
                                         <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="¿Es abonable?" />
                                         </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                        <SelectItem value="si">Si</SelectItem>
-                                        <SelectItem value="no">No</SelectItem>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     :
                                     <Select
                                     disabled
-                                            onValueChange={(value) => field.onChange(value === 'si')}
-                                            defaultValue={field.value ? 'si' : 'no'}
-                                        >
+                                    onValueChange={(value) => field.onChange(Number(value))}
+                                    value={String(field.value)}
+                                    >
                                         <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="¿Es abonable?" />
                                         </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                        <SelectItem value="si">Si</SelectItem>
-                                        <SelectItem value="no">No</SelectItem>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
                                         </SelectContent>
                                     </Select>}
                                         <FormDescription>
@@ -598,8 +762,8 @@ const ConceptoForm = () => {
                                         <FormLabel>Tarifa fija</FormLabel>
                                         { control ? 
                                         <Select
-                                        onValueChange={(value) => field.onChange(value === 'si')}
-                                        defaultValue={field.value ? 'si' : 'no'}
+                                        onValueChange={(value) => field.onChange(Number(value))}
+                                        value={String(field.value)}
                                         >
                                         <FormControl>
                                         <SelectTrigger>
@@ -607,24 +771,24 @@ const ConceptoForm = () => {
                                         </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                        <SelectItem value="si">Si</SelectItem>
-                                        <SelectItem value="no">No</SelectItem>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     :
                                     <Select
                                     disabled
-                                        onValueChange={(value) => field.onChange(value === 'si')}
-                                        defaultValue={field.value ? 'si' : 'no'}
-                                        >
+                                    onValueChange={(value) => field.onChange(Number(value))}
+                                    value={String(field.value)}
+                                    >
                                         <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="¿Tiene tarifa fija?" />
                                         </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                        <SelectItem value="si">Si</SelectItem>
-                                        <SelectItem value="no">No</SelectItem>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
                                         </SelectContent>
                                     </Select>}
                                         <FormDescription>
@@ -644,8 +808,8 @@ const ConceptoForm = () => {
                                         {
                                         control ? 
                                         <Select
-                                        onValueChange={(value) => field.onChange(value === 'si')}
-                                        defaultValue={field.value ? 'si' : 'no'}
+                                        onValueChange={(value) => field.onChange(Number(value))}
+                                        value={String(field.value)}
                                         >
                                         <FormControl>
                                         <SelectTrigger>
@@ -653,24 +817,24 @@ const ConceptoForm = () => {
                                         </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                        <SelectItem value="si">Si</SelectItem>
-                                        <SelectItem value="no">No</SelectItem>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     :
                                     <Select
                                     disabled
-                                        onValueChange={(value) => field.onChange(value === 'si')}
-                                            defaultValue={field.value ? 'si' : 'no'}
-                                        >
+                                    onValueChange={(value) => field.onChange(Number(value))}
+                                    value={String(field.value)}
+                                    >
                                         <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="¿Tiene cargo directo?" />
                                         </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                        <SelectItem value="si">Si</SelectItem>
-                                        <SelectItem value="no">No</SelectItem>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
                                         </SelectContent>
                                     </Select>
 
@@ -682,13 +846,214 @@ const ConceptoForm = () => {
                                     </FormItem>
                                 )}
                             />
+                         <FormField
+                                control={form.control}
+                                name="genera_orden"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>¿Genera orden?</FormLabel>
+                                        <FormControl>
+                                        <OrdenesDeTrabajoComboBox form={form} field={field} name="genera_orden" setCargoSeleccionado={setOrdenDeTrabajoSeleccionada}/>
+                                        </FormControl>
+                                        <FormDescription>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                              <FormField
+                                control={form.control}
+                                name="genera_recargo"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Genera recargo</FormLabel>
+                                        {/*SE UTILIZO UNA VARIABLE DE CONTROL PARA MANEJAR EL ESTADO DEPENDIENDO LA ACCION QUE
+                                        SE SELECCIONE*/ }
+                                        {
+                                        control ? 
+                                        <Select
+                                        onValueChange={(value) => field.onChange(Number(value))}
+                                        value={String(field.value)}
+                                        >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Genera recargo?" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    :
+                                    <Select
+                                    disabled
+                                    onValueChange={(value) => field.onChange(Number(value))}
+                                    value={String(field.value)}
+                                    >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Genera recargo?" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+
+                                        }
+                                        
+                                        <FormDescription>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                              <FormField
+                                control={form.control}
+                                name="concepto_rezago"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>¿Concepto rezago?</FormLabel>
+                                        <FormControl>
+                                        <ConceptoRezagoComboBox form={form} field={field} name="concepto_rezago" setCargoSeleccionado={setConceptoRezago}/>
+                                        </FormControl>
+                                        <FormDescription>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="pide_monto"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Pide monto</FormLabel>
+                                        {/*SE UTILIZO UNA VARIABLE DE CONTROL PARA MANEJAR EL ESTADO DEPENDIENDO LA ACCION QUE
+                                        SE SELECCIONE*/ }
+                                        {
+                                        control ? 
+                                        <Select
+                                        onValueChange={(value) => field.onChange(Number(value))}
+                                        value={String(field.value)}
+                                        >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Pide monto?" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    :
+                                    <Select
+                                    disabled
+                                    onValueChange={(value) => field.onChange(Number(value))}
+                                    value={String(field.value)}
+                                    >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Pide monto?" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+
+                                        }
+                                        
+                                        <FormDescription>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="bonificable"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Bonificable</FormLabel>
+                                        {/*SE UTILIZO UNA VARIABLE DE CONTROL PARA MANEJAR EL ESTADO DEPENDIENDO LA ACCION QUE
+                                        SE SELECCIONE*/ }
+                                        {
+                                        control ? 
+                                        <Select
+                                        onValueChange={(value) => field.onChange(Number(value))}
+                                        value={String(field.value)}
+                                        >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Es bonificable?" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    :
+                                    <Select
+                                    disabled
+                                    onValueChange={(value) => field.onChange(Number(value))}
+                                    value={String(field.value)}
+                                    >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Es bonificable?" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+
+                                        }
+                                        
+                                        <FormDescription>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="recargo"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Recargo</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                id="string"
+                                                step="0.01" // Permite decimales con dos dígitos
+                                                type="text"
+                                                min={1}
+                                                max={100}
+                                                readOnly={!abrirInput}
+                                                {...field} // Asegúrate de pasar el valor actual
+                                            />
+                                        </FormControl>
+                                        <FormDescription>
+                                            Escribe el porcentaje del recargo
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                             <div className="ml-10 mt-5 w-[50vh]">
                             <FormField
                             control={form.control}
                             name="estado"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="items-center">Activo</FormLabel>
+                                    <FormLabel className="items-center">Estado</FormLabel>
                                     <FormControl className="ml-4">
                                       {
                                         control ?  <Switch
@@ -717,6 +1082,7 @@ const ConceptoForm = () => {
                         />
                             </div>
                             
+                            
                         </MarcoForm>
 
                     </form>
@@ -737,7 +1103,7 @@ const ConceptoForm = () => {
                                             return (
                                                 <div>
                                                     <p className="mb-[10px]">{tipoToma.nombre}</p>
-                                                    <input defaultValue={ concepto.tarifas != null ? concepto.tarifas[index].monto : 0} readOnly={!abrirInput} type="number" placeholder={`Tarifa ${tipoToma.nombre}`} name={tipoToma.id} className="w-full bg-background border border-border p-2 rounded-md" />
+                                                    <input defaultValue={ concepto.tarifas != null ? concepto.tarifas[index]?.monto : 0} readOnly={!abrirInput} type="number" placeholder={`Tarifa ${tipoToma.nombre}`} name={tipoToma.id} className="w-full bg-background border border-border p-2 rounded-md" />
                                                 </div>
                                             )
                                         })

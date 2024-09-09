@@ -22,6 +22,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import ModalEliminarRuta from './ModalEliminarRuta';
 
 const MenuLateralPoligonosGeograficos = () => {
 
@@ -60,7 +61,7 @@ const MenuLateralPoligonosGeograficos = () => {
             new_visibility[ruta.id] = true;
         });
         set_ruta_visibility(new_visibility);
-        console.log(libro_visibility)
+
     }, [rutas]);
 
     //useEffect((()=>{console.log(libro_visibility)}),[libro_visibility])
@@ -96,6 +97,7 @@ const MenuLateralPoligonosGeograficos = () => {
         }
     }
 
+    //rutas
     const change_libro_visibility = (ruta) => {
 
         let new_visibility = { ...ruta_visibility };
@@ -111,6 +113,7 @@ const MenuLateralPoligonosGeograficos = () => {
 
     }
 
+    //libros
     const change_libro_visibility_by_libro_id = (libro_id) => {
         let new_visibility = { ...libro_visibility };
         new_visibility[libro_id] = !new_visibility[libro_id];
@@ -123,19 +126,19 @@ const MenuLateralPoligonosGeograficos = () => {
 
     const export_geojson = () => {
         axiosClient.get("/ruta/export_geojson")
-        .then((response)=>{
-            const jsonData = JSON.stringify(response.data, null, 2);
-            const url = window.URL.createObjectURL(new Blob([jsonData], { type: 'application/json' }));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'libroslapaz.geojson'); // nombre del archivo
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        })
-        .catch((response)=>{
-            console.log(response)
-        })
+            .then((response) => {
+                const jsonData = JSON.stringify(response.data, null, 2);
+                const url = window.URL.createObjectURL(new Blob([jsonData], { type: 'application/json' }));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'libroslapaz.geojson'); // nombre del archivo
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch((response) => {
+                console.log(response)
+            })
     }
 
     return (
@@ -189,7 +192,7 @@ const MenuLateralPoligonosGeograficos = () => {
                     }
                     {
                         loading_import &&
-                        <p className='p-2 bg-blue-500 text-white sticky top-0 z-50'> Cargando Importanción ... </p>
+                        <p className='p-2 bg-blue-500 text-white sticky top-0 z-50'> Cargando Importación ... </p>
                     }
                     {
                         rutas.length == 0 && !loading_import && !loading_rutas &&
@@ -253,18 +256,17 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                 */
                                                             }
 
-
-
-                                                            <Modal
-                                                                button={
-                                                                    <IconButton>
-                                                                        <TrashIcon className='w-[17px] h-[17px] text-red-500' />
-                                                                    </IconButton>
-                                                                }
-                                                                method={delete_ruta}
-                                                                delete_id={ruta.id}
-                                                            />
-
+                                                            {/*
+                                                                <ModalEliminarRuta
+                                                                    button={
+                                                                        <IconButton>
+                                                                            <TrashIcon className='w-[17px] h-[17px] text-red-500' />
+                                                                        </IconButton>
+                                                                    }
+                                                                    method={delete_ruta}
+                                                                    delete_id={ruta.id}
+                                                                />
+                                                            */}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -294,7 +296,9 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                     id_ruta={ruta.id}
                                                                     libro={libro}
                                                                 />
-                                                                <Modal
+
+                                                                {/*
+                                                                   <ModalEliminarRuta
                                                                     button={
                                                                         <IconButton>
                                                                             <TrashIcon className='w-[17px] h-[17px] text-red-500' />
@@ -303,6 +307,8 @@ const MenuLateralPoligonosGeograficos = () => {
                                                                     method={delete_libro}
                                                                     delete_id={libro.id}
                                                                 />
+                                                                */}
+
                                                             </div>
                                                         </div>
                                                     )

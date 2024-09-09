@@ -20,6 +20,11 @@ import { TomaUsuarioDetalle } from './views/Usuarios/Consultar/TomaUsuarioDetall
 import DireccionNotificaciones from './views/Usuarios/Contratos/DireccionNotificaciones';
 import { EscogerPuntoToma } from './views/Usuarios/Contratos/EscogerPuntoToma';
 import { Mapa3 } from './components/ui/Mapa3';
+import { FondoCajaProvider } from './contexts/FondoCajaContext';
+import { GenerarOtMasiva } from './views/OrdenesDeTrabajo/GenerarOtMasiva';
+import { AsignarOTMasiva } from './views/OrdenesDeTrabajo/AsignarOTMasiva';
+import { Monitores } from './views/Monitores/Monitores';
+
 
 
 const router = createBrowserRouter ([
@@ -93,6 +98,18 @@ const router = createBrowserRouter ([
                 path:'/mapa/toma',
                 element: <EscogerPuntoToma/>
             },
+             {
+                path:'/crear/orden/masiva',
+                element: <GenerarOtMasiva/>
+            },
+            {
+                path:'/asignar/orden/masiva',
+                element: <AsignarOTMasiva/>
+            },
+            {
+                path:'/monitores',
+                element: <Monitores/>
+            }
         ]
     },
     {

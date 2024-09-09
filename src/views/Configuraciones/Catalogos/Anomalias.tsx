@@ -6,7 +6,7 @@ import IconButton from '../../../components/ui/IconButton.tsx';
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import { Icon } from 'lucide-react';
-import { OcultarTable } from '../../../components/Tables/Components/OcultarTable.tsx';
+import { OcultarTable } from '../../../components/Tables/Components/OcultarTable.tsx'
 
 export default function Anomalias() {
 
@@ -16,7 +16,7 @@ export default function Anomalias() {
   return (
     <ContextProvider>
 
-      <div className='w-full max-h-[77vh] '>
+      <div className='w-full max-h-[77vh]'>
         {/*Contenedor principal*/}
         <div className='flex gap-2 '>
           {/*Datatable*/}

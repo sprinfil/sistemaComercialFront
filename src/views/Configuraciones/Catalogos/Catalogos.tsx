@@ -12,9 +12,7 @@ import TipoDeToma from './TipoDeToma'
 import { useStateContext } from '../../../contexts/ContextProvider'
 import { Colonia } from './Colonias-Calles/Colonia'
 import OrdenDeTrabajo from './OrdenDeTrabajo'
-import notFound from "../../../img/notFound.svg"
-
-
+import Caja from './Caja'
 const Catalogos = () => {
 
   const { permissions, user } = useStateContext();
@@ -78,15 +76,21 @@ const Catalogos = () => {
       componente: <OrdenDeTrabajo />,
       permission: "VerOrdenDeTrabajo"
     }
+    ,
+    {
+      titulo: "Caja",
+      componente: <Caja />,
+      permission: "VerCaja"
+    }
   ]
 
-  return (
+  return ( 
     <div className='w-full'>
       <Tabs defaultValue="" className="" onValueChange={() => { setSeleccionarCatalogo(false) }}>
 
         <TabsList>
           {opciones.map((opcion, index) => {
-            if (permissions.includes(opcion.permission) || user.id == 1) {
+            if (permissions.includes(opcion.permission) || user.id == 1|| user?.roles?.includes("Admin")) {
               return (
                 <>
                   <TabsTrigger value={opcion.titulo} key={index}>{opcion.titulo}</TabsTrigger>

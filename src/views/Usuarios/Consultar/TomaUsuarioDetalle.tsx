@@ -8,17 +8,19 @@ import PantallaDetalleUsuario from './VistasDetalleUsuario/PantallaDetalleUsuari
 import InformaciónGeneral from './VistasDetalleUsuario/InformaciónGeneral';
 import InformacionFiscal from './VistasDetalleUsuario/InformacionFiscal';
 import CrearOrdenDeTrabajo from './VistasDetalleUsuario/CrearOrdenDeTrabajo';
+import { GestionMedidores } from './VistasDetalleUsuario/GestionMedidores.tsx';
+import ConveniosAplicables from './VistasDetalleUsuario/ConveniosAplicables.tsx';
 import TomasUsuario from './VistasDetalleUsuario/TomasUsuario';
 import { BreadCrumbDetalleTomaUsuario } from '../../../components/ui/breadCrumbDetalleTomaUsuario.tsx';
 import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
 export const TomaUsuarioDetalle = () => {
 
-  const {tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, setTomaUsuariosEncontrados, tomaUsuariosEncontrados}= ZustandGeneralUsuario()
+  const {toma, setToma,tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, setTomaUsuariosEncontrados, tomaUsuariosEncontrados}= ZustandGeneralUsuario()
   const [accion, setAccion] = useState<string | undefined>();
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
   useEffect(() => {
-    console.log("ESTE USUARIO LLEGA A LA TOMA DETALLE:", tomaUsuariosEncontrados);
+    //console.log("ESTE USUARIO LLEGA A LA TOMA DETALLE:", tomaUsuariosEncontrados[0]?.usuario);
 
     if (usuariosEncontrados.length > 0) {
       // Establece el estado global solo si hay usuarios encontrados
@@ -31,8 +33,8 @@ export const TomaUsuarioDetalle = () => {
     }
   }, [usuariosEncontrados, setUsuariosRecuperado, tomaUsuariosEncontrados]);
 
-  console.log("ESTE ES EL USUARIO RECUPERADO " + JSON.stringify(usuariosRecuperado));
-
+  //console.log("ESTE ES EL USUARIO RECUPERADO " + JSON.stringify(usuariosRecuperado));
+  console.log(usuariosEncontrados[0])
   const options = [
     {
       titulo: "Principal",
@@ -49,7 +51,14 @@ export const TomaUsuarioDetalle = () => {
           nombre: "Ordenes de trabajo",
           pantalla: <CrearOrdenDeTrabajo/>
         },
-       
+        {
+          nombre: "Medidores",
+          pantalla: <GestionMedidores/>
+        },
+        {
+          nombre: "Convenios",
+          pantalla: <ConveniosAplicables/>
+        },
       ]
     }
   ];
@@ -59,13 +68,13 @@ export const TomaUsuarioDetalle = () => {
       <ContextProvider>
         <div>
           {/* Breadcrumb en la parte superior */}
-          <div className='mt-2 px-2'>
+          <div className=''>
             <BreadCrumbDetalleUsuario/>
           </div>
 
           {/* Contenido principal */}
-          <div className='flex gap-2 mt-2 px-2'>
-            <div className='flex-shrink-0 mt-5 ml-5'>
+          <div className='flex gap-2 px-2'>
+            <div className='flex-shrink-0'>
               <OcultarTableDetalleUsuario accion={accion}>
                 <MenuLateral options={options} context={useStateContext} />
               </OcultarTableDetalleUsuario>

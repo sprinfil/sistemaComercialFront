@@ -14,10 +14,17 @@ interface ConsultaUsuarioTableProps {
   nombreBuscado: string;
 }
 
-export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, filtroSeleccionado}: ConsultaUsuarioTableProps) {
+export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, filtroSeleccionado, setUserData}: ConsultaUsuarioTableProps) {
 
   console.log("este es el que recibeeee" + nombreBuscado)
-  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, setLoadingTable, loadingTable, setAccion, setUsuario, usuario, setUsuariosRecuperado} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+  const {  dataCajaUser, setDataCajaUser, 
+    usuarioObtenido, setUsuarioObtenido, 
+    setUsuariosEncontrados, usuariosEncontrados, 
+    setLoadingTable, loadingTable, setAccion, 
+    setUsuario, usuario, setUsuariosRecuperado, 
+    setControlTablaOperadorOTIndividual,
+    setToma, handleClickRowUsuario, setBooleanCerrarModalFiltros,setIdSeleccionadoTomaAsignacionOT, idSeleccionadoTomaAsignacionOT
+  } = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
 
   const tableRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -50,7 +57,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
             const response = await axiosClient.get(endpoint);
             const results = response.data.data;
             setUsuariosEncontrados(results);
-
+            setDataCajaUser(results);
           } catch (err) {
             console.log("Error en la consulta:", err);
           } finally {
@@ -64,13 +71,20 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
 
         loadAndScroll();
     }
-}, [nombreBuscado, setUsuariosEncontrados, setLoadingTable]);
+}, []);
 
   const handleRowClick = (contratobuscarUsuario: BuscarUsuario) => {
     setUsuariosEncontrados([contratobuscarUsuario]);
+    setDataCajaUser([contratobuscarUsuario]);
+    setBooleanCerrarModalFiltros(false);
+    setIdSeleccionadoTomaAsignacionOT(contratobuscarUsuario?.tomas[0]?.id)
+    setControlTablaOperadorOTIndividual(true);
+    console.log("ESTO RECIBIRA CAJAAA DESDE SELECCION DE FILA" + JSON.stringify(dataCajaUser)); 
+  
+    
     if(accion2 == "verUsuarioDetalle")
     {
-      navigate("/usuario");
+      navigate("/usuario/toma");
     }
     
     if(accion2 == "crearContratacionUsuario")
@@ -78,7 +92,6 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
         navigate("/Crear/Contrato/Usuario");
       }
   };
-
   if (loadingTable) {
     return <div><Loader /></div>;
   }
@@ -86,7 +99,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
   return (
     <ContextProvider>
     <div ref={tableRef}>
-        <DataTableUsuarios columns={columns} data={usuariosEncontrados} sorter='nombre' onRowClick={handleRowClick} />
+        <DataTableUsuarios columns={columns} data={usuariosEncontrados} onRowClick={handleRowClick} />
       </div>
     </ContextProvider>
   
