@@ -86,20 +86,20 @@ export const ModalFondoCaja = ({ open, onRegister, iniciar_session_cancelada }) 
               placeholder="Ingrese la cantidad"
               maxLength={5}
             />
-            <p className='mt-5 mb-2'>Cortes de caja rechazados</p>
             {
               sessiones_rechazadas?.length > 0 &&
               <>
+                <p className='mt-5 mb-2'>Cortes de caja rechazados</p>
                 {sessiones_rechazadas.map((session) => (
                   <>
                     <div className='max-h-[40vh] overflow-auto'>
                       <div onClick={() => {
                         handle_session_cancelada(session.caja);
                         set_session_caja_completo(session);
-                        
+
                       }} className='mb-4 px-3 py-2 hover:py-4  w-[full] rounded-md border border-red-500 cursor-pointer transition-all duration-200'>
-                        <p>Fecha Apertura: {dayjs(session.caja.fecha_apertura).format('DD-MM-YYYY')}</p>
-                        <p>Fecha Cierre: {dayjs(session.caja.fecha_cierre).format('DD-MM-YYYY')}</p>
+                        <p>Fecha Apertura: {dayjs(session.caja.fecha_apertura).format('DD-MM-YYYY hh:mm A')}</p>
+                        <p>Fecha Cierre: {dayjs(session.caja.fecha_cierre).format('DD-MM-YYYY hh:mm A')}</p>
                       </div>
                     </div>
                   </>

@@ -32,7 +32,7 @@ import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import ModalSolicitudCancelacionPago from './ModalSolicitudCancelacionPago';
 
-const ModalVerPago = ({ selected_pago, open, set_open }) => {
+const ModalVerPagosMonitor = ({ selected_pago, open, set_open }) => {
 
     const { session_caja } = ZustandPuntoVenta();
     const [pagos, set_pagos] = useState([]);
@@ -178,12 +178,13 @@ const ModalVerPago = ({ selected_pago, open, set_open }) => {
                                         <ReaderIcon className='w-[20px] h-[20px] text-blue-500' />
                                         <p>Reimprimir Ticket</p>
                                     </div>
+                                    <Button variant={"outline"} >Timbrar</Button>
                                     <ModalSolicitudCancelacionPago trigger={
                                         <Button variant={"destructive"} >Solicitud de Cancelación</Button>
                                     }
                                         cancelacion_pago={() => { solicitud_cancelacion(selected_pago) }}
                                     />
-
+                           
                                 </div>
                                 <div className='grid grid-cols-2 gap-4 mt-5'>
                                     <div className='max-h-[60vh] overflow-auto'>
@@ -303,5 +304,5 @@ const ModalVerPago = ({ selected_pago, open, set_open }) => {
     );
 };
 
-export default ModalVerPago;
+export default ModalVerPagosMonitor;
 
