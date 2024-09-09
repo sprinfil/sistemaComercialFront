@@ -12,7 +12,7 @@ import { Input } from '../../../components/ui/input.tsx';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { crearContratoSchema } from './validacionesContratacion.ts'; 
+import { crearTomaSchema } from './validacionesContratacion.ts'; 
 import { CallesComboBox } from '../../../components/ui/CallesComboBox.tsx';
 import { ColoniaComboBox } from '../../../components/ui/ColoniaComboBox.tsx';
 import { Button } from '../../../components/ui/button.tsx';
@@ -25,39 +25,22 @@ const DireccionNotificaciones = () => {
   const [coloniaSeleccionada, setColoniaSeleccionada] = useState<string | null>(null);
 
  const navigate = useNavigate();
-  const form = useForm<z.infer<typeof crearContratoSchema>>({
-    resolver: zodResolver(crearContratoSchema),
+  const form = useForm<z.infer<typeof crearTomaSchema>>({
+    resolver: zodResolver(crearTomaSchema),
     defaultValues: {
-        id_usuario: 1,
-        id_giro_comercial: 1,
-        id_libro: 1,
-        id_codigo_toma: 1,
-        clave_catastral: "",
-        calle:"",
-        entre_calle_1: "",
-        entre_calle_2:"",
-        colonia: "",
-        codigo_postal:"",
-        localidad: "",
-        diametro_toma:"" ,
-        calle_notificaciones:"" ,
-        entre_calle_notificaciones_2:"" ,
-        tipo_servicio: "",
-        tipo_toma: "",
-        tipo_contratacion:"" ,
-        c_agua: false,
-        c_alc: false,
-        c_san: false,
+        direccion: "",
 
     },
 });
 
-const handleNavigationMapaToma = () => {
-    navigate("/mapa/toma");
-};
+const detalleContratacion= () => 
+    {
+        navigate("/contrato/detalle");
+    };
 
-const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
-  // Handle form submission
+const onSubmit = (values: z.infer<typeof crearTomaSchema>) => {
+    console.log(values);
+    detalleContratacion();
 };
 
 
@@ -87,31 +70,15 @@ const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
                 <div className="rounded-md border border-border shadow-lg p-8 w-[215vh] ">
                     <div className="text-[20px] font-medium">Toma:</div>
                         <div className='flex space-x-2 mt-[5vh] items-center'>
-                        <div className='w-[160vh]'>
+                        <div className='w-full'>
                             <FormField
                                 control={form.control}
-                                name="calle"
+                                name="direccion"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Calle</FormLabel>
+                                        <FormLabel>Dirección</FormLabel>
                                         <FormControl>
-                                        <CallesComboBox form={form} field={field} name="calle" setCargoSeleccionado={setCalleSeleccionada}/>
-                                        </FormControl>
-                                        <FormDescription />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className='w-[60vh]'>
-                            <FormField
-                                control={form.control}
-                                name="numero_casa"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Numero de casa</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Escribe el numero de casa" {...field} />
+                                            <Input placeholder="Escribe completa la dirección" {...field} />
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -120,85 +87,16 @@ const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
                             />
                         </div>
                         
-                            
-                        </div>
-                        <div className='flex space-x-4'>
-                        <div className="w-[160vh]">
-                            <FormField
-                                control={form.control}
-                                name="colonia"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Colonia o fraccionamiento</FormLabel>
-                                        <FormControl>
-                                        <ColoniaComboBox form={form} field={field} name="colonia" setCargoSeleccionado={setColoniaSeleccionada}/>
-                                        </FormControl>
-                                        <FormDescription />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className="w-[60vh]">
-                            <FormField
-                                control={form.control}
-                                name="codigo_postal"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Código postal</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Escribe el código postal" {...field} />
-                                        </FormControl>
-                                        <FormDescription />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                    </div>
-                        <div className='flex space-x-2'>
-                        <div className='w-[110vh]'>
-                        <FormField
-                                control={form.control}
-                                name="entre_calle_1"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Entre calle 1</FormLabel>
-                                        <FormControl>
-                                        <CallesComboBox form={form} field={field} name="entre_calle_1" setCargoSeleccionado={setEntreCalle1Seleccionada}/>
-                                        </FormControl>
-                                        <FormDescription />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className='w-[110vh]'>
-                           <FormField
-                                control={form.control}
-                                name="entre_calle_2"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Entre calle 2</FormLabel>
-                                        <FormControl>
-                                        <CallesComboBox form={form} field={field} name="entre_calle_2" setCargoSeleccionado={setEntreCalle2Seleccionada}/>
-                                        </FormControl>
-                                        <FormDescription />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            
-                           </div>
-                        </div>
-                        <div className="flex justify-end mt-[5vh]">
-                        <Button type="button" className='flex justify-center items-center' onClick={handleNavigationMapaToma}>
+                        <div className="flex justify-end mt-[3vh]">
+                        <Button type="submit" className='flex justify-center items-center'>
                             Guardar
                         </Button>
                      </div>
 
                         </div>
-
+                        
+                    </div>
+                      
                         </form>
                         </Form>
                         </div>
@@ -206,4 +104,6 @@ const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
 
                       )
                     }
+
+                    
 export default DireccionNotificaciones;

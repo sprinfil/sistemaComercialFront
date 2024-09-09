@@ -25,7 +25,8 @@ import { GenerarOtMasiva } from './views/OrdenesDeTrabajo/GenerarOtMasiva';
 import { AsignarOTMasiva } from './views/OrdenesDeTrabajo/AsignarOTMasiva';
 import { Monitores } from './views/Monitores/Monitores';
 import { PuntoTomaMapa } from './views/Usuarios/Contratos/PuntoTomaMapa';
-
+import CrearTomaForm from './views/Usuarios/Contratos/FormsContratos/CrearTomaForm';
+import { DetalleInformacionContrato } from './views/Usuarios/Contratos/DetalleInformacionContrato';
 
 
 const router = createBrowserRouter ([
@@ -95,10 +96,6 @@ const router = createBrowserRouter ([
                 path:'/direccion/toma',
                 element: <DireccionNotificaciones/>
             },
-            {
-                path:'/mapa/toma',
-                element: <EscogerPuntoToma/>
-            },
              {
                 path:'/crear/orden/masiva',
                 element: <GenerarOtMasiva/>
@@ -114,6 +111,14 @@ const router = createBrowserRouter ([
             {
                 path:'/Contrato/Usuario',
                 element: <CrearContratoForm/>
+            },
+            {
+                path:'/contrato/nueva/toma',
+                element: <CrearTomaForm/>
+            },
+            {
+                path:'/contrato/detalle',
+                element: <DetalleInformacionContrato/>
             },
         ]
     },
