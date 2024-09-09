@@ -5,13 +5,10 @@ import MonitorOrdenDeTrabajoTable from '../../components/Tables/Components/Monit
 import { TrashIcon } from 'lucide-react';
 import IconButton from '../../components/ui/IconButton';
 import ModalEstasSeguroCancelarMasivamenteOT from '../../components/ui/ModalEstasSeguroCancelarMasivamenteOT';
-<<<<<<< Updated upstream
-=======
 import { MdOutlineCancel } from 'react-icons/md';
 import ModalEstasSeguroCancelarOTSSS from '../../components/ui/ModalEstasSeguroCancelarOTSSS';
 
 
->>>>>>> Stashed changes
 const MostrarFiltros = () => {
 
   //const { accion } = useStateContext();
@@ -46,11 +43,7 @@ export const OrdenDeTrabajoMonitor = () => {
         <div className='w-full p-5 border rounded-sm overflow-auto h-[76vh]'>
           <div className='flex justify-end mr-2 w' title='Cancelar orden de trabajo masivamente'>
             <IconButton onClick={abrirModalGG}>
-<<<<<<< Updated upstream
               <TrashIcon className='w-[2vh] h-[2vh]' />
-=======
-              <MdOutlineCancel />
->>>>>>> Stashed changes
             </IconButton>
           </div>
           <MonitorOrdenDeTrabajoTable />
@@ -62,14 +55,6 @@ export const OrdenDeTrabajoMonitor = () => {
         setIsOpen={setAbrirModal}
         method={""}
       />
-<<<<<<< Updated upstream
-=======
-      <ModalEstasSeguroCancelarOTSSS
-        isOpen={abrirModal2}
-        setIsOpen={setAbrirModal2}
-        method={""}
-      />
->>>>>>> Stashed changes
 
 
     </div>
