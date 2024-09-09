@@ -24,6 +24,7 @@ import { FondoCajaProvider } from './contexts/FondoCajaContext';
 import { GenerarOtMasiva } from './views/OrdenesDeTrabajo/GenerarOtMasiva';
 import { AsignarOTMasiva } from './views/OrdenesDeTrabajo/AsignarOTMasiva';
 import { Monitores } from './views/Monitores/Monitores';
+import { PuntoTomaMapa } from './views/Usuarios/Contratos/PuntoTomaMapa';
 
 
 
@@ -84,7 +85,7 @@ const router = createBrowserRouter ([
             },
             {
                 path:'/Crear/Contrato/Usuario',
-                element: <CrearContratoForm/>
+                element: <PuntoTomaMapa/>
             },
             {
                 path:'/usuario/toma',
@@ -109,7 +110,11 @@ const router = createBrowserRouter ([
             {
                 path:'/monitores',
                 element: <Monitores/>
-            }
+            },
+            {
+                path:'/Contrato/Usuario',
+                element: <CrearContratoForm/>
+            },
         ]
     },
     {

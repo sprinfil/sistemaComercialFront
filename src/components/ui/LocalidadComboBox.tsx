@@ -54,7 +54,7 @@ export const LocalidadComboBox = ({ field, form, name = "id_concepto", setCargoS
         try {
             const response = await axiosClient.get("/Concepto");
             let ctr = 0;
-            response.data.data.forEach(concepto => {
+            response.data.forEach(concepto => {
                 languages[ctr] = { value: concepto.id, label: concepto.nombre };
                 ctr = ctr + 1;
             });
@@ -105,7 +105,7 @@ export const LocalidadComboBox = ({ field, form, name = "id_concepto", setCargoS
                                         {languages.map((language) => (
                                             <CommandItem
                                                 value={language.label}
-                                                key={language.value}
+                                                key={language.label}
                                                 onSelect={() => {
                                                     form.setValue(name, language.value)
                                                     setCargoSeleccionado(language.label); 

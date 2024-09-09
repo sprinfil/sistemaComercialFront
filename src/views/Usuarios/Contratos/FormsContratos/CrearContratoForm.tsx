@@ -247,7 +247,7 @@ export const CrearContratoForm = () => {
                             
                         </div>
                         <div className='flex space-x-4'>
-                        <div className="w-[160vh]">
+                        <div className="w-full">
                             <FormField
                                 control={form.control}
                                 name="colonia"
@@ -263,7 +263,26 @@ export const CrearContratoForm = () => {
                                 )}
                             />
                         </div>
-                        <div className="w-[60vh]">
+                       
+                    </div>
+                    <div className='flex space-x-2'>
+                    <div className="w-[490vh]">
+                            <FormField
+                                control={form.control}
+                                name="calle"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Calle</FormLabel>
+                                        <FormControl>
+                                        <CallesComboBox form={form} field={field} name="calle" setCargoSeleccionado={setCalleSeleccionada}/>
+                                        </FormControl>
+                                        <FormDescription />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                    <div className="w-full">
                             <FormField
                                 control={form.control}
                                 name="codigo_postal"
@@ -280,6 +299,7 @@ export const CrearContratoForm = () => {
                             />
                         </div>
                     </div>
+                    
                         <div className='flex space-x-2'>
                         <div className='w-[110vh]'>
                         <FormField
