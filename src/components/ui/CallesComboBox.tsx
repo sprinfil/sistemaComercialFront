@@ -38,7 +38,7 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void; // Nueva prop para el callback
 };
 
-export const ColoniaComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado}) => {
+export const CallesComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado}) => {
 
 
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -47,12 +47,13 @@ export const ColoniaComboBox = ({ field, form, name = "id_concepto", setCargoSel
 
     React.useEffect(() => {
         getConcepto();
+        console.log(languages);
     }, []);
 
     const getConcepto = async () => {
         setLoading(true);
         try {
-            const response = await axiosClient.get("/colonia");
+            const response = await axiosClient.get("/calle");
             let ctr = 0;
             response.data.forEach(concepto => {
                 languages[ctr] = { value: concepto.id, label: concepto.nombre };
@@ -64,6 +65,7 @@ export const ColoniaComboBox = ({ field, form, name = "id_concepto", setCargoSel
             console.error("Failed to fetch concepto:", error);
         }
     };
+
 
     const [open, setOpen] = React.useState(false)
 
@@ -84,16 +86,16 @@ export const ColoniaComboBox = ({ field, form, name = "id_concepto", setCargoSel
                                 ? languages.find(
                                     (language) => language.value === field.value
                                 )?.label
-                                : "Selecciona una colonia o fraccionamiento"}
+                                : "Selecciona una calle"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0 h-[300px]">
                     <Command>
-                        <CommandInput placeholder="Buscar colonia / fraccionamiento ... " />
+                        <CommandInput placeholder="Buscar calle ... " />
                         <CommandList>
-                            <CommandEmpty>Colonia o fraccionamiento no encontrado.</CommandEmpty>
+                            <CommandEmpty>Calle no encontrada.</CommandEmpty>
                             <CommandGroup>
                                 {
                                     loading &&

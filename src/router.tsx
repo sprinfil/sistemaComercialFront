@@ -17,11 +17,16 @@ import { ContratacionBuscarUsuario } from './views/Usuarios/Contratos/Contrataci
 import BuscarUsuario from './views/Usuarios/Consultar/BuscarUsuario';
 import { CrearContratoForm } from './views/Usuarios/Contratos/FormsContratos/CrearContratoForm';
 import { TomaUsuarioDetalle } from './views/Usuarios/Consultar/TomaUsuarioDetalle';
+import DireccionNotificaciones from './views/Usuarios/Contratos/DireccionNotificaciones';
+import { EscogerPuntoToma } from './views/Usuarios/Contratos/EscogerPuntoToma';
+import { Mapa3 } from './components/ui/Mapa3';
 import { FondoCajaProvider } from './contexts/FondoCajaContext';
 import { GenerarOtMasiva } from './views/OrdenesDeTrabajo/GenerarOtMasiva';
 import { AsignarOTMasiva } from './views/OrdenesDeTrabajo/AsignarOTMasiva';
 import { Monitores } from './views/Monitores/Monitores';
-
+import { PuntoTomaMapa } from './views/Usuarios/Contratos/PuntoTomaMapa';
+import CrearTomaForm from './views/Usuarios/Contratos/FormsContratos/CrearTomaForm';
+import { DetalleInformacionContrato } from './views/Usuarios/Contratos/DetalleInformacionContrato';
 
 
 const router = createBrowserRouter ([
@@ -81,13 +86,17 @@ const router = createBrowserRouter ([
             },
             {
                 path:'/Crear/Contrato/Usuario',
-                element: <CrearContratoForm/>
+                element: <PuntoTomaMapa/>
             },
             {
                 path:'/usuario/toma',
                 element: <TomaUsuarioDetalle/>
             },
             {
+                path:'/direccion/toma',
+                element: <DireccionNotificaciones/>
+            },
+             {
                 path:'/crear/orden/masiva',
                 element: <GenerarOtMasiva/>
             },
@@ -98,7 +107,19 @@ const router = createBrowserRouter ([
             {
                 path:'/monitores',
                 element: <Monitores/>
-            }
+            },
+            {
+                path:'/Contrato/Usuario',
+                element: <CrearContratoForm/>
+            },
+            {
+                path:'/contrato/nueva/toma',
+                element: <CrearTomaForm/>
+            },
+            {
+                path:'/contrato/detalle',
+                element: <DetalleInformacionContrato/>
+            },
         ]
     },
     {

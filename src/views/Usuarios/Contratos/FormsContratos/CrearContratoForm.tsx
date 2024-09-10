@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+
 import {
     Form,
     FormControl,
@@ -23,28 +24,50 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+import ModalDireccionToma from '../../../../components/ui/ModalDireccionToma.tsx';
+import DireccionNotificaciones from '../DireccionNotificaciones.tsx';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { CallesComboBox } from '../../../../components/ui/CallesComboBox.tsx';
+import { ColoniaComboBox } from '../../../../components/ui/ColoniaComboBox.tsx';
+import { LocalidadComboBox } from '../../../../components/ui/LocalidadComboBox.tsx';
+import MarcoForm from '../../../../components/ui/MarcoForm.tsx';
+import MarcoFormServiciosAContratar from '../../../../components/ui/MarcoFormServiciosAContratar.tsx';
+import { ZustandFiltrosContratacion } from '../../../../contexts/ZustandFiltrosContratacion.tsx';
+import { noAuto } from '@fortawesome/fontawesome-svg-core';
 export const CrearContratoForm = () => {
+
+    const navigate = useNavigate();
+
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
+    const [openModal, setOpenModal] = useState(false);
+    const [calleSeleccionada, setCalleSeleccionada] = useState<string | null>(null);
+    const [coloniaSeleccionada, setColoniaSeleccionada] = useState<string | null>(null);
+    const [entreCalle1Seleccionada, setEntreCalle1Seleccionada] = useState<string | null>(null);
+    const [entreCalle2Seleccionada, setEntreCalle2Seleccionada] = useState<string | null>(null);
+    const [items, setItems] = useState([]);
+    const [servicioAContratar, setServicioAContratar] = useState([]);
+
+    const {latitudMapa, longitudMapa, libroToma} = ZustandFiltrosContratacion();
+
+    console.log("Latitud:", latitudMapa); //Latitud seleccionada dentro del poligono
+    console.log("Longitud:", longitudMapa); //Longitud seleccionada dentro del poligono
+    console.log("Libro:", libroToma); //Longitud seleccionada dentro del poligono
+    console.log(JSON.stringify(libroToma));
 
     const form = useForm<z.infer<typeof crearContratoSchema>>({
         resolver: zodResolver(crearContratoSchema),
         defaultValues: {
-            id_usuario: 1,
-            id_giro_comercial: 1,
-            id_libro: 1,
-            codigo_toma: 1,
+            id_giro_comercial: "",
             clave_catastral: "",
-            calle:"",
-            entre_calle_1: "",
-            entre_calle_2:"",
-            colonia: "",
+            calle:0,
+            num_casa:"",
+            entre_calle_1: 0,
+            entre_calle_2:0,
+            colonia: 0,
             codigo_postal:"",
-            localidad: "",
+            localidad: 0,
             diametro_toma:"" ,
-            calle_notificaciones:"" ,
-            entre_calle_notificaciones_2:"" ,
-            tipo_servicio: "",
             tipo_toma: "",
             tipo_contratacion:"" ,
             c_agua: false,
@@ -54,24 +77,117 @@ export const CrearContratoForm = () => {
         },
     });
 
+    const handleAbrirModalNotificaciones = () => 
+    {
+        setOpenModal(true);
+    };
+
+
+        const navegarDireccionToma = () => 
+        {
+            navigate("/direccion/toma");
+        };
+
+        const detalleContratacion= () => 
+            {
+                navigate("/contrato/detalle");
+            };
+
+      
+
+
+       
+
     const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
-        // Handle form submission
+
+        //CONVERTIRMOS EL BOOL A STRING
+        const agua = values.c_agua ? "agua" : null;
+        const alcantarillado = values.c_alc ? "alcantarillado" : null;
+        const saneamiento = values.c_san ? "saneamiento" : null;
+        
+        // Combinar alcantarillado y saneamiento en una sola variable
+        const alcantarillado_y_saneamiento = (alcantarillado && saneamiento)
+            ? `${alcantarillado} y ${saneamiento}` // Combina en un solo string si ambos están presentes
+            : alcantarillado || saneamiento; // Usa solo alcantarillado o saneamiento si uno de ellos está presente
+        
+        // ARREGLO DE SERVICIOS
+        const servicios = [agua, alcantarillado_y_saneamiento].filter(service => service !== null);
+        
+
+        setServicioAContratar(servicios); //ESTE OBTIENE LOS SERVICIOS SELECCIONADOS
+
+
+        
+        console.log(servicioAContratar);
+        handleAbrirModalNotificaciones();
+        const crearContrato = {
+                id_giro_comercial: values.id_giro_comercial,
+                nombre_contrato: values.nombre_contrato,
+                clave_catastral: values.clave_catastral,
+                tipo_toma:values.clave_catastral,
+                servicio_contratados: servicioAContratar,
+                diametro_toma:values.diametro_toma,
+                num_casa: values.num_casa,
+                colonia: values.colonia,
+                calle: values.calle,
+                codigo_postal: values.codigo_postal,
+                entre_calle_1: values.entre_calle_1,
+                entre_calle_2: values.entre_calle_2,
+                localidad: values.localidad,
+                municipio: values.municipio,
+                c_agua: values.clave_catastral,
+                c_alc:values.clave_catastral,
+                c_san: values.clave_catastral,
+                tipo_contratacion: values.tipo_contratacion,
+        };
+
+
+        const contratoString = JSON.stringify(crearContrato);
+        console.log("estos valores llegaron y se almacenaron en el localstorage", contratoString);
+
+        localStorage.setItem("contrato", contratoString); //AQUI SE GUARDA CONTRATO STRING QUE GUARDA EN EL LOCALSTORAGE EL OBJETO.
+
+        //handleAbrirModalNotificaciones();
+
+        //navegarCrearNuevaToma();
+
     };
 
     return (
-        <div className="overflow-auto">
+        <div className="">
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end '>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        <p className="text-[20px] font-medium">Crear contrato</p>
+                        <p className="text-[30px] font-medium ml-3">Crear contrato</p>
+                        <div className="text-[20px] font-medium mt-10 ml-5">Usuario:</div>
+              
                     </div>
                 </div>
             </div>
             <div className="py-[20px] px-[10px]">
         {errors.general && <Error errors={errors.general} />}
+    
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <div className="rounded-md border border-border p-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center mt-[10vh]">
+            <div className="rounded-md border border-border shadow-lg p-8 w-[210vh] ">
+            <div className="text-[20px] font-medium mb-5">No contrato. </div>
+            <div className="w-[full]">
+                        <FormField
+                            control={form.control}
+                            name="nombre_contrato"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Nombre del contrato</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Escribe a nombre de quien estará el contrato" {...field} />
+                                    </FormControl>
+                                    <FormDescription />
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        
+                        </div>
                     <div className="w-[full]">
                         <FormField
                             control={form.control}
@@ -87,6 +203,7 @@ export const CrearContratoForm = () => {
                                 </FormItem>
                             )}
                         />
+                        
                         </div>
                         <div className='flex space-x-2'>
                             <div className='w-[120vh]'>
@@ -97,10 +214,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Tipo de toma</FormLabel>
                                         <FormControl>
-                                        <Select
-                                        onValueChange={(value) => field.onChange(value === 'si')}
-                                        defaultValue={field.value ? 'si' : 'no'}
-                                        >
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Selecciona tipo de toma" />
@@ -123,15 +237,12 @@ export const CrearContratoForm = () => {
                                 <div className='w-[120vh]'>
                                 <FormField
                                 control={form.control}
-                                name="tipo_toma"
+                                name="diametro_toma"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Diametro de la toma</FormLabel>
                                         <FormControl>
-                                        <Select
-                                        onValueChange={(value) => field.onChange(value === 'si')}
-                                        defaultValue={field.value ? 'si' : 'no'}
-                                        >
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Selecciona el diametro de la toma" />
@@ -162,7 +273,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Calle</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Escribe la calle" {...field} />
+                                        <CallesComboBox form={form} field={field} name="calle" setCargoSeleccionado={setCalleSeleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -173,7 +284,7 @@ export const CrearContratoForm = () => {
                         <div className='w-[60vh]'>
                             <FormField
                                 control={form.control}
-                                name="numero_casa"
+                                name="num_casa"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Numero de casa</FormLabel>
@@ -190,7 +301,7 @@ export const CrearContratoForm = () => {
                             
                         </div>
                         <div className='flex space-x-4'>
-                        <div className="w-[160vh]">
+                        <div className="w-full">
                             <FormField
                                 control={form.control}
                                 name="colonia"
@@ -198,7 +309,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Colonia</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Escribe la colonia" {...field} />
+                                        <ColoniaComboBox form={form} field={field} name="colonia" setCargoSeleccionado={setColoniaSeleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -206,7 +317,11 @@ export const CrearContratoForm = () => {
                                 )}
                             />
                         </div>
-                        <div className="w-[60vh]">
+                       
+                    </div>
+                    <div className='flex space-x-2'>
+                   
+                    <div className="w-full">
                             <FormField
                                 control={form.control}
                                 name="codigo_postal"
@@ -223,6 +338,7 @@ export const CrearContratoForm = () => {
                             />
                         </div>
                     </div>
+                    
                         <div className='flex space-x-2'>
                         <div className='w-[110vh]'>
                         <FormField
@@ -232,7 +348,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Entre calle 1</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Entre calle 1" {...field} />
+                                        <CallesComboBox form={form} field={field} name="entre_calle_1" setCargoSeleccionado={setEntreCalle1Seleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -248,7 +364,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Entre calle 2</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Entre calle 2" {...field} />
+                                        <CallesComboBox form={form} field={field} name="entre_calle_2" setCargoSeleccionado={setEntreCalle2Seleccionada}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -267,7 +383,23 @@ export const CrearContratoForm = () => {
                                 <FormItem>
                                     <FormLabel>Localidad</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Escribe el nombre de la localidad" {...field} />
+                                    <LocalidadComboBox form={form} field={field} name="localidad" setCargoSeleccionado={setCalleSeleccionada}/>
+                                    </FormControl>
+                                    <FormDescription />
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    <div className='flex flex-col space-y-4'>
+                        <FormField
+                            control={form.control}
+                            name="municipio"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Municipio</FormLabel>
+                                    <FormControl>
+                                    <LocalidadComboBox form={form} field={field} name="municipio" setCargoSeleccionado={setCalleSeleccionada}/>
                                     </FormControl>
                                     <FormDescription />
                                     <FormMessage />
@@ -278,99 +410,159 @@ export const CrearContratoForm = () => {
                     <div className='flex space-x-2'>
 
                     </div>
-    <div className='mt-2'>Selecciona servicios a contratar</div>
-    <div className='flex space-x-8 mt-2'>
-    
-    <div className='flex space-x-5 border rounded-md border-border p-5 w-[55vh]'>
-        <FormField
-            control={form.control}
-            name="c_agua"
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel className="items-center">Agua</FormLabel>
-                    <FormControl className="ml-4">         
-                        <Switch
+
+               
+                <div className='flex space-x-4 mt-2'>
+                <div className='w-[156vh]'>
+                <MarcoFormServiciosAContratar title={"Servicios a contratar"}>
+                <div className='mr-10'>
+                <FormField
+                    control={form.control}
+                    name="c_agua"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Agua</FormLabel>
+                        <FormControl>         
+                            <Switch
                             checked={field.value}
                             onCheckedChange={(checked) => field.onChange(checked)}
-                        />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                </FormItem>
-            )}
-        />
-        <FormField
-            control={form.control}
-            name="c_alc"
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel className="items-center">Alcantarillado</FormLabel>
-                    <FormControl className="ml-4">         
-                        <Switch
-                            checked={field.value}
-                            onCheckedChange={(checked) => field.onChange(checked)}
-                        />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                </FormItem>
-            )}
-        />
-        <FormField
-            control={form.control}
-            name="c_san"
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel className="items-center">Saneamiento</FormLabel>
-                    <FormControl className="ml-4">         
-                        <Switch
-                            checked={field.value}
-                            onCheckedChange={(checked) => field.onChange(checked)}
-                        />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                </FormItem>
-            )}
-        />
-    </div>
-    <div className='w-[30vh]'>
-        <FormField
-            control={form.control}
-            name="tipo_contratacion"
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Tipo de contratación</FormLabel>
-                    <FormControl>
-                        <Select
-                            onValueChange={(value) => field.onChange(value)}
-                            defaultValue={field.value || 'normal'}
-                        >
-                            <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Selecciona el tipo de contratación" />
-                                </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                                <SelectItem value="normal">Normal</SelectItem>
-                                <SelectItem value="condicionado">Condicionado</SelectItem>
-                                <SelectItem value="desarrollador">Desarrollador</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                </FormItem>
-            )}
-        />
-    </div>
-</div>
+                            />
+                        </FormControl>
+                        <FormDescription />
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                    </div>
                    
+                    <div className='mr-5'>
+                    <FormField
+                    control={form.control}
+                    name="c_alc"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Alcantarillado</FormLabel>
+                        <FormControl>         
+                            <Switch
+                            checked={field.value}
+                            onCheckedChange={(checked) => field.onChange(checked)}
+                            />
+                        </FormControl>
+                        <FormDescription />
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                    </div>
+                   
+                    <div className='mr-5'>
+                    <FormField
+                    control={form.control}
+                    name="c_san"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Saneamiento</FormLabel>
+                        <FormControl>         
+                            <Switch
+                            checked={field.value}
+                            onCheckedChange={(checked) => field.onChange(checked)}
+                            />
+                        </FormControl>
+                        <FormDescription />
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                    </div>
+                    
+                </MarcoFormServiciosAContratar>
+                </div>
+                            
+              
+                <div className='w-full mt-4'>
+                    <FormField
+                        control={form.control}
+                        name="tipo_contratacion"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Tipo de contratación</FormLabel>
+                                <FormControl>
+                                <Select
+                                        onValueChange={(value) => field.onChange(value)}
+                                        defaultValue={undefined}
+                                        >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecciona el tipo de contratación" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="normal">Normal</SelectItem>
+                                            <SelectItem value="condicionado">Condicionado</SelectItem>
+                                            <SelectItem value="desarrollador">Desarrollador</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </FormControl>
+                                <FormDescription />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                
+
+                </div>
+                <div className='mt-4 w-full'>
+                <FormField
+                        control={form.control}
+                        name="id_giro_comercial"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Giro comercial</FormLabel>
+                                <FormControl>
+                                <Select
+                                        onValueChange={(value) => field.onChange(value)}
+                                        defaultValue={undefined}
+                                        >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecciona el giro" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="1">Domestica</SelectItem>
+                                            <SelectItem value="2">Comercial</SelectItem>
+                                            <SelectItem value="3">Industrial</SelectItem>
+                                            <SelectItem value="4">Especial</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </FormControl>
+                                <FormDescription />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+            
+
                         
-                  
+            </div>
+                            
+                        <div className='flex justify-end'>
+                        <Button type="submit" className=''>Guardar</Button>
+                            </div>
+       
+                
                     {loading && <Loader />}
                     <div className="w-full flex justify-normal mt-4">
-                        <Button type="submit" className='ml-[195vh] '>Guardar</Button>
+                        
+                        {
+                           
+                  <ModalDireccionToma
+                  setIsOpen={setOpenModal}
+                  isOpen={openModal}
+                  method1={detalleContratacion}
+                  method2={navegarDireccionToma}/>
+                }
                     </div>
                 </div>
             </form>

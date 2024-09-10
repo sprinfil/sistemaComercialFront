@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { OrdenDeTrabajoMonitor } from './OrdenDeTrabajoMonitor'
 import { useStateContext } from '../../contexts/ContextProvider'
 import { PagosMonitor } from './PagosMonitor'
+import { ContratacionMonitor } from './ContratacionMonitor'
 
 export const Monitores = () => {
 
@@ -19,9 +20,13 @@ export const Monitores = () => {
     {
       titulo: "Pagos",
       componente: <PagosMonitor />,
+      permission: "",
+    },
+    {
+      titulo: "Contratación",
+      componente: <ContratacionMonitor />,
       permission: ""
     },
-   
   ]
 
   return ( 

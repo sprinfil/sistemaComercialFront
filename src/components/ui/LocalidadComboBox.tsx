@@ -38,7 +38,7 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void; // Nueva prop para el callback
 };
 
-export const ColoniaComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado}) => {
+export const LocalidadComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado}) => {
 
 
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -52,7 +52,7 @@ export const ColoniaComboBox = ({ field, form, name = "id_concepto", setCargoSel
     const getConcepto = async () => {
         setLoading(true);
         try {
-            const response = await axiosClient.get("/colonia");
+            const response = await axiosClient.get("/Concepto");
             let ctr = 0;
             response.data.forEach(concepto => {
                 languages[ctr] = { value: concepto.id, label: concepto.nombre };
@@ -84,16 +84,16 @@ export const ColoniaComboBox = ({ field, form, name = "id_concepto", setCargoSel
                                 ? languages.find(
                                     (language) => language.value === field.value
                                 )?.label
-                                : "Selecciona una colonia o fraccionamiento"}
+                                : "Selecciona una localidad"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0 h-[300px]">
                     <Command>
-                        <CommandInput placeholder="Buscar colonia / fraccionamiento ... " />
+                        <CommandInput placeholder="Buscar localidad ... " />
                         <CommandList>
-                            <CommandEmpty>Colonia o fraccionamiento no encontrado.</CommandEmpty>
+                            <CommandEmpty>Localidad no encontrada.</CommandEmpty>
                             <CommandGroup>
                                 {
                                     loading &&
@@ -105,7 +105,7 @@ export const ColoniaComboBox = ({ field, form, name = "id_concepto", setCargoSel
                                         {languages.map((language) => (
                                             <CommandItem
                                                 value={language.label}
-                                                key={language.value}
+                                                key={language.label}
                                                 onSelect={() => {
                                                     form.setValue(name, language.value)
                                                     setCargoSeleccionado(language.label); 
