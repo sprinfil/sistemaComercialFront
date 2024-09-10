@@ -24,7 +24,7 @@ import { FondoCajaProvider } from './contexts/FondoCajaContext';
 import { GenerarOtMasiva } from './views/OrdenesDeTrabajo/GenerarOtMasiva';
 import { AsignarOTMasiva } from './views/OrdenesDeTrabajo/AsignarOTMasiva';
 import { Monitores } from './views/Monitores/Monitores';
-import { PuntoTomaMapa } from './views/Usuarios/Contratos/PuntoTomaMapa';
+import PuntoTomaMapa from './views/Usuarios/Contratos/PuntoTomaMapa';
 import CrearTomaForm from './views/Usuarios/Contratos/FormsContratos/CrearTomaForm';
 import { DetalleInformacionContrato } from './views/Usuarios/Contratos/DetalleInformacionContrato';
 

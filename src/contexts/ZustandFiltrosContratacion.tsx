@@ -1,5 +1,29 @@
 import { create } from 'zustand';
 
+
+
+type contrato = {
+  id_usuario: number;
+  id_giro_comercial: string;
+  nombre_contrato: string;
+  clave_catastral: string;
+  tipo_toma: string;
+  servicio_contratados: string[];
+  diametro_toma: string;
+  num_casa: string;
+  colonia: number;
+  calle: number;
+  codigo_postal: string;
+  entre_calle_1: number;
+  entre_calle_2: number;
+  localidad: number;
+  municipio: number;
+  tipo_contratacion: string;
+}
+
+
+
+
 interface FiltrosContratacion {
   isAsignadaChecked: boolean;
   setIsAsignadaChecked: (isAsignadaChecked: boolean) => void;
@@ -64,6 +88,21 @@ interface FiltrosContratacion {
 
   calle_notificaciones_toma: string;
   setCalle_notificaciones_toma: (calle_notificaciones_toma: string) => void;
+
+  contrato: contrato;
+  setContrato: (contrato: Partial<contrato>) => void;
+
+  direccion_notificaciones: string[];
+  setDireccion_Notificaciones: (direccion_notificaciones:  string[]) => void;
+
+
+
+  dataMonitorContratos: [];
+  setDataMonitorContratos: (dataMonitorContratos:  []) => void;
+
+  loadingTableMonitorContrato: boolean;
+  setLoadingTableMonitorContrato: (loadingTableMonitorContrato: boolean) => void;
+
 
 }
 
@@ -135,7 +174,39 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
   colonia_toma: "",
   setColonia_toma: (colonia_toma) => set({ colonia_toma }),
 
-  
+  contrato: {
+    id_usuario: 0,
+    id_giro_comercial: "",
+    nombre_contrato: "",
+    clave_catastral: "",
+    tipo_toma: "",
+    servicio_contratados: [],
+    diametro_toma: "",
+    num_casa: "",
+    colonia: 0,
+    calle: 0,
+    codigo_postal: "",
+    entre_calle_1: 0,
+    entre_calle_2: 0,
+    localidad: 0,
+    municipio: 0,
+    tipo_contratacion: "",
+  },
+  setContrato: (contrato: Partial<contrato>) => set((state) => ({
+    contrato: {
+      ...state.contrato,
+      ...contrato,
+    },
+  })),
+
+  direccion_notificaciones: [],
+  setDireccion_Notificaciones: (direccion_notificaciones) => set({ direccion_notificaciones }),
+
+  dataMonitorContratos: [],
+  setDataMonitorContratos: (dataMonitorContratos) => set({ dataMonitorContratos }),
+
+  loadingTableMonitorContrato: false,
+  setLoadingTableMonitorContrato: (loadingTableMonitorContrato) => set({ loadingTableMonitorContrato }),
 
 }));
 

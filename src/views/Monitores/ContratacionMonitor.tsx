@@ -1,8 +1,6 @@
 import React from 'react'
 import FiltrosContratacionMonitor from '../OrdenesDeTrabajo/FiltrosContratacionMonitor';
 import { OcultarTable } from '../../components/Tables/Components/OcultarTable';
-import MonitorContratacionTable from '../../components/Tables/Components/MonitorContratacionTable';
-
 
 
 
@@ -43,7 +41,7 @@ export const ContratacionMonitor = () => {
 
     <div className='w-full border rounded-sm ml-10 p-2'>
       <div className='p-5'>
-      <MonitorContratacionTable/>
+        
 
       </div>
     </div>

@@ -34,6 +34,11 @@ import MarcoForm from '../../../../components/ui/MarcoForm.tsx';
 import MarcoFormServiciosAContratar from '../../../../components/ui/MarcoFormServiciosAContratar.tsx';
 import { ZustandFiltrosContratacion } from '../../../../contexts/ZustandFiltrosContratacion.tsx';
 import { noAuto } from '@fortawesome/fontawesome-svg-core';
+import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario.tsx';
+
+
+
+
 export const CrearContratoForm = () => {
 
     const navigate = useNavigate();
@@ -48,8 +53,8 @@ export const CrearContratoForm = () => {
     const [items, setItems] = useState([]);
     const [servicioAContratar, setServicioAContratar] = useState([]);
 
-    const {latitudMapa, longitudMapa, libroToma} = ZustandFiltrosContratacion();
-
+    const {latitudMapa, longitudMapa, libroToma, contrato, setContrato} = ZustandFiltrosContratacion();
+    const {usuariosEncontrados} = ZustandGeneralUsuario();
     console.log("Latitud:", latitudMapa); //Latitud seleccionada dentro del poligono
     console.log("Longitud:", longitudMapa); //Longitud seleccionada dentro del poligono
     console.log("Libro:", libroToma); //Longitud seleccionada dentro del poligono
@@ -97,7 +102,6 @@ export const CrearContratoForm = () => {
 
 
        
-
     const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
 
         //CONVERTIRMOS EL BOOL A STRING
@@ -114,8 +118,27 @@ export const CrearContratoForm = () => {
         const servicios = [agua, alcantarillado_y_saneamiento].filter(service => service !== null);
         
 
-        setServicioAContratar(servicios); //ESTE OBTIENE LOS SERVICIOS SELECCIONADOS
 
+        const datos = {
+            id_usuario: usuariosEncontrados[0]?.id,
+            id_giro_comercial: values.id_giro_comercial,
+            nombre_contrato: values.nombre_contrato,
+            clave_catastral: values.clave_catastral,
+            tipo_toma:values.clave_catastral,
+            servicio_contratados: servicios,
+            diametro_toma:values.diametro_toma,
+            num_casa: values.num_casa,
+            colonia: values.colonia,
+            calle: values.calle,
+            codigo_postal: values.codigo_postal,
+            entre_calle_1: values.entre_calle_1,
+            entre_calle_2: values.entre_calle_2,
+            localidad: values.localidad,
+            municipio: values.municipio,
+            tipo_contratacion: values.tipo_contratacion,
+        }
+
+        setContrato(datos);
 
         
         console.log(servicioAContratar);
@@ -125,7 +148,7 @@ export const CrearContratoForm = () => {
                 nombre_contrato: values.nombre_contrato,
                 clave_catastral: values.clave_catastral,
                 tipo_toma:values.clave_catastral,
-                servicio_contratados: servicioAContratar,
+                servicio_contratados: servicios,
                 diametro_toma:values.diametro_toma,
                 num_casa: values.num_casa,
                 colonia: values.colonia,
@@ -135,9 +158,6 @@ export const CrearContratoForm = () => {
                 entre_calle_2: values.entre_calle_2,
                 localidad: values.localidad,
                 municipio: values.municipio,
-                c_agua: values.clave_catastral,
-                c_alc:values.clave_catastral,
-                c_san: values.clave_catastral,
                 tipo_contratacion: values.tipo_contratacion,
         };
 
@@ -153,6 +173,19 @@ export const CrearContratoForm = () => {
 
     };
 
+    console.log(contrato);
+
+    //con esto controlo que no pueda haber un alcantarillado y sanamiento, y viceversa
+    const onSwitchChange = (fieldName: string, value: boolean) => {
+        if (value) {
+          form.setValue("c_alc", true);
+          form.setValue("c_san", true);
+        } else {
+            form.setValue("c_alc", false);
+            form.setValue("c_san", false);
+        }
+      };
+   
     return (
         <div className="">
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
@@ -289,7 +322,9 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Numero de casa</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Escribe el numero de casa" {...field} />
+                                            <Input 
+                                            type='number'
+                                            placeholder="Escribe el numero de casa" {...field} />
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -329,7 +364,9 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Código postal</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Escribe el código postal" {...field} />
+                                            <Input
+                                            type='number' 
+                                            placeholder="Escribe el código postal" {...field} />
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -445,7 +482,7 @@ export const CrearContratoForm = () => {
                         <FormControl>         
                             <Switch
                             checked={field.value}
-                            onCheckedChange={(checked) => field.onChange(checked)}
+                            onCheckedChange={(checked) => onSwitchChange("c_alc", checked)} 
                             />
                         </FormControl>
                         <FormDescription />
@@ -465,7 +502,7 @@ export const CrearContratoForm = () => {
                         <FormControl>         
                             <Switch
                             checked={field.value}
-                            onCheckedChange={(checked) => field.onChange(checked)}
+                            onCheckedChange={(checked) => onSwitchChange("c_san", checked)} 
                             />
                         </FormControl>
                         <FormDescription />

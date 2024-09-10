@@ -17,13 +17,22 @@ import { CallesComboBox } from '../../../components/ui/CallesComboBox.tsx';
 import { ColoniaComboBox } from '../../../components/ui/ColoniaComboBox.tsx';
 import { Button } from '../../../components/ui/button.tsx';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { ZustandFiltrosContratacion } from '../../../contexts/ZustandFiltrosContratacion.tsx';
+
+
+
 const DireccionNotificaciones = () => {
+
   const [errors, setErrors] = useState({});
   const [calleSeleccionada, setCalleSeleccionada] = useState<string | null>(null);
   const [entreCalle1Seleccionada, setEntreCalle1Seleccionada] = useState<string | null>(null);
   const [entreCalle2Seleccionada, setEntreCalle2Seleccionada] = useState<string | null>(null);
   const [coloniaSeleccionada, setColoniaSeleccionada] = useState<string | null>(null);
+const {direccion_notificaciones, setDireccion_Notificaciones} = ZustandFiltrosContratacion();
 
+
+
+  
  const navigate = useNavigate();
   const form = useForm<z.infer<typeof crearTomaSchema>>({
     resolver: zodResolver(crearTomaSchema),
@@ -40,11 +49,11 @@ const detalleContratacion= () =>
 
 const onSubmit = (values: z.infer<typeof crearTomaSchema>) => {
     console.log(values);
+    setDireccion_Notificaciones(values.direccion);
     detalleContratacion();
 };
 
-
-
+console.log(direccion_notificaciones);
   return (
     <div className="overflow-auto">
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>

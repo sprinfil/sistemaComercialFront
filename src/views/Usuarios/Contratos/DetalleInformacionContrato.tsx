@@ -2,8 +2,46 @@ import React from 'react'
 import MarcoForm from '../../../components/ui/MarcoForm'
 import MarcoFormDetalleContrato from '../../../components/ui/MarcoFormDetalleContrato'
 import { Button } from '../../../components/ui/button'
-
+import { ZustandFiltrosContratacion } from '../../../contexts/ZustandFiltrosContratacion'
+import axiosClient from '../../../axios-client'
 export const DetalleInformacionContrato = () => {
+
+
+
+  const {contrato, direccion_notificaciones} = ZustandFiltrosContratacion();
+
+  console.log(contrato);
+  console.log(direccion_notificaciones);
+
+
+
+
+  const generarSolicitud = async () => {
+
+    const values = {
+      contrato: contrato,
+      toma: direccion_notificaciones
+    }
+
+    try{
+        const response = await axiosClient.post("contratos/create", values);
+        console.log(response);
+    }
+    catch(response)
+    {
+      console.log(response);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
   return (
     <div className=''>
       <div className='text-2xl ml-5'>
@@ -13,23 +51,71 @@ export const DetalleInformacionContrato = () => {
       <div className="border border-border rounded shadow-lg p-6 w-[210vh] ml-[9vh] mt-5 h-[80vh]">
         <div className='mt-5'>
         <MarcoFormDetalleContrato title={"Información del usuario"}>
-          Nombre:
+          Nombre del contrato: {contrato.nombre_contrato}
 
         </MarcoFormDetalleContrato>
 
           </div>
         <div className='mt-[5vh]'>
         <MarcoFormDetalleContrato title={"Información de la toma"}>
-          Nombre:
-          
+          <div className='flex flex-col'>
+            <div className='flex-1'>
+            Clave catastral:  {contrato.clave_catastral}
+            </div>
+            <div className='flex-1'>
+            Calle: {contrato.calle}
+            </div>
+            <div className='flex-1'>
+            Numero de casa: {contrato.num_casa}
+            </div>
+            <div className='flex-1'>
+            Colonia: {contrato.colonia}
+            </div>
+            <div className='flex-1'>
+            Entre calle 1: {contrato.entre_calle_1}
+            </div>
+            <div className='flex-1'>
+            Entre calle 2: {contrato.entre_calle_2}
+            </div>
+            <div className='flex-1'>
+            Codigo postal: {contrato.codigo_postal}
+            </div>
+            <div className='flex-1'>
+            Giro comercial: {contrato.id_giro_comercial}
+            </div>
+            <div className='flex-1'>
+            Localidad: {contrato.localidad}
+            </div>
+            <div className='flex-1'>
+            Municipio: {contrato.municipio}
+            </div>
+            <div className='flex-1'>
+            Servicios contratados: {contrato.servicio_contratados}
+            </div>
+            <div className='flex-1'>
+            Tipo de contratación: {contrato.tipo_contratacion}
+            </div>
+            <div className='flex-1'>
+            Tipo de toma: {contrato.tipo_toma}
+            </div>
+
+          </div>
+         
+
         </MarcoFormDetalleContrato>
+
+        <MarcoFormDetalleContrato title={"Dirección de notificaciones"}>
+         Direccion: {direccion_notificaciones}
+
+        </MarcoFormDetalleContrato>
+
 
         </div>
        
 
 
         <div className='flex justify-end'>
-        <Button className='mt-10'>Crear nuevo contrato</Button>
+        <Button className='mt-10' onClick={generarSolicitud}>Crear nuevo contrato</Button>
         </div>
 
 

@@ -48,8 +48,8 @@ const FiltrosContratacionPuntoToma = () => {
          Filtros
       
          
-          <div className="rounded-xl" title="Continuar proceso">
-           <IconButton onClick={handleSiguienteContratacion}>
+          <div className="rounded-xl" title="Continuar proceso" onClick={handleSiguienteContratacion}>
+           <IconButton >
             <FaArrowRight/>
             </IconButton>
             </div>
@@ -59,7 +59,7 @@ const FiltrosContratacionPuntoToma = () => {
           <div className="flex space-x-[16vh] text-lg font-semibold mt-4">
             Estado de contratación
             <div className="" title="Limpiar filtros">
-            <IconButton onClick={""}>
+            <IconButton>
               <LuFilterX />
             </IconButton>
           </div>
