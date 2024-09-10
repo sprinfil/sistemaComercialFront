@@ -185,9 +185,13 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
         cantidad_billete_200: billetesCentavos[200],
         cantidad_billete_500: billetesCentavos[500],
         cantidad_billete_1000: billetesCentavos[1000],
+
+        total_documentos_real: parseFloat("0.00").toFixed(2),
         total_efectivo_real: totalAmount.toFixed(2),
-        total_tarjetas_real: ((total_tarjeta_debito || 0) + (total_tarjeta_credito || 0)).toFixed(2),
-        total_cheques_real: (total_cheques || 0).toFixed(2),
+        total_tarjetas_credito_real: parseFloat(total_tarjeta_credito).toFixed(2),
+        total_tarjetas_debito_real: parseFloat(total_tarjeta_debito).toFixed(2),
+        total_transferencias_real: parseFloat(total_transferencia).toFixed(2),
+        total_cheques_real: parseFloat(total_cheques).toFixed(2),
         total_real: ((total_tarjeta_debito || 0) + (total_tarjeta_credito || 0) + (total_cheques || 0) + (total_efectivo || 0)).toFixed(2),
       };
 

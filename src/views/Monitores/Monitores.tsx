@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { OrdenDeTrabajoMonitor } from './OrdenDeTrabajoMonitor'
 import { useStateContext } from '../../contexts/ContextProvider'
+import { PagosMonitor } from './PagosMonitor'
 
 export const Monitores = () => {
 
@@ -13,6 +14,11 @@ export const Monitores = () => {
     {
       titulo: "Orden de trabajo",
       componente: <OrdenDeTrabajoMonitor />,
+      permission: ""
+    },
+    {
+      titulo: "Pagos",
+      componente: <PagosMonitor />,
       permission: ""
     },
    
