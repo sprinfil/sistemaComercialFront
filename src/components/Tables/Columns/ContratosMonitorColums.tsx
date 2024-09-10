@@ -8,10 +8,9 @@ import IconButton from "../../ui/IconButton";
 import { useState } from "react"
 import ModalVerPagosMonitor from "../../ui/ModalVerPagosMonitor"
 import { EyeIcon } from 'lucide-react';
-import ModalMonitorContratacion from "../../ui/ModalMonitorContratacion";
 export type Pago = {
   id: number
-  nombre_contrato: string
+  folio: string
   id_caja: number
   id_dueno: number
   modelo_dueno: string
@@ -31,7 +30,7 @@ export type Pago = {
   updated_at: Date
 }
 
-export const columns: ColumnDef<Pago>[] = [
+export const ContratosMonitorColums: ColumnDef<Pago>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -53,22 +52,52 @@ export const columns: ColumnDef<Pago>[] = [
     ),
   },
   {
-    accessorKey: "folio_solicitud",
+    accessorKey: "folio",
     header: "Folio",
   },
   {
-    accessorKey: "nombre_contrato",
-    header: "Nombre del contrato",
+    accessorKey: "forma_pago",
+    header: "Método de Pago",
+    cell: ({ row }) => {
+      let forma_pago: string = row.getValue("forma_pago")
+      let formatted = forma_pago
+        .replace(/_/g, " ")
+        .split(" ")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+      return <div className="">{formatted}</div>
+    },
   },
   {
-    accessorKey: "clave_catastral",
-    header: "Clave catastral",
+    accessorKey: "referencia",
+    header: "Referencia",
   },
   {
-    accessorKey: "estatus",
-    header: "Estatus",
+    accessorKey: "fecha_pago",
+    header: "Fecha de pago",
   },
-
+  {
+    accessorKey: "timbrado",
+    header: "Timbrado",
+    cell: ({ row }) => {
+      let estado_timbrado: string = row.getValue("timbrado")
+      let styles = "";
+      if (estado_timbrado == "realizado") {
+        styles = "bg-green-500 text-white p-1 flex items-center justify-center rounded-md"
+      }
+      if (estado_timbrado == "pendiente") {
+        styles = "bg-yellow-500 text-white p-1 flex items-center justify-center rounded-md"
+      }
+      if (estado_timbrado == "cancelado") {
+        styles = "bg-red-500 text-white p-1 flex items-center justify-center rounded-md"
+      }
+      return <div className={`${styles}`}>{estado_timbrado}</div>
+    },
+  },
+  {
+    accessorKey: "estado",
+    header: "Estado",
+  },
   {
     id: "actions",
     cell: ({ row }) => {
@@ -79,12 +108,11 @@ export const columns: ColumnDef<Pago>[] = [
           <IconButton  onClick={() => { set_modal_ver_pago(true) }} >
             <EyeIcon className='w-[15px] h-[15px]' />
           </IconButton>
-          <ModalMonitorContratacion
-            isOpen={modal_ver_pago}
-            setIsOpen={set_modal_ver_pago}
-            selected_contrato= {row?.original}
+          <ModalVerPagosMonitor
+            selected_pago={row?.original}
+            open={modal_ver_pago}
+            set_open={set_modal_ver_pago}
           />
-
         </>
 
       )
