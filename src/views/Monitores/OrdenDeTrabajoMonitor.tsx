@@ -7,6 +7,8 @@ import IconButton from '../../components/ui/IconButton';
 import ModalEstasSeguroCancelarMasivamenteOT from '../../components/ui/ModalEstasSeguroCancelarMasivamenteOT';
 import { MdOutlineCancel } from 'react-icons/md';
 import ModalEstasSeguroCancelarOTSSS from '../../components/ui/ModalEstasSeguroCancelarOTSSS';
+
+
 const MostrarFiltros = () => {
 
   //const { accion } = useStateContext();
@@ -15,11 +17,9 @@ const MostrarFiltros = () => {
   return (
     <>
       {/*Datatable*/}
-
       <OcultarTable accion={""}>
         <FiltrosAsignarOTMasiva />
       </OcultarTable>
-
     </>
   )
 
