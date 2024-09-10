@@ -58,12 +58,12 @@ export function BreadCrumbDetalleUsuario() {
   //console.log(consultaNombreToma?.tomas[0]?.calle);
 
   return (
-    <nav className="ml-5 mt-5">
+    <nav className="ml-3 my-1">
       {findUserOrToma ? (
         <ol style={{ listStyle: 'none', display: 'flex', padding: 0 }}>
           <li>
             <Link to="/usuario" onClick={handleClick}>
-              <p className="text-[15px] font-medium">
+              <p className="transition-all hover:text-[18px]  duration-200">
                 {tomaSeleccionada?.usuario?.nombre || 'Nombre no disponible'}
               </p>
             </Link>
@@ -73,7 +73,7 @@ export function BreadCrumbDetalleUsuario() {
               <li className="w-[8px] h-[8px]"><ChevronRight /></li>
               <li>
                 <Link to="/usuario/toma">
-                  <p className="text-[15px] font-medium ml-4">
+                  <p className="transition-all hover:text-[18px] duration-200 ml-4">
                     {findUserMapaGeo
                       ? tomaSeleccionada?.calle || 'Nombre no disponible'
                       : tomaSeleccionada?.calle || 'Nombre no disponible'}
@@ -87,7 +87,7 @@ export function BreadCrumbDetalleUsuario() {
         <ol style={{ listStyle: 'none', display: 'flex', padding: 0 }}>
           <li>
             <Link to="/usuario" onClick={handleClick}>
-              <p className="text-[15px] font-medium">
+              <p className="transition-all hover:text-[18px] duration-200">
                 {consultaNombreToma?.nombre || 'Nombre no disponible'}
               </p>
             </Link>
@@ -97,7 +97,7 @@ export function BreadCrumbDetalleUsuario() {
               <li className="w-[8px] h-[8px]"><ChevronRight /></li>
               <li>
                 <Link to="/usuario/toma">
-                  <p className="text-[15px] font-medium ml-4">
+                  <p className="transition-all hover:text-[18px] duration-200 ml-4">
                     Toma: {consultaNombreToma?.tomas[0]?.codigo_toma|| 'Nombre no disponible'}
                   </p>
                 </Link>
