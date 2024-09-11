@@ -4,6 +4,7 @@ import { OrdenDeTrabajoMonitor } from './OrdenDeTrabajoMonitor'
 import { useStateContext } from '../../contexts/ContextProvider'
 import { PagosMonitor } from './PagosMonitor'
 import { ContratacionMonitor } from './ContratacionMonitor'
+import { MonitorCFDI } from './CFDI/MonitorCFDI'
 
 export const Monitores = () => {
 
@@ -23,19 +24,24 @@ export const Monitores = () => {
       permission: "",
     },
     {
+      titulo: "CFDI",
+      componente: <MonitorCFDI />,
+      permission: ""
+    },
+    {
       titulo: "Contratación",
       componente: <ContratacionMonitor />,
       permission: ""
     },
   ]
 
-  return ( 
+  return (
     <div className='w-full'>
       <Tabs defaultValue="" className="" onValueChange={() => { setSeleccionarCatalogo(false) }}>
 
         <TabsList>
           {opciones.map((opcion, index) => {
-            if (permissions.includes(opcion.permission) || user.id == 1|| user?.roles?.includes("Admin")) {
+            if (permissions.includes(opcion.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
               return (
                 <>
                   <TabsTrigger value={opcion.titulo} key={index}>{opcion.titulo}</TabsTrigger>

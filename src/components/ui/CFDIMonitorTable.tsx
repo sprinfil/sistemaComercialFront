@@ -39,7 +39,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-export function PagosMonitorDataTable<TData, TValue>({
+export function CFDIMonitorTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -87,12 +87,12 @@ export function PagosMonitorDataTable<TData, TValue>({
           </div>
 
           <div className="px-2">
-            <p>Referenia</p>
+            <p>Timbro</p>
             <Input
-              placeholder="Referencia"
-              value={(table.getColumn("referencia")?.getFilterValue() as string) ?? ""}
+              placeholder="Timbro"
+              value={(table.getColumn("timbro")?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
-                table.getColumn("referencia")?.setFilterValue(event.target.value)
+                table.getColumn("timbro")?.setFilterValue(event.target.value)
               }
               className="w-full"
             />
@@ -100,7 +100,7 @@ export function PagosMonitorDataTable<TData, TValue>({
 
           <div className="px-2">
             <p>Estado del Timbrado</p>
-            <Select onValueChange={(value) => { table.getColumn("timbrado")?.setFilterValue(value == "cualquiera" ? "" : value) }}>
+            <Select onValueChange={(value) => { table.getColumn("estado")?.setFilterValue(value == "cualquiera" ? "" : value) }}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Timbrado" />
               </SelectTrigger>
@@ -117,53 +117,14 @@ export function PagosMonitorDataTable<TData, TValue>({
             </Select>
           </div>
 
-          <div className="px-2">
-            <p>Metodo de Pago</p>
-            <Select onValueChange={(value) => { table.getColumn("forma_pago")?.setFilterValue(value == "cualquiera" ? "" : value) }}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Metodo Pago" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Metodo</SelectLabel>
-                  <SelectItem value="cualquiera">Cualquiera</SelectItem>
-                  <SelectItem value="efectivo">Efectivo</SelectItem>
-                  <SelectItem value="tarjeta_debito">Tarjeta Debito</SelectItem>
-                  <SelectItem value="tarjeta_credito">Tarjeta Credito</SelectItem>
-                  <SelectItem value="transferencia">Transferencia</SelectItem>
-                  <SelectItem value="cheque">Cheque</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-
           <div className="px-1">
-            <p>Estado del pago</p>
-            <Select onValueChange={(value) => { table.getColumn("estado")?.setFilterValue(value == "cualquiera" ? "" : value) }}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Estado" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Estado</SelectLabel>
-                  <SelectItem value="cualquiera">Cualquiera</SelectItem>
-                  <SelectItem value="abonado">Abonado</SelectItem>
-                  <SelectItem value="pendiente">Pendiente</SelectItem>
-                  <SelectItem value="cancelado">Cancelado</SelectItem>
-       
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="px-1">
-            <p>Fecha de Pago</p>
+            <p>Fecha de solicitud</p>
             <input type="date"
               name="fecha_nacimiento"
               className=" border border-border  w-full  rounded-md p-[8px] bg-background"
               onChange={(value) => {
                 console.log(value.currentTarget.value)
-                table.getColumn("fecha_pago")?.setFilterValue(value.currentTarget.value)
+                table.getColumn("fecha_solicitud")?.setFilterValue(value.currentTarget.value)
               }}
             />
           </div>
@@ -228,8 +189,8 @@ export function PagosMonitorDataTable<TData, TValue>({
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Accion</SelectLabel>
-                  <SelectItem value="timbrar">Timbrar</SelectItem>
-                  <SelectItem value="cancelacion">Solicitar Cancelación</SelectItem>
+                  <SelectItem value="timbrar">Mandar Correo</SelectItem>
+                  <SelectItem value="cancelacion">Imprimir Timbre</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>

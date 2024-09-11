@@ -7,11 +7,15 @@ import pagoService from '../../lib/PagoService';
 import { Data } from '@react-google-maps/api';
 import { Skeleton } from '../../components/ui/skeleton';
 import Loader from '../../components/ui/Loader';
+import ZustandMonitorPagos from '../../contexts/ZustandMonitorPagos';
 
 
 export const PagosMonitor = () => {
 
-  const [pagos, set_pagos] = useState([]);
+  const {pagos, set_pagos} = ZustandMonitorPagos();
+
+  const [pagos_real, set_pagos_real] = useState([]);
+
   const [loading_pagos, set_loading_pagos] = useState(false);
 
   useEffect(() => {
@@ -25,6 +29,10 @@ export const PagosMonitor = () => {
     set_pagos(pagos_temp);
   }
 
+  useEffect(()=>{
+    set_pagos_real(pagos);
+  }, [pagos])
+
   return (
     <div className='flex gap-2 px-2'>
       <OcultarTablePagosMonitor accion={""}>
@@ -35,7 +43,7 @@ export const PagosMonitor = () => {
           loading_pagos ? <Loader/>
             :
             <>
-              <PagosMonitorDataTable columns={PagosMonitorColumns} data={pagos} />
+              <PagosMonitorDataTable columns={PagosMonitorColumns} data={pagos_real} />
             </>
         }
       </div>
