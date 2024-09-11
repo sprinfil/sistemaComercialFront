@@ -112,6 +112,11 @@ interface FiltrosContratacion {
   controlModalMonitorContratacionClick: boolean
   setControlModalMonitorContratacionClick: (controlModalMonitorContratacionClick: boolean) => void;
 
+  idGiroComercial: number;
+  setIdGiroComercial: (idGiroComercial: number) => void;
+
+  idLibro: number,
+  setIdLibro:(idLibro: number) => void;
 }
 
 export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => ({
@@ -223,6 +228,13 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
   setBoolModalContratacionCambioDeNombre: (boolModalContratacionCambioDeNombre) => set({ boolModalContratacionCambioDeNombre }),
   controlModalMonitorContratacionClick: false,
   setControlModalMonitorContratacionClick:(controlModalMonitorContratacionClick) => set({controlModalMonitorContratacionClick}),
+
+  idGiroComercial: 0,
+  setIdGiroComercial:(idGiroComercial) => set({idGiroComercial}),
+
+  idLibro: 0,
+  setIdLibro:(idLibro) => set({idLibro}),
+
 
 }));
 

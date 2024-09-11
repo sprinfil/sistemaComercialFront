@@ -40,14 +40,14 @@ const FiltrosContratacionPuntoToma = () => {
   return (
     <div className="overflow-auto min-h-[20vh]">
       <div className="ml-5 mb-[20vh] mt-[1vh] h-full p-3">
-        <div className="flex space-x-[34vh]">
+        <div className="flex space-x-[25vh]">
           <div>
             <FiFilter className="w-[3vh] h-[3vh]" />
             
           </div>
          Filtros
       
-         
+    
           <div className="rounded-xl" title="Continuar proceso" onClick={handleSiguienteContratacion}>
            <IconButton >
             <FaArrowRight/>

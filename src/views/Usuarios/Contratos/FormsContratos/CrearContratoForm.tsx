@@ -53,7 +53,7 @@ export const CrearContratoForm = () => {
     const [items, setItems] = useState([]);
     const [servicioAContratar, setServicioAContratar] = useState([]);
 
-    const {latitudMapa, longitudMapa, libroToma, contrato, setContrato} = ZustandFiltrosContratacion();
+    const {latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial, setIdLibro} = ZustandFiltrosContratacion();
     const {usuariosEncontrados} = ZustandGeneralUsuario();
     console.log("Latitud:", latitudMapa); //Latitud seleccionada dentro del poligono
     console.log("Longitud:", longitudMapa); //Longitud seleccionada dentro del poligono
@@ -119,15 +119,15 @@ export const CrearContratoForm = () => {
         
 
         const tipoToma = parseInt(values.tipo_toma, 10);
+        setIdGiroComercial(values.id_giro_comercial);
 
         const datos = {
             id_usuario: usuariosEncontrados[0]?.id,
-            id_giro_comercial: values.id_giro_comercial,
             nombre_contrato: values.nombre_contrato,
             clave_catastral: values.clave_catastral,
             tipo_toma:tipoToma,
             servicio_contratados: servicios,
-            diametro_toma:values.diametro_toma,
+            diametro_de_la_toma:values.diametro_toma,
             num_casa: values.num_casa,
             colonia: values.colonia,
             calle: values.calle,
@@ -256,9 +256,10 @@ export const CrearContratoForm = () => {
                                             <SelectValue placeholder="Selecciona tipo de toma" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="0">Doméstica</SelectItem>
-                                            <SelectItem value="1">Comercial</SelectItem>
-                                            <SelectItem value="2">Industrial</SelectItem>
+                                            <SelectItem value="1">Doméstica</SelectItem>
+                                            <SelectItem value="2">Comercial</SelectItem>
+                                            <SelectItem value="3">Industrial</SelectItem> 
+                                            <SelectItem value="4">Especial</SelectItem>
                                         </SelectContent>
                                     </Select>
                                         </FormControl>

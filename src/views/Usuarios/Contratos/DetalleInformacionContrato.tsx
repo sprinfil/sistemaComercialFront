@@ -11,7 +11,7 @@ export const DetalleInformacionContrato = () => {
 
 
 
-  const {contrato, direccion_notificaciones} = ZustandFiltrosContratacion();
+  const {contrato, direccion_notificaciones, libroToma, idGiroComercial} = ZustandFiltrosContratacion();
 
   console.log(contrato);
   console.log(direccion_notificaciones);
@@ -23,15 +23,21 @@ export const DetalleInformacionContrato = () => {
 
     const values = {
       contrato: contrato,
-      toma: direccion_notificaciones
+      toma: {
+        id_libro: libroToma,
+        id_giro_comercial: idGiroComercial,
+        direccion_notificaciones: direccion_notificaciones
+      }
     }
+
+    console.log(values);
 
     try{
         const response = await axiosClient.post("contratos/create", values);
         console.log(response);
         toast({
           title: "¡Éxito!",
-          description: "La anomalía se ha creado correctamente",
+          description: "El contrato se ha creado correctamente",
           variant: "success",
 
       })
@@ -39,12 +45,11 @@ export const DetalleInformacionContrato = () => {
     catch(response)
     {
       console.log(response);
-      const mensaje = response.data.errors;
       
       toast({
         variant: "destructive",
         title: "Oh, no. Error",
-        description: mensaje,
+        description: "Algo salio mal",
         action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
     })
     }
