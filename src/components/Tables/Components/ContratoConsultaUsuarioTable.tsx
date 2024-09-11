@@ -99,7 +99,9 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
   return (
     <ContextProvider>
     <div ref={tableRef}>
-        <DataTableUsuarios columns={columns} data={usuariosEncontrados} onRowClick={handleRowClick} />
+    <div className="min-w-full">        
+    <DataTableUsuarios columns={columns} data={usuariosEncontrados} onRowClick={handleRowClick} />
+      </div>
       </div>
     </ContextProvider>
   

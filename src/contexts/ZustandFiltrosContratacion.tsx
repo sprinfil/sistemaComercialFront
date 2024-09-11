@@ -103,6 +103,14 @@ interface FiltrosContratacion {
   loadingTableMonitorContrato: boolean;
   setLoadingTableMonitorContrato: (loadingTableMonitorContrato: boolean) => void;
 
+  boolModalContratacionMonitor: boolean;
+  setBoolModalContratacionMonitor: (boolModalContratacionMonitor: boolean) => void;
+
+  
+  boolModalContratacionCambioDeNombre: boolean;
+  setBoolModalContratacionCambioDeNombre: (boolModalContratacionCambioDeNombre: boolean) => void;
+  controlModalMonitorContratacionClick: boolean
+  setControlModalMonitorContratacionClick: (controlModalMonitorContratacionClick: boolean) => void;
 
 }
 
@@ -207,6 +215,14 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
 
   loadingTableMonitorContrato: false,
   setLoadingTableMonitorContrato: (loadingTableMonitorContrato) => set({ loadingTableMonitorContrato }),
+
+  boolModalContratacionMonitor: false,
+  setBoolModalContratacionMonitor: (boolModalContratacionMonitor) => set({ boolModalContratacionMonitor }),
+
+  boolModalContratacionCambioDeNombre: false,
+  setBoolModalContratacionCambioDeNombre: (boolModalContratacionCambioDeNombre) => set({ boolModalContratacionCambioDeNombre }),
+  controlModalMonitorContratacionClick: false,
+  setControlModalMonitorContratacionClick:(controlModalMonitorContratacionClick) => set({controlModalMonitorContratacionClick}),
 
 }));
 

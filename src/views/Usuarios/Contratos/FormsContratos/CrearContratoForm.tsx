@@ -71,9 +71,9 @@ export const CrearContratoForm = () => {
             entre_calle_2:0,
             colonia: 0,
             codigo_postal:"",
-            localidad: 0,
+            localidad: "",
             diametro_toma:"" ,
-            tipo_toma: "",
+            tipo_toma: 0,
             tipo_contratacion:"" ,
             c_agua: false,
             c_alc: false,
@@ -118,13 +118,14 @@ export const CrearContratoForm = () => {
         const servicios = [agua, alcantarillado_y_saneamiento].filter(service => service !== null);
         
 
+        const tipoToma = parseInt(values.tipo_toma, 10);
 
         const datos = {
             id_usuario: usuariosEncontrados[0]?.id,
             id_giro_comercial: values.id_giro_comercial,
             nombre_contrato: values.nombre_contrato,
             clave_catastral: values.clave_catastral,
-            tipo_toma:values.clave_catastral,
+            tipo_toma:tipoToma,
             servicio_contratados: servicios,
             diametro_toma:values.diametro_toma,
             num_casa: values.num_casa,
@@ -147,7 +148,7 @@ export const CrearContratoForm = () => {
                 id_giro_comercial: values.id_giro_comercial,
                 nombre_contrato: values.nombre_contrato,
                 clave_catastral: values.clave_catastral,
-                tipo_toma:values.clave_catastral,
+                tipo_toma:values.tipo_toma,
                 servicio_contratados: servicios,
                 diametro_toma:values.diametro_toma,
                 num_casa: values.num_casa,
@@ -247,17 +248,17 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Tipo de toma</FormLabel>
                                         <FormControl>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
+                                        <Select 
+                                        onValueChange={(value) => field.onChange((value))} // Convierte el valor a entero
+                                        defaultValue={field.value}
+                                    >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Selecciona tipo de toma" />
                                         </SelectTrigger>
-                                        </FormControl>
                                         <SelectContent>
-                                        <SelectItem value="domestica">Domestica</SelectItem>
-                                        <SelectItem value="comercial">Comercial</SelectItem>
-                                        <SelectItem value="industrial">Industrial</SelectItem>
-                                        
+                                            <SelectItem value="0">Doméstica</SelectItem>
+                                            <SelectItem value="1">Comercial</SelectItem>
+                                            <SelectItem value="2">Industrial</SelectItem>
                                         </SelectContent>
                                     </Select>
                                         </FormControl>
@@ -419,9 +420,21 @@ export const CrearContratoForm = () => {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Localidad</FormLabel>
-                                    <FormControl>
-                                    <LocalidadComboBox form={form} field={field} name="localidad" setCargoSeleccionado={setCalleSeleccionada}/>
-                                    </FormControl>
+                                    <Select
+                                        onValueChange={(value) => field.onChange(value)}
+                                        defaultValue={undefined}
+                                        >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecciona la localidad" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="La Paz">La paz</SelectItem>
+                                            <SelectItem value="Todos santos">Todos santos</SelectItem>
+                                            <SelectItem value="Punta prieta">Punta prieta</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                     <FormDescription />
                                     <FormMessage />
                                 </FormItem>
@@ -435,9 +448,21 @@ export const CrearContratoForm = () => {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Municipio</FormLabel>
-                                    <FormControl>
-                                    <LocalidadComboBox form={form} field={field} name="municipio" setCargoSeleccionado={setCalleSeleccionada}/>
-                                    </FormControl>
+                                    <Select
+                                        onValueChange={(value) => field.onChange(value)}
+                                        defaultValue={undefined}
+                                        >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecciona el municipio" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="La Paz">La paz</SelectItem>
+                                            <SelectItem value="Todos santos">Todos santos</SelectItem>
+                                            <SelectItem value="Punta prieta">Punta prieta</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                     <FormDescription />
                                     <FormMessage />
                                 </FormItem>

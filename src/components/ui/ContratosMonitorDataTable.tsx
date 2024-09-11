@@ -44,7 +44,8 @@ export function ContratosMonitorDataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
 
-
+  console.log("Columns:", columns);
+  console.log("Data:", data);
   const [selected_pago, set_selected_pago] = useState();
   const [modal_ver_pago, set_modal_ver_pago] = useState(false);
 

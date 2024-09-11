@@ -9,29 +9,17 @@ import { useState } from "react"
 import ModalVerPagosMonitor from "../../ui/ModalVerPagosMonitor"
 import { EyeIcon } from 'lucide-react';
 import ModalMonitorContratacion from "../../ui/ModalMonitorContratacion";
-export type Pago = {
+import { ZustandFiltrosContratacion } from "../../../contexts/ZustandFiltrosContratacion";
+export type ContratoMonitor = {
   id: number
+  folio_solicitud: string
   nombre_contrato: string
-  id_caja: number
-  id_dueno: number
-  modelo_dueno: string
-  total_pagado: number
-  saldo_anterior: number
-  saldo_pendiente: number
-  saldo_a_favor: number
-  recibido: number
-  cambio: number
-  forma_pago: string
-  fecha_pago: Date
-  estado: "abonado" | "pendiente" | "cancelado"
-  timbrado: "realizado" | "pendiente" | "cancelado"
-  referencia: string
-  deleted_at: Date
-  created_at: Date
-  updated_at: Date
+  clave_catastral: string
+  estatus: string
+
 }
 
-export const columns: ColumnDef<Pago>[] = [
+export const columns: ColumnDef<ContratoMonitor>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -63,6 +51,7 @@ export const columns: ColumnDef<Pago>[] = [
   {
     accessorKey: "clave_catastral",
     header: "Clave catastral",
+
   },
   {
     accessorKey: "estatus",
@@ -73,15 +62,14 @@ export const columns: ColumnDef<Pago>[] = [
     id: "actions",
     cell: ({ row }) => {
       const [modal_ver_pago, set_modal_ver_pago] = useState(false);
+      const {boolModalContratacionMonitor, setBoolModalContratacionMonitor} =  ZustandFiltrosContratacion();
 
       return (
         <>
-          <IconButton  onClick={() => { set_modal_ver_pago(true) }} >
+          <IconButton  onClick={() => { setBoolModalContratacionMonitor(true) }} >
             <EyeIcon className='w-[15px] h-[15px]' />
           </IconButton>
           <ModalMonitorContratacion
-            isOpen={modal_ver_pago}
-            setIsOpen={set_modal_ver_pago}
             selected_contrato= {row?.original}
           />
 

@@ -5,7 +5,7 @@ import { ContratosMonitorDataTable } from '../../components/ui/ContratosMonitorD
 import Loader from '../../components/ui/Loader';
 import axiosClient from '../../axios-client';
 import { columns } from '../../components/Tables/Columns/ContratacionMonitorColumns';
-
+import { ZustandFiltrosContratacion } from '../../contexts/ZustandFiltrosContratacion';
 
 const MostrarFiltros = () => {
 
@@ -34,23 +34,21 @@ const MostrarFiltros = () => {
 
 export const ContratacionMonitor = () => {
 
-  const [data, setData] = useState([]);
-  const [loadingTable, setLoadingTable] = useState(false);
-
+  const {dataMonitorContratos, setDataMonitorContratos, loadingTableMonitorContrato, setLoadingTableMonitorContrato} =  ZustandFiltrosContratacion();
 
   useEffect(() => {
     fetch_contratos();
   }, [])
 
   const fetch_contratos = async () => {
-    setLoadingTable(true);
+    setLoadingTableMonitorContrato(true);
     try {
       const response = await axiosClient.get("/contratos");
-      setLoadingTable(false);
-      setData(response.data.contrato);
+      setLoadingTableMonitorContrato(false);
+      setDataMonitorContratos(response.data.contrato);
       console.log(response.data.contrato);
     } catch (error) {
-      setLoadingTable(false);
+      setLoadingTableMonitorContrato(false);
       console.error("Failed to fetch anomalias:", error);
     }
   }
@@ -69,10 +67,10 @@ export const ContratacionMonitor = () => {
     <div className='w-full border rounded-sm ml-10 p-2'>
       <div className='p-5'>
       {
-          loadingTable ? <Loader/>
+          loadingTableMonitorContrato ? <Loader/>
             :
             <>
-         <ContratosMonitorDataTable columns={columns} data={data}/>
+         <ContratosMonitorDataTable columns={columns} data={dataMonitorContratos}/>
       </>
         }
       </div>

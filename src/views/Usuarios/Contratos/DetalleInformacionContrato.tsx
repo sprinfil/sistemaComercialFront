@@ -3,8 +3,11 @@ import MarcoForm from '../../../components/ui/MarcoForm'
 import MarcoFormDetalleContrato from '../../../components/ui/MarcoFormDetalleContrato'
 import { Button } from '../../../components/ui/button'
 import { ZustandFiltrosContratacion } from '../../../contexts/ZustandFiltrosContratacion'
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import axiosClient from '../../../axios-client'
 export const DetalleInformacionContrato = () => {
+  const { toast } = useToast()
 
 
 
@@ -26,10 +29,24 @@ export const DetalleInformacionContrato = () => {
     try{
         const response = await axiosClient.post("contratos/create", values);
         console.log(response);
+        toast({
+          title: "¡Éxito!",
+          description: "La anomalía se ha creado correctamente",
+          variant: "success",
+
+      })
     }
     catch(response)
     {
       console.log(response);
+      const mensaje = response.data.errors;
+      
+      toast({
+        variant: "destructive",
+        title: "Oh, no. Error",
+        description: mensaje,
+        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+    })
     }
   }
 
