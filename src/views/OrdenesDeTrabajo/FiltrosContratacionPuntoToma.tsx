@@ -22,6 +22,8 @@ import { FaSearch } from 'react-icons/fa';
 import { FaArrowRight } from "react-icons/fa6";
 import { LuFilterX } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { ZustandFiltrosContratacion } from "../../contexts/ZustandFiltrosContratacion";
+import axiosClient from "../../axios-client";
 const FiltrosContratacionPuntoToma = () => {
 
   const navigate = useNavigate();
@@ -32,8 +34,29 @@ const FiltrosContratacionPuntoToma = () => {
 
 
 
+  const {setIsCheckedPreContratadas, isCheckedPreContratadas} = ZustandFiltrosContratacion();
+
+console.log(isCheckedPreContratadas);
 
 
+  const handleBuscarTomas = () => 
+  {
+
+    const values = {
+      pre_contrato: isCheckedPreContratadas,
+    }
+
+    try
+    {
+        const response = axiosClient.post("contratos/filtros", values);
+        
+    }
+    catch(response)
+    {
+
+    }
+
+  }
 
 
 
@@ -57,14 +80,14 @@ const FiltrosContratacionPuntoToma = () => {
 
         <div className="flex flex-col mt-6 w-full">
           <div className="flex space-x-[16vh] text-lg font-semibold mt-4">
-            Estado de contratación
+            Tomas
             <div className="" title="Limpiar filtros">
             <IconButton>
               <LuFilterX />
             </IconButton>
           </div>
-          <div title="Buscar">
-            <IconButton>            
+          <div title="Buscar" className="flex justify-end">
+            <IconButton onClick={handleBuscarTomas}>            
               <FaSearch/>
             </IconButton>
             </div>
@@ -73,25 +96,17 @@ const FiltrosContratacionPuntoToma = () => {
 
           <div className="grid grid-cols-2 gap-x-[10vh] mb-2">
             <div className="flex items-center space-x-2">
-              <div className="text-sm font-medium mb-2 mt-2">Asignada</div>
+              <div className="text-sm font-medium mb-2 mt-2">Desarrolladora</div>
               <div className="ml-2">
-                <Checkbox className="w-[2.3vh] h-[2.3vh]"/>
+                <Checkbox
+                 className="w-[2.3vh] h-[2.3vh]"
+                  checked={isCheckedPreContratadas}
+                  onCheckedChange={setIsCheckedPreContratadas}
+                />
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <div className="text-sm font-medium mb-2 mt-2">No asignada</div>
-              <div className="ml-2">
-              <Checkbox className="w-[2.3vh] h-[2.3vh]"/>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <div className="text-sm font-medium mb-2 mt-2">Concluida</div>
-              <div className="ml-2">
-              <Checkbox className="w-[2.3vh] h-[2.3vh]"/>
-              </div>
-            </div>
+            
           </div>
         </div>
       </div>

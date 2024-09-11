@@ -19,19 +19,19 @@ export type ContratoMonitor = {
 
 }
 
+// Define las columnas de la tabla
 export const columns: ColumnDef<ContratoMonitor>[] = [
   {
     id: "select",
     header: ({ table }) => (
       <Checkbox
-        checked={table.getIsAllRowsSelected()}  // Cambiado a getIsAllRowsSelected
+        checked={table.getIsAllRowsSelected()}
         onCheckedChange={(value) => {
-          table.toggleAllRowsSelected(!!value) // Cambiado a toggleAllRowsSelected
+          table.toggleAllRowsSelected(!!value);
         }}
         aria-label="Select all"
       />
     ),
-
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
@@ -51,31 +51,37 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
   {
     accessorKey: "clave_catastral",
     header: "Clave catastral",
-
   },
   {
     accessorKey: "estatus",
     header: "Estatus",
   },
-
   {
     id: "actions",
     cell: ({ row }) => {
-      const [modal_ver_pago, set_modal_ver_pago] = useState(false);
-      const {boolModalContratacionMonitor, setBoolModalContratacionMonitor} =  ZustandFiltrosContratacion();
+      const { boolModalContratacionMonitor, setBoolModalContratacionMonitor } =
+        ZustandFiltrosContratacion();
+
+      // Estado local para almacenar el contrato seleccionado
+      const [selectedContrato, setSelectedContrato] = useState<ContratoMonitor | null>(null);
+
+      const handleViewContrato = () => {
+        setSelectedContrato(row.original); // Establecer el contrato seleccionado
+        setBoolModalContratacionMonitor(true); // Abrir el modal
+      };
 
       return (
         <>
-          <IconButton  onClick={() => { setBoolModalContratacionMonitor(true) }} >
-            <EyeIcon className='w-[15px] h-[15px]' />
+          <IconButton onClick={handleViewContrato}>
+            <EyeIcon className="w-[15px] h-[15px]" />
           </IconButton>
-          <ModalMonitorContratacion
-            selected_contrato= {row?.original}
-          />
 
+          {/* Renderizar el modal solo si selectedContrato tiene un valor y el modal está activo */}
+          {boolModalContratacionMonitor && selectedContrato && (
+            <ModalMonitorContratacion selected_contrato={selectedContrato} />
+          )}
         </>
-
-      )
+      );
     },
   },
-]
+];

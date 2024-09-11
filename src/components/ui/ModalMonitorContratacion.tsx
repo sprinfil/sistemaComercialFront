@@ -42,12 +42,14 @@ import MarcoForm from "./MarcoForm.tsx";
 import MarcoFormModalContratoMonitor from "./MarcoFormModalContratoMonitor.tsx";
 import { ZustandFiltrosContratacion } from "../../contexts/ZustandFiltrosContratacion.tsx";
 import ModalMonitorContratacionCambioDePropietario from "./ModalMonitorContratacionCambioDePropietario.tsx";
+import { MdOutlinePriceChange } from "react-icons/md";
+import ModalMonitorContratacionCotizacion from "./ModalMonitorContratacionCotizacion.tsx";
 
 const ModalMonitorContratacion = ({ selected_contrato }) => {
   const { toast } = useToast();
   
   const {setDataMonitorContratos,  setLoadingTableMonitorContrato, boolModalContratacionMonitor, setBoolModalContratacionMonitor, 
-    setBoolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick} =  ZustandFiltrosContratacion();
+    setBoolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick,setBoolModalCotizacionMonitor} =  ZustandFiltrosContratacion();
 
   console.log(selected_contrato);
 
@@ -103,6 +105,54 @@ const ModalMonitorContratacion = ({ selected_contrato }) => {
   const handleCambioDePropietarioModal = () => {
     setBoolModalContratacionCambioDeNombre(true);
   }
+
+  const handleCotizacionModal= () => {
+    setBoolModalCotizacionMonitor(true);
+  }
+  
+  
+  const handleGenerarCotizacion = () => {
+    setBoolModalContratacionCambioDeNombre(true);
+  }
+
+  const handleCerrarContrato = async () => {
+ 
+    const values = {
+      contrato: {
+        id: selected_contrato.id
+      }
+    };
+
+    console.log(values);
+
+    try {
+    const  response =  await axiosClient.put(`contratos/cerrar`, values);
+      
+      const mensaje = response.data.message;
+      toast({
+        title: "¡Éxito!",
+        description: mensaje,
+        variant: "success",
+      });
+      fetch_contratos();
+      console.log(response);
+    } catch (response) {
+      const mensaje = response.request.response
+     
+        
+        console.error("Error eliminando el contrato:", response);
+        toast({
+          variant: "destructive",
+          title: "Oh, no. Error",
+          description: mensaje,
+          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        });
+      
+
+      }
+
+     
+  };
   
 
   return (
@@ -128,6 +178,14 @@ const ModalMonitorContratacion = ({ selected_contrato }) => {
                 </IconButton>
               </div>
 
+              <div className="w-[6vh]" title="Cotización">
+                <IconButton onClick={handleCotizacionModal}>
+                  <MdOutlinePriceChange className="w-[8vh] h-[5vh]" />
+                </IconButton>
+                <ModalMonitorContratacionCotizacion
+                  selected_contrato={selected_contrato}/>
+              </div>
+
               <div className="w-[6vh]" title="Cambio de propietario">
                 <IconButton onClick={handleCambioDePropietarioModal}>
                   <FaUserEdit className="w-[8vh] h-[5vh]" />
@@ -143,7 +201,7 @@ const ModalMonitorContratacion = ({ selected_contrato }) => {
                 </IconButton>
               </div>
 
-              <div className="w-[5vh]" title="Cerrar contrato">
+              <div className="w-[5vh]" title="Cerrar contrato" onClick={handleCerrarContrato}>
                 <IconButton>
                   <FaCheckCircle className="w-[8vh] h-[5vh]" />
                 </IconButton>

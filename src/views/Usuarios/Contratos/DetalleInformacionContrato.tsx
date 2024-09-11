@@ -11,7 +11,8 @@ export const DetalleInformacionContrato = () => {
 
 
 
-  const {contrato, direccion_notificaciones, libroToma, idGiroComercial} = ZustandFiltrosContratacion();
+  const {contrato, direccion_notificaciones, libroToma, idGiroComercial,giroComercial, calleSeleccionada, coloniaSeleccionada, entreCalle1Seleccionada, 
+    entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma} = ZustandFiltrosContratacion();
 
   console.log(contrato);
   console.log(direccion_notificaciones);
@@ -85,25 +86,25 @@ export const DetalleInformacionContrato = () => {
             Clave catastral:  {contrato.clave_catastral}
             </div>
             <div className='flex-1'>
-            Calle: {contrato.calle}
+            Calle: {calleSeleccionada}
             </div>
             <div className='flex-1'>
             Numero de casa: {contrato.num_casa}
             </div>
             <div className='flex-1'>
-            Colonia: {contrato.colonia}
+            Colonia: {coloniaSeleccionada}
             </div>
             <div className='flex-1'>
-            Entre calle 1: {contrato.entre_calle_1}
+            Entre calle 1: {entreCalle1Seleccionada}
             </div>
             <div className='flex-1'>
-            Entre calle 2: {contrato.entre_calle_2}
+            Entre calle 2: {entreCalle2Seleccionada}
             </div>
             <div className='flex-1'>
             Codigo postal: {contrato.codigo_postal}
             </div>
             <div className='flex-1'>
-            Giro comercial: {contrato.id_giro_comercial}
+            Giro comercial: {giroComercial}
             </div>
             <div className='flex-1'>
             Localidad: {contrato.localidad}
@@ -112,13 +113,13 @@ export const DetalleInformacionContrato = () => {
             Municipio: {contrato.municipio}
             </div>
             <div className='flex-1'>
-            Servicios contratados: {contrato.servicio_contratados}
+            Servicios contratados: {servicioContratado + ", " + servicioContratado2}
             </div>
             <div className='flex-1'>
             Tipo de contratación: {contrato.tipo_contratacion}
             </div>
             <div className='flex-1'>
-            Tipo de toma: {contrato.tipo_toma}
+            Tipo de toma: {tipoDeToma}
             </div>
 
           </div>
@@ -135,6 +136,7 @@ export const DetalleInformacionContrato = () => {
         </div>
        
 
+        <input type="file" name="archivo" id="archivo"></input>
 
         <div className='flex justify-end'>
         <Button className='mt-10' onClick={generarSolicitud}>Crear nuevo contrato</Button>

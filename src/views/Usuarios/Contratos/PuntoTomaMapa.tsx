@@ -27,7 +27,7 @@ const center = {
 };
 
 const PuntoTomaMapa = () => {
-  const { setLatitudMapa, setLongitudMapa, setLibroToma, libroToma, setMarcadorSeleccionado, marcadorSeleccionado} =
+  const { setLatitudMapa, setLongitudMapa, setLibroToma, libroToma, setMarcadorSeleccionado, marcadorSeleccionado, isCheckedPreContratadas} =
     ZustandFiltrosContratacion();
   const { toast } = useToast();
   const [poligonos, setPoligonos] = useState([]);
@@ -41,21 +41,32 @@ const PuntoTomaMapa = () => {
     navigate("/Contrato/Usuario");
   };
 
-  useEffect(() => {
-    const mostrarPoligonos = async () => {
-      setMapaCargado(false);
-      try {
-        const response = await axiosClient.get("/ruta");
-        setPoligonos(response.data.data);
-        setMapaCargado(true);
-        console.log(response);
-      } catch (error) {
-        console.error("Error fetching polygons:", error);
-        setMapaCargado(false);
-      }
-    };
-    mostrarPoligonos();
-  }, []);
+        useEffect(() => {
+          const mostrarPoligonos = async () => {
+            setMapaCargado(false);
+            try {
+              const response = await axiosClient.get("/ruta");
+              setPoligonos(response.data.data);
+              setMapaCargado(true);
+              console.log(response);
+            } catch (error) {
+              console.error("Error fetching polygons:", error);
+              setMapaCargado(false);
+            }
+          };
+          mostrarPoligonos();
+        }, []);
+
+
+          
+
+
+
+
+
+
+
+
 
   const handleMapClick = (event) => {
     const lat = event.latLng.lat();
@@ -100,8 +111,8 @@ const PuntoTomaMapa = () => {
     if (!isInsidePolygon) {
       toast({
         variant: "destructive",
-        title: "Oh, no. Error",
-        description: "Algo salió mal.",
+        title: "No hay factibilidad",
+        description: "Puedes continuar el proceso de contratación si lo deseas.",
         action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
     })
     }
@@ -182,6 +193,8 @@ const PuntoTomaMapa = () => {
                     const lat = event.latLng.lat();
                     const lng = event.latLng.lng();
                     setSelectedLocation({ lat, lng });
+                    setLibroToma(libro.id);
+                    console.log(libro.id);
                   }}
                 />
 

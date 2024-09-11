@@ -35,6 +35,8 @@ import MarcoFormServiciosAContratar from '../../../../components/ui/MarcoFormSer
 import { ZustandFiltrosContratacion } from '../../../../contexts/ZustandFiltrosContratacion.tsx';
 import { noAuto } from '@fortawesome/fontawesome-svg-core';
 import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario.tsx';
+import { GiroComercialComboBox } from '../../../../components/ui/GiroComercialComboBox.tsx';
+import { TipoDeTomaComboBox } from '../../../../components/ui/TipoDeTomaComboBox.tsx';
 
 
 
@@ -46,24 +48,27 @@ export const CrearContratoForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [openModal, setOpenModal] = useState(false);
-    const [calleSeleccionada, setCalleSeleccionada] = useState<string | null>(null);
-    const [coloniaSeleccionada, setColoniaSeleccionada] = useState<string | null>(null);
-    const [entreCalle1Seleccionada, setEntreCalle1Seleccionada] = useState<string | null>(null);
-    const [entreCalle2Seleccionada, setEntreCalle2Seleccionada] = useState<string | null>(null);
     const [items, setItems] = useState([]);
     const [servicioAContratar, setServicioAContratar] = useState([]);
 
-    const {latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial, setIdLibro} = ZustandFiltrosContratacion();
+    const {latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial, 
+        setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
+        setServicioContratado, setGiroComercial,setTipoDeToma,
+        setServicioContratado2} = ZustandFiltrosContratacion();
+
+
     const {usuariosEncontrados} = ZustandGeneralUsuario();
     console.log("Latitud:", latitudMapa); //Latitud seleccionada dentro del poligono
     console.log("Longitud:", longitudMapa); //Longitud seleccionada dentro del poligono
     console.log("Libro:", libroToma); //Longitud seleccionada dentro del poligono
     console.log(JSON.stringify(libroToma));
 
+    
+
     const form = useForm<z.infer<typeof crearContratoSchema>>({
         resolver: zodResolver(crearContratoSchema),
         defaultValues: {
-            id_giro_comercial: "",
+            id_giro_comercial: 0,
             clave_catastral: "",
             calle:0,
             num_casa:"",
@@ -73,7 +78,7 @@ export const CrearContratoForm = () => {
             codigo_postal:"",
             localidad: "",
             diametro_toma:"" ,
-            tipo_toma: 0,
+            tipo_toma: "",
             tipo_contratacion:"" ,
             c_agua: false,
             c_alc: false,
@@ -120,7 +125,10 @@ export const CrearContratoForm = () => {
 
         const tipoToma = parseInt(values.tipo_toma, 10);
         setIdGiroComercial(values.id_giro_comercial);
+        setServicioContratado(agua);
+        setServicioContratado2(alcantarillado_y_saneamiento);
 
+        //ESTOS DATOS SON PARA ENVIAR
         const datos = {
             id_usuario: usuariosEncontrados[0]?.id,
             nombre_contrato: values.nombre_contrato,
@@ -248,20 +256,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Tipo de toma</FormLabel>
                                         <FormControl>
-                                        <Select 
-                                        onValueChange={(value) => field.onChange((value))} // Convierte el valor a entero
-                                        defaultValue={field.value}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Selecciona tipo de toma" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="1">Doméstica</SelectItem>
-                                            <SelectItem value="2">Comercial</SelectItem>
-                                            <SelectItem value="3">Industrial</SelectItem> 
-                                            <SelectItem value="4">Especial</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                        <TipoDeTomaComboBox form={form} field={field} name="tipo_toma" setCargoSeleccionado={setTipoDeToma}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -576,34 +571,19 @@ export const CrearContratoForm = () => {
                 </div>
                 <div className='mt-4 w-full'>
                 <FormField
-                        control={form.control}
-                        name="id_giro_comercial"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Giro comercial</FormLabel>
-                                <FormControl>
-                                <Select
-                                        onValueChange={(value) => field.onChange(value)}
-                                        defaultValue={undefined}
-                                        >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Selecciona el giro" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="1">Domestica</SelectItem>
-                                            <SelectItem value="2">Comercial</SelectItem>
-                                            <SelectItem value="3">Industrial</SelectItem>
-                                            <SelectItem value="4">Especial</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </FormControl>
-                                <FormDescription />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                control={form.control}
+                name="id_giro_comercial"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Giro comercial</FormLabel>
+                    <FormControl>
+                    <GiroComercialComboBox form={form} field={field} name="id_giro_comercial" setCargoSeleccionado={setIdGiroComercial}/>
+                    </FormControl>
+                    <FormDescription />
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
                 </div>
             
 

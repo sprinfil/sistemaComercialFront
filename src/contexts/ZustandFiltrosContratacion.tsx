@@ -119,7 +119,40 @@ interface FiltrosContratacion {
   marcadorSeleccionado: [];
   setMarcadorSeleccionado: (marcadorSeleccionado:  []) => void;
 
+  boolModalCotizacionMonitor: boolean;
+  setBoolModalCotizacionMonitor: (boolModalCotizacionMonitor: boolean) => void;
 
+  isCheckedPreContratadas: boolean;
+  setIsCheckedPreContratadas: (isCheckedPreContratadas: boolean) => void;
+
+  //VARIABLES PARA OBTENER EL VALUE DE LOS COMBOBOX 
+
+  calleSeleccionada:string;
+  setCalleSeleccionada:(calleSeleccionada: string) => void;
+  
+  coloniaSeleccionada:string;
+  setColoniaSeleccionada:(coloniaSeleccionada: string) => void;
+
+  entreCalle1Seleccionada:string;
+  setEntreCalle1Seleccionada:(entreCalle1Seleccionada: string) => void;
+
+
+  entreCalle2Seleccionada:string;
+  setEntreCalle2Seleccionada:(entreCalle2Seleccionada: string) => void;
+
+  servicioContratado:string;
+  setServicioContratado:(servicioContratado: string) => void;
+
+  servicioContratado2:string;
+  setServicioContratado2:(servicioContratado2: string) => void;
+
+  
+  giroComercial:string;
+  setGiroComercial:(giroComercial: string) => void;
+
+  tipoDeToma:string;
+  setTipoDeToma:(tipoDeToma: string) => void;
+  
 
 }
 
@@ -239,6 +272,41 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
   marcadorSeleccionado: [],
   setMarcadorSeleccionado:(marcadorSeleccionado) => set({marcadorSeleccionado}),
 
+
+  boolModalCotizacionMonitor: false,
+  setBoolModalCotizacionMonitor: (boolModalCotizacionMonitor) => set({ boolModalCotizacionMonitor }),
+
+  
+  isCheckedPreContratadas: false,
+  setIsCheckedPreContratadas: (isCheckedPreContratadas) => set({ isCheckedPreContratadas }),
+
+
+  calleSeleccionada: "",
+  setCalleSeleccionada: (calleSeleccionada) => set({ calleSeleccionada }),
+
+  
+  coloniaSeleccionada: "",
+  setColoniaSeleccionada: (coloniaSeleccionada) => set({ coloniaSeleccionada }),
+
+  entreCalle1Seleccionada: "",
+  setEntreCalle1Seleccionada: (entreCalle1Seleccionada) => set({ entreCalle1Seleccionada }),
+
+
+  
+  entreCalle2Seleccionada: "",
+  setEntreCalle2Seleccionada: (entreCalle2Seleccionada) => set({ entreCalle2Seleccionada }),
+
+  servicioContratado: "",
+  setServicioContratado: (servicioContratado) => set({ servicioContratado }),
+  servicioContratado2: "",
+  setServicioContratado2: (servicioContratado2) => set({ servicioContratado2 }),
+
+  giroComercial: "",
+  setGiroComercial: (giroComercial) => set({ giroComercial }),
+
+  
+  tipoDeToma: "",
+  setTipoDeToma: (tipoDeToma) => set({ tipoDeToma }),
 
 
 
