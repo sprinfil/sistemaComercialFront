@@ -256,11 +256,11 @@ export function PagosMonitorDataTable<TData, TValue>({
         </div>
       </div>
 
-      <ModalVerPagosMonitor
+      {/* <ModalVerPagosMonitor
         selected_pago={selected_pago?.original}
         open={modal_ver_pago}
         set_open={set_modal_ver_pago}
-      />
+      /> */}
 
     </>
 

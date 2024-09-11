@@ -14,8 +14,12 @@ import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import { useToast } from "@/components/ui/use-toast"; // IMPORTACIONES TOAST
 import { ReaderIcon } from '@radix-ui/react-icons';
 import axiosClient from '../../axios-client';
+import { File } from 'buffer';
+import { ContextProvider, useStateContext } from '../../contexts/ContextProvider';
+import { XCircleIcon } from 'lucide-react';
 
-const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
+const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open  }) => {
+    const {user} = useStateContext();
     const { toast } = useToast();
     const [mapCenter, setMapCenter] = useState({ lat: 24.115858323185, lng: -110.34761062742 });
     const [mapLoaded, setMapLoaded] = useState(false);
@@ -23,7 +27,8 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
     const [factibilidadSaneamiento, setFactibilidadSaneamiento] = useState(selected_fact?.saneamiento_estado_factible || 'pendiente');
     const [factibilidadAlcantarillado, setFactibilidadAlcantarillado] = useState(selected_fact?.alcantarillado_estado_factible || 'pendiente');
     const [derechosConexion, setDerechosConexion] = useState(selected_fact?.derechos_conexion || '');
-    const [documento, setDocumento] = useState(null); // Estado para el archivo seleccionado
+    const [documentos, setDocumentos] = useState([]); // Estado para el archivo seleccionado
+    const [fileStatus, setFileStatus] = useState(null);
     const containerStyle = {
         width: '100%',
         height: '500px',
@@ -43,9 +48,7 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
     };
 
     // Función para manejar la selección de archivo
-    const handleFileChange = (event) => {
-        setDocumento(event.target.files[0]); // Establece el archivo seleccionado
-    };
+    
 
     useEffect(() => {
         if (selected_fact?.contrato?.toma?.posicion?.coordinates) {
@@ -62,17 +65,46 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
         setMap(null);
     }, []);
 
-    const handleUpdate = async () => {
+    const removeFile = (fileName) => {
+        setDocumentos(prevFiles => prevFiles.filter(file => file.name !== fileName));
+        if (documentos.length <= 1) {
+            setFileStatus(null); // Si no hay archivos, restablece el estado
+        }
+    };
+
+    const handleFileChange = (event) => {
+        const selectedFiles = Array.from(event.target.files);
+        const validFiles = selectedFiles.filter(file => file.type === 'application/pdf');
+        if (validFiles.length > 0) {
+            setDocumentos(prevFiles => [...prevFiles, ...validFiles]);
+            setFileStatus('success');
+        } else {
+            setFileStatus('error');
+            toast({
+                title: "Error",
+                description: "Solo se aceptan archivos PDF.",
+                variant: "destructive",
+            });
+        }
+    };
+
+    const handleUpdate = async (newEstado) => {
         try {
             const formData = new FormData();
+            formData.append('id_revisor', user.id); // Agrega el ID del revisor al formData
+            formData.append('estado', newEstado);
             formData.append('agua_estado_factible', factibilidadAgua);
             formData.append('san_estado_factible', factibilidadSaneamiento); // Ajustado
             formData.append('alc_estado_factible', factibilidadAlcantarillado); // Ajustado
-            formData.append('derechos_conexion', derechosConexion);
     
-            if (documento) {
-                formData.append('documento', documento);
-            }
+            // Si derechosConexion es null o undefined, lo enviamos como cadena vacía o un valor por defecto
+            formData.append('derechos_conexion', derechosConexion !== null && derechosConexion !== undefined ? derechosConexion : '');
+    
+            documentos.forEach(file => {
+                if (file.type === 'application/pdf') {
+                    formData.append('documentos[]', file);
+                }
+            });
     
             console.log([...formData]); // Imprime el contenido de FormData para depuración
     
@@ -88,6 +120,7 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
                 variant: "success",
             });
             set_open(false);
+             // Llama a refreshData para actualizar la tabla
     
         } catch (error) {
             console.error(error.response); // Imprime la respuesta completa del error
@@ -97,12 +130,8 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
                 variant: "destructive",
             });
         }
-    };
+    };    
     
-    
-    
-    
-
     if (!isLoaded) {
         return <div>Cargando mapa...</div>;
     }
@@ -111,6 +140,16 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
     const handleFactibilidadChange = (event, setter) => {
         setter(event.target.value);
     };
+
+    const handleCancel = () => {
+        set_open(false);
+        setDocumentos([]); // Reinicia el estado del archivo
+        setFileStatus(null); // Reinicia el estado del archivo
+    };
+
+    const rechazada = selected_fact?.estado === 'rechazada';
+    const prendienteDePago = selected_fact?.estado === 'pendiente de pago';
+    const isDisabled = rechazada || prendienteDePago;
 
     return (
         <div>
@@ -129,30 +168,21 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
                                     value={factibilidadAgua}
                                     onChange={(e) => handleFactibilidadChange(e, setFactibilidadAgua)}
                                     className='ml-2 border rounded  p-1'
+                                    disabled={isDisabled}
                                 >
                                     <option value="pendiente">Pendiente</option>
                                     <option value="no_factible">No Factible</option>
                                     <option value="factible">Factible</option>
                                 </select>
                             </p>
-                            <p className='whitespace-nowrap'>
-                                <strong>Fact de san:</strong>
-                                <select
-                                    value={factibilidadSaneamiento}
-                                    onChange={(e) => handleFactibilidadChange(e, setFactibilidadSaneamiento)}
-                                    className='ml-2 border rounded  p-1'
-                                >
-                                    <option value="pendiente">Pendiente</option>
-                                    <option value="no_factible">No Factible</option>
-                                    <option value="factible">Factible</option>
-                                </select>
-                            </p>
+                            
                             <p className='whitespace-nowrap'>
                                 <strong>Fact de alc:</strong>
                                 <select
                                     value={factibilidadAlcantarillado}
                                     onChange={(e) => handleFactibilidadChange(e, setFactibilidadAlcantarillado)}
                                     className='ml-2 border rounded p-1'
+                                    disabled={isDisabled}
                                 >
                                     <option value="pendiente">Pendiente</option>
                                     <option value="no_factible">No Factible</option>
@@ -165,12 +195,13 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
                                     type="text"
                                     value={derechosConexion}
                                     onChange={(e) => setDerechosConexion(e.target.value)}
-                                    className='ml-2 border rounded p-1'
+                                    className='ml-2 w-[100px] border rounded p-1'
+                                    disabled={isDisabled}
                                 />
                             </p>
 
                             {/* Botón para seleccionar archivo */}
-                            <div className='flex justify-end w-full'>
+                            <div className='flex justify-end w-full pr-2'>
                                 {/* Input oculto para subir archivos */}
                                 <input
                                     type="file"
@@ -178,19 +209,33 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
                                     style={{ display: 'none' }} // Mantenerlo oculto
                                     onChange={handleFileChange} // Manejar la subida de archivos
                                     accept=".pdf" // Aceptar solo PDFs
+                                    disabled={isDisabled}
                                 />
 
                                 {/* Botón personalizado para abrir el explorador de archivos */}
+                                <div className='flex gap-2'>
                                 <div
-                                    className='w-[70px] h-[5vh] gap-2 flex justify-center px-2 py-2 rounded-md dark:hover:bg-blue-900 hover:bg-blue-100 cursor-pointer ease-in duration-100'
+                                    className={`w-[260px] h-4vh] pl-4 gap-2 flex justify-center px-2 py-2 rounded-md cursor-pointer ease-in duration-100 ${fileStatus === 'success' ? 'bg-green-100 hover:bg-green-200' : fileStatus === 'error' ? 'bg-red-100 hover:bg-red-200' : 'hover:bg-blue-100'}`}
                                     onClick={triggerFileInput} // Abrir el explorador de archivos al hacer clic
                                 >
-                                    <ReaderIcon className='w-[20px] h-[20px] text-blue-500' />
-                                    <p></p>
+                                     <p>{documentos.length > 0 ? `${documentos.length} archivo(s) seleccionado(s)` : 'Seleccionar archivo(s)'}</p>
+                                    </div>
+                                    <ul className='list-disc pl-5'>
+                                        {documentos.map((doc, index) => (
+                                            <li
+                                                key={index}
+                                                className='flex items-center gap-2 cursor-pointer'
+                                                onClick={() => removeFile(doc.name)}
+                                            >
+                                                {doc.name}
+                                                <XCircleIcon className='w-[16px] h-[16px] text-red-500' />
+                                            </li>
+                                        ))}
+                                    </ul>
+                                
+                                    <Button  disabled={isDisabled} className='bg-green-500 hover:bg-green-600 ' variant={"default"} onClick={ () =>handleUpdate("pendiente de pago")}>Aceptar</Button>
+                                    <Button  disabled={isDisabled} className='bg-red-500 hover:bg-red-600' variant={"default"} onClick={() =>handleUpdate("rechazada")}>Rechazar</Button>
                                 </div>
-
-                                <Button className='bg-green-500 hover:bg-green-600' variant={"default"} onClick={handleUpdate}>Aceptar</Button>
-                                <Button className='bg-red-500 hover:bg-red-600' variant={"default"} onClick={() => set_open(false)}>Rechazar</Button>
                             </div>
                         </div>
                         <div className='h-[50vh] border rounded-md mt-4'>
@@ -207,7 +252,7 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
                         </div>
                     </div>
                     <AlertDialogFooter>
-                        <AlertDialogCancel onClick={() => set_open(false)}>Cancelar</AlertDialogCancel>
+                        <AlertDialogCancel onClick={handleCancel}>Cancelar</AlertDialogCancel>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

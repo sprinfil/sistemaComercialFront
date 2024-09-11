@@ -3,15 +3,18 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
-
+import { FactibilidadMonitor } from "../../../views/Monitores/FactibilidadMonitor"
 import IconButton from "../../ui/IconButton";
 import { useState } from "react"
 import ModalVerFactibilidadMonitor from "../../ui/ModalVerFactibilidadMonitor";
 import { EyeIcon } from 'lucide-react';
+
 export type Factibilidad = {
   id: number
   id_contrato: string
-  nombre_contrato: string
+  contrato : {
+    nombre_contrato: string
+  }
   solicitante: number
   revisor: number
   estado: "pendiente de pago" | "pendiente" | "rechazada" | "pagada"
@@ -47,17 +50,10 @@ export const FactiblidadMonitorColumns: ColumnDef<Factibilidad>[] = [
     ),
   },
   {
-    accessorKey: "contrato.nombre_contrato",
+    id: "nombre_contrato", // Este es el ID de la columna
+    accessorFn: (row) => row.contrato.nombre_contrato,
     header: "Nombre contrato",
-  },
-  {
-    accessorKey: "solicitante",
-    header: "Solicitante",
-  },
-  {
-    accessorKey: "revisor",
-    header: "Revisor",
-  },
+  }, 
   {
     accessorKey: "fecha_solicitud",
     header: "Fecha de Factibilidad",
@@ -80,6 +76,8 @@ export const FactiblidadMonitorColumns: ColumnDef<Factibilidad>[] = [
             selected_fact={row?.original}
             open={modal_ver_fact}
             set_open={set_modal_ver_fact}
+           
+            
           />
         </>
 
