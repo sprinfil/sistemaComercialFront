@@ -6,6 +6,7 @@ import { PagosMonitorDataTable } from '../../../components/ui/PagosMonitorDataTa
 import pagoService from '../../../lib/PagoService';
 import { columns } from '../../../components/Tables/Columns/CFDIMonitorColumns';
 import { CFDIMonitorTable } from '../../../components/ui/CFDIMonitorTable';
+import { FiltrosMonitorCFDI } from './FiltrosMonitorCFDI';
 export const MonitorCFDI = () => {
 
   const [pagos, set_pagos] = useState([]);
@@ -26,7 +27,7 @@ export const MonitorCFDI = () => {
   return (
     <div className='flex gap-2 px-2'>
       <OcultarTablePagosMonitor accion={""}>
-        <FiltrosPagosMonitor />
+        <FiltrosMonitorCFDI />
       </OcultarTablePagosMonitor>
       <div className='w-full border rounded-md max-h-[75vh] overflow-auto'>
         {

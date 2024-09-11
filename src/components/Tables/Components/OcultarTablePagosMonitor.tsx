@@ -25,7 +25,7 @@ export const OcultarTablePagosMonitor = ({ children, abierto = false, width = '4
     <div className='flex items-center'>
       
       <div
-        className={open ? `transition-all duration-500 rounded-md border border-border p-0 overflow-auto max-h-[75vh] h-[75vh]` : `transition-all duration-500 rounded-md border border-border  overflow-auto max-h-[75vh] px-2 h-[75vh] `}
+        className={open ? `transition-all duration-500 rounded-md border border-border p-0 overflow-auto max-h-[75vh] h-[75vh]` : `transition-all duration-500 border border-border  overflow-auto max-h-[75vh] h-[75vh] `}
         style={{width: open ? '0' : width }}
       >
         {children}
