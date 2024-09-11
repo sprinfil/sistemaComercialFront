@@ -115,8 +115,12 @@ interface FiltrosContratacion {
   idGiroComercial: number;
   setIdGiroComercial: (idGiroComercial: number) => void;
 
-  idLibro: number,
-  setIdLibro:(idLibro: number) => void;
+
+  marcadorSeleccionado: [];
+  setMarcadorSeleccionado: (marcadorSeleccionado:  []) => void;
+
+
+
 }
 
 export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => ({
@@ -232,8 +236,10 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
   idGiroComercial: 0,
   setIdGiroComercial:(idGiroComercial) => set({idGiroComercial}),
 
-  idLibro: 0,
-  setIdLibro:(idLibro) => set({idLibro}),
+  marcadorSeleccionado: [],
+  setMarcadorSeleccionado:(marcadorSeleccionado) => set({marcadorSeleccionado}),
+
+
 
 
 }));
