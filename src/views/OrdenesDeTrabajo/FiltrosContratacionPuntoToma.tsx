@@ -34,7 +34,7 @@ const FiltrosContratacionPuntoToma = () => {
 
 
 
-  const {setIsCheckedPreContratadas, isCheckedPreContratadas} = ZustandFiltrosContratacion();
+  const {setIsCheckedPreContratadas, isCheckedPreContratadas, setPuntosFiltradosParaElMapa} = ZustandFiltrosContratacion();
 
 console.log(isCheckedPreContratadas);
 
@@ -42,17 +42,25 @@ console.log(isCheckedPreContratadas);
   const handleBuscarTomas = () => 
   {
 
+    const contratadas = isCheckedPreContratadas && "pre-contrato" 
+
     const values = {
-      pre_contrato: isCheckedPreContratadas,
+      filtros: [
+        {tipo_contratacion: [contratadas]},
+      ],
     }
+
+    console.log(values);
 
     try
     {
         const response = axiosClient.post("contratos/filtros", values);
-        
+        console.log(response);
+        setPuntosFiltradosParaElMapa(response);
     }
     catch(response)
-    {
+    { 
+      console.log(response);
 
     }
 

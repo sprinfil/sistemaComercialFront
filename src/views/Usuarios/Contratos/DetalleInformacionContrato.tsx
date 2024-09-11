@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import MarcoForm from '../../../components/ui/MarcoForm'
 import MarcoFormDetalleContrato from '../../../components/ui/MarcoFormDetalleContrato'
 import { Button } from '../../../components/ui/button'
@@ -6,6 +6,7 @@ import { ZustandFiltrosContratacion } from '../../../contexts/ZustandFiltrosCont
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import axiosClient from '../../../axios-client'
+import { Checkbox } from '../../../components/ui/checkbox'
 export const DetalleInformacionContrato = () => {
   const { toast } = useToast()
 
@@ -18,9 +19,27 @@ export const DetalleInformacionContrato = () => {
   console.log(direccion_notificaciones);
 
 
+  const [files, setFiles] = useState<FileList | null>(null);
+
+
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setFiles(event.target.files);
+    }
+  };
 
 
   const generarSolicitud = async () => {
+
+
+    if (files) {
+      // Aquí puedes procesar los archivos, por ejemplo, subirlos a un servidor
+      Array.from(files).forEach(file => {
+        console.log(file.name);
+      });
+    }
+
 
     const values = {
       contrato: contrato,
@@ -71,7 +90,7 @@ export const DetalleInformacionContrato = () => {
       Detalle de contratación
       </div>
 
-      <div className="border border-border rounded shadow-lg p-6 w-[210vh] ml-[9vh] mt-5 h-[80vh]">
+      <div className="border border-border rounded shadow-lg p-6 w-[210vh] ml-[9vh] mt-5 h-[120vh]">
         <div className='mt-5'>
         <MarcoFormDetalleContrato title={"Información del usuario"}>
           Nombre del contrato: {contrato.nombre_contrato}
@@ -134,10 +153,25 @@ export const DetalleInformacionContrato = () => {
 
 
         </div>
-       
+        <div className='flex space-x-2 mb-[5vh]'>
+          <div className='text-xl'>
+            Generar inspección:
+            </div>
+              <div className='w-[5vh] h-[5vh] mt-1'>
+              <Checkbox className='w-[2.5vh] h-[2.5vh]'/>
 
-        <input type="file" name="archivo" id="archivo"></input>
+              </div>
 
+        </div>
+
+        
+        <input 
+        type="file" 
+        name="archivo" 
+        id="archivo" 
+        multiple 
+        onChange={handleFileChange} 
+      />
         <div className='flex justify-end'>
         <Button className='mt-10' onClick={generarSolicitud}>Crear nuevo contrato</Button>
         </div>

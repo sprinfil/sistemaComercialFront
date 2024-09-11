@@ -45,7 +45,7 @@ import ModalMonitorContratacionCambioDePropietario from "./ModalMonitorContratac
 import { MdOutlinePriceChange } from "react-icons/md";
 import ModalMonitorContratacionCotizacion from "./ModalMonitorContratacionCotizacion.tsx";
 
-const ModalMonitorContratacion = ({ selected_contrato }) => {
+const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
   const { toast } = useToast();
   
   const {setDataMonitorContratos,  setLoadingTableMonitorContrato, boolModalContratacionMonitor, setBoolModalContratacionMonitor, 
@@ -135,6 +135,7 @@ const ModalMonitorContratacion = ({ selected_contrato }) => {
         variant: "success",
       });
       fetch_contratos();
+      set_open(false);
       console.log(response);
     } catch (response) {
       const mensaje = response.request.response
@@ -156,8 +157,8 @@ const ModalMonitorContratacion = ({ selected_contrato }) => {
   
 
   return (
-    <AlertDialog open={boolModalContratacionMonitor} onOpenChange={setBoolModalContratacionMonitor}>
-      <AlertDialogContent className="max-w-[150vh] ">
+    <AlertDialog open={open} onOpenChange={set_open}>
+      <AlertDialogContent className="max-w-[190vh] max-h-[102vh] ">
         <AlertDialogHeader>
           <div className="flex justify-between items-center">
             {/* Título al principio */}
@@ -330,7 +331,7 @@ const ModalMonitorContratacion = ({ selected_contrato }) => {
 
                   </div>
                   <p className="text-gray-800 dark:text-gray-200">
-                  {selected_contrato?.diametro_toma}
+                  {selected_contrato?.diametro_de_la_toma}
                   </p>
                 </div>
           

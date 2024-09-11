@@ -59,29 +59,21 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const { boolModalContratacionMonitor, setBoolModalContratacionMonitor } =
-        ZustandFiltrosContratacion();
-
-      // Estado local para almacenar el contrato seleccionado
-      const [selectedContrato, setSelectedContrato] = useState<ContratoMonitor | null>(null);
-
-      const handleViewContrato = () => {
-        setSelectedContrato(row.original); // Establecer el contrato seleccionado
-        setBoolModalContratacionMonitor(true); // Abrir el modal
-      };
+      const [modal_ver_pago, set_modal_ver_pago] = useState(false);
 
       return (
         <>
-          <IconButton onClick={handleViewContrato}>
-            <EyeIcon className="w-[15px] h-[15px]" />
+          <IconButton  onClick={() => { set_modal_ver_pago(true) }} >
+            <EyeIcon className='w-[15px] h-[15px]' />
           </IconButton>
-
-          {/* Renderizar el modal solo si selectedContrato tiene un valor y el modal está activo */}
-          {boolModalContratacionMonitor && selectedContrato && (
-            <ModalMonitorContratacion selected_contrato={selectedContrato} />
-          )}
+          <ModalMonitorContratacion
+            selected_contrato={row?.original}
+            open={modal_ver_pago}
+            set_open={set_modal_ver_pago}
+          />
         </>
-      );
+
+      )
     },
   },
 ];

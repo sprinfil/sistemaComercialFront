@@ -113,11 +113,11 @@ export function ContratosMonitorDataTable<TData, TValue>({
             <p>Estatus</p>
             <Select onValueChange={(value) => { table.getColumn("estatus")?.setFilterValue(value == "cualquiera" ? "" : value) }}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Timbrado" />
+                <SelectValue placeholder="Sin filtro" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Estado</SelectLabel>
+                  <SelectLabel>Estatus</SelectLabel>
                   <SelectItem value="pendiente de pago">Pendiente de pago</SelectItem>
                   <SelectItem value="contrato no factible">No factible</SelectItem>
                   <SelectItem value="pendiente de inspeccion">Pendiente de inspección</SelectItem>

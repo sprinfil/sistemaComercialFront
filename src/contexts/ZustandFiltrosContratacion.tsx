@@ -152,6 +152,12 @@ interface FiltrosContratacion {
 
   tipoDeToma:string;
   setTipoDeToma:(tipoDeToma: string) => void;
+
+
+  puntosFiltradosParaElMapa:[];
+  setPuntosFiltradosParaElMapa:(puntosFiltradosParaElMapa: []) => void;
+
+  
   
 
 }
@@ -307,6 +313,9 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
   
   tipoDeToma: "",
   setTipoDeToma: (tipoDeToma) => set({ tipoDeToma }),
+
+  puntosFiltradosParaElMapa:[],
+  setPuntosFiltradosParaElMapa: (puntosFiltradosParaElMapa) => set({ puntosFiltradosParaElMapa }),
 
 
 
