@@ -268,7 +268,7 @@ export const MenuSuperiosNew = () => {
                                     return (
                                         
                                         <MenubarMenu>
-                                            <MenubarTrigger ><div className='flex gap-2 items-center'> <span className='text-primary '> {opcionPadre.icon}</span>{opcionPadre.titulo}</div></MenubarTrigger>
+                                            <MenubarTrigger  className="h-full"><div className='flex gap-2 items-center'> <span className='text-primary '> {opcionPadre.icon}</span>{opcionPadre.titulo}</div></MenubarTrigger>
                                             <MenubarContent>
                                                 {opcionPadre.opciones.map((opcion, key) => {
                                                     if (permissions.includes(opcion.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
@@ -276,7 +276,7 @@ export const MenuSuperiosNew = () => {
                                                             <>
                                                                 <Link to={opcion.route} key={index}>
                                                                     <MenubarItem onClick={() => { handle_menu_trigger_click(opcion, opcionPadre.icon) }}>
-                                                                        <div key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
+                                                                        <div key={key} className=' hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
                                                                             <div key={key} className="mb-1 text-[12px] font-medium">
                                                                                 {opcion.titulo}
                                                                             </div>

@@ -1,10 +1,10 @@
 import React from 'react';
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 
-export const OcultarTablePagosMonitor = ({ children, abierto = false, width = '460px', accion}) => {
+export const OcultarTablePagosMonitor = ({ children, abierto = false, width = '300px', accion }) => {
   const [open, setOpen] = useState(abierto);
-  
+
   console.log('Accion:', accion);
 
   const handleAbierto = () => {
@@ -13,25 +13,23 @@ export const OcultarTablePagosMonitor = ({ children, abierto = false, width = '4
 
   useEffect(() => {
     if (accion === 'crear') {
-      setOpen(true); 
+      setOpen(true);
     }
     if (accion === 'creado') {
-      setOpen(false); 
+      setOpen(false);
     }
   }, [accion]);
 
 
   return (
     <div className='flex items-center'>
-      
+
       <div
         className={open ? `transition-all duration-500 rounded-md border border-border p-0 overflow-auto max-h-[75vh] h-[75vh]` : `transition-all duration-500 border border-border  overflow-auto max-h-[75vh] h-[75vh] `}
-        style={{width: open ? '0' : width }}
+        style={{ width: open ? '0' : width }}
       >
         {children}
       </div>
-
-
 
       <div className='flex items-center h-full px-1 py-1 cursor-pointer bg-muted rounded-tr-md rounded-br-md' onClick={handleAbierto}>
         {open ? (
@@ -41,8 +39,6 @@ export const OcultarTablePagosMonitor = ({ children, abierto = false, width = '4
         )
         }
       </div>
-
-
     </div>
   );
 };

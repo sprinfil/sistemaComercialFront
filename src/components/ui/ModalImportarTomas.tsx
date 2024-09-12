@@ -26,7 +26,11 @@ import {
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
+import { string } from 'zod';
+import Modal from './Modal';
+import axiosClient from '../../axios-client';
+import { toast, useToast } from './use-toast';
+import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
 
 const containerStyle = {
   width: '100%',
@@ -41,7 +45,7 @@ const center = {
 
 
 // Lista de marcadores (puedes obtener estos datos desde tu backend o un archivo)
-const markers = [
+const tomas = [
   { id: 1, position: { lat: 40.712776, lng: -74.005974 }, name: 'New York' },
   { id: 2, position: { lat: 34.052235, lng: -118.243683 }, name: 'Los Angeles' },
   { id: 3, position: { lat: 41.878113, lng: -87.629799 }, name: 'Chicago' },
@@ -52,10 +56,11 @@ interface ModalProps {
   children: React.ReactNode;
 }
 const ModalImportarTomas: React.FC<ModalProps> = ({ trigger }) => {
+  const { toast } = useToast();
   const [excelData, setExcelData] = useState([]);
-  const [markers, set_markers] = useState([]);
+  const [tomas, set_tomas] = useState([]);
   const [ver_mapa, set_ver_mapa] = useState(false);
-
+  const { usuariosEncontrados, setTomas } = ZustandGeneralUsuario();
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -70,35 +75,52 @@ const ModalImportarTomas: React.FC<ModalProps> = ({ trigger }) => {
 
       // Actualizar el estado con los datos del Excel
       setExcelData(data);
+      console.log(data)
     };
 
     reader.readAsBinaryString(file); // Leer el archivo Excel como cadena binaria
   };
 
   useEffect(() => {
-    let markers_temp = [];
+    let tomas_temp = [];
 
     excelData.map((data, index) => {
 
-      if (index != 0) {
+      if (index != 0 && data[1] != null) {
 
-        markers_temp.push(
+        tomas_temp.push(
           {
-            id: index,
-            position: { lat: parseFloat(data[4]), lng: parseFloat(data[5]) },
-            name: data[1]
+            position: { lat: parseFloat(data[15]), lng: parseFloat(data[16]) },
+            posicion: [data[15], data[16]],
+            clave_catastral: String(data[1]),
+            id_usuario: usuariosEncontrados[0]?.id,
+            id_giro_comercial: 2,
+            nombre: String(data[0]),
+            id_tipo_toma: 1,
+            colonia: 1,
+            calle: 1,
+            municipio: String(data[4]),
+            localidad: String(data[5]),
+            entre_calle_1: 1,
+            entre_calle_2: 1,
+            numero_casa: String(data[8]),
+            direccion_notificacion: String(data[9]),
+            codigo_postal: String(data[10]),
+            diametro_toma: String(data[11]),
+            c_agua: String(data[12]),
+            c_alc: String(data[13]),
+            c_san: String(data[14])
           }
         )
       }
     })
 
-    set_markers(markers_temp)
+    set_tomas(tomas_temp)
   }, [excelData])
 
   useEffect(() => {
-    console.log(markers)
-  }, [markers])
-
+    console.log(tomas)
+  }, [tomas])
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: 'AIzaSyARlsiPBIt9Cv5EiSNKTZVENYMZwJo-KJ0', // Reemplaza con tu API Key
@@ -118,6 +140,34 @@ const ModalImportarTomas: React.FC<ModalProps> = ({ trigger }) => {
     return <div>Cargando mapa...</div>;
   }
 
+  const importar_tomas = async () => {
+    try {
+      let response = await axiosClient.post("contratos/precontrato", { tomas: tomas })
+
+      toast({
+        title: "¡Éxito!",
+        description: "Las tomas se importaron con exito",
+        variant: "success",
+      })
+      set_tomas([]);
+      setExcelData([]);
+      console.log(response.data.tomas);
+      setTomas( (prev) => {
+        if (response && response.data && response.data.tomas) {
+          return [
+            ...prev,
+            ...response.data.tomas
+          ];
+        } else {
+          return prev;
+        }
+      });
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
 
   return (
     <div>
@@ -134,9 +184,23 @@ const ModalImportarTomas: React.FC<ModalProps> = ({ trigger }) => {
                 <div className="grid w-full max-w-sm items-center gap-1.5 mb-5">
                   <Input id="picture" type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
                 </div>
-                <Button variant={"outline"} onClick={()=>{set_ver_mapa(!ver_mapa)}}>
+                <Button variant={"outline"} onClick={() => { set_ver_mapa(!ver_mapa) }}>
                   Ocultar / Mostrar Mapa
                 </Button>
+                {
+                  tomas.length > 0 &&
+                  <Modal
+                    trigger={<Button>
+                      Aceptar (importar tomas)
+                    </Button>}
+                    title='¿Importar Tomas?'
+                    description='Se van a importar todas las tomas extraidas del Layout'
+                    onConfirm={() => {
+                      importar_tomas();
+                    }}
+                  />
+                }
+
 
               </div>
 
@@ -167,7 +231,7 @@ const ModalImportarTomas: React.FC<ModalProps> = ({ trigger }) => {
 
             <div>
               {
-                markers.length > 0 && ver_mapa &&
+                tomas.length > 0 && ver_mapa &&
                 <GoogleMap
                   mapContainerStyle={containerStyle}
                   center={center}
@@ -176,8 +240,8 @@ const ModalImportarTomas: React.FC<ModalProps> = ({ trigger }) => {
                   onUnmount={onUnmount}
                 >
                   {/* Agregar los marcadores al mapa */}
-                  {markers.map((marker) => (
-                    <Marker key={marker.id} position={marker.position} label={marker.name} map={map} />
+                  {tomas.map((toma) => (
+                    <Marker key={toma.id} position={toma.position} label={toma.clave_catastral} map={map} />
                   ))}
                 </GoogleMap>
 

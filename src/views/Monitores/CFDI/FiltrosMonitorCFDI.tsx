@@ -8,6 +8,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export const FiltrosMonitorCFDI = () => {
   return (
@@ -17,35 +26,18 @@ export const FiltrosMonitorCFDI = () => {
         <FiFilter className='w-[25px] h-[25px]' />
       </div>
       <div className='p-4'>
+
         <Accordion collapsible className="w-full" type="multiple" defaultValue={["item-1", "item-2"]}>
           <AccordionItem value="item-1">
             <AccordionTrigger>Información del timbre</AccordionTrigger>
             <AccordionContent>
-              <div className='p-4 space-y-4'>
-                <div>
-                  <p>Folio</p>
-                  <Input/>
-                </div>
-                <div>
-                  <p>Timbro</p>
-                  <Input/>
-                </div>
-                <div>
-                  <p>Estado del timbrado</p>
-                  <Input/>
-                </div>
-                <div>
-                  <p>Fecha de solicitud</p>
-                  <Input/>
-                </div>
-              </div>
+              Proximamente
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger>Is it styled?</AccordionTrigger>
+            <AccordionTrigger>Información de Toma/Usuario</AccordionTrigger>
             <AccordionContent>
-              Yes. It comes with default styles that matches the other
-              components&apos; aesthetic.
+              Proximamente
             </AccordionContent>
           </AccordionItem>
         </Accordion>

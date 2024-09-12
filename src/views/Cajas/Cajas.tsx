@@ -23,7 +23,11 @@ function App() {
         const fetchCajaNombre = async () => {
             try {
                 if (!session_caja.fondo_inicial) {
-                    const response = await axiosClient.get("/cajas/estadoSesionCobro");
+                    const response = await axiosClient.get("/cajas/estadoSesionCobro?id_sesion_caja", {
+                        params: {
+                            id_sesion_caja: null
+                        },
+                    });
                     const { caja_nombre } = response.data;
                     console.log(response.data);
                     set_session_caja(response.data);

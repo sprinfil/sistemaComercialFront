@@ -21,7 +21,11 @@ export default function PuntoVenta() {
     // Hacer una solicitud a la API para verificar el estado de la caja
     const fetchCajaStatus = async () => {
       try {
-        const response = await axiosClient.get('/cajas/estadoSesionCobro');
+        const response = await axiosClient.get('/cajas/estadoSesionCobro?id_sesion_caja',{
+          params: {
+            id_sesion_caja: null
+          },
+        });
         const { fondo_inicial } = response.data;
     
           if (fondo_inicial) {
@@ -51,6 +55,7 @@ export default function PuntoVenta() {
     const data = {
       id_caja_catalogo: cajaCatalogoId,
       fondo_inicial: formattedAmount,
+      estado:"activo"
     };
 
     try {

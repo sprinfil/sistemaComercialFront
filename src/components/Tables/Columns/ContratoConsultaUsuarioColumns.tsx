@@ -123,7 +123,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0].clave_catastral;
+      return row.tomas?.[0]?.clave_catastral;
     },
     id: "tomas.clave_catastral",
     header: ({ column }) => (
@@ -138,7 +138,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0].calle;
+      return row.tomas?.[0]?.calle;
     },
     id: "tomas.calle",
     header: ({ column }) => (
@@ -153,7 +153,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0].numero_casa;
+      return row.tomas?.[0]?.numero_casa;
     },
     id: "tomas.numero_casa",
     header: ({ column }) => (
@@ -168,7 +168,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0].colonia;
+      return row.tomas?.[0]?.colonia;
     },
     id: "tomas.colonia",
     header: ({ column }) => (
@@ -183,7 +183,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0].entre_calle_1;
+      return row.tomas?.[0]?.entre_calle_1;
     },
     id: "tomas.entre_calle_1",
     header: ({ column }) => (
@@ -198,7 +198,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0].entre_calle_2;
+      return row.tomas?.[0]?.entre_calle_2;
     },
     id: "tomas.entre_calle_2",
     header: ({ column }) => (
@@ -213,7 +213,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0].codigo_postal;
+      return row.tomas?.[0]?.codigo_postal;
     },
     id: "tomas.codigo_postal",
     header: ({ column }) => (
@@ -228,7 +228,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0].localidad;
+      return row.tomas?.[0]?.localidad;
     },
     id: "tomas.localidad",
     header: ({ column }) => (
