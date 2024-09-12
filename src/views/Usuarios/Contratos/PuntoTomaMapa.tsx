@@ -68,8 +68,8 @@ const PuntoTomaMapa = () => {
     if (promise instanceof Promise) {
       promise
         .then((data) => {
-          console.log(data.data.tomas.data);
-          set_tomas_filtradas(data.data.tomas.data);
+          console.log(data.data.tomas);
+          set_tomas_filtradas(data.data.tomas);
         })
         .catch((e) => {
           console.log(e);

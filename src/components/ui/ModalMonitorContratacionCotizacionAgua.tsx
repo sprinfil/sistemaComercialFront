@@ -47,6 +47,7 @@ import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario";
 import { Input } from "./input.tsx";
 import { ConceptosComboBox } from "./ConceptosComboBox.tsx";
 import { ConceptosComboBoxCotizacion } from "./ConceptosComboBoxCotizacion.tsx";
+import ComboBoxCargosCargables from "./ComboBoxCargosCargables.tsx";
 
 const ModalMonitorContratacionCotizacionAgua = ({ selected_contrato }) => {
   const { toast } = useToast();
@@ -61,10 +62,21 @@ const ModalMonitorContratacionCotizacionAgua = ({ selected_contrato }) => {
 
 console.log(usuariosEncontrados[0]?.id);
 
-console.log(selected_contrato?.id);
+console.log(selected_contrato?.toma?.id_tipo_toma);
+
 
 
 const [cargoSeleccionado, setCargoSeleccionado] = useState();
+const [monto, setMonto] = useState(''); // Estado para el monto
+const [tipoToma, setTipoToma] = useState(selected_contrato?.toma?.id_tipo_toma);
+const [deshabilitarInput, setDeshabilitatInput] = useState();
+const [deshabilitarInput2, setDeshabilitatInput2] = useState();
+const [conceptoEnviar, setConceptoEnviar] = useState([]);
+const [piezas, setPiezas] = useState(1);
+
+const handlePiezasChange = (event) => {
+  setPiezas(event.target.value);
+};
 
 
 const form = useForm<z.infer<typeof cambioPropietarioSchema>>({
@@ -90,9 +102,44 @@ function onSubmit(values: z.infer<typeof cambioPropietarioSchema>)
           })
   
 }
+const agregrarConcepto = () => {
+  // Si cargoSeleccionado es un objeto, conviértelo en un array si es necesario
+  const nuevosConceptos = Array.isArray(cargoSeleccionado) ? cargoSeleccionado : [cargoSeleccionado];
+
+  // Agregar los nuevos conceptos al array existente
+  setConceptoEnviar(prevConceptos => [...prevConceptos, ...nuevosConceptos]);
+};
+
+useEffect(() => {
+  console.log('cargoSeleccionado:', cargoSeleccionado);
+}, [cargoSeleccionado]);
 
 
+useEffect(() => {
+  if (cargoSeleccionado && cargoSeleccionado?.tarifas && tipoToma) {
+    // tarifa dependiendo el tipo de toma
+    
+    const tarifaCorrespondiente = cargoSeleccionado.tarifas.find(tarifa => tarifa.id_tipo_toma === tipoToma);
+    
+    if (tarifaCorrespondiente) {
+      setMonto(tarifaCorrespondiente.monto); 
+    }
+  }
+  if(cargoSeleccionado?.pide_monto == 0)
+  {
+    setDeshabilitatInput(true);
+  }
 
+  if(!cargoSeleccionado)
+  {
+    setDeshabilitatInput(true);
+  }
+}, [cargoSeleccionado, tipoToma]);
+
+// Función para eliminar un concepto
+const eliminarConcepto = (index: number) => {
+  setConceptoEnviar(prevConceptos => prevConceptos.filter((_, i) => i !== index));
+};
 
   // Función para manejar el cierre del modal
   const handleCloseModal = () => {
@@ -120,23 +167,100 @@ function onSubmit(values: z.infer<typeof cambioPropietarioSchema>)
                                 name="nombre_contrato"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Contrato de agua.</FormLabel>
+                                   
+                                        <FormLabel>Selecciona un cargo si es necesario.</FormLabel>
                                         <FormControl>
                                           <>
-                                          <div className="flex space-x-2">
-                                            <div className="w-[150vh]">
-                                            <ConceptosComboBoxCotizacion form={form} field={field} name="nombre_contrato" setCargoSeleccionado={setCargoSeleccionado}/>
+                                          {
+                                        cargoSeleccionado?.pide_monto == 1 ?
+                                            <>
+                                                <p className='text-[14px] m-1 text-blue-500'>Monto Variable</p>
+                                            </>
+                                            :
+                                            <>
+                                                <p className='text-[14px] m-1 text-red-500'>Monto Fijo</p>
+                                            </>
+                                     }
 
+                                          <div className="flex space-x-2 w-full items-center">
+                                            {/* ComboBox para seleccionar cargos */}
+                                            <div className="flex-1 w-[50px]">
+                                              <ComboBoxCargosCargables set={setCargoSeleccionado} />
                                             </div>
-                                          <Button>Agregar concepto</Button>
+
+                                            {/* Input para el monto */}
+                                            <div className="w-[150px] mb-3">
+                                              <input
+                                                type="number"
+                                                className="bg-background border p-2 mt-2 w-full rounded-md outline-none"
+                                                placeholder="Monto"
+                                                value={monto}
+                                                disabled={deshabilitarInput}
+                                                onChange={(e) => setMonto(e.target.value)}
+                                              />
+                                            </div>
+
+                                            {/* Input para las piezas */}
+                                            <div className="w-[150px] mb-3">
+                                            <input
+                                              type="number"
+                                              className="bg-background border p-2 mt-2 w-full rounded-md outline-none"
+                                              placeholder="Piezas"
+                                              value={piezas} // El valor del input está asociado al estado
+                                              onChange={handlePiezasChange} // Actualiza el estado cuando el valor cambia
+                                            />
+                                            </div>
+
+                                            {/* Botón Agregar */}
+                                            <Button onClick={agregrarConcepto}>Agregar</Button>
                                           </div>
-                                       
+                                                                                      
+                                         
+                                            <div>
+                                              {conceptoEnviar.length > 0 ? (
+                                                conceptoEnviar.map((item, index) => {
+                                                  // Filtra la tarifa correspondiente según tu lógica
+                                                  const tarifaCorrespondiente = item?.tarifas?.find(tarifa => tarifa.id_tipo_toma === tipoToma);
+
+                                                  return (
+                                                    <div key={index} className="mt-5 flex flex-col space-y-2">
+                                                    <div className="flex space-x-2 overflow-auto max-h-[10vh]">
+                                                      <div className="text-xl text-black">Nombre del cargo:</div>
+                                                      <div className="mt-[5px] text-base">{item?.nombre}</div>
+                                                    </div>
+                                                  
+                                                    <div className="flex justify-between items-center">
+                                                      <div className="flex space-x-2">
+                                                        <div className="text-xl text-black">Monto:</div>
+                                                        <div className="mt-[5px] text-base">
+                                                          {tarifaCorrespondiente ? (tarifaCorrespondiente.monto * piezas) : 'No disponible'}
+                                                        </div>
+                                                      </div>
+                                                  
+                                                      <div className="flex items-center">
+                                                        <IconButton onClick={() => eliminarConcepto(index)} aria-label="Eliminar concepto">
+                                                          <MdDeleteOutline className="w-[30px] h-[30px] text-red-500 mb-2" /> {/* Ajusta el tamaño aquí */}
+                                                        </IconButton>
+                                                      </div>
+                                                    </div>
+                                                  
+                                                    <hr className="border-t border-border my-1 mt-2" />
+                                                  </div>
+                                                      
+                                                      
+                                                    
+                                                  );
+                                                })
+                                              ) : (
+                                                <p></p>
+                                              )}
+                                            </div>
                                           </>
                                      
 
                                         </FormControl>
                                         <FormDescription>
-                                            Selecciona un concepto si es necesario.
+                                            Selecciona un cargo si es necesario.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>

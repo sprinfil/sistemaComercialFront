@@ -53,7 +53,7 @@ export const CrearContratoForm = () => {
 
     const {latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial, 
         setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
-        setServicioContratado, setGiroComercial,setTipoDeToma, tomaPreContratada,isCheckInspeccion,
+        setServicioContratado, setGiroComercial,setTipoDeToma, tomaPreContratada,isCheckInspeccion,boolPeticionContratacion,
         setServicioContratado2} = ZustandFiltrosContratacion();
 
 
@@ -68,9 +68,10 @@ export const CrearContratoForm = () => {
         resolver: zodResolver(crearContratoSchema),
         defaultValues: {
             id_giro_comercial: 0,
+            nombre_contrato:"",
             clave_catastral: "",
             calle:0,
-            num_casa:0,
+            num_casa:"1",
             entre_calle_1: 0,
             entre_calle_2:0,
             colonia: 0,
@@ -103,7 +104,7 @@ export const CrearContratoForm = () => {
             };
 
       
-
+console.log(tomaPreContratada?.id)
 
        
     const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
@@ -124,22 +125,53 @@ export const CrearContratoForm = () => {
         
 
         const tipoToma = parseInt(values.tipo_toma, 10);
-        const num_casaDato = String(values.num_casa);
+        const num_casaDato = Number(values.num_casa);
+        //const num_casaDato = String(values.num_casa);
 
         setIdGiroComercial(values.id_giro_comercial);
         setServicioContratado(agua);
         setServicioContratado2(alcantarillado_y_saneamiento);
+        let tomaId = 0;
+        if (tomaPreContratada && tomaPreContratada.id !== undefined) {
+            tomaId = tomaPreContratada?.id;
+        }
+        console.log(tomaId);
 
+        let datos; 
+        if(boolPeticionContratacion)
+        {
+                //ESTOS DATOS SON PARA ENVIAR
+                 datos = {
+                    id_usuario: usuariosEncontrados[0]?.id,
+                    nombre_contrato: values.nombre_contrato,
+                    clave_catastral: values.clave_catastral,
+                    tipo_toma:tipoToma,
+                    servicio_contratados: servicios,
+                    diametro_de_la_toma:values.diametro_toma,
+                    num_casa: values.num_casa,
+                    colonia: values.colonia,
+                    calle: values.calle,
+                    codigo_postal: values.codigo_postal,
+                    entre_calle_1: values.entre_calle_1,
+                    entre_calle_2: values.entre_calle_2,
+                    localidad: values.localidad,
+                    municipio: values.municipio,
+                    tipo_contratacion: values.tipo_contratacion,
+                }
+        }
+        else
+        {
         //ESTOS DATOS SON PARA ENVIAR
-        const datos = {
-            id_toma: tomaPreContratada?.id,
+         datos = {
+                    
+            id_toma: tomaId,
             id_usuario: usuariosEncontrados[0]?.id,
             nombre_contrato: values.nombre_contrato,
             clave_catastral: values.clave_catastral,
             tipo_toma:tipoToma,
             servicio_contratados: servicios,
             diametro_de_la_toma:values.diametro_toma,
-            num_casa: num_casaDato,
+            num_casa: values.num_casa,
             colonia: values.colonia,
             calle: values.calle,
             codigo_postal: values.codigo_postal,
@@ -149,6 +181,10 @@ export const CrearContratoForm = () => {
             municipio: values.municipio,
             tipo_contratacion: values.tipo_contratacion,
         }
+
+        }
+       
+        
            
         
         // Filtrar campos deshabilitados antes de enviar
@@ -226,7 +262,7 @@ export const CrearContratoForm = () => {
                 tipo_toma: tomaPreContratada?.id_tipo_toma || '',
                 diametro_toma: tomaPreContratada?.diametro_toma || '',
                 calle:tomaPreContratada?.calle || '',
-                num_casa:Number(tomaPreContratada?.numero_casa) || 0,
+                num_casa:String(tomaPreContratada?.numero_casa) || 0,
                 colonia:tomaPreContratada?.colonia || '',
                 codigo_postal:tomaPreContratada?.codigo_postal || '',
                 entre_calle_1:tomaPreContratada?.entre_calle_1 || '',

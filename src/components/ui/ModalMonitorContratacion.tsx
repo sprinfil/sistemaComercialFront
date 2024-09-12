@@ -108,7 +108,35 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
   }
 
   const handleCotizacionModal= () => {
-    setBoolModalCotizacionMonitor(true);
+
+    const values = {
+      id_contrato: selected_contrato?.id
+    }
+
+    console.log(values);
+    try{
+
+      const response = axiosClient.post("contratos/cotizacion/create", values)
+      setBoolModalCotizacionMonitor(true);
+      console.log(response);
+      toast({
+        title: "¡Éxito!",
+        description: "La anomalía se ha creado correctamente",
+        variant: "success",
+
+    })
+
+    }
+    catch(response)
+    {
+      console.log(response);
+      toast({
+        variant: "destructive",
+        title: "Oh, no. Error",
+        description: "Algo salió mal.",
+        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+    })
+    }
   }
   
   

@@ -43,6 +43,7 @@ export const DetalleInformacionContrato = () => {
 
     const values = {
       contrato: contrato,
+      solicitud_factibilidad: isCheckInspeccion,
       toma: {
         id_libro: libroToma,
         id_giro_comercial: idGiroComercial,
@@ -101,12 +102,22 @@ export const DetalleInformacionContrato = () => {
         <div className='mt-[5vh]'>
         <MarcoFormDetalleContrato title={"Información de la toma"}>
           <div className='flex flex-col'>
-            <div className='flex-1'>
-            Clave catastral:  {contrato.clave_catastral}
+            <div className='flex space-x-2'>
+            <div className='text-2xl'>Clave catastral:</div>  
+              <div className='mt-2'>
+              {contrato.clave_catastral}
+              </div>
             </div>
-            <div className='flex-1'>
-            Calle: {calleSeleccionada}
+          
+            <div className='flex flex-col'>
+            <div className='flex space-x-2'>
+            <div className='text-2xl'>Calle:</div>  
+              <div className='mt-2'>
+              {calleSeleccionada}
+              </div>
             </div>
+            </div>
+            
             <div className='flex-1'>
             Numero de casa: {contrato.num_casa}
             </div>

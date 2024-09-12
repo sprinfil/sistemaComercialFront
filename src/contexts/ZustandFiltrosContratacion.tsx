@@ -164,6 +164,8 @@ interface FiltrosContratacion {
   isCheckInspeccion: boolean;
   setIsCheckInspeccion:(isCheckInspeccion: boolean) => void;
 
+  boolPeticionContratacion: boolean;
+  setBoolPeticionContratacion: (boolPeticionContratacion: boolean) => void;
   
 
 }
@@ -329,6 +331,9 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
     
   isCheckInspeccion: false,
   setIsCheckInspeccion: (isCheckInspeccion) => set({ isCheckInspeccion }),
+
+  boolPeticionContratacion: false,
+  setBoolPeticionContratacion: (boolPeticionContratacion) => set({ boolPeticionContratacion }),
 
 }));
 

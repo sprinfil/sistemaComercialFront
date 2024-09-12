@@ -163,5 +163,5 @@ export const registroMedidotOtSchema = z.object({
 
 export const cambioPropietarioSchema = z.object({
   id: z.number(),
-  nombre_contrato: z.string().min(1, "El nombre del contrato es requierido."),
+  nombre_contrato: z.string(),
 })

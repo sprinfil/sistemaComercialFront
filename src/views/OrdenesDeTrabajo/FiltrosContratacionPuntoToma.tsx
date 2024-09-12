@@ -30,14 +30,15 @@ const FiltrosContratacionPuntoToma = () => {
 
   const handleSiguienteContratacion = () => {
     navigate("/Contrato/Usuario");
+    setTomaPreContratada([]);
+    setBoolPeticionContratacion(true);
   }
 
 
 
-  const {setIsCheckedPreContratadas, isCheckedPreContratadas, setPuntosFiltradosParaElMapa} = ZustandFiltrosContratacion();
+  const {setIsCheckedPreContratadas, isCheckedPreContratadas, setPuntosFiltradosParaElMapa, tomaPreContratada, setTomaPreContratada, setBoolPeticionContratacion} = ZustandFiltrosContratacion();
 
 //console.log(isCheckedPreContratadas);
-
 
   const handleBuscarTomas = () => 
   {
@@ -45,11 +46,11 @@ const FiltrosContratacionPuntoToma = () => {
     const contratadas = isCheckedPreContratadas && "pre-contrato" 
 
     const values = {
-      filtros: [
-        {tipo_contratacion: [contratadas]},
-      ],
-    }
-
+      filtros: {
+        tipo_contratacion: ["pre-contrato"],
+      },
+    };
+    
     console.log(values);
 
     try
