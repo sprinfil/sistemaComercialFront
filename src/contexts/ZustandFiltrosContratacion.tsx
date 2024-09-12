@@ -161,6 +161,9 @@ interface FiltrosContratacion {
   tomaPreContratada:[];
   setTomaPreContratada:(tomaPreContratada: []) => void;
 
+  isCheckInspeccion: boolean;
+  setIsCheckInspeccion:(isCheckInspeccion: boolean) => void;
+
   
 
 }
@@ -322,6 +325,10 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
 
   tomaPreContratada:[],
   setTomaPreContratada: (tomaPreContratada) => set({ tomaPreContratada }),
+
+    
+  isCheckInspeccion: false,
+  setIsCheckInspeccion: (isCheckInspeccion) => set({ isCheckInspeccion }),
 
 }));
 

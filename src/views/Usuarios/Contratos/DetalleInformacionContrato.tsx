@@ -13,7 +13,7 @@ export const DetalleInformacionContrato = () => {
 
 
   const {contrato, direccion_notificaciones, libroToma, idGiroComercial,giroComercial, calleSeleccionada, coloniaSeleccionada, entreCalle1Seleccionada, 
-    entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma,tomaPreContratada} = ZustandFiltrosContratacion();
+    entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma,tomaPreContratada,setIsCheckInspeccion, isCheckInspeccion} = ZustandFiltrosContratacion();
 
   console.log(contrato);
   console.log(direccion_notificaciones);
@@ -158,7 +158,9 @@ export const DetalleInformacionContrato = () => {
             Generar inspección:
             </div>
               <div className='w-[5vh] h-[5vh] mt-1'>
-              <Checkbox className='w-[2.5vh] h-[2.5vh]'/>
+              <Checkbox className='w-[2.5vh] h-[2.5vh]'
+                checked={isCheckInspeccion}
+                onCheckedChange={setIsCheckInspeccion}/>
 
               </div>
 

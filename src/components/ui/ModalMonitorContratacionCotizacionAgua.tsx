@@ -45,8 +45,10 @@ import { BuscarUsuarioForm } from "../../views/Usuarios/Contratos/FormsContratos
 
 import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario";
 import { Input } from "./input.tsx";
+import { ConceptosComboBox } from "./ConceptosComboBox.tsx";
+import { ConceptosComboBoxCotizacion } from "./ConceptosComboBoxCotizacion.tsx";
 
-const ModalMonitorContratacionCotizacion = ({ selected_contrato }) => {
+const ModalMonitorContratacionCotizacionAgua = ({ selected_contrato }) => {
   const { toast } = useToast();
   
   const {boolModalCotizacionMonitor, setBoolModalCotizacionMonitor, MonitorsetDataMonitorContratos,  setLoadingTableMonitorContrato, setBoolModalContratacionCambioDeNombre, boolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick} =  ZustandFiltrosContratacion();
@@ -62,7 +64,7 @@ console.log(usuariosEncontrados[0]?.id);
 console.log(selected_contrato?.id);
 
 
-
+const [cargoSeleccionado, setCargoSeleccionado] = useState();
 
 
 const form = useForm<z.infer<typeof cambioPropietarioSchema>>({
@@ -74,48 +76,22 @@ const form = useForm<z.infer<typeof cambioPropietarioSchema>>({
 })
 
 
-
-
-
-
-
-async function onSubmit(values: z.infer<typeof cambioPropietarioSchema>) {
-  const values2 = {
-    id: selected_contrato?.id,
-    nombre_contrato: values.nombre_contrato,
-    id_usuario: usuariosEncontrados[0]?.id,
-  };
-
-  const contrato = {
-    contrato: values2
-  }
+function onSubmit(values: z.infer<typeof cambioPropietarioSchema>) 
+{
   
-  console.log(contrato);
 
-  try {
-    const response = await axiosClient.put('contratos/cambio_nombre', contrato);
-
-    const mensaje = response.data.message;
-    setControlModalMonitorContratacionClick(false);
-    toast({
-      title: '¡Éxito!',
-      description: mensaje,
-      variant: 'success',
-    });
-
-    
-    console.log(response);
-  } catch (error) {
-    console.error('Error eliminando el contrato:', error);
-
-    toast({
-      variant: 'destructive',
-      title: 'Oh, no. Error',
-      description: 'Algo salió mal.',
-      action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-    });
-  }
+      axiosClient.post(`/AnomaliasCatalogo/create`, values2)
+          .then((response) => {
+              
+            console.log(response);
+          })
+          .catch((err) => {
+             console.log(err);
+          })
+  
 }
+
+
 
 
   // Función para manejar el cierre del modal
@@ -130,28 +106,47 @@ async function onSubmit(values: z.infer<typeof cambioPropietarioSchema>) {
           <div className="flex justify-between items-center">
             {/* Título al principio */}
             <div className="flex">
-              <span className="text-lg">Cotizacion</span>
+              <span className="text-lg">Cotizacion contrato de agua</span>
             </div>
             
             
          </div>
           <AlertDialogTitle></AlertDialogTitle>
           <AlertDialogDescription> 
-            <div className="overflow-x-auto">
-              <div className="min-w-full">
-          
-              <div>
-              Cargo:
-            
+          <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+                                control={form.control}
+                                name="nombre_contrato"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Contrato de agua.</FormLabel>
+                                        <FormControl>
+                                          <>
+                                          <div className="flex space-x-2">
+                                            <div className="w-[150vh]">
+                                            <ConceptosComboBoxCotizacion form={form} field={field} name="nombre_contrato" setCargoSeleccionado={setCargoSeleccionado}/>
 
-    
-            <div>Servicio de alcantarillado:</div>
+                                            </div>
+                                          <Button>Agregar concepto</Button>
+                                          </div>
+                                       
+                                          </>
+                                     
 
-
-              </div>
-              </div>
-
-            </div>
+                                        </FormControl>
+                                        <FormDescription>
+                                            Selecciona un concepto si es necesario.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                    
+                    
+                  <Button type="submit">Guardar</Button>
+                </form>
+                        </Form>
 
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -165,4 +160,4 @@ async function onSubmit(values: z.infer<typeof cambioPropietarioSchema>) {
   );
 };
 
-export default ModalMonitorContratacionCotizacion;
+export default ModalMonitorContratacionCotizacionAgua;

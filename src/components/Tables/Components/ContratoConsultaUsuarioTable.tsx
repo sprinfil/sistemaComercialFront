@@ -23,7 +23,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
     setLoadingTable, loadingTable, setAccion, 
     setUsuario, usuario, setUsuariosRecuperado, 
     setControlTablaOperadorOTIndividual,
-    setToma, handleClickRowUsuario, setBooleanCerrarModalFiltros,setIdSeleccionadoTomaAsignacionOT, idSeleccionadoTomaAsignacionOT
+    setToma, handleClickRowUsuario, setBooleanCerrarModalFiltros,setIdSeleccionadoTomaAsignacionOT, idSeleccionadoTomaAsignacionOT,setMostrarUsuarioCambioPropietario
   } = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
 
   const tableRef = useRef<HTMLDivElement | null>(null);
@@ -79,6 +79,7 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
     setBooleanCerrarModalFiltros(false);
     setIdSeleccionadoTomaAsignacionOT(contratobuscarUsuario?.tomas[0]?.id)
     setControlTablaOperadorOTIndividual(true);
+    setMostrarUsuarioCambioPropietario(true);
     console.log("ESTO RECIBIRA CAJAAA DESDE SELECCION DE FILA" + JSON.stringify(dataCajaUser)); 
   
     

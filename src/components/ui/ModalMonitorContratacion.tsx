@@ -44,6 +44,7 @@ import { ZustandFiltrosContratacion } from "../../contexts/ZustandFiltrosContrat
 import ModalMonitorContratacionCambioDePropietario from "./ModalMonitorContratacionCambioDePropietario.tsx";
 import { MdOutlinePriceChange } from "react-icons/md";
 import ModalMonitorContratacionCotizacion from "./ModalMonitorContratacionCotizacion.tsx";
+import ModalMonitorContratacionCotizacionAgua from "./ModalMonitorContratacionCotizacionAgua.tsx";
 
 const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
   const { toast } = useToast();
@@ -183,8 +184,14 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
                 <IconButton onClick={handleCotizacionModal}>
                   <MdOutlinePriceChange className="w-[8vh] h-[5vh]" />
                 </IconButton>
-                <ModalMonitorContratacionCotizacion
-                  selected_contrato={selected_contrato}/>
+                {selected_contrato?.servicio_contratado == "alcantarillado y saneamiento" &&
+                 <ModalMonitorContratacionCotizacion
+                 selected_contrato={selected_contrato}/>}
+
+            {selected_contrato?.servicio_contratado == "agua" &&
+                 <ModalMonitorContratacionCotizacionAgua
+                 selected_contrato={selected_contrato}/>}
+               
               </div>
 
               <div className="w-[6vh]" title="Cambio de propietario">

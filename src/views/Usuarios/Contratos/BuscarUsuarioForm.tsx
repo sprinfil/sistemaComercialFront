@@ -29,7 +29,7 @@ import { Pencil2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { TbFilterPlus } from "react-icons/tb";
 import { TiUserAdd } from "react-icons/ti";
 import IconButton from "../../../../components/ui/IconButton.tsx";
-
+import { ZustandFiltrosContratacion } from "../../../contexts/ZustandFiltrosContratacion.tsx";
 
 interface BuscarUsuarioProps {
     navegacion: string;
@@ -51,7 +51,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     const { nombreBuscado, setNombreBuscado,
         nombreSeleccionado, setNombreSeleccionado,
         usuariosEncontrados, setUsuariosEncontrados,
-        accion, setAccion, setFindUserOrToma, findUserOrToma, setToma, setBooleanCodigoDeToma, toma
+        accion, setAccion, setFindUserOrToma, findUserOrToma, setToma, setBooleanCodigoDeToma, toma,setMostrarUsuarioCambioPropietario,
 
     } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
 
@@ -150,6 +150,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                             setNombreBuscado(values.nombre);
                             setUsuariosEncontrados(results);
                             if (results.length === 1) {
+                                setMostrarUsuarioCambioPropietario(true);
                                 if (tipoAccion === "verUsuarioDetalle") {
                                     navigate("/usuario/toma", { state: { contratoBuscarUsuario: results[0] } });
                                 } else if (tipoAccion === "crearContratacionUsuario") {

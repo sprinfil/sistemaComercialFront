@@ -53,7 +53,7 @@ export const CrearContratoForm = () => {
 
     const {latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial, 
         setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
-        setServicioContratado, setGiroComercial,setTipoDeToma, tomaPreContratada,
+        setServicioContratado, setGiroComercial,setTipoDeToma, tomaPreContratada,isCheckInspeccion,
         setServicioContratado2} = ZustandFiltrosContratacion();
 
 
@@ -168,6 +168,7 @@ export const CrearContratoForm = () => {
         console.log(servicioAContratar);
         handleAbrirModalNotificaciones();
         const crearContrato = {
+                estatus:isCheckInspeccion,
                 id_giro_comercial: values.id_giro_comercial,
                 nombre_contrato: values.nombre_contrato,
                 clave_catastral: values.clave_catastral,

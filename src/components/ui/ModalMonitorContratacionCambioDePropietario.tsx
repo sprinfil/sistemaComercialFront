@@ -42,6 +42,7 @@ import MarcoFormModalContratoMonitor from "./MarcoFormModalContratoMonitor.tsx";
 import { ZustandFiltrosContratacion } from "../../contexts/ZustandFiltrosContratacion.tsx";
 import { UsuariosComboBox } from "./UsuariosComboBox.tsx";
 import { BuscarUsuarioForm } from "../../views/Usuarios/Contratos/FormsContratos/BuscarUsuarioForm.tsx";
+import { RiUserSearchFill } from "react-icons/ri";
 
 import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario";
 import { Input } from "./input.tsx";
@@ -49,12 +50,13 @@ import { Input } from "./input.tsx";
 const ModalMonitorContratacionCambioDePropietario = ({ selected_contrato }) => {
   const { toast } = useToast();
   
-  const {setDataMonitorContratos,  setLoadingTableMonitorContrato, setBoolModalContratacionCambioDeNombre, boolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick} =  ZustandFiltrosContratacion();
+  const {setDataMonitorContratos,  setLoadingTableMonitorContrato, setBoolModalContratacionCambioDeNombre, 
+    boolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick} =  ZustandFiltrosContratacion();
 
   console.log(selected_contrato);
 
   const [operadorSeleccionado, setOperadorSeleccionado] = useState();
-  const {usuariosEncontrados, } = ZustandGeneralUsuario();
+  const {usuariosEncontrados, setUsuariosEncontrados, mostrarUsuarioCambioPropietario, setMostrarUsuarioCambioPropietario} = ZustandGeneralUsuario();
 
 
 console.log(usuariosEncontrados[0]?.id);
@@ -117,34 +119,94 @@ async function onSubmit(values: z.infer<typeof cambioPropietarioSchema>) {
   }
 }
 
-
+console.log(usuariosEncontrados[0]?.id);
+console.log(usuariosEncontrados.length);
   // Función para manejar el cierre del modal
   const handleCloseModal = () => {
     setBoolModalContratacionCambioDeNombre(false);
     setControlModalMonitorContratacionClick(false);
+    setUsuariosEncontrados([]);
+    setMostrarUsuarioCambioPropietario(false);
+    
   };
+
+  const consultarOtroUsuario = () => {
+    setMostrarUsuarioCambioPropietario(false);
+    setUsuariosEncontrados([]);
+
+  }
+
+  useEffect(() => {
+    // Limpiar usuarios cuando el modal se cierre
+    if (!boolModalContratacionCambioDeNombre) {
+      setUsuariosEncontrados([]);
+    }
+  }, [boolModalContratacionCambioDeNombre]);
+
+
   return (
     <AlertDialog open={boolModalContratacionCambioDeNombre} onOpenChange={setBoolModalContratacionCambioDeNombre}>
       <AlertDialogContent className="max-w-screen-2xl max-h-screen overflow-auto">
         <AlertDialogHeader>
-          <div className="flex justify-between items-center">
-            {/* Título al principio */}
-            <div className="flex">
-              <span className="text-lg">Cambio de propietario</span>
-            </div>
-
-            
+        <div className="flex justify-between items-center">
+        <div className="">
+          <span className="text-lg">Cambio de propietario</span>
+        </div>
+        
+        <div className="flex-shrink-0">
+          <div className="w-[5vh]">
+          <IconButton onClick={consultarOtroUsuario}>
+            <RiUserSearchFill className="w-[3vh]" />
+            </IconButton>
+          </div>
+         
+        </div>
       </div>
           <AlertDialogTitle></AlertDialogTitle>
           <AlertDialogDescription> 
             <div className="overflow-x-auto">
               <div className="min-w-full">
-                {usuariosEncontrados ?
+                {mostrarUsuarioCambioPropietario  ?
                 <>
-                <div>{usuariosEncontrados[0]?.nombre}</div>
+                <div className="mt-2 ">
+                <MarcoForm title={"Datos del usuario seleccionado"}>
+                <div>
+            <p className="">Nombre completo:</p>
+            <div>{usuariosEncontrados[0]?.nombre + " " + usuariosEncontrados[0]?.apellido_paterno + " " + usuariosEncontrados[0]?.apellido_materno}</div>
+            
+            </div>
+
+          <div>
+            <p className="">Telefono:</p>
+            <div>{usuariosEncontrados[0]?.telefono}</div>
+          </div>
+
+          <div>
+            <p className="">Telefono:</p>
+            <div>{usuariosEncontrados[0]?.apellido_materno}</div>
+          </div>
+
+          <div>
+            <p className="">Correo:</p>
+            <div>{usuariosEncontrados[0]?.correo}</div>
+          </div>
+
+          <div>
+            <p className="">CURP:</p>
+            <div>{usuariosEncontrados[0]?.curp}</div>
+          </div>
+
+          <div>
+            <p className="">RFC:</p>
+            <div>{usuariosEncontrados[0]?.rfc}</div>
+          </div>
+
+
+                </MarcoForm>
+                </div>
                 <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                  <div className="w-[165vh]">
+                  <div className="ml-2 max-w-[188vh]">
                   <FormField
                                 control={form.control}
                                 name="nombre_contrato"
