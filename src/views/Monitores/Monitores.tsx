@@ -5,6 +5,7 @@ import { useStateContext } from '../../contexts/ContextProvider'
 import { PagosMonitor } from './PagosMonitor'
 import { ContratacionMonitor } from './ContratacionMonitor'
 import { MonitorCFDI } from './CFDI/MonitorCFDI'
+import FactibilidadMonitor from './FactibilidadMonitor'
 
 export const Monitores = () => {
 
@@ -31,6 +32,11 @@ export const Monitores = () => {
     {
       titulo: "Contratación",
       componente: <ContratacionMonitor />,
+      permission: ""
+    },
+    {
+      titulo: "Factibilidad",
+      componente: <FactibilidadMonitor />,
       permission: ""
     },
   ]
