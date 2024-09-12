@@ -5,7 +5,7 @@ import { useStateContext } from '../../contexts/ContextProvider'
 import { PagosMonitor } from './PagosMonitor'
 import { ContratacionMonitor } from './ContratacionMonitor'
 import { MonitorCFDI } from './CFDI/MonitorCFDI'
-import FactibilidadMonitor from './FactibilidadMonitor'
+import { FactibilidadMonitor } from './FactibilidadMonitor'
 
 export const Monitores = () => {
 
