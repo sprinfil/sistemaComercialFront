@@ -158,6 +158,9 @@ interface FiltrosContratacion {
   setPuntosFiltradosParaElMapa:(puntosFiltradosParaElMapa: []) => void;
 
   
+  tomaPreContratada:[];
+  setTomaPreContratada:(tomaPreContratada: []) => void;
+
   
 
 }
@@ -317,7 +320,8 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
   puntosFiltradosParaElMapa:[],
   setPuntosFiltradosParaElMapa: (puntosFiltradosParaElMapa) => set({ puntosFiltradosParaElMapa }),
 
-
+  tomaPreContratada:[],
+  setTomaPreContratada: (tomaPreContratada) => set({ tomaPreContratada }),
 
 }));
 

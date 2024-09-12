@@ -53,7 +53,7 @@ export const CrearContratoForm = () => {
 
     const {latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial, 
         setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
-        setServicioContratado, setGiroComercial,setTipoDeToma,
+        setServicioContratado, setGiroComercial,setTipoDeToma, tomaPreContratada,
         setServicioContratado2} = ZustandFiltrosContratacion();
 
 
@@ -63,7 +63,6 @@ export const CrearContratoForm = () => {
     console.log("Libro:", libroToma); //Longitud seleccionada dentro del poligono
     console.log(JSON.stringify(libroToma));
 
-    
 
     const form = useForm<z.infer<typeof crearContratoSchema>>({
         resolver: zodResolver(crearContratoSchema),
@@ -71,7 +70,7 @@ export const CrearContratoForm = () => {
             id_giro_comercial: 0,
             clave_catastral: "",
             calle:0,
-            num_casa:"",
+            num_casa:0,
             entre_calle_1: 0,
             entre_calle_2:0,
             colonia: 0,
@@ -109,7 +108,8 @@ export const CrearContratoForm = () => {
        
     const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
 
-        //CONVERTIRMOS EL BOOL A STRING
+     
+        
         const agua = values.c_agua ? "agua" : null;
         const alcantarillado = values.c_alc ? "alcantarillado" : null;
         const saneamiento = values.c_san ? "saneamiento" : null;
@@ -124,19 +124,22 @@ export const CrearContratoForm = () => {
         
 
         const tipoToma = parseInt(values.tipo_toma, 10);
+        const num_casaDato = String(values.num_casa);
+
         setIdGiroComercial(values.id_giro_comercial);
         setServicioContratado(agua);
         setServicioContratado2(alcantarillado_y_saneamiento);
 
         //ESTOS DATOS SON PARA ENVIAR
         const datos = {
+            id_toma: tomaPreContratada?.id,
             id_usuario: usuariosEncontrados[0]?.id,
             nombre_contrato: values.nombre_contrato,
             clave_catastral: values.clave_catastral,
             tipo_toma:tipoToma,
             servicio_contratados: servicios,
             diametro_de_la_toma:values.diametro_toma,
-            num_casa: values.num_casa,
+            num_casa: num_casaDato,
             colonia: values.colonia,
             calle: values.calle,
             codigo_postal: values.codigo_postal,
@@ -146,8 +149,20 @@ export const CrearContratoForm = () => {
             municipio: values.municipio,
             tipo_contratacion: values.tipo_contratacion,
         }
+           
+        
+        // Filtrar campos deshabilitados antes de enviar
+    const filteredData = {
+        ...datos,
+        c_agua: campoAgua ? datos.c_agua : undefined,
+        c_alc: contrato2 ? datos.c_alc : undefined,
+        c_san: contrato2 ? datos.c_san : undefined,
+      };
+  
+      // Eliminar propiedades undefined
+      Object.keys(filteredData).forEach(key => filteredData[key] === undefined && delete filteredData[key]);
 
-        setContrato(datos);
+        setContrato(filteredData);
 
         
         console.log(servicioAContratar);
@@ -194,6 +209,60 @@ export const CrearContratoForm = () => {
             form.setValue("c_san", false);
         }
       };
+
+
+      const [campoAgua, setCampoAgua] = useState(false);
+      const [contrato2, setContrato2] = useState(false);
+
+
+      useEffect(() => 
+    {
+        if(tomaPreContratada)
+        {
+          
+            form.reset({
+                clave_catastral: tomaPreContratada?.clave_catastral || '',
+                tipo_toma: tomaPreContratada?.id_tipo_toma || '',
+                diametro_toma: tomaPreContratada?.diametro_toma || '',
+                calle:tomaPreContratada?.calle || '',
+                num_casa:Number(tomaPreContratada?.numero_casa) || 0,
+                colonia:tomaPreContratada?.colonia || '',
+                codigo_postal:tomaPreContratada?.codigo_postal || '',
+                entre_calle_1:tomaPreContratada?.entre_calle_1 || '',
+                entre_calle_2:Number(tomaPreContratada?.entre_calle_2) || '',
+                localidad:tomaPreContratada?.localidad || '',
+                municipio:tomaPreContratada?.municipio || '',
+                c_agua: Boolean(tomaPreContratada?.c_agua) || false,
+                c_alc: Boolean(tomaPreContratada?.c_alc) || false,
+                c_san: Boolean(tomaPreContratada?.c_san) || false,
+                tipo_contratacion:tomaPreContratada?.tipo_contratacion || '',
+                id_giro_comercial:tomaPreContratada?.id_giro_comercial || '',
+
+            });
+
+
+
+            if(tomaPreContratada.c_agua == true)
+            {
+                setCampoAgua(true);
+
+            }
+
+            if(tomaPreContratada.c_alc == true && tomaPreContratada.c_san )
+                {
+                    setContrato2(true);
+    
+                }
+
+            
+
+        }
+    },[tomaPreContratada])
+
+
+
+    console.log(tomaPreContratada);
+
    
     return (
         <div className="">
@@ -268,21 +337,24 @@ export const CrearContratoForm = () => {
                                 <FormField
                                 control={form.control}
                                 name="diametro_toma"
-                                render={({ field }) => (
+                                render={({ field}) => (
                                     <FormItem>
                                         <FormLabel>Diametro de la toma</FormLabel>
                                         <FormControl>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Selecciona el diametro de la toma" />
-                                        </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
+                                        <Select
+                                    disabled={false} // Ajusta esto según si el campo debe estar deshabilitado o no
+                                    onValueChange={(value) => {
+                                        field.onChange(value); // Actualiza el valor en react-hook-form
+                                    }}
+                                    value={field.value || ''} // Valor controlado por react-hook-form
+                                    >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecciona el diámetro de la toma" />
+                                    </SelectTrigger>
+                                    <SelectContent>
                                         <SelectItem value="2-pulgadas">2"</SelectItem>
                                         <SelectItem value="4-pulgadas">4"</SelectItem>
-                                        
-                                        </SelectContent>
+                                    </SelectContent>
                                     </Select>
                                         </FormControl>
                                         <FormDescription />
@@ -417,9 +489,12 @@ export const CrearContratoForm = () => {
                                 <FormItem>
                                     <FormLabel>Localidad</FormLabel>
                                     <Select
-                                        onValueChange={(value) => field.onChange(value)}
-                                        defaultValue={undefined}
-                                        >
+                                    disabled={false} // Ajusta esto según si el campo debe estar deshabilitado o no
+                                    onValueChange={(value) => {
+                                        field.onChange(value); // Actualiza el valor en react-hook-form
+                                    }}
+                                    value={field.value || ''} // Valor controlado por react-hook-form
+                                    >
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Selecciona la localidad" />
@@ -445,9 +520,12 @@ export const CrearContratoForm = () => {
                                 <FormItem>
                                     <FormLabel>Municipio</FormLabel>
                                     <Select
-                                        onValueChange={(value) => field.onChange(value)}
-                                        defaultValue={undefined}
-                                        >
+                                    disabled={false} // Ajusta esto según si el campo debe estar deshabilitado o no
+                                    onValueChange={(value) => {
+                                        field.onChange(value); // Actualiza el valor en react-hook-form
+                                    }}
+                                    value={field.value || ''} // Valor controlado por react-hook-form
+                                    >
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Selecciona el municipio" />
@@ -484,6 +562,7 @@ export const CrearContratoForm = () => {
                             <Switch
                             checked={field.value}
                             onCheckedChange={(checked) => field.onChange(checked)}
+                            disabled={campoAgua}
                             />
                         </FormControl>
                         <FormDescription />
@@ -504,6 +583,8 @@ export const CrearContratoForm = () => {
                             <Switch
                             checked={field.value}
                             onCheckedChange={(checked) => onSwitchChange("c_alc", checked)} 
+                            disabled={contrato2}
+
                             />
                         </FormControl>
                         <FormDescription />
@@ -524,6 +605,8 @@ export const CrearContratoForm = () => {
                             <Switch
                             checked={field.value}
                             onCheckedChange={(checked) => onSwitchChange("c_san", checked)} 
+                            disabled={contrato2}
+
                             />
                         </FormControl>
                         <FormDescription />
@@ -546,9 +629,12 @@ export const CrearContratoForm = () => {
                                 <FormLabel>Tipo de contratación</FormLabel>
                                 <FormControl>
                                 <Select
-                                        onValueChange={(value) => field.onChange(value)}
-                                        defaultValue={undefined}
-                                        >
+                                    disabled={false} // Ajusta esto según si el campo debe estar deshabilitado o no
+                                    onValueChange={(value) => {
+                                        field.onChange(value); // Actualiza el valor en react-hook-form
+                                    }}
+                                    value={field.value || ''} // Valor controlado por react-hook-form
+                                    >
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Selecciona el tipo de contratación" />
@@ -557,7 +643,7 @@ export const CrearContratoForm = () => {
                                         <SelectContent>
                                             <SelectItem value="normal">Normal</SelectItem>
                                             <SelectItem value="condicionado">Condicionado</SelectItem>
-                                            <SelectItem value="desarrollador">Desarrollador</SelectItem>
+                                            <SelectItem value="pre-contrato">Desarrollador</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </FormControl>

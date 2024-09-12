@@ -27,7 +27,8 @@ const center = {
 };
 
 const PuntoTomaMapa = () => {
-  const { setLatitudMapa, setLongitudMapa, setLibroToma, libroToma, setMarcadorSeleccionado, marcadorSeleccionado, isCheckedPreContratada, puntosFiltradosParaElMapa } =
+  const { setLatitudMapa, setLongitudMapa, setLibroToma, libroToma, setMarcadorSeleccionado, marcadorSeleccionado, 
+    isCheckedPreContratada, puntosFiltradosParaElMapa, setTomaPreContratada } =
     ZustandFiltrosContratacion();
   const { toast } = useToast();
   const [poligonos, setPoligonos] = useState([]);
@@ -242,9 +243,9 @@ const PuntoTomaMapa = () => {
                                           <button id="view-details-btn" class="text-green-800 text-xl"><strong>Contratar esta toma</strong></button>
                                         </div>`,
                             });
-                            
                             infoWindow.addListener('domready', () => {
                               document.getElementById('view-details-btn')?.addEventListener('click', handleSiguienteContratacion);
+                              setTomaPreContratada(toma);
                             });
 
                             marker.addListener('click', () => {

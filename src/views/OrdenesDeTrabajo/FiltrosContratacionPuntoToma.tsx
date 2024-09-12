@@ -36,7 +36,7 @@ const FiltrosContratacionPuntoToma = () => {
 
   const {setIsCheckedPreContratadas, isCheckedPreContratadas, setPuntosFiltradosParaElMapa} = ZustandFiltrosContratacion();
 
-console.log(isCheckedPreContratadas);
+//console.log(isCheckedPreContratadas);
 
 
   const handleBuscarTomas = () => 

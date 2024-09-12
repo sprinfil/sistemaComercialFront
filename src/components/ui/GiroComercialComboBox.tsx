@@ -86,7 +86,7 @@ export const GiroComercialComboBox = ({ field, form, name = "id_concepto", setCa
                                 ? languages.find(
                                     (language) => language.value === field.value
                                 )?.label
-                                : "Selecciona una calle"}
+                                : "Selecciona un giro comercial"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </FormControl>
@@ -95,7 +95,7 @@ export const GiroComercialComboBox = ({ field, form, name = "id_concepto", setCa
                     <Command>
                         <CommandInput placeholder="Buscar calle ... " />
                         <CommandList>
-                            <CommandEmpty>Calle no encontrada.</CommandEmpty>
+                            <CommandEmpty>Giro comercial no encontrado.</CommandEmpty>
                             <CommandGroup>
                                 {
                                     loading &&

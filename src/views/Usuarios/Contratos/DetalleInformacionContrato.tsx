@@ -13,7 +13,7 @@ export const DetalleInformacionContrato = () => {
 
 
   const {contrato, direccion_notificaciones, libroToma, idGiroComercial,giroComercial, calleSeleccionada, coloniaSeleccionada, entreCalle1Seleccionada, 
-    entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma} = ZustandFiltrosContratacion();
+    entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma,tomaPreContratada} = ZustandFiltrosContratacion();
 
   console.log(contrato);
   console.log(direccion_notificaciones);
