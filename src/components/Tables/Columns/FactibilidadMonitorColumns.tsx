@@ -12,16 +12,20 @@ import { EyeIcon } from 'lucide-react';
 export type Factibilidad = {
   id: number
   id_contrato: string
-  contrato : {
-    nombre_contrato: string
+  toma : {
+    codigo_toma: string
   }
   solicitante: number
   revisor: number
-  estado: "pendiente de pago" | "pendiente" | "rechazada" | "pagada"
+  estatus: "sin revisar" | "pendiente" | "rechazada" | "pagada"
   agua_estado_factible: "pendiente" | "no_factible" | "factible"
   alcantarillado_estado_factible: "pendiente" | "no_factible" | "factible"
   saneamiento_estado_factible: "pendiente" | "no_factible" | "factible"
   derechos_conexion: number
+  archivos : {
+    url: string
+  }
+  comentario: string
   fecha_solicitud: Date
   deleted_at: Date
   created_at: Date
@@ -50,17 +54,17 @@ export const FactiblidadMonitorColumns: ColumnDef<Factibilidad>[] = [
     ),
   },
   {
-    id: "nombre_contrato", // Este es el ID de la columna
-    accessorFn: (row) => row.contrato.nombre_contrato,
-    header: "Nombre contrato",
+    id: "codigo_toma", // Este es el ID de la columna
+    accessorFn: (row) => row.toma.codigo_toma,
+    header: "Codigo de toma",
   }, 
   {
     accessorKey: "fecha_solicitud",
     header: "Fecha de Factibilidad",
   },
   {
-    accessorKey: "estado",
-    header: "Estado",
+    accessorKey: "estatus",
+    header: "Estatus",
   },
   {
     id: "actions",

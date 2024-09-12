@@ -74,12 +74,12 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
 
           {/* Filtros */}
           <div className="px-2">
-            <p>Nombre contrato</p>
+            <p>Codigo de toma</p>
             <Input
-               placeholder="Nombre Contrato"
-               value={(table.getColumn("nombre_contrato")?.getFilterValue() as string) ?? ""}
+               placeholder="Codigo de toma"
+               value={(table.getColumn("codigo_toma")?.getFilterValue() as string) ?? ""}
                onChange={(event) =>
-                 table.getColumn("nombre_contrato")?.setFilterValue(event.target.value)
+                 table.getColumn("codigo_toma")?.setFilterValue(event.target.value)
                }
               className="w-full"
             />
@@ -88,15 +88,15 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
           
 
           <div className="px-2">
-            <p>Estado</p>
-            <Select onValueChange={(value) => { table.getColumn("estado")?.setFilterValue(value === "cualquiera" ? "" : value) }}>
+            <p>Estatus</p>
+            <Select onValueChange={(value) => { table.getColumn("estatus")?.setFilterValue(value === "cualquiera" ? "" : value) }}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Estado" />
+                <SelectValue placeholder="Estatus" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Estado</SelectLabel>
-                  <SelectItem value="pagada">Pagada</SelectItem>
+                  <SelectLabel>Estatus</SelectLabel>
+                  <SelectItem value="sin revisar">Sin revisar</SelectItem>
                   <SelectItem value="pendiente de pago">Pendiente de pago</SelectItem>
                   <SelectItem value="rechazada">Rechazada</SelectItem>
                   <SelectItem value="pendiente">Pendiente</SelectItem>
@@ -164,7 +164,7 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
           </div>
 
           <div className="flex items-center justify-end space-x-2 py-4">
-            <Select onValueChange={(value) => { }}>
+            {/* <Select onValueChange={(value) => { }}>
               <SelectTrigger className="w-[200px] my-1">
                 <SelectValue placeholder="Accion" />
               </SelectTrigger>
@@ -179,7 +179,7 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
             <div className=" flex-1 text-sm text-muted-foreground">
               {table.getFilteredSelectedRowModel().rows.length} of{" "}
               {table.getFilteredRowModel().rows.length} row(s) selected.
-            </div>
+            </div> */}
 
             <Button
               variant="outline"
