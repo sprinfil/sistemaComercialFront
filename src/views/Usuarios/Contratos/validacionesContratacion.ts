@@ -31,5 +31,5 @@ export const crearContratoSchema = z.object({
 
 
 export const crearTomaSchema = z.object({
-    direccion:z.string().min(1,"Ingresa la dirección"),
+    direccion:z.string(),
 })

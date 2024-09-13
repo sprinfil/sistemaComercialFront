@@ -45,7 +45,14 @@ import ModalMonitorContratacionCambioDePropietario from "./ModalMonitorContratac
 import { MdOutlinePriceChange } from "react-icons/md";
 import ModalMonitorContratacionCotizacion from "./ModalMonitorContratacionCotizacion.tsx";
 import ModalMonitorContratacionCotizacionAgua from "./ModalMonitorContratacionCotizacionAgua.tsx";
-
+import ModalMonitorContratacionCotizacionAlcantarilladoSaneamiento from "./ModalMonitorContratacionCotizacionAlcantarilladoSaneamiento.tsx";
+import { TooltipMessage } from "./TooltipMessage.tsx";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
   const { toast } = useToast();
   
@@ -109,40 +116,11 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
 
   const handleCotizacionModal= () => {
 
-    const values = {
-      id_contrato: selected_contrato?.id
-    }
-
-    console.log(values);
-    try{
-
-      const response = axiosClient.post("contratos/cotizacion/create", values)
+    
       setBoolModalCotizacionMonitor(true);
-      console.log(response);
-      toast({
-        title: "¡Éxito!",
-        description: "La anomalía se ha creado correctamente",
-        variant: "success",
-
-    })
-
-    }
-    catch(response)
-    {
-      console.log(response);
-      toast({
-        variant: "destructive",
-        title: "Oh, no. Error",
-        description: "Algo salió mal.",
-        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-    })
-    }
   }
   
-  
-  const handleGenerarCotizacion = () => {
-    setBoolModalContratacionCambioDeNombre(true);
-  }
+
 
   const handleCerrarContrato = async () => {
  
@@ -187,33 +165,58 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
 
   return (
     <AlertDialog open={open} onOpenChange={set_open}>
-      <AlertDialogContent className="max-w-[190vh] max-h-[102vh] ">
+      <AlertDialogContent className="max-w-[180vh] max-h-[102vh] ">
         <AlertDialogHeader>
-          <div className="flex justify-between items-center">
+        <span className="font-bold text-lg">Detalle del contrato</span>
+          <div className="ml-[60vh] bg-muted w-[38vh] rounded-lg">
             {/* Título al principio */}
             <div className="flex">
-              <span className="font-bold text-lg">Contrato</span>
             </div>
 
             {/* Iconos con títulos */}
             <div className="flex space-x-2">
-              <div className="w-[6vh]" title="Borrar contrato">
-                <IconButton onClick={handleBorrarContrato}>
-                  <MdDeleteOutline className="w-[8vh] h-[5vh]" />
+    
+          
+
+          <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                  <IconButton onClick={handleBorrarContrato}>
+                      <MdDeleteOutline className="w-[8vh] h-[5vh]" />
+                    </IconButton>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Eliminar contrato</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+               
+               
+                <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                  <div className="w-[6vh]">
+                  <IconButton>
+                    <FaEdit className="w-[8vh] h-[5vh]" />
                 </IconButton>
-              </div>
-              <div className="w-[5vh]" title="Editar contrato">
-                <IconButton>
-                  <FaEdit className="w-[8vh] h-[5vh]" />
-                </IconButton>
-              </div>
+                </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Editar contrato</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+
+
+              
 
               <div className="w-[6vh]" title="Cotización">
                 <IconButton onClick={handleCotizacionModal}>
                   <MdOutlinePriceChange className="w-[8vh] h-[5vh]" />
                 </IconButton>
                 {selected_contrato?.servicio_contratado == "alcantarillado y saneamiento" &&
-                 <ModalMonitorContratacionCotizacion
+                 <ModalMonitorContratacionCotizacionAlcantarilladoSaneamiento
                  selected_contrato={selected_contrato}/>}
 
             {selected_contrato?.servicio_contratado == "agua" &&

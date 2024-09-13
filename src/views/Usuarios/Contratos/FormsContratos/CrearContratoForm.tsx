@@ -303,22 +303,17 @@ console.log(tomaPreContratada?.id)
    
     return (
         <div className="">
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-                <div className='h-[20px] w-full flex items-center justify-end '>
-                    <div className="mb-[10px] h-full w-full mx-4">
-                        <p className="text-[30px] font-medium ml-3">Crear contrato</p>
-                        <div className="text-[20px] font-medium mt-10 ml-5">Usuario:</div>
-              
-                    </div>
-                </div>
-            </div>
             <div className="py-[20px] px-[10px]">
         {errors.general && <Error errors={errors.general} />}
     
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center mt-[10vh]">
-            <div className="rounded-md border border-border shadow-lg p-8 w-[210vh] ">
-            <div className="text-[20px] font-medium mb-5">No contrato. </div>
+            
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center ">
+            <div className="rounded-md border border-border shadow-lg p-8 w-[200vh]">
+            <h1 className="text-3xl mb-[7vh]">
+         Crear contrato
+            </h1>
+            <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Nombre del contrato</h3>
             <div className="w-[full]">
                         <FormField
                             control={form.control}
@@ -336,6 +331,17 @@ console.log(tomaPreContratada?.id)
                         />
                         
                         </div>
+
+
+                        <div>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Datos de la toma</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                
+                    </div>
+                </div>
+
+
+
                     <div className="w-[full]">
                         <FormField
                             control={form.control}
@@ -402,7 +408,8 @@ console.log(tomaPreContratada?.id)
                                 </div>
                             
                         </div>
-                        
+                        <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Dirección de la toma</h3>
+
                         <div className='flex space-x-2'>
                         <div className='w-[160vh]'>
                             <FormField
@@ -442,7 +449,13 @@ console.log(tomaPreContratada?.id)
                             
                         </div>
                         <div className='flex space-x-4'>
-                        <div className="w-full">
+                       
+                       
+                    </div>
+                    
+                    <div className='flex space-x-2'>
+                   
+                    <div className="w-[160vh]">
                             <FormField
                                 control={form.control}
                                 name="colonia"
@@ -458,11 +471,8 @@ console.log(tomaPreContratada?.id)
                                 )}
                             />
                         </div>
-                       
-                    </div>
-                    <div className='flex space-x-2'>
-                   
-                    <div className="w-full">
+
+                    <div className="w-[60vh]">
                             <FormField
                                 control={form.control}
                                 name="codigo_postal"
@@ -517,8 +527,8 @@ console.log(tomaPreContratada?.id)
                            </div>
                         </div>
                         
-                    
-                    <div className='flex flex-col space-y-4'>
+                            <div className='flex space-x-2'>
+                            <div className='w-[110vh]'>
                         <FormField
                             control={form.control}
                             name="localidad"
@@ -549,7 +559,7 @@ console.log(tomaPreContratada?.id)
                             )}
                         />
                     </div>
-                    <div className='flex flex-col space-y-4'>
+                    <div className='w-[110vh]'>
                         <FormField
                             control={form.control}
                             name="municipio"
@@ -580,16 +590,16 @@ console.log(tomaPreContratada?.id)
                             )}
                         />
                     </div>
+                            </div>
+                    
                     <div className='flex space-x-2'>
 
                     </div>
 
-               
-                <div className='flex space-x-4 mt-2'>
-                <div className='w-[156vh]'>
-                <MarcoFormServiciosAContratar title={"Servicios a contratar"}>
-                <div className='mr-10'>
-                <FormField
+                        <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-5">Servicios a contratar</h3>
+                    <div className='flex items-center space-x-8 mt-5'>
+                <div className='flex flex-col items-center'>
+                    <FormField
                     control={form.control}
                     name="c_agua"
                     render={({ field }) => (
@@ -597,6 +607,7 @@ console.log(tomaPreContratada?.id)
                         <FormLabel>Agua</FormLabel>
                         <FormControl>         
                             <Switch
+                           className='ml-2'
                             checked={field.value}
                             onCheckedChange={(checked) => field.onChange(checked)}
                             disabled={campoAgua}
@@ -607,9 +618,9 @@ console.log(tomaPreContratada?.id)
                         </FormItem>
                     )}
                     />
-                    </div>
-                   
-                    <div className='mr-5'>
+                </div>
+
+                <div className='flex flex-col items-center'>
                     <FormField
                     control={form.control}
                     name="c_alc"
@@ -618,10 +629,10 @@ console.log(tomaPreContratada?.id)
                         <FormLabel>Alcantarillado</FormLabel>
                         <FormControl>         
                             <Switch
+                            className='ml-2'
                             checked={field.value}
                             onCheckedChange={(checked) => onSwitchChange("c_alc", checked)} 
                             disabled={contrato2}
-
                             />
                         </FormControl>
                         <FormDescription />
@@ -629,9 +640,9 @@ console.log(tomaPreContratada?.id)
                         </FormItem>
                     )}
                     />
-                    </div>
-                   
-                    <div className='mr-5'>
+                </div>
+
+                <div className='flex flex-col items-center'>
                     <FormField
                     control={form.control}
                     name="c_san"
@@ -640,10 +651,10 @@ console.log(tomaPreContratada?.id)
                         <FormLabel>Saneamiento</FormLabel>
                         <FormControl>         
                             <Switch
+                            className='ml-2'
                             checked={field.value}
                             onCheckedChange={(checked) => onSwitchChange("c_san", checked)} 
                             disabled={contrato2}
-
                             />
                         </FormControl>
                         <FormDescription />
@@ -651,10 +662,23 @@ console.log(tomaPreContratada?.id)
                         </FormItem>
                     )}
                     />
-                    </div>
-                    
-                </MarcoFormServiciosAContratar>
                 </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+                <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Tipo de Contratación y Giro de Negocio</h3>
+
+                <div className='flex space-x-4 mt-2'>
+                
                             
               
                 <div className='w-full mt-4'>
@@ -714,7 +738,7 @@ console.log(tomaPreContratada?.id)
             </div>
                             
                         <div className='flex justify-end'>
-                        <Button type="submit" className=''>Guardar</Button>
+                        <Button type="submit" className='mt-10'>Guardar</Button>
                             </div>
        
                 

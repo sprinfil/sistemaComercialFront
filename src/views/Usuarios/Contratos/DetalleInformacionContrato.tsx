@@ -7,38 +7,43 @@ import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import axiosClient from '../../../axios-client'
 import { Checkbox } from '../../../components/ui/checkbox'
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import IconButton from '../../../components/ui/IconButton'
+import { MdOutlineDeleteForever } from "react-icons/md";
+import ModalSubirArchivosContratacion from '../../../components/ui/ModalSubirArchivosContratacion'
+
 export const DetalleInformacionContrato = () => {
   const { toast } = useToast()
 
 
 
   const {contrato, direccion_notificaciones, libroToma, idGiroComercial,giroComercial, calleSeleccionada, coloniaSeleccionada, entreCalle1Seleccionada, 
-    entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma,tomaPreContratada,setIsCheckInspeccion, isCheckInspeccion} = ZustandFiltrosContratacion();
+    entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma,tomaPreContratada,setIsCheckInspeccion, 
+    isCheckInspeccion, setBooleanModalSubirArchivosContratacion, idContrato, setIdContrato} = ZustandFiltrosContratacion();
 
   console.log(contrato);
   console.log(direccion_notificaciones);
 
 
-  const [files, setFiles] = useState<FileList | null>(null);
 
 
+  console.log(idContrato);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setFiles(event.target.files);
-    }
-  };
+ 
+
 
 
   const generarSolicitud = async () => {
 
-
-    if (files) {
-      // Aquí puedes procesar los archivos, por ejemplo, subirlos a un servidor
-      Array.from(files).forEach(file => {
-        console.log(file.name);
-      });
-    }
 
 
     const values = {
@@ -55,13 +60,16 @@ export const DetalleInformacionContrato = () => {
 
     try{
         const response = await axiosClient.post("contratos/create", values);
-        console.log(response);
+        console.log(response.data.contrato[0]?.id);
+        setIdContrato(response.data.contrato[0]?.id)
         toast({
           title: "¡Éxito!",
           description: "El contrato se ha creado correctamente",
           variant: "success",
 
       })
+      setBooleanModalSubirArchivosContratacion(true);
+
     }
     catch(response)
     {
@@ -87,84 +95,124 @@ export const DetalleInformacionContrato = () => {
 
   return (
     <div className=''>
-      <div className='text-2xl ml-5'>
-      Detalle de contratación
-      </div>
+     <div className="flex items-center justify-start bg-muted ">
+     
+    </div>
 
-      <div className="border border-border rounded shadow-lg p-6 w-[210vh] ml-[9vh] mt-5 h-[120vh]">
+    <div className="border border-border rounded shadow-lg p-6 w-[200vh] mx-auto mt-5 h-auto">
+
+      <h1 className="text-3xl mb-[7vh]">
+       Detalle de la contratación
+        </h1>
+        
         <div className='mt-5'>
-        <MarcoFormDetalleContrato title={"Información del usuario"}>
-          Nombre del contrato: {contrato.nombre_contrato}
+        <h2 className="text-2xl mb-4">
+       Datos del usuario
+        </h2>
+        <Table className="mt-3">
+        <TableCaption></TableCaption>
+      <TableHeader className="bg-muted">
+        <TableRow>
+          <TableHead>Nombre del contrato</TableHead>
+      
 
-        </MarcoFormDetalleContrato>
-
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+          <TableRow key={""}>
+            <TableCell className="font-medium">{contrato.nombre_contrato}</TableCell>
+        
+          </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+        </TableRow>
+      </TableFooter>
+    </Table>
           </div>
-        <div className='mt-[5vh]'>
-        <MarcoFormDetalleContrato title={"Información de la toma"}>
-          <div className='flex flex-col'>
-            <div className='flex space-x-2'>
-            <div className='text-2xl'>Clave catastral:</div>  
-              <div className='mt-2'>
-              {contrato.clave_catastral}
-              </div>
-            </div>
-          
-            <div className='flex flex-col'>
-            <div className='flex space-x-2'>
-            <div className='text-2xl'>Calle:</div>  
-              <div className='mt-2'>
-              {calleSeleccionada}
-              </div>
-            </div>
-            </div>
-            
-            <div className='flex-1'>
-            Numero de casa: {contrato.num_casa}
-            </div>
-            <div className='flex-1'>
-            Colonia: {coloniaSeleccionada}
-            </div>
-            <div className='flex-1'>
-            Entre calle 1: {entreCalle1Seleccionada}
-            </div>
-            <div className='flex-1'>
-            Entre calle 2: {entreCalle2Seleccionada}
-            </div>
-            <div className='flex-1'>
-            Codigo postal: {contrato.codigo_postal}
-            </div>
-            <div className='flex-1'>
-            Giro comercial: {giroComercial}
-            </div>
-            <div className='flex-1'>
-            Localidad: {contrato.localidad}
-            </div>
-            <div className='flex-1'>
-            Municipio: {contrato.municipio}
-            </div>
-            <div className='flex-1'>
-            Servicios contratados: {servicioContratado + ", " + servicioContratado2}
-            </div>
-            <div className='flex-1'>
-            Tipo de contratación: {contrato.tipo_contratacion}
-            </div>
-            <div className='flex-1'>
-            Tipo de toma: {tipoDeToma}
-            </div>
 
+          <div className='mt-10 p-2'>
+          <h2 className="text-2xl mb-4">
+          Datos de la toma
+        </h2>
+          <Table className="mt-3">
+      <TableCaption></TableCaption>
+      <TableHeader className="bg-muted">
+        <TableRow>
+          <TableHead>Clave catastral</TableHead>
+          <TableHead>Direccion</TableHead>
+          <TableHead>Localidad</TableHead>
+          <TableHead>Giro comercial</TableHead>
+          <TableHead>Municipio</TableHead>
+          <TableHead>Servicios contratados</TableHead>
+          <TableHead>Tipo de contratación</TableHead>
+          <TableHead>Tipo de toma</TableHead>
+
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+          <TableRow key={""}>
+            <TableCell className="font-medium"> {contrato.clave_catastral}</TableCell>
+            <TableCell className="font-medium"> 
+              {"Calle " + calleSeleccionada + " " + contrato.num_casa + ", Colonia " + coloniaSeleccionada + ", Entre calles " + entreCalle1Seleccionada + ", " + 
+              entreCalle2Seleccionada + ", Codigo postal " + contrato.codigo_postal}
+              </TableCell>
+              <TableCell className="font-medium">{contrato.localidad}</TableCell>
+            <TableCell className="font-medium">{giroComercial}</TableCell>
+            <TableCell className="font-medium">{contrato.municipio}</TableCell>
+            <TableCell className="font-medium">{servicioContratado + ", " + servicioContratado2}</TableCell>
+            <TableCell className="font-medium">{contrato.tipo_contratacion}</TableCell>
+            <TableCell className="font-medium">{tipoDeToma}</TableCell>
+
+          </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+        </TableRow>
+      </TableFooter>
+    </Table>
           </div>
          
+         
+            
+          
+          <div className='mt-10 p-2'>
+          <h2 className="text-2xl  mb-4">
+          Dirección de las notificaciones
+        </h2>
+        <Table className="mt-3">
 
-        </MarcoFormDetalleContrato>
+      <TableCaption></TableCaption>
+      <TableHeader className="bg-muted">
+        <TableRow>
+          <TableHead>Dirección notificaciones</TableHead>
+      
 
-        <MarcoFormDetalleContrato title={"Dirección de notificaciones"}>
-         Direccion: {direccion_notificaciones}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+          <TableRow key={""}>
+            <TableCell className="font-medium">{direccion_notificaciones}</TableCell>
+        
+          </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+        </TableRow>
+      </TableFooter>
+    </Table>
+         
+          </div>
+           
+   
+           
+           
+          
 
-        </MarcoFormDetalleContrato>
+      
 
 
-        </div>
-        <div className='flex space-x-2 mb-[5vh]'>
+        <div className='flex space-x-2 mt-[3vh]'>
           <div className='text-xl'>
             Generar inspección:
             </div>
@@ -178,19 +226,15 @@ export const DetalleInformacionContrato = () => {
         </div>
 
         
-        <input 
-        type="file" 
-        name="archivo" 
-        id="archivo" 
-        multiple 
-        onChange={handleFileChange} 
-      />
+       
+
+
         <div className='flex justify-end'>
         <Button className='mt-10' onClick={generarSolicitud}>Crear nuevo contrato</Button>
         </div>
 
 
-
+          <ModalSubirArchivosContratacion/>
 
       </div>
 

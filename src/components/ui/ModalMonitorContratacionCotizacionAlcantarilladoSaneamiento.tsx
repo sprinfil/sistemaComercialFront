@@ -49,7 +49,7 @@ import { ConceptosComboBox } from "./ConceptosComboBox.tsx";
 import { ConceptosComboBoxCotizacion } from "./ConceptosComboBoxCotizacion.tsx";
 import ComboBoxCargosCargables from "./ComboBoxCargosCargables.tsx";
 
-const ModalMonitorContratacionCotizacionAgua = ({ selected_contrato }) => {
+const ModalMonitorContratacionCotizacionAlcantarilladoSaneamiento = ({ selected_contrato }) => {
   const { toast } = useToast();
   
   const {boolModalCotizacionMonitor, setBoolModalCotizacionMonitor, MonitorsetDataMonitorContratos,  setLoadingTableMonitorContrato, setBoolModalContratacionCambioDeNombre, boolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick} =  ZustandFiltrosContratacion();
@@ -91,47 +91,42 @@ const form = useForm<z.infer<typeof cambioPropietarioSchema>>({
 function onSubmit(values: z.infer<typeof cambioPropietarioSchema>) 
 {
 
- 
-  const values2 = [
-    {
-      id_contrato: selected_contrato?.id,
-      cotizacion_detalle: conceptoEnviar.map((item) => {
-        const tarifaCorrespondiente = item.tarifas.find(
-          (tarifa) => tarifa.id_tipo_toma === tipoToma
-        );
+  const values3 = {
+    id_contrato: selected_contrato?.id, // Asegúrate de que este valor sea el ID correcto del contrato
+    cotizacion_detalle: conceptoEnviar.map((item) => {
+      const tarifaCorrespondiente = item.tarifas.find(
+        (tarifa) => tarifa.id_tipo_toma === tipoToma
+      );
   
-        // Multiplica el monto por la cantidad de piezas
-        const montoCalculado = tarifaCorrespondiente
-          ? tarifaCorrespondiente.monto * piezas
-          : 1; // Asegúrate de tener un valor por defecto si tarifaCorrespondiente es undefined
+      // Multiplica el monto por la cantidad de piezas
+      const montoCalculado = tarifaCorrespondiente
+        ? tarifaCorrespondiente.monto * piezas
+        : 1; // Asegúrate de tener un valor por defecto si tarifaCorrespondiente es undefined
   
-        return {
-          id_sector: 2,
-          id_concepto: item.id,
-          monto: montoCalculado, // Aquí usamos el monto calculado
-        };
-      }),
-    }
-  ];
-
-  console.log(values2);
+      return {
+        id_sector: 2,
+        id_concepto: item.id,
+        monto: montoCalculado, // Aquí usamos el monto calculado
+      };
+    }),
+  };
+  
+  console.log(values3);
   
 
-      axiosClient.post(`contratos/cotizacion/detalle/create`, values2)
+      axiosClient.post(`contratos/cotizacion/detalle/create`, values3)
           .then((response) => {
               
             console.log(response);
-            console.log(response);
             toast({
               title: "¡Éxito!",
-              description: "La anomalía se ha creado correctamente",
+              description: "La cotización se ha creado correctamente.",
               variant: "success",
       
           })
           })
           .catch((err) => {
              console.log(err);
-             console.log(response);
              toast({
                variant: "destructive",
                title: "Oh, no. Error",
@@ -192,7 +187,7 @@ const eliminarConcepto = (index: number) => {
           <div className="flex justify-between items-center">
             {/* Título al principio */}
             <div className="flex">
-              <span className="text-lg">Cotizacion contrato de agua</span>
+              <span className="text-lg">Cotizacion contrato de alcantarillado y saneamiento.</span>
             </div>
             
             
@@ -323,4 +318,4 @@ const eliminarConcepto = (index: number) => {
   );
 };
 
-export default ModalMonitorContratacionCotizacionAgua;
+export default ModalMonitorContratacionCotizacionAlcantarilladoSaneamiento;

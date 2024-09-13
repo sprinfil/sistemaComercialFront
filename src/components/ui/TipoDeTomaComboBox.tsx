@@ -53,9 +53,9 @@ export const TipoDeTomaComboBox = ({ field, form, name = "id_concepto", setCargo
     const getConcepto = async () => {
         setLoading(true);
         try {
-            const response = await axiosClient.get("/calle");
+            const response = await axiosClient.get("/TipoToma");
             let ctr = 0;
-            response.data.forEach(concepto => {
+            response.data.data.forEach(concepto => {
                 languages[ctr] = { value: concepto.id, label: concepto.nombre };
                 ctr = ctr + 1;
             });
@@ -65,7 +65,6 @@ export const TipoDeTomaComboBox = ({ field, form, name = "id_concepto", setCargo
             console.error("Failed to fetch concepto:", error);
         }
     };
-
 
     const [open, setOpen] = React.useState(false)
 
@@ -86,16 +85,16 @@ export const TipoDeTomaComboBox = ({ field, form, name = "id_concepto", setCargo
                                 ? languages.find(
                                     (language) => language.value === field.value
                                 )?.label
-                                : "Selecciona una calle"}
+                                : "Selecciona un tipo de toma"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0 h-[300px]">
                     <Command>
-                        <CommandInput placeholder="Buscar calle ... " />
+                        <CommandInput placeholder="Buscar tipo de toma ... " />
                         <CommandList>
-                            <CommandEmpty>Calle no encontrada.</CommandEmpty>
+                            <CommandEmpty>Tipo de toma no encontrada.</CommandEmpty>
                             <CommandGroup>
                                 {
                                     loading &&

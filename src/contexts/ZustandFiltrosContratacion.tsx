@@ -166,7 +166,12 @@ interface FiltrosContratacion {
 
   boolPeticionContratacion: boolean;
   setBoolPeticionContratacion: (boolPeticionContratacion: boolean) => void;
+
+  booleanModalSubirArchivosContratacion: boolean;
+  setBooleanModalSubirArchivosContratacion: (booleanModalSubirArchivosContratacion: boolean) => void;
   
+  idContrato: number;
+  setIdContrato: (idContrato: number) => void;
 
 }
 
@@ -334,6 +339,11 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
 
   boolPeticionContratacion: false,
   setBoolPeticionContratacion: (boolPeticionContratacion) => set({ boolPeticionContratacion }),
+
+  booleanModalSubirArchivosContratacion: false,
+  setBooleanModalSubirArchivosContratacion: (booleanModalSubirArchivosContratacion) => set({ booleanModalSubirArchivosContratacion }),
+  idContrato: 0,
+  setIdContrato: (idContrato) => set({ idContrato }),
 
 }));
 
