@@ -61,7 +61,7 @@ export const DetalleInformacionContrato = () => {
     try{
         const response = await axiosClient.post("contratos/create", values);
         console.log(response.data.contrato[0]?.id);
-        setIdContrato(response.data.contrato[0]?.id)
+        setIdContrato(response.data.contrato[0]?.id_toma)
         toast({
           title: "¡Éxito!",
           description: "El contrato se ha creado correctamente",
@@ -230,7 +230,7 @@ export const DetalleInformacionContrato = () => {
 
 
         <div className='flex justify-end'>
-        <Button className='mt-10' onClick={generarSolicitud}>Crear nuevo contrato</Button>
+        <Button className='mt-8' onClick={generarSolicitud}>Crear solicitud de contrato</Button>
         </div>
 
 

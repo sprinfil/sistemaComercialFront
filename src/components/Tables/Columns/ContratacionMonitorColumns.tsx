@@ -10,6 +10,7 @@ import ModalVerPagosMonitor from "../../ui/ModalVerPagosMonitor"
 import { EyeIcon } from 'lucide-react';
 import ModalMonitorContratacion from "../../ui/ModalMonitorContratacion";
 import { ZustandFiltrosContratacion } from "../../../contexts/ZustandFiltrosContratacion";
+
 export type ContratoMonitor = {
   id: number
   folio_solicitud: string
@@ -59,8 +60,9 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const [modal_ver_pago, set_modal_ver_pago] = useState(false);
 
+      const [modal_ver_pago, set_modal_ver_pago] = useState(false);
+          
       return (
         <>
           <IconButton  onClick={() => { set_modal_ver_pago(true) }} >

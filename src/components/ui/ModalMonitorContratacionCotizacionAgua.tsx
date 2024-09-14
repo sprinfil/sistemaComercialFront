@@ -91,28 +91,27 @@ const form = useForm<z.infer<typeof cambioPropietarioSchema>>({
 function onSubmit(values: z.infer<typeof cambioPropietarioSchema>) 
 {
 
- 
-  const values2 = [
-    {
-      id_contrato: selected_contrato?.id,
-      cotizacion_detalle: conceptoEnviar.map((item) => {
-        const tarifaCorrespondiente = item.tarifas.find(
-          (tarifa) => tarifa.id_tipo_toma === tipoToma
-        );
-  
-        // Multiplica el monto por la cantidad de piezas
-        const montoCalculado = tarifaCorrespondiente
-          ? tarifaCorrespondiente.monto * piezas
-          : 1; // Asegúrate de tener un valor por defecto si tarifaCorrespondiente es undefined
-  
-        return {
-          id_sector: 2,
-          id_concepto: item.id,
-          monto: montoCalculado, // Aquí usamos el monto calculado
-        };
-      }),
-    }
-  ];
+ console.log(selected_contrato?.id);
+ const values2 = {
+  id_contrato: selected_contrato?.id,
+  cotizacion_detalle: conceptoEnviar.map((item) => {
+    const tarifaCorrespondiente = item.tarifas.find(
+      (tarifa) => tarifa.id_tipo_toma === tipoToma
+    );
+
+    // Multiplica el monto por la cantidad de piezas
+    const montoCalculado = tarifaCorrespondiente
+      ? tarifaCorrespondiente.monto * piezas
+      : 1;
+      
+    return {
+      id_sector: 2,
+      id_concepto: item.id,
+      monto: montoCalculado, // Aquí usamos el monto calculado
+    };
+  }),
+};
+
 
   console.log(values2);
   
@@ -121,21 +120,20 @@ function onSubmit(values: z.infer<typeof cambioPropietarioSchema>)
           .then((response) => {
               
             console.log(response);
-            console.log(response);
             toast({
               title: "¡Éxito!",
-              description: "La anomalía se ha creado correctamente",
+              description: "La cotización se ha agregado correctamente",
               variant: "success",
       
           })
           })
           .catch((err) => {
              console.log(err);
-             console.log(response);
+             const errorMessage = err.response?.data?.message || "Algo salió mal.";
              toast({
                variant: "destructive",
                title: "Oh, no. Error",
-               description: "Algo salió mal.",
+               description: errorMessage,
                action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
            })
           })

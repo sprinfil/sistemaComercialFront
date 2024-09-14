@@ -127,10 +127,11 @@ function onSubmit(values: z.infer<typeof cambioPropietarioSchema>)
           })
           .catch((err) => {
              console.log(err);
+             const errorMessage = err.response?.data?.message || "Algo salió mal.";
              toast({
                variant: "destructive",
                title: "Oh, no. Error",
-               description: "Algo salió mal.",
+               description: errorMessage,
                action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
            })
           })

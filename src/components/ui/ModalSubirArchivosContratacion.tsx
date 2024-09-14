@@ -47,7 +47,7 @@ import { GoUpload } from "react-icons/go";
 import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario";
 import { Input } from "./input.tsx";
 
-const ModalSubirArchivosContratacion = () => {
+const ModalSubirArchivosContratacion = ({selected_contrato}) => {
   const { toast } = useToast();
 
   const {
@@ -80,32 +80,78 @@ const ModalSubirArchivosContratacion = () => {
     },
   });
 console.log(idContrato);
-  const subirArchivos = () => {
-    const values = {
-      id_modelo: idContrato,
-      modelo: "contratos",
-      documentos: files
-    }
-    try {
-      const response = axiosClient.post("contratos/subirArchivos", values);
-      console.log(response);
-      toast({
-        title: "¡Éxito!",
-        description: "Los archivos se han cargado correctamente.",
-        variant: "success",
 
-    })
-    } catch (error) {
-      console.log(error.response);
-      
-      
-      toast({
-        variant: "destructive",
-        title: "Oh, no. Error",
-        description: "Algo salió mal.",
-        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-    })
+
+  const subirArchivos = () => {
+
+    if(selected_contrato)
+    {
+      const formData = new FormData();
+      files.forEach((file, index) => {
+        formData.append(`documentos[${index}]`, file); // Laravel espera el formato documentos[0], documentos[1], etc.
+      });
+        // Agregar otros datos al FormData
+        formData.append('id_modelo', selected_contrato.id_toma);
+        formData.append('modelo', 'tomas');
+
+        try {
+          const response = axiosClient.post("contratos/subirArchivos", formData);
+          console.log(response);
+          toast({
+            title: "¡Éxito!",
+            description: "Los archivos se han cargado correctamente.",
+            variant: "success",
+    
+        })
+        } catch (error) {
+          console.log(error.response);
+          
+          
+          toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "Algo salió mal.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+        }
+
+
     }
+    else
+    {
+      const formData = new FormData();
+      files.forEach((file, index) => {
+        formData.append(`documentos[${index}]`, file); // Laravel espera el formato documentos[0], documentos[1], etc.
+      });
+        // Agregar otros datos al FormData
+        formData.append('id_modelo', idContrato);
+        formData.append('modelo', 'tomas');
+
+        try {
+          const response = axiosClient.post("contratos/subirArchivos", formData);
+          console.log(response);
+          toast({
+            title: "¡Éxito!",
+            description: "Los archivos se han cargado correctamente.",
+            variant: "success",
+    
+        })
+        } catch (error) {
+          console.log(error.response);
+          
+          
+          toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "Algo salió mal.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+        }
+    }
+   
+
+   
+    
   };
 
   // Función para manejar el cierre del modal
@@ -153,7 +199,7 @@ console.log(idContrato);
                     onChange={handleFileChange}
                     className="hidden"
                   />
-                  <div className="ml-[20vh]">
+                  <div className="ml-[20vh] border border-green-900 rounded-lg">
                     <IconButton onClick={subirArchivos}>
                       <p className="text-base">Subir archivos</p>{" "}
                       <GoUpload className="ml-2" />

@@ -77,7 +77,7 @@ export const CrearContratoForm = () => {
             colonia: 0,
             codigo_postal:"",
             localidad: "",
-            diametro_toma:"" ,
+            diametro_de_la_toma:"" ,
             tipo_toma: "",
             tipo_contratacion:"" ,
             c_agua: false,
@@ -147,7 +147,7 @@ console.log(tomaPreContratada?.id)
                     clave_catastral: values.clave_catastral,
                     tipo_toma:tipoToma,
                     servicio_contratados: servicios,
-                    diametro_de_la_toma:values.diametro_toma,
+                    diametro_de_la_toma:values.diametro_de_la_toma,
                     num_casa: values.num_casa,
                     colonia: values.colonia,
                     calle: values.calle,
@@ -170,7 +170,7 @@ console.log(tomaPreContratada?.id)
             clave_catastral: values.clave_catastral,
             tipo_toma:tipoToma,
             servicio_contratados: servicios,
-            diametro_de_la_toma:values.diametro_toma,
+            diametro_de_la_toma:values.diametro_de_la_toma,
             num_casa: values.num_casa,
             colonia: values.colonia,
             calle: values.calle,
@@ -210,7 +210,7 @@ console.log(tomaPreContratada?.id)
                 clave_catastral: values.clave_catastral,
                 tipo_toma:values.tipo_toma,
                 servicio_contratados: servicios,
-                diametro_toma:values.diametro_toma,
+                diametro_de_la_toma:values.diametro_de_la_toma,
                 num_casa: values.num_casa,
                 colonia: values.colonia,
                 calle: values.calle,
@@ -260,7 +260,7 @@ console.log(tomaPreContratada?.id)
             form.reset({
                 clave_catastral: tomaPreContratada?.clave_catastral || '',
                 tipo_toma: tomaPreContratada?.id_tipo_toma || '',
-                diametro_toma: tomaPreContratada?.diametro_toma || '',
+                diametro_de_la_toma: tomaPreContratada?.diametro_de_la_toma || '',
                 calle:tomaPreContratada?.calle || '',
                 num_casa:String(tomaPreContratada?.numero_casa) || 0,
                 colonia:tomaPreContratada?.colonia || '',
@@ -379,7 +379,7 @@ console.log(tomaPreContratada?.id)
                                 <div className='w-[120vh]'>
                                 <FormField
                                 control={form.control}
-                                name="diametro_toma"
+                                name="diametro_de_la_toma"
                                 render={({ field}) => (
                                     <FormItem>
                                         <FormLabel>Diametro de la toma</FormLabel>

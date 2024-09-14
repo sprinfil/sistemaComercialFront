@@ -53,15 +53,25 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { GoDownload, GoUpload } from "react-icons/go";
+import ModalSubirArchivosContratacion from "./ModalSubirArchivosContratacion.tsx";
+import { Input } from "./input.tsx";
+
+
+
+
 const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
   const { toast } = useToast();
   
   const {setDataMonitorContratos,  setLoadingTableMonitorContrato, boolModalContratacionMonitor, setBoolModalContratacionMonitor, 
-    setBoolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick,setBoolModalCotizacionMonitor} =  ZustandFiltrosContratacion();
+    setBoolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick,setBoolModalCotizacionMonitor,setBooleanModalSubirArchivosContratacion, setIdContrato, idContrato} =  ZustandFiltrosContratacion();
 
-  console.log(selected_contrato);
+  //console.log(selected_contrato);
+    //console.log(selected_contrato?.id_toma)
+    //setIdContrato(selected_contrato?.id_toma)
+    //console.log(idContrato);
 
-
+    
   const fetch_contratos = async () => {
     setLoadingTableMonitorContrato(true);
     try {
@@ -144,11 +154,11 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
       fetch_contratos();
       set_open(false);
       console.log(response);
-    } catch (response) {
-      const mensaje = response.request.response
-     
+    } catch (err) {
+      const mensaje = err.response?.data?.message || "No se pudo cerrar el contrato.";
+
+     console.log(err);
         
-        console.error("Error eliminando el contrato:", response);
         toast({
           variant: "destructive",
           title: "Oh, no. Error",
@@ -161,6 +171,47 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
 
      
   };
+
+  const handleSubirArchivos = () => 
+  {
+    setBooleanModalSubirArchivosContratacion(true);
+
+  }
+
+  const handleDescargarContrato = () => {
+    axiosClient.get(`/contratos/imprimirContrato/${selected_contrato?.id}`, { responseType: 'blob' })
+      .then((response) => {
+
+        // Crea un nuevo objeto URL para el blob recibido
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const fileName = `contrato_folio_${selected_contrato?.folio_solicitud}.pdf`;
+
+        // Crea un enlace temporal y haz clic en él para descargar el archivo
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+        
+      
+        window.URL.revokeObjectURL(url);
+  
+        toast({
+          title: "¡Éxito!",
+          description: "El contrato se descargó.",
+          variant: "success",
+        });
+      })
+      .catch((err) => {
+        console.error("Error descargando el contrato:", err);
+        toast({
+          variant: "destructive",
+          title: "Oh, no. Error",
+          description: "No se pudo descargar el contrato.",
+          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        });
+      });
+  };
   
 
   return (
@@ -168,7 +219,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
       <AlertDialogContent className="max-w-[180vh] max-h-[102vh] ">
         <AlertDialogHeader>
         <span className="font-bold text-lg">Detalle del contrato</span>
-          <div className="ml-[60vh] bg-muted w-[38vh] rounded-lg">
+          <div className="ml-[63vh] bg-muted w-[46vh] rounded-lg">
             {/* Título al principio */}
             <div className="flex">
             </div>
@@ -182,7 +233,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
                 <Tooltip>
                   <TooltipTrigger>
                   <IconButton onClick={handleBorrarContrato}>
-                      <MdDeleteOutline className="w-[8vh] h-[5vh]" />
+                      <MdDeleteOutline className="w-[3.5vh] h-[3.5vh]" />
                     </IconButton>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -195,11 +246,9 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
                 <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                  <div className="w-[6vh]">
                   <IconButton>
-                    <FaEdit className="w-[8vh] h-[5vh]" />
+                    <FaEdit className="w-[3vh] h-[3vh]" />
                 </IconButton>
-                </div>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Editar contrato</p>
@@ -208,12 +257,12 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
               </TooltipProvider>
 
 
-
               
-
-              <div className="w-[6vh]" title="Cotización">
-                <IconButton onClick={handleCotizacionModal}>
-                  <MdOutlinePriceChange className="w-[8vh] h-[5vh]" />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                  <IconButton onClick={handleCotizacionModal}>
+                  <MdOutlinePriceChange className="w-[3.5vh] h-[3.5vh]" />
                 </IconButton>
                 {selected_contrato?.servicio_contratado == "alcantarillado y saneamiento" &&
                  <ModalMonitorContratacionCotizacionAlcantarilladoSaneamiento
@@ -222,29 +271,93 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
             {selected_contrato?.servicio_contratado == "agua" &&
                  <ModalMonitorContratacionCotizacionAgua
                  selected_contrato={selected_contrato}/>}
-               
-              </div>
 
-              <div className="w-[6vh]" title="Cambio de propietario">
-                <IconButton onClick={handleCambioDePropietarioModal}>
-                  <FaUserEdit className="w-[8vh] h-[5vh]" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Cotización</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+
+
+              
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                  <IconButton onClick={handleCambioDePropietarioModal}>
+                  <FaUserEdit className="w-[3.5vh] h-[3.5vh]" />
                 </IconButton>
                 <ModalMonitorContratacionCambioDePropietario
                 selected_contrato={selected_contrato}
                 />
-              </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Cambio de propietario</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
-              <div className="w-[5vh]" title="Consultar factibilidad">
-                <IconButton>
-                  <FaTools className="w-[8vh] h-[5vh]" />
-                </IconButton>
-              </div>
+               
+      
 
-              <div className="w-[5vh]" title="Cerrar contrato" onClick={handleCerrarContrato}>
-                <IconButton>
-                  <FaCheckCircle className="w-[8vh] h-[5vh]" />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                  <IconButton>
+                  <FaTools className="w-[3vh] h-[3vh]" />
                 </IconButton>
-              </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Consultar factibilidad</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              
+
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                  <IconButton onClick={handleSubirArchivos}>
+                  <GoUpload className="w-[3.7vh] h-[3.7vh]" />
+                  <ModalSubirArchivosContratacion
+                  selected_contrato={selected_contrato}/>
+                </IconButton>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Subir archivos</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                  <IconButton onClick={handleDescargarContrato}>
+                  <GoDownload  className="w-[3.7vh] h-[3.7vh]" />
+                </IconButton>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Descargar contrato</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                  <IconButton onClick={handleCerrarContrato}>
+                  <FaCheckCircle className="w-[3.5vh] h-[3.5vh]" />
+                </IconButton>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Cerrar contrato</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
             </div>
           </div>
 
@@ -252,22 +365,27 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
           <AlertDialogDescription>
             <div className="mb-[5vh]">
               <MarcoFormModalContratoMonitor title={"Datos del contrato"}>
-                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className=" dark:text-gray-400 font-medium mb-1">
-                    Nombre de contrato:
-                  </div>
-                  <p className="text-gray-800 dark:text-gray-200">
-                    {selected_contrato?.nombre_contrato}
-                  </p>
+
+              <div className="flex flex-col space-y-2">
+                <div className="block text-sm font-medium text-gray-700">Folio de solicitud:</div>
+                <Input
+                  value={selected_contrato?.folio_solicitud|| ""}
+                  ></Input>
+
+
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className=" dark:text-gray-400 font-medium mb-1">
-                  Folio de solicitud:
-                  </div>
-                  <p className="text-gray-800 dark:text-gray-200">
-                  {selected_contrato?.folio_solicitud}
-                  </p>
+
+                <div className="flex flex-col space-y-2">
+                <div className="block text-sm font-medium text-gray-700">Nombre del contrato:</div>
+                <Input
+                  value={selected_contrato?.nombre_contrato || ""}
+                  ></Input>
+
                 </div>
+              
+                
+             
+      
                 
               </MarcoFormModalContratoMonitor>
             </div>

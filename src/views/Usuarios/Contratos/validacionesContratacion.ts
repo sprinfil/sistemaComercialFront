@@ -12,7 +12,7 @@ export const crearContratoSchema = z.object({
     nombre_contrato:z.string().min(1,"Ingresa el nombre del contrato"),
     clave_catastral: z.string().min(10,"Ingresa la clave catastral o ingresa minimo 10 caracteres").max(14, "Deben ser maximo 12 caracteres"),
     tipo_toma: z.number().min(1,"Ingresa tipo de toma"),
-    diametro_toma: z.string().min(1,"Ingresa el diametro de la toma"),
+    diametro_de_la_toma: z.string().min(1,"Ingresa el diametro de la toma"),
     num_casa: z.string().min(1,"Ingresa el numero de casa"),
     colonia: z.number().min(1,"Ingresa la colonia"),
     calle: z.number().min(1,"Ingresa la calle"),
