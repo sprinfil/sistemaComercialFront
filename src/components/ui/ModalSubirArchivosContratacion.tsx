@@ -235,7 +235,7 @@ console.log(idContrato);
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={handleCloseModal}>
-            Cancelar
+            Cerrar
           </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>

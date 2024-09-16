@@ -124,6 +124,7 @@ function onSubmit(values: z.infer<typeof cambioPropietarioSchema>)
               variant: "success",
       
           })
+          setBoolModalCotizacionMonitor(false);
           })
           .catch((err) => {
              console.log(err);
@@ -134,6 +135,8 @@ function onSubmit(values: z.infer<typeof cambioPropietarioSchema>)
                description: errorMessage,
                action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
            })
+           setBoolModalCotizacionMonitor(false);
+
           })
   
 }

@@ -52,7 +52,7 @@ export const DetalleInformacionContrato = () => {
       toma: {
         id_libro: libroToma,
         id_giro_comercial: idGiroComercial,
-        direccion_notificaciones: direccion_notificaciones
+        direccion_notificacion: direccion_notificaciones
       }
     }
 
@@ -69,7 +69,7 @@ export const DetalleInformacionContrato = () => {
 
       })
       setBooleanModalSubirArchivosContratacion(true);
-
+        console.log(response);
     }
     catch(response)
     {

@@ -56,6 +56,8 @@ import {
 import { GoDownload, GoUpload } from "react-icons/go";
 import ModalSubirArchivosContratacion from "./ModalSubirArchivosContratacion.tsx";
 import { Input } from "./input.tsx";
+import { DetalleContrato } from "../../views/Usuarios/Contratos/DetalleContrato.tsx";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 
 
@@ -64,13 +66,30 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
   const { toast } = useToast();
   
   const {setDataMonitorContratos,  setLoadingTableMonitorContrato, boolModalContratacionMonitor, setBoolModalContratacionMonitor, 
-    setBoolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick,setBoolModalCotizacionMonitor,setBooleanModalSubirArchivosContratacion, setIdContrato, idContrato} =  ZustandFiltrosContratacion();
+    setBoolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick,setBoolModalCotizacionMonitor,
+    setBooleanModalSubirArchivosContratacion, setIdContrato, idContrato, setAccion} =  ZustandFiltrosContratacion();
 
   //console.log(selected_contrato);
     //console.log(selected_contrato?.id_toma)
     //setIdContrato(selected_contrato?.id_toma)
     //console.log(idContrato);
+    const [activeTab, setActiveTab] = useState("Detalles");
 
+    const opciones = [
+      {
+        titulo: "Detalles",
+        componente: <DetalleContrato selected_contrato={selected_contrato}/>
+      },
+      {
+        titulo: "Cotizacion",
+        componente: ""
+      },
+      {
+        titulo: "Contrato",
+        componente: ""
+      },
+    ]
+  
     
   const fetch_contratos = async () => {
     setLoadingTableMonitorContrato(true);
@@ -212,14 +231,18 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
         });
       });
   };
+
+  const handleEditarContrato = () => {
+    setAccion("editar")
+  }
   
 
   return (
     <AlertDialog open={open} onOpenChange={set_open}>
-      <AlertDialogContent className="max-w-[180vh] max-h-[102vh] ">
-        <AlertDialogHeader>
+<AlertDialogContent className="w-full h-full max-w-full max-h-full p-9 overflow-hidden">
+<AlertDialogHeader>
         <span className="font-bold text-lg">Detalle del contrato</span>
-          <div className="ml-[63vh] bg-muted w-[46vh] rounded-lg">
+          <div className="ml-[77vh] bg-muted w-[46vh] rounded-lg">
             {/* Título al principio */}
             <div className="flex">
             </div>
@@ -246,9 +269,13 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
                 <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                  <IconButton>
-                    <FaEdit className="w-[3vh] h-[3vh]" />
-                </IconButton>
+                    {
+                      selected_contrato.estatus != "contratado" && 
+                      <IconButton onClick={handleEditarContrato} >
+                      <FaEdit className="w-[3vh] h-[3vh]"/>
+                     </IconButton>
+                    }
+                 
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Editar contrato</p>
@@ -268,7 +295,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
                  <ModalMonitorContratacionCotizacionAlcantarilladoSaneamiento
                  selected_contrato={selected_contrato}/>}
 
-            {selected_contrato?.servicio_contratado == "agua" &&
+              {selected_contrato?.servicio_contratado == "agua" &&
                  <ModalMonitorContratacionCotizacionAgua
                  selected_contrato={selected_contrato}/>}
 
@@ -363,141 +390,33 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
 
           <AlertDialogTitle></AlertDialogTitle>
           <AlertDialogDescription>
-            <div className="mb-[5vh]">
-              <MarcoFormModalContratoMonitor title={"Datos del contrato"}>
+    
 
-              <div className="flex flex-col space-y-2">
-                <div className="block text-sm font-medium text-gray-700">Folio de solicitud:</div>
-                <Input
-                  value={selected_contrato?.folio_solicitud|| ""}
-                  ></Input>
+     
+          {/*Formulario*/}
+          <div className='w-full rounded-md border border-border h-[80vh] p-4 overflow-auto'>
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList>
+                {opciones.map((opcion, index) => (
+                  <>
+                    <TabsTrigger value={opcion.titulo} key={index}>{opcion.titulo}</TabsTrigger>
+                  </>
+                ))}
+              </TabsList>
+              {opciones.map((opcion, index) => (
+                <>
+                  <TabsContent value={opcion.titulo} key={index}>{opcion.componente}</TabsContent>
+                </>
+              ))}
+            </Tabs>
+          </div>
 
-
-                </div>
-
-                <div className="flex flex-col space-y-2">
-                <div className="block text-sm font-medium text-gray-700">Nombre del contrato:</div>
-                <Input
-                  value={selected_contrato?.nombre_contrato || ""}
-                  ></Input>
-
-                </div>
-              
-                
-             
-      
-                
-              </MarcoFormModalContratoMonitor>
-            </div>
-
-            <MarcoFormModalContratoMonitor title={"Datos de la toma"}>
-            <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className=" dark:text-gray-400 font-medium mb-1">
-                  Clave catastral:
-                  </div>
-                  <p className="text-gray-800 dark:text-gray-200">
-                  {selected_contrato?.clave_catastral}
-                  </p>
-                </div>
-             
-
-                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className=" dark:text-gray-400 font-medium mb-1">
-                  Calle:
-                  </div>
-                  <p className="text-gray-800 dark:text-gray-200">
-                  {selected_contrato?.calle}
-                  </p>
-                </div>
-
-                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className=" dark:text-gray-400 font-medium mb-1">
-                  Numero de casa:
-                  </div>
-                  <p className="text-gray-800 dark:text-gray-200">
-                  {selected_contrato?.num_casa}
-                  </p>
-                </div>
-
-
-                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className=" dark:text-gray-400 font-medium mb-1">
-                  Entre calle 1:
-                  </div>
-                  <p className="text-gray-800 dark:text-gray-200">
-                  {selected_contrato?.entre_calle1}
-                  </p>
-                </div>
-
-
-
-
-                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className=" dark:text-gray-400 font-medium mb-1">
-                  Entre calle 2:
-                  </div>
-                  <p className="text-gray-800 dark:text-gray-200">
-                  {selected_contrato?.entre_calle2}
-                  </p>
-                </div>
-
-                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className=" dark:text-gray-400 font-medium mb-1">
-                  Localidad:
-                  </div>
-                  <p className="text-gray-800 dark:text-gray-200">
-                  {selected_contrato?.localidad}
-                  </p>
-                </div>
-                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className=" dark:text-gray-400 font-medium mb-1">
-                  Municipio
-                  </div>
-                  <p className="text-gray-800 dark:text-gray-200">
-                  {selected_contrato?.municipio}
-                  </p>
-                </div>
-
-
-                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className=" dark:text-gray-400 font-medium mb-1">
-                  Servicio contratado:
-
-                  </div>
-                  <p className="text-gray-800 dark:text-gray-200">
-                  {selected_contrato?.servicio_contratado}
-                  </p>
-                </div>
-
-
-             
-                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className=" dark:text-gray-400 font-medium mb-1">
-                  Estatus:
-
-                  </div>
-                  <p className="text-gray-800 dark:text-gray-200">
-                  {selected_contrato?.estatus}
-                  </p>
-                </div>
-
-                <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
-                  <div className=" dark:text-gray-400 font-medium mb-1">
-                  Diametro de la toma:
-
-                  </div>
-                  <p className="text-gray-800 dark:text-gray-200">
-                  {selected_contrato?.diametro_de_la_toma}
-                  </p>
-                </div>
-          
-         
-            </MarcoFormModalContratoMonitor>
+       
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setBoolModalContratacionMonitor(false)}>
-            Cancelar
+          <AlertDialogCancel onClick={() => {setBoolModalContratacionMonitor(false); setAccion("")}} className="w-[10vh] bg-red-500 border  border-black">
+            Salir
           </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>

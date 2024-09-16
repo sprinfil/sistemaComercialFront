@@ -9,19 +9,24 @@ type contrato = {
   clave_catastral: string;
   tipo_toma: string;
   servicio_contratados: string[];
-  diametro_toma: string;
+  //diametro_toma: string;
   num_casa: string;
   colonia: number;
   calle: number;
   codigo_postal: string;
-  entre_calle_1: number;
-  entre_calle_2: number;
+  entre_calle1: number;
+  entre_calle2: number;
   localidad: number;
   municipio: number;
   tipo_contratacion: string;
+  coordenada:string;
 }
 
 
+interface Location {
+  lat: number;
+  lng: number;
+}
 
 
 interface FiltrosContratacion {
@@ -173,6 +178,18 @@ interface FiltrosContratacion {
   idContrato: number;
   setIdContrato: (idContrato: number) => void;
 
+  accion: string;
+  setAccion: (accion: string) => void;
+
+  seleccionoPuntoEnMapa: boolean;
+  setSeleccionoPuntoEnMapa: (seleccionoPuntoEnMapa: boolean) => void;
+
+  selectedLocation: Location  | null;
+  setSelectedLocation:(selectedLocation: Location  | null) => void;
+  getCoordenadaString: () => string | null;
+
+
+
 }
 
 export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => ({
@@ -260,6 +277,7 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
     localidad: 0,
     municipio: 0,
     tipo_contratacion: "",
+    coordenada: "",
   },
   setContrato: (contrato: Partial<contrato>) => set((state) => ({
     contrato: {
@@ -344,6 +362,23 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
   setBooleanModalSubirArchivosContratacion: (booleanModalSubirArchivosContratacion) => set({ booleanModalSubirArchivosContratacion }),
   idContrato: 0,
   setIdContrato: (idContrato) => set({ idContrato }),
+
+  accion: "",
+  setAccion: (accion) => set({ accion }),
+
+  seleccionoPuntoEnMapa: false,
+  setSeleccionoPuntoEnMapa: (seleccionoPuntoEnMapa) => set({ seleccionoPuntoEnMapa }),
+
+  
+  selectedLocation: null,
+  setSelectedLocation: (selectedLocation) => set({ selectedLocation }),
+
+  getCoordenadaString: (): string | null => {
+    const { selectedLocation } = ZustandFiltrosContratacion.getState();
+    return selectedLocation
+      ? `${selectedLocation.lat.toFixed(12)}, ${selectedLocation.lng.toFixed(12)}`
+      : null;
+  },
 
 }));
 

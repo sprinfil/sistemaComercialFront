@@ -126,6 +126,7 @@ function onSubmit(values: z.infer<typeof cambioPropietarioSchema>)
               variant: "success",
       
           })
+          setBoolModalCotizacionMonitor(true);
           })
           .catch((err) => {
              console.log(err);

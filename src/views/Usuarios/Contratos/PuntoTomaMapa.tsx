@@ -28,11 +28,10 @@ const center = {
 
 const PuntoTomaMapa = () => {
   const { setLatitudMapa, setLongitudMapa, setLibroToma, libroToma, setMarcadorSeleccionado, marcadorSeleccionado, 
-    isCheckedPreContratada, puntosFiltradosParaElMapa, setTomaPreContratada } =
+    isCheckedPreContratada, puntosFiltradosParaElMapa, setTomaPreContratada,setSeleccionoPuntoEnMapa, selectedLocation, setSelectedLocation } =
     ZustandFiltrosContratacion();
   const { toast } = useToast();
   const [poligonos, setPoligonos] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState(null);
   const [mapaCargado, setMapaCargado] = useState(false);
   const [infoWindowPosition, setInfoWindowPosition] = useState(null);
   const [tomas_filtradas, set_tomas_filtradas] = useState([]);
@@ -80,6 +79,11 @@ const PuntoTomaMapa = () => {
   }, [promise])
 
 
+  useEffect(() => {
+    return () => {
+      setSeleccionoPuntoEnMapa(false); 
+    };
+  }, [setSeleccionoPuntoEnMapa]);
 
 
   const handleMapClick = (event) => {
@@ -87,6 +91,7 @@ const PuntoTomaMapa = () => {
     const lng = event.latLng.lng();
     const clickedLocation = new google.maps.LatLng(lat, lng);
     setSelectedLocation({ lat, lng });
+    setSeleccionoPuntoEnMapa(true);
 
     let isInsidePolygon = false;
 
@@ -117,6 +122,8 @@ const PuntoTomaMapa = () => {
           ) {
             isInsidePolygon = true;
             setSelectedLocation({ lat, lng });
+            setSeleccionoPuntoEnMapa(true);
+
           }
         }
       });
@@ -129,6 +136,7 @@ const PuntoTomaMapa = () => {
         description: "Puedes continuar el proceso de contratación si lo deseas.",
       })
     }
+    setSeleccionoPuntoEnMapa(true);
   };
 
 
@@ -208,6 +216,7 @@ const PuntoTomaMapa = () => {
                           const lat = event.latLng.lat();
                           const lng = event.latLng.lng();
                           setSelectedLocation({ lat, lng });
+                          setSeleccionoPuntoEnMapa(true);
                           setLibroToma(libro.id);
                           console.log(libro.id);
                         }}

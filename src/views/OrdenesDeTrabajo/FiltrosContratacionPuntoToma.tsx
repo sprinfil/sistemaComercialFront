@@ -24,6 +24,13 @@ import { LuFilterX } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { ZustandFiltrosContratacion } from "../../contexts/ZustandFiltrosContratacion";
 import axiosClient from "../../axios-client";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 const FiltrosContratacionPuntoToma = () => {
 
   const navigate = useNavigate();
@@ -36,7 +43,7 @@ const FiltrosContratacionPuntoToma = () => {
 
 
 
-  const {setIsCheckedPreContratadas, isCheckedPreContratadas, setPuntosFiltradosParaElMapa, tomaPreContratada, setTomaPreContratada, setBoolPeticionContratacion} = ZustandFiltrosContratacion();
+  const {setIsCheckedPreContratadas, isCheckedPreContratadas, setPuntosFiltradosParaElMapa, tomaPreContratada, setTomaPreContratada, setBoolPeticionContratacion, seleccionoPuntoEnMapa} = ZustandFiltrosContratacion();
 
 //console.log(isCheckedPreContratadas);
 
@@ -72,39 +79,47 @@ const FiltrosContratacionPuntoToma = () => {
   return (
     <div className="overflow-auto min-h-[20vh]">
       <div className="ml-5 mb-[20vh] mt-[1vh] h-full p-3">
-        <div className="flex space-x-[25vh]">
-          <div>
-            <FiFilter className="w-[3vh] h-[3vh]" />
-            
-          </div>
-         Filtros
-      
-    
-          <div className="rounded-xl" title="Continuar proceso" onClick={handleSiguienteContratacion}>
-           <IconButton >
-            <FaArrowRight/>
-            </IconButton>
-            </div>
+      <div className="flex justify-between items-center space-x-4">
+
+        <div className="flex items-center space-x-2">
+          <FiFilter className="w-[3vh] h-[3vh]" />
+          <span>Filtros</span>
         </div>
 
-        <div className="flex flex-col mt-6 w-full">
-          <div className="flex space-x-[16vh] text-lg font-semibold mt-4">
-            Tomas
-            <div className="" title="Limpiar filtros">
-            <IconButton>
-              <LuFilterX />
+        {seleccionoPuntoEnMapa && (
+          <div className="rounded-xl" title="Continuar proceso">
+            <IconButton onClick={handleSiguienteContratacion}>
+              <FaArrowRight />
             </IconButton>
           </div>
-          <div title="Buscar" className="flex justify-end">
-            <IconButton onClick={handleBuscarTomas}>            
-              <FaSearch/>
-            </IconButton>
-            </div>
-          </div>
+        )}
+      </div>
+
+        <div className="flex justify-between items-center space-x-2 mt-5">
+          
+  <div className="flex items-center space-x-4 text-lg font-semibold mt-4">
+    <span>Tomas</span>
+    <div title="Limpiar filtros">
+      <IconButton>
+        <LuFilterX />
+      </IconButton>
+    </div>
+  </div>
+
+  {/* Lupa (ícono de búsqueda) alineada a la derecha */}
+  <div title="Buscar" className="flex">
+    <IconButton onClick={handleBuscarTomas}>            
+      <FaSearch/>
+    </IconButton>
+  </div>
+</div>
+
+
+
           <hr className="border-t border-border my-1" />
 
           <div className="grid grid-cols-2 gap-x-[10vh] mb-2">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 mt-2">
               <div className="text-sm font-medium mb-2 mt-2">Desarrolladora</div>
               <div className="ml-2">
                 <Checkbox
@@ -119,7 +134,6 @@ const FiltrosContratacionPuntoToma = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

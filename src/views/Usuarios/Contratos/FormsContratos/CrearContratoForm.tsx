@@ -54,7 +54,7 @@ export const CrearContratoForm = () => {
     const {latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial, 
         setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
         setServicioContratado, setGiroComercial,setTipoDeToma, tomaPreContratada,isCheckInspeccion,boolPeticionContratacion,
-        setServicioContratado2} = ZustandFiltrosContratacion();
+        setServicioContratado2, selectedLocation, getCoordenadaString} = ZustandFiltrosContratacion();
 
 
     const {usuariosEncontrados} = ZustandGeneralUsuario();
@@ -62,7 +62,7 @@ export const CrearContratoForm = () => {
     console.log("Longitud:", longitudMapa); //Longitud seleccionada dentro del poligono
     console.log("Libro:", libroToma); //Longitud seleccionada dentro del poligono
     console.log(JSON.stringify(libroToma));
-
+        console.log(selectedLocation);
 
     const form = useForm<z.infer<typeof crearContratoSchema>>({
         resolver: zodResolver(crearContratoSchema),
@@ -109,98 +109,89 @@ console.log(tomaPreContratada?.id)
        
     const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
 
-     
-        
+        const coordenadaString = ZustandFiltrosContratacion.getState().getCoordenadaString();
+
         const agua = values.c_agua ? "agua" : null;
         const alcantarillado = values.c_alc ? "alcantarillado" : null;
         const saneamiento = values.c_san ? "saneamiento" : null;
-        
+    
         // Combinar alcantarillado y saneamiento en una sola variable
         const alcantarillado_y_saneamiento = (alcantarillado && saneamiento)
             ? `${alcantarillado} y ${saneamiento}` // Combina en un solo string si ambos están presentes
             : alcantarillado || saneamiento; // Usa solo alcantarillado o saneamiento si uno de ellos está presente
-        
+    
         // ARREGLO DE SERVICIOS
         const servicios = [agua, alcantarillado_y_saneamiento].filter(service => service !== null);
-        
-
+    
         const tipoToma = parseInt(values.tipo_toma, 10);
         const num_casaDato = Number(values.num_casa);
-        //const num_casaDato = String(values.num_casa);
-
+    
         setIdGiroComercial(values.id_giro_comercial);
         setServicioContratado(agua);
         setServicioContratado2(alcantarillado_y_saneamiento);
+    
         let tomaId = 0;
         if (tomaPreContratada && tomaPreContratada.id !== undefined) {
-            tomaId = tomaPreContratada?.id;
+            tomaId = tomaPreContratada.id;
         }
         console.log(tomaId);
-
+    
         let datos; 
-        if(boolPeticionContratacion)
-        {
-                //ESTOS DATOS SON PARA ENVIAR
-                 datos = {
-                    id_usuario: usuariosEncontrados[0]?.id,
-                    nombre_contrato: values.nombre_contrato,
-                    clave_catastral: values.clave_catastral,
-                    tipo_toma:tipoToma,
-                    servicio_contratados: servicios,
-                    diametro_de_la_toma:values.diametro_de_la_toma,
-                    num_casa: values.num_casa,
-                    colonia: values.colonia,
-                    calle: values.calle,
-                    codigo_postal: values.codigo_postal,
-                    entre_calle_1: values.entre_calle_1,
-                    entre_calle_2: values.entre_calle_2,
-                    localidad: values.localidad,
-                    municipio: values.municipio,
-                    tipo_contratacion: values.tipo_contratacion,
-                }
+        if (boolPeticionContratacion) {
+            // Estos datos son para enviar
+            datos = {
+                id_usuario: usuariosEncontrados[0]?.id,
+                nombre_contrato: values.nombre_contrato,
+                clave_catastral: values.clave_catastral,
+                tipo_toma: tipoToma,
+                servicio_contratados: servicios,
+                //diametro_toma: values.diametro_de_la_toma,
+                num_casa: values.num_casa,
+                colonia: values.colonia,
+                calle: values.calle,
+                codigo_postal: values.codigo_postal,
+                entre_calle1: values.entre_calle_1,
+                entre_calle2: values.entre_calle_2,
+                localidad: values.localidad,
+                municipio: values.municipio,
+                tipo_contratacion: values.tipo_contratacion,
+                coordenada: coordenadaString,
+            };
+        } else {
+            // Estos datos son para enviar
+            datos = {
+                id_toma: tomaId,
+                id_usuario: usuariosEncontrados[0]?.id,
+                nombre_contrato: values.nombre_contrato,
+                clave_catastral: values.clave_catastral,
+                tipo_toma: tipoToma,
+                servicio_contratados: servicios,
+                //diametro_toma: values.diametro_de_la_toma, // Usar el campo correcto aquí
+                num_casa: values.num_casa,
+                colonia: values.colonia,
+                calle: values.calle,
+                codigo_postal: values.codigo_postal,
+                entre_calle1: values.entre_calle_1,
+                entre_calle2: values.entre_calle_2,
+                localidad: values.localidad,
+                municipio: values.municipio,
+                tipo_contratacion: values.tipo_contratacion,
+            };
         }
-        else
-        {
-        //ESTOS DATOS SON PARA ENVIAR
-         datos = {
-                    
-            id_toma: tomaId,
-            id_usuario: usuariosEncontrados[0]?.id,
-            nombre_contrato: values.nombre_contrato,
-            clave_catastral: values.clave_catastral,
-            tipo_toma:tipoToma,
-            servicio_contratados: servicios,
-            diametro_de_la_toma:values.diametro_de_la_toma,
-            num_casa: values.num_casa,
-            colonia: values.colonia,
-            calle: values.calle,
-            codigo_postal: values.codigo_postal,
-            entre_calle_1: values.entre_calle_1,
-            entre_calle_2: values.entre_calle_2,
-            localidad: values.localidad,
-            municipio: values.municipio,
-            tipo_contratacion: values.tipo_contratacion,
-        }
-
-        }
-       
-        
-           
-        
+    
         // Filtrar campos deshabilitados antes de enviar
-    const filteredData = {
-        ...datos,
-        c_agua: campoAgua ? datos.c_agua : undefined,
-        c_alc: contrato2 ? datos.c_alc : undefined,
-        c_san: contrato2 ? datos.c_san : undefined,
-      };
-  
-      // Eliminar propiedades undefined
-      Object.keys(filteredData).forEach(key => filteredData[key] === undefined && delete filteredData[key]);
-
+        const filteredData = {
+            ...datos,
+            c_agua: campoAgua ? datos.c_agua : undefined,
+            c_alc: contrato2 ? datos.c_alc : undefined,
+            c_san: contrato2 ? datos.c_san : undefined,
+        };
+    
+        // Eliminar propiedades undefined
+        Object.keys(filteredData).forEach(key => filteredData[key] === undefined && delete filteredData[key]);
+    
         setContrato(filteredData);
-
-        
+    
         console.log(servicioAContratar);
         handleAbrirModalNotificaciones();
         const crearContrato = {
@@ -210,16 +201,17 @@ console.log(tomaPreContratada?.id)
                 clave_catastral: values.clave_catastral,
                 tipo_toma:values.tipo_toma,
                 servicio_contratados: servicios,
-                diametro_de_la_toma:values.diametro_de_la_toma,
+                //diametro_toma:values.diametro_de_la_toma,
                 num_casa: values.num_casa,
                 colonia: values.colonia,
                 calle: values.calle,
                 codigo_postal: values.codigo_postal,
-                entre_calle_1: values.entre_calle_1,
-                entre_calle_2: values.entre_calle_2,
+                entre_calle1: values.entre_calle_1,
+                entre_calle2: values.entre_calle_2,
                 localidad: values.localidad,
                 municipio: values.municipio,
                 tipo_contratacion: values.tipo_contratacion,
+                coordenada: selectedLocation
         };
 
 
@@ -254,6 +246,7 @@ console.log(tomaPreContratada?.id)
 
       useEffect(() => 
     {
+        console.log(tomaPreContratada);
         if(tomaPreContratada)
         {
           
@@ -265,7 +258,7 @@ console.log(tomaPreContratada?.id)
                 num_casa:String(tomaPreContratada?.numero_casa) || 0,
                 colonia:tomaPreContratada?.colonia || '',
                 codigo_postal:tomaPreContratada?.codigo_postal || '',
-                entre_calle_1:tomaPreContratada?.entre_calle_1 || '',
+                entre_calle_1:Number(tomaPreContratada?.entre_calle_1) || '',
                 entre_calle_2:Number(tomaPreContratada?.entre_calle_2) || '',
                 localidad:tomaPreContratada?.localidad || '',
                 municipio:tomaPreContratada?.municipio || '',
@@ -395,8 +388,12 @@ console.log(tomaPreContratada?.id)
                                         <SelectValue placeholder="Selecciona el diámetro de la toma" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="2-pulgadas">2"</SelectItem>
-                                        <SelectItem value="4-pulgadas">4"</SelectItem>
+                                        <SelectItem value="1/2 pulgada">1/2"</SelectItem>
+                                        <SelectItem value="1/4 pulgada">1/4"</SelectItem>
+                                        <SelectItem value="1 pulgada">1"</SelectItem>
+                                        <SelectItem value="2 pulgadas">2"</SelectItem>
+                                        <SelectItem value="1/8 pulgada">1/8"</SelectItem>
+
                                     </SelectContent>
                                     </Select>
                                         </FormControl>
@@ -548,9 +545,15 @@ console.log(tomaPreContratada?.id)
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="La Paz">La paz</SelectItem>
-                                            <SelectItem value="Todos santos">Todos santos</SelectItem>
-                                            <SelectItem value="Punta prieta">Punta prieta</SelectItem>
+                                            <SelectItem value="La Paz">La Paz</SelectItem>
+                                            <SelectItem value="Todos santos">Todos Santos</SelectItem>
+                                            <SelectItem value="Chametla">Chametla</SelectItem>
+                                            <SelectItem value="El Centenario">El Centenario</SelectItem>
+                                            <SelectItem value="El Pescadero">El Pescadero</SelectItem>
+                                            <SelectItem value="Los Barriles">Los Barriles</SelectItem>
+                                            <SelectItem value="Agua Amarga">Agua Amarga</SelectItem>
+
+
                                         </SelectContent>
                                     </Select>
                                     <FormDescription />
@@ -579,9 +582,9 @@ console.log(tomaPreContratada?.id)
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="La Paz">La paz</SelectItem>
-                                            <SelectItem value="Todos santos">Todos santos</SelectItem>
-                                            <SelectItem value="Punta prieta">Punta prieta</SelectItem>
+                                            <SelectItem value="La Paz">La Paz</SelectItem>
+                                            <SelectItem value="Los cabos">Los Cabos</SelectItem>
+                                            <SelectItem value="Comondu">Comondú</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormDescription />
