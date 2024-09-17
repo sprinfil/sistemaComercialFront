@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import axiosClient from '../../axios-client';
 import Loader from '../ui/Loader.tsx';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'; // Importación del Accordion de Shadcn
 
 interface ModalConvenioProps {
   trigger: React.ReactNode;
@@ -26,9 +27,6 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const [error, setError] = useState<string | null>(null);
   const [selectedConvenio, setSelectedConvenio] = useState<any | null>(null);
   const [selectedAdditionalData, setSelectedAdditionalData] = useState<any | null>(null);
-  const [isTable1Collapsed, setIsTable1Collapsed] = useState(true); // Initially collapsed
-  const [isTable2Collapsed, setIsTable2Collapsed] = useState(true); // Initially collapsed
-  const [isTable3Collapsed, setIsTable3Collapsed] = useState(true); // Initially collapsed
 
   useEffect(() => {
     setLoading(true);
@@ -70,24 +68,10 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
 
   const handleRowClick = (convenio: any) => {
     setSelectedConvenio(convenio);
-    setIsTable1Collapsed(true);  // Collapse Table 1
-    setIsTable2Collapsed(false); // Expand Table 2
   };
 
   const handleAdditionalDataClick = (data: any) => {
     setSelectedAdditionalData(data);
-    setIsTable2Collapsed(true);  // Collapse Table 2
-    setIsTable3Collapsed(false); // Expand Table 3
-  };
-
-  const handleHeaderClick = (table: number) => {
-    if (table === 1) {
-      setIsTable1Collapsed(!isTable1Collapsed); 
-    } else if (table === 2) {
-      setIsTable2Collapsed(!isTable2Collapsed); 
-    } else {
-      setIsTable3Collapsed(!isTable3Collapsed); 
-    }
   };
 
   return (
@@ -103,107 +87,67 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <div>
+          <Accordion type="single" collapsible>
+            {/* Accordion 1 - Convenios */}
+            <AccordionItem value="convenios">
+              <AccordionTrigger className="font-medium">Convenios Disponibles</AccordionTrigger>
+              <AccordionContent>
+                {convenios.length > 0 ? (
+                  convenios.map((convenio: any) => (
+                    <div
+                      key={convenio.id}
+                      className={`cursor-pointer p-2 hover:bg-gray-100 ${selectedConvenio?.id === convenio.id ? 'bg-gray-200' : ''}`}
+                      onClick={() => handleRowClick(convenio)}
+                    >
+                      {convenio.nombre}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center">No hay convenios disponibles.</p>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Accordion 2 - Cargos conveniables */}
             {selectedConvenio && (
-              <div className="mt-4">
-                <p className="font-semibold">Convenio Seleccionado:</p>
-                <p><strong>{selectedConvenio.nombre}</strong></p>
-              </div>
+              <AccordionItem value="additionalData">
+                <AccordionTrigger className="font-medium">Cargos conveniables</AccordionTrigger>
+                <AccordionContent>
+                  {additionalData.length > 0 ? (
+                    additionalData.map((data: any) => (
+                      <div
+                        key={data.id}
+                        className="cursor-pointer p-2 hover:bg-gray-100"
+                        onClick={() => handleAdditionalDataClick(data)}
+                      >
+                        {data.name}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-center">No hay datos adicionales disponibles.</p>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
             )}
-            <div className="overflow-hidden mb-4">
-              <div className={`transition-all duration-300 ease-in-out ${isTable1Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
-                <table className="w-full table-fixed border border-gray-200">
-                  <thead
-                    className="bg-gray-200 cursor-pointer"
-                    onClick={() => handleHeaderClick(1)}
-                  >
-                    <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Convenios Disponibles</th>
-                    </tr>
-                  </thead>
-                  <tbody className={`bg-white ${isTable1Collapsed ? 'hidden' : ''}`}>
-                    {convenios.length > 0 ? (
-                      convenios.map((convenio: any) => (
-                        <tr
-                          key={convenio.id}
-                          className={`cursor-pointer hover:bg-gray-100 ${selectedConvenio?.id === convenio.id ? 'bg-gray-200' : ''}`}
-                          onClick={() => handleRowClick(convenio)}
-                        >
-                          <td className="px-4 py-2">{convenio.nombre}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="1" className="px-4 py-2 text-center">No hay convenios disponibles.</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
 
-            {/* Table 2 */}
-            <div className="overflow-hidden mb-4">
-              <div className={`transition-all duration-300 ease-in-out ${isTable2Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
-                <table className="w-full table-fixed border border-gray-200">
-                  <thead
-                    className="bg-gray-200 cursor-pointer"
-                    onClick={() => handleHeaderClick(2)}
-                  >
-                    <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Cargos conveniables</th>
-                    </tr>
-                  </thead>
-                  <tbody className={`bg-white ${isTable2Collapsed ? 'hidden' : ''}`}>
-                    {additionalData.length > 0 ? (
-                      additionalData.map((data: any) => (
-                        <tr
-                          key={data.id}
-                          className="cursor-pointer hover:bg-gray-100"
-                          onClick={() => handleAdditionalDataClick(data)}
-                        >
-                          <td className="px-4 py-2">{data.name}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="1" className="px-4 py-2 text-center">No hay datos adicionales disponibles.</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Table 3 */}
-            <div className="overflow-hidden mb-4">
-              <div className={`transition-all duration-300 ease-in-out ${isTable3Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
-                <table className="w-full table-fixed border border-gray-200">
-                  <thead
-                    className="bg-gray-200 cursor-pointer"
-                    onClick={() => handleHeaderClick(3)}
-                  >
-                    <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Configurar convenio</th>
-                    </tr>
-                  </thead>
-                  <tbody className={`bg-white ${isTable3Collapsed ? 'hidden' : ''}`}>
-                    {moreData.length > 0 ? (
-                      moreData.map((data: any) => (
-                        <tr key={data.id}>
-                          <td className="px-4 py-2">{data.name}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="1" className="px-4 py-2 text-center">No hay más datos disponibles.</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+            {/* Accordion 3 - Configurar convenio */}
+            {selectedAdditionalData && (
+              <AccordionItem value="moreData">
+                <AccordionTrigger className="font-medium">Configurar convenio</AccordionTrigger>
+                <AccordionContent>
+                  {moreData.length > 0 ? (
+                    moreData.map((data: any) => (
+                      <div key={data.id} className="p-2">
+                        {data.name}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-center">No hay más datos disponibles.</p>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            )}
+          </Accordion>
         )}
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
