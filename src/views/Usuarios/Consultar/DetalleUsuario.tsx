@@ -6,7 +6,7 @@ import InformaciónGeneral from './VistasDetalleUsuario/InformaciónGeneral';
 import InformacionFiscal from './VistasDetalleUsuario/InformacionFiscal';
 import CrearOrdenDeTrabajo from './VistasDetalleUsuario/CrearOrdenDeTrabajo';
 import TomasUsuario from './VistasDetalleUsuario/TomasUsuario';
-import Convenio from './VistasDetalleUsuario/ConveniosAplicables';
+import Convenio from './VistasDetalleUsuario/CargosUsuario';
 import { useStateContext, ContextProvider } from '../../../contexts/ContextDetalleUsuario';
 import { OcultarTableDetalleUsuario } from '../../../components/Tables/Components/OcultarTableDetalleUsuario';
 import { BreadCrumbDetalleUsuario } from '../../../components/ui/breadCrumbDetalleUsuario';
