@@ -6,12 +6,15 @@ import { FactiblidadMonitorColumns } from '../../components/Tables/Columns/Facti
 import factibilidadService from '../../lib/FactibilidadService';
 import { Skeleton } from '../../components/ui/skeleton';
 import Loader from '../../components/ui/Loader';
-import ModalVerFactibilidadMonitor from '../../components/ui/ModalVerFactibilidadMonitor'; // Importa el modal
+import ModalVerFactibilidadMonitor from '../../components/ui/ModalVerFactibilidadMonitor';
+import ZustandMonitorFactibilidad from '../../contexts/ZustandMonitorFactibilidad';
+
 
 export const FactibilidadMonitor = () => {
   const [factibilidad, setFactibilidad] = useState([]);
   const [loadingFact, setLoadingFact] = useState(false);
-  
+  const { set_factibilidades, factibilidades } = ZustandMonitorFactibilidad();
+  const [factibilidades_temp, set_factibilidades_temp] = useState([]);
 
   useEffect(() => {
     fetchFact();
@@ -21,25 +24,31 @@ export const FactibilidadMonitor = () => {
     setLoadingFact(true);
     let factTemp = await factibilidadService.get_all();
     setLoadingFact(false);
-    setFactibilidad(factTemp);
+    set_factibilidades(factTemp);
   };
 
- 
+  useEffect(() => {
+    set_factibilidades_temp(factibilidades)
+  }, [factibilidades])
 
   return (
     <div className='flex gap-2 px-2'>
-    {/* <OcultarTableFactibilidadMonitor accion={""}>
+      {/* <OcultarTableFactibilidadMonitor accion={""}>
       <FiltrosFactibilidadesMonitor />
     </OcultarTableFactibilidadMonitor> */}
-    <div className='w-full border rounded-md max-h-[75vh] overflow-auto'>
-      {
-        loadingFact ? <Loader/>
-          :
-          <>
-            <FactibilidadMonitorDataTable columns={FactiblidadMonitorColumns} data={factibilidad} />
-          </>
-      }
+      <div className='w-full border rounded-md max-h-[75vh] overflow-auto'>
+        {
+          loadingFact ?
+            <>
+              <div className='h-[60vh] w-full'>
+                <Loader/>
+              </div>
+
+            </>
+            :
+            <FactibilidadMonitorDataTable columns={FactiblidadMonitorColumns} data={factibilidades_temp} />
+        }
+      </div>
     </div>
-  </div>
   );
 };

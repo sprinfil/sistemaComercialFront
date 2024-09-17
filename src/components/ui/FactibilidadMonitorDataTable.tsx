@@ -76,16 +76,16 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
           <div className="px-2">
             <p>Codigo de toma</p>
             <Input
-               placeholder="Codigo de toma"
-               value={(table.getColumn("codigo_toma")?.getFilterValue() as string) ?? ""}
-               onChange={(event) =>
-                 table.getColumn("codigo_toma")?.setFilterValue(event.target.value)
-               }
+              placeholder="Codigo de toma"
+              value={(table.getColumn("codigo_toma")?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn("codigo_toma")?.setFilterValue(event.target.value)
+              }
               className="w-full"
             />
           </div>
 
-          
+
 
           <div className="px-2">
             <p>Estatus</p>
@@ -100,6 +100,7 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
                   <SelectItem value="pendiente de pago">Pendiente de pago</SelectItem>
                   <SelectItem value="rechazada">Rechazada</SelectItem>
                   <SelectItem value="pendiente">Pendiente</SelectItem>
+                  <SelectItem value="cualquiera">Cualquiera</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -204,10 +205,8 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
       {selected_fact && (
         <ModalVerFactibilidadMonitor
           selected_fact={selected_fact}
-          open={ modal_ver_fact }
+          open={modal_ver_fact}
           set_open={set_modal_ver_fact}
-          
-          
         />
       )}
 

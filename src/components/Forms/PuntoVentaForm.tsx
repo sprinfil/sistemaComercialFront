@@ -592,8 +592,8 @@ const PuntoVentaForm = () => {
                                 <div className="mb-2">{dataToma?.clave_catastral}</div>
                                 <div className="mb-2">{dataToma?.estatus}</div>
                                 <div className="mb-2">{dataToma?.calle?.nombre}</div>
-                                <div className="mb-2">{dataToma?.entre_calle_1}</div>
-                                <div className="mb-2">{dataToma?.entre_calle_2}</div>
+                                <div className="mb-2">{dataToma?.entre_calle_1?.nombre}</div>
+                                <div className="mb-2">{dataToma?.entre_calle_2?.nombre}</div>
                                 <div className="mb-2">{dataToma?.colonia.nombre}</div>
                                 <div className="mb-2">{dataToma?.codigo_postal}</div>
                                 <div className="mb-2">{dataToma?.localidad}</div>
