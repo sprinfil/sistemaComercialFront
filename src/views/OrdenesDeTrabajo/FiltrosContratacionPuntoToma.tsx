@@ -43,9 +43,16 @@ const FiltrosContratacionPuntoToma = () => {
 
 
 
-  const {setIsCheckedPreContratadas, isCheckedPreContratadas, setPuntosFiltradosParaElMapa, tomaPreContratada, setTomaPreContratada, setBoolPeticionContratacion, seleccionoPuntoEnMapa} = ZustandFiltrosContratacion();
+  const {setIsCheckedPreContratadas, isCheckedPreContratadas, setPuntosFiltradosParaElMapa, 
+    tomaPreContratada, setTomaPreContratada, 
+    setBoolPeticionContratacion, seleccionoPuntoEnMapa, codigoToma, setCodigoToma} = ZustandFiltrosContratacion();
 
 //console.log(isCheckedPreContratadas);
+
+const handleLimpiarFiltros = () => {
+  setCodigoToma("");
+  setIsCheckedPreContratadas(false);
+}
 
   const handleBuscarTomas = () => 
   {
@@ -54,7 +61,8 @@ const FiltrosContratacionPuntoToma = () => {
 
     const values = {
       filtros: {
-        tipo_contratacion: ["pre-contrato"],
+        tipo_contratacion: [contratadas],
+        codigo_toma: codigoToma
       },
     };
     
@@ -74,8 +82,11 @@ const FiltrosContratacionPuntoToma = () => {
 
   }
 
+  const handleChangeCodigoToma = (e) => {
+    setCodigoToma(e.target.value);
+  };
 
-
+  console.log(codigoToma);
   return (
     <div className="overflow-auto min-h-[20vh]">
       <div className="ml-5 mb-[20vh] mt-[1vh] h-full p-3">
@@ -100,19 +111,19 @@ const FiltrosContratacionPuntoToma = () => {
   <div className="flex items-center space-x-4 text-lg font-semibold mt-4">
     <span>Tomas</span>
     <div title="Limpiar filtros">
-      <IconButton>
+      <IconButton onClick={handleLimpiarFiltros}>
         <LuFilterX />
       </IconButton>
     </div>
   </div>
 
-  {/* Lupa (ícono de búsqueda) alineada a la derecha */}
-  <div title="Buscar" className="flex">
-    <IconButton onClick={handleBuscarTomas}>            
-      <FaSearch/>
-    </IconButton>
-  </div>
-</div>
+      {/* Lupa (ícono de búsqueda) alineada a la derecha */}
+      <div title="Buscar" className="flex">
+        <IconButton onClick={handleBuscarTomas}>            
+          <FaSearch/>
+        </IconButton>
+      </div>
+    </div>
 
 
 
@@ -128,10 +139,22 @@ const FiltrosContratacionPuntoToma = () => {
                   onCheckedChange={setIsCheckedPreContratadas}
                 />
               </div>
+              
             </div>
 
             
           </div>
+          
+          <div className="text-sm font-medium mb-2 mt-5">Codigo de toma</div>
+          <hr className="border-t border-border my-1" />
+          <div className="mt-5">
+          <Input
+          placeholder="Ingresa el código de toma"
+          value={codigoToma}
+          onChange={handleChangeCodigoToma}
+          />
+          </div>
+
         </div>
       </div>
   );

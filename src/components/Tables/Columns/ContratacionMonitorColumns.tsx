@@ -17,6 +17,9 @@ export type ContratoMonitor = {
   nombre_contrato: string
   clave_catastral: string
   estatus: string
+  toma: {
+    codigo_toma: string
+  }
 
 }
 
@@ -56,6 +59,20 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
   {
     accessorKey: "estatus",
     header: "Estatus",
+  },
+  {
+    accessorFn: (row) => {
+      return row.toma?.codigo_toma;
+    },
+    id: "toma.codigo_toma",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Codigo toma
+      </Button>
+    ),
   },
   {
     id: "actions",

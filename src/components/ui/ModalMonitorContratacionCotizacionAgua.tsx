@@ -49,7 +49,7 @@ import { ConceptosComboBox } from "./ConceptosComboBox.tsx";
 import { ConceptosComboBoxCotizacion } from "./ConceptosComboBoxCotizacion.tsx";
 import ComboBoxCargosCargables from "./ComboBoxCargosCargables.tsx";
 
-const ModalMonitorContratacionCotizacionAgua = ({ selected_contrato }) => {
+const ModalMonitorContratacionCotizacionAgua = ({ selected_contrato, open, setOpen }) => {
   const { toast } = useToast();
   
   const {boolModalCotizacionMonitor, setBoolModalCotizacionMonitor, MonitorsetDataMonitorContratos,  setLoadingTableMonitorContrato, setBoolModalContratacionCambioDeNombre, boolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick} =  ZustandFiltrosContratacion();
@@ -127,6 +127,8 @@ function onSubmit(values: z.infer<typeof cambioPropietarioSchema>)
       
           })
           setBoolModalCotizacionMonitor(true);
+          setOpen(false);
+
           })
           .catch((err) => {
              console.log(err);
@@ -183,9 +185,12 @@ const eliminarConcepto = (index: number) => {
   const handleCloseModal = () => {
     setBoolModalContratacionCambioDeNombre(false);
     setControlModalMonitorContratacionClick(false);
+    setBoolModalCotizacionMonitor(false);
+    setOpen(false);
+    
   };
   return (
-    <AlertDialog open={boolModalCotizacionMonitor} onOpenChange={setBoolModalCotizacionMonitor}>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogContent className="max-w-screen-2xl max-h-screen overflow-auto">
         <AlertDialogHeader>
           <div className="flex justify-between items-center">
@@ -250,7 +255,7 @@ const eliminarConcepto = (index: number) => {
                                             </div>
 
                                             {/* Botón Agregar */}
-                                            <Button onClick={agregrarConcepto}>Agregar</Button>
+                                            <Button type="button" onClick={agregrarConcepto}>Agregar</Button>
                                           </div>
                                                                                       
                                          
@@ -306,7 +311,7 @@ const eliminarConcepto = (index: number) => {
                             />
                     
                     
-                  <Button type="submit">Guardar</Button>
+                  <Button type="submit" >Guardar</Button>
                 </form>
                         </Form>
 

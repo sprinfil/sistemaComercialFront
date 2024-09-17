@@ -33,7 +33,13 @@ import {
 } from "@/components/ui/select"
 import ModalVerPago from "./ModalVerPago"
 import ModalVerPagosMonitor from "./ModalVerPagosMonitor"
-
+import { FiFilter } from "react-icons/fi"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
@@ -52,6 +58,7 @@ export function ContratosMonitorDataTable<TData, TValue>({
   )
 
   const [rowSelection, setRowSelection] = React.useState({})
+  const [abrirFiltro, setAbrirFiltro] = React.useState(false)
 
   const table = useReactTable({
     data,
@@ -67,12 +74,29 @@ export function ContratosMonitorDataTable<TData, TValue>({
     },
   })
 
+  const handleAbrirFiltros  = () => {
+
+  }
+
   return (
     <>
 
+      <FiFilter className="w-[2vh] h-[2vh]" />
+    
       <div className="px-2 flex gap-4">
 
         <div className=" flex flex-col gap-2 py-4 max-h-[70vh] no-scrollbar overflow-auto text-muted-foreground w-[15%]">
+        <div className="px-2">
+            <p>Codigo de toma</p>
+            <Input
+              placeholder="Codigo de toma"
+              value={(table.getColumn("toma.codigo_toma")?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn("toma.codigo_toma")?.setFilterValue(event.target.value)
+              }
+              className="w-full"
+            />
+          </div>
           <div className="px-2">
             <p>Folio</p>
             <Input

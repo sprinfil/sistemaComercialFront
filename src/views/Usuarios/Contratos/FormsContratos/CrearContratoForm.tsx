@@ -54,7 +54,7 @@ export const CrearContratoForm = () => {
     const {latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial, 
         setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
         setServicioContratado, setGiroComercial,setTipoDeToma, tomaPreContratada,isCheckInspeccion,boolPeticionContratacion,
-        setServicioContratado2, selectedLocation, getCoordenadaString} = ZustandFiltrosContratacion();
+        setServicioContratado2, selectedLocation, getCoordenadaString, setNombreGiroComercial} = ZustandFiltrosContratacion();
 
 
     const {usuariosEncontrados} = ZustandGeneralUsuario();
@@ -77,7 +77,6 @@ export const CrearContratoForm = () => {
             colonia: 0,
             codigo_postal:"",
             localidad: "",
-            diametro_de_la_toma:"" ,
             tipo_toma: "",
             tipo_contratacion:"" ,
             c_agua: false,
@@ -135,7 +134,18 @@ console.log(tomaPreContratada?.id)
             tomaId = tomaPreContratada.id;
         }
         console.log(tomaId);
-    
+
+        const isAguaActive = tomaPreContratada.c_agua != null;
+        const isAlcActive = tomaPreContratada.c_alc != null;
+        const isSanActive = tomaPreContratada.c_san != null;
+        console.log(isAguaActive)
+        console.log(isAlcActive)
+        console.log(isAlcActive)
+        
+        const serviciosSeleccionados = [
+            ...(values.c_agua != null && !isAguaActive ? ["agua"] : []),
+            ...(alcantarillado_y_saneamiento && !isAlcActive && !isSanActive ? [alcantarillado_y_saneamiento] : []),
+        ];
         let datos; 
         if (boolPeticionContratacion) {
             // Estos datos son para enviar
@@ -144,7 +154,7 @@ console.log(tomaPreContratada?.id)
                 nombre_contrato: values.nombre_contrato,
                 clave_catastral: values.clave_catastral,
                 tipo_toma: tipoToma,
-                servicio_contratados: servicios,
+                servicio_contratados: serviciosSeleccionados,
                 //diametro_toma: values.diametro_de_la_toma,
                 num_casa: values.num_casa,
                 colonia: values.colonia,
@@ -156,6 +166,7 @@ console.log(tomaPreContratada?.id)
                 municipio: values.municipio,
                 tipo_contratacion: values.tipo_contratacion,
                 coordenada: coordenadaString,
+                
             };
         } else {
             // Estos datos son para enviar
@@ -165,7 +176,7 @@ console.log(tomaPreContratada?.id)
                 nombre_contrato: values.nombre_contrato,
                 clave_catastral: values.clave_catastral,
                 tipo_toma: tipoToma,
-                servicio_contratados: servicios,
+                servicio_contratados: serviciosSeleccionados,
                 //diametro_toma: values.diametro_de_la_toma, // Usar el campo correcto aquí
                 num_casa: values.num_casa,
                 colonia: values.colonia,
@@ -178,20 +189,18 @@ console.log(tomaPreContratada?.id)
                 tipo_contratacion: values.tipo_contratacion,
             };
         }
-    
-        // Filtrar campos deshabilitados antes de enviar
-        const filteredData = {
+        
+        const datosFiltrados = {
             ...datos,
-            c_agua: campoAgua ? datos.c_agua : undefined,
-            c_alc: contrato2 ? datos.c_alc : undefined,
-            c_san: contrato2 ? datos.c_san : undefined,
+            // Incluye c_agua, c_alc, c_san solo si no están activos en tomaPreContratada
+            ...(values.c_agua != null && !isAguaActive ? { c_agua: values.c_agua } : {}),
+            ...(values.c_alc != null && !isAlcActive ? { c_alc: values.c_alc } : {}),
+            ...(values.c_san != null && !isSanActive ? { c_san: values.c_san } : {}),
         };
     
-        // Eliminar propiedades undefined
-        Object.keys(filteredData).forEach(key => filteredData[key] === undefined && delete filteredData[key]);
-    
-        setContrato(filteredData);
-    
+        setContrato(datosFiltrados);
+        console.log(datosFiltrados);
+
         console.log(servicioAContratar);
         handleAbrirModalNotificaciones();
         const crearContrato = {
@@ -269,16 +278,17 @@ console.log(tomaPreContratada?.id)
                 id_giro_comercial:tomaPreContratada?.id_giro_comercial || '',
 
             });
+            
 
+                console.log(tomaPreContratada);
 
-
-            if(tomaPreContratada.c_agua == true)
+            if(tomaPreContratada.c_agua != null)
             {
                 setCampoAgua(true);
 
             }
 
-            if(tomaPreContratada.c_alc == true && tomaPreContratada.c_san )
+            if(tomaPreContratada.c_alc != true && tomaPreContratada.c_san != null)
                 {
                     setContrato2(true);
     
@@ -334,8 +344,8 @@ console.log(tomaPreContratada?.id)
                 </div>
 
 
-
-                    <div className="w-[full]">
+                <div className='flex space-x-2'>
+                <div className="w-[120vh]">
                         <FormField
                             control={form.control}
                             name="clave_catastral"
@@ -353,7 +363,7 @@ console.log(tomaPreContratada?.id)
                         
                         </div>
                         <div className='flex space-x-2'>
-                            <div className='w-[120vh]'>
+                            <div className='w-[100vh]'>
                             <FormField
                                 control={form.control}
                                 name="tipo_toma"
@@ -369,42 +379,11 @@ console.log(tomaPreContratada?.id)
                                 )}
                             />
                             </div>
-                                <div className='w-[120vh]'>
-                                <FormField
-                                control={form.control}
-                                name="diametro_de_la_toma"
-                                render={({ field}) => (
-                                    <FormItem>
-                                        <FormLabel>Diametro de la toma</FormLabel>
-                                        <FormControl>
-                                        <Select
-                                    disabled={false} // Ajusta esto según si el campo debe estar deshabilitado o no
-                                    onValueChange={(value) => {
-                                        field.onChange(value); // Actualiza el valor en react-hook-form
-                                    }}
-                                    value={field.value || ''} // Valor controlado por react-hook-form
-                                    >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Selecciona el diámetro de la toma" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="1/2 pulgada">1/2"</SelectItem>
-                                        <SelectItem value="1/4 pulgada">1/4"</SelectItem>
-                                        <SelectItem value="1 pulgada">1"</SelectItem>
-                                        <SelectItem value="2 pulgadas">2"</SelectItem>
-                                        <SelectItem value="1/8 pulgada">1/8"</SelectItem>
-
-                                    </SelectContent>
-                                    </Select>
-                                        </FormControl>
-                                        <FormDescription />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                                </div>
+                               
                             
                         </div>
+                </div>
+                   
                         <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Dirección de la toma</h3>
 
                         <div className='flex space-x-2'>
@@ -602,7 +581,10 @@ console.log(tomaPreContratada?.id)
                         <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-5">Servicios a contratar</h3>
                     <div className='flex items-center space-x-8 mt-5'>
                 <div className='flex flex-col items-center'>
-                    <FormField
+                    {!campoAgua
+                    &&
+                    <div>
+                         <FormField
                     control={form.control}
                     name="c_agua"
                     render={({ field }) => (
@@ -613,7 +595,6 @@ console.log(tomaPreContratada?.id)
                            className='ml-2'
                             checked={field.value}
                             onCheckedChange={(checked) => field.onChange(checked)}
-                            disabled={campoAgua}
                             />
                         </FormControl>
                         <FormDescription />
@@ -621,9 +602,12 @@ console.log(tomaPreContratada?.id)
                         </FormItem>
                     )}
                     />
+                        </div>}
+                   
                 </div>
-
-                <div className='flex flex-col items-center'>
+                    {!contrato2 && 
+                    <div>
+                         <div className='flex flex-col items-center'>
                     <FormField
                     control={form.control}
                     name="c_alc"
@@ -666,6 +650,8 @@ console.log(tomaPreContratada?.id)
                     )}
                     />
                 </div>
+                        </div>}
+               
                 </div>
 
 
@@ -727,7 +713,7 @@ console.log(tomaPreContratada?.id)
                     <FormItem>
                     <FormLabel>Giro comercial</FormLabel>
                     <FormControl>
-                    <GiroComercialComboBox form={form} field={field} name="id_giro_comercial" setCargoSeleccionado={setIdGiroComercial}/>
+                    <GiroComercialComboBox form={form} field={field} name="id_giro_comercial" setCargoSeleccionado={setNombreGiroComercial}/>
                     </FormControl>
                     <FormDescription />
                     <FormMessage />

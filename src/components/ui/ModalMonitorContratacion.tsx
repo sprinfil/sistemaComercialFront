@@ -58,6 +58,8 @@ import ModalSubirArchivosContratacion from "./ModalSubirArchivosContratacion.tsx
 import { Input } from "./input.tsx";
 import { DetalleContrato } from "../../views/Usuarios/Contratos/DetalleContrato.tsx";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import ModalEstasSeguroEliminarContrato from "./ModalEstasSeguroEliminarContrato.tsx";
+import { CotizacionContrato } from "../../views/Usuarios/Contratos/FormsContratos/CotizacionContrato.tsx";
 
 
 
@@ -68,6 +70,11 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
   const {setDataMonitorContratos,  setLoadingTableMonitorContrato, boolModalContratacionMonitor, setBoolModalContratacionMonitor, 
     setBoolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick,setBoolModalCotizacionMonitor,
     setBooleanModalSubirArchivosContratacion, setIdContrato, idContrato, setAccion} =  ZustandFiltrosContratacion();
+
+    const[openEliminar, setOpenEliminar] = useState(false);
+
+    const [abrirModalCotizacionAgua, setAbrirModalCotizacionAgua] = useState(false);
+    const [abrirModalCotizacionAlcantarilladoS, setAbrirModalCotizacionAlcantarilladoS] = useState(false);
 
   //console.log(selected_contrato);
     //console.log(selected_contrato?.id_toma)
@@ -82,7 +89,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
       },
       {
         titulo: "Cotizacion",
-        componente: ""
+        componente: <CotizacionContrato  selected_contrato={selected_contrato}/>
       },
       {
         titulo: "Contrato",
@@ -105,37 +112,8 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
     }
   }
 
-  const handleBorrarContrato = async () => {
-    if (!selected_contrato) {
-      toast({
-        variant: "warning",
-        title: "Advertencia",
-        description: "No hay contrato seleccionado para eliminar.",
-      });
-      return;
-    }
-  
-    try {
-    const  response =  await axiosClient.delete(`contratos/log_delete/${selected_contrato.id}`);
-      
-      const mensaje = response.data.message;
-      toast({
-        title: "¡Éxito!",
-        description: mensaje,
-        variant: "success",
-      });
-      fetch_contratos();
-      console.log(response);
-    } catch (error) {
-
-      console.error("Error eliminando el contrato:", error);
-      toast({
-        variant: "destructive",
-        title: "Oh, no. Error",
-        description: "Algo salió mal.",
-        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-      });
-    }
+  const handleAbrirModalEliminarContrato = async () => {
+    setOpenEliminar(true);
   };
   
 
@@ -147,6 +125,8 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
 
     
       setBoolModalCotizacionMonitor(true);
+      setAbrirModalCotizacionAlcantarilladoS(true)
+      setAbrirModalCotizacionAgua(true);
   }
   
 
@@ -239,25 +219,32 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
 
   return (
     <AlertDialog open={open} onOpenChange={set_open}>
-<AlertDialogContent className="w-full h-full max-w-full max-h-full p-9 overflow-hidden">
+<AlertDialogContent className="w-full max-w-full max-h-[full] p-9 overflow-hidden ">
 <AlertDialogHeader>
         <span className="font-bold text-lg">Detalle del contrato</span>
-          <div className="ml-[77vh] bg-muted w-[46vh] rounded-lg">
-            {/* Título al principio */}
-            <div className="flex">
-            </div>
+        <div className="bg-muted h-[6vh]">
+           
 
             {/* Iconos con títulos */}
-            <div className="flex space-x-2">
+            <div className="flex justify-center items-center space-x-4 m-1 ">
     
           
 
           <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                  <IconButton onClick={handleBorrarContrato}>
-                      <MdDeleteOutline className="w-[3.5vh] h-[3.5vh]" />
-                    </IconButton>
+                    {
+                       selected_contrato.estatus != "contratado" &&
+                       <IconButton onClick={handleAbrirModalEliminarContrato}>
+                       <MdDeleteOutline className="w-[3.5vh] h-[3.5vh]" />
+                     </IconButton>
+                    }
+                 
+                    <ModalEstasSeguroEliminarContrato
+                    selected_contrato={selected_contrato}
+                    boolEliminar={openEliminar}
+                    setBoolEliminar={setOpenEliminar}
+                    />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Eliminar contrato</p>
@@ -266,7 +253,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
               </TooltipProvider>
                
                
-                <TooltipProvider>
+                {/*<TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
                     {
@@ -281,23 +268,31 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
                     <p>Editar contrato</p>
                   </TooltipContent>
                 </Tooltip>
-              </TooltipProvider>
+              </TooltipProvider>*/}
 
 
               
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                  <IconButton onClick={handleCotizacionModal}>
-                  <MdOutlinePriceChange className="w-[3.5vh] h-[3.5vh]" />
-                </IconButton>
+                    {                       selected_contrato.estatus != "contratado" &&
+                     <IconButton onClick={handleCotizacionModal}>
+                     <MdOutlinePriceChange className="w-[3.5vh] h-[3.5vh]" />
+                   </IconButton>
+                    }
+                 
                 {selected_contrato?.servicio_contratado == "alcantarillado y saneamiento" &&
                  <ModalMonitorContratacionCotizacionAlcantarilladoSaneamiento
-                 selected_contrato={selected_contrato}/>}
+                 selected_contrato={selected_contrato}
+                 open={abrirModalCotizacionAlcantarilladoS}
+                 setOpen={setAbrirModalCotizacionAlcantarilladoS}
+             />}
 
               {selected_contrato?.servicio_contratado == "agua" &&
                  <ModalMonitorContratacionCotizacionAgua
-                 selected_contrato={selected_contrato}/>}
+                 selected_contrato={selected_contrato}
+                 open={abrirModalCotizacionAgua}
+                 setOpen={setAbrirModalCotizacionAgua}/>}
 
                   </TooltipTrigger>
                   <TooltipContent>

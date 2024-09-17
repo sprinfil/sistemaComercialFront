@@ -97,8 +97,8 @@ interface FiltrosContratacion {
   contrato: contrato;
   setContrato: (contrato: Partial<contrato>) => void;
 
-  direccion_notificaciones: string[];
-  setDireccion_Notificaciones: (direccion_notificaciones:  string[]) => void;
+  direccion_notificaciones: string;
+  setDireccion_Notificaciones: (direccion_notificaciones:  string) => void;
 
 
 
@@ -188,7 +188,11 @@ interface FiltrosContratacion {
   setSelectedLocation:(selectedLocation: Location  | null) => void;
   getCoordenadaString: () => string | null;
 
+  codigoToma: string;
+  setCodigoToma: (codigoToma: string) => void;
 
+  nombreGiroComercial: string;
+  setNombreGiroComercial: (nombreGiroComercial: string) => void;
 
 }
 
@@ -286,7 +290,7 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
     },
   })),
 
-  direccion_notificaciones: [],
+  direccion_notificaciones: " ",
   setDireccion_Notificaciones: (direccion_notificaciones) => set({ direccion_notificaciones }),
 
   dataMonitorContratos: [],
@@ -379,6 +383,14 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
       ? `${selectedLocation.lat.toFixed(12)}, ${selectedLocation.lng.toFixed(12)}`
       : null;
   },
+
+
+  codigoToma: "",
+  setCodigoToma: (codigoToma) => set({ codigoToma }),
+
+  nombreGiroComercial: "",
+  setNombreGiroComercial: (nombreGiroComercial) => set({ nombreGiroComercial }),
+
 
 }));
 

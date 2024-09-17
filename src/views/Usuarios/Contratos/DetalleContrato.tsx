@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Input } from "../../../components/ui/input";
+
 import { ZustandFiltrosContratacion } from "../../../contexts/ZustandFiltrosContratacion";
 import axios from 'axios';
 import { Button } from "../../../components/ui/button";
@@ -27,7 +28,10 @@ export const DetalleContrato = ({ selected_contrato }) => {
     localidad: selected_contrato?.localidad || "",
     municipio: selected_contrato?.municipio || "",
     servicio_contratado: selected_contrato?.servicio_contratado || "",
-    estatus: selected_contrato?.estatus || ""
+    estatus: selected_contrato?.estatus || "",
+    tipo_contratacion: selected_contrato?.toma?.tipo_contratacion|| "",
+    codigo_toma: selected_contrato?.toma?.codigo_toma|| "",
+
   });
 
   const handleChange = (e) => {
@@ -55,62 +59,68 @@ export const DetalleContrato = ({ selected_contrato }) => {
 
   return (
     <div>
-        {accion == "editar" ? 
-        <>
+      
          <div className="mb-[3vh]">
       <h1 className="text-2xl mt-[2vh] text-black">Detalle de la contratación</h1>
-    
-        
-        <div className="flex space-x-2 items-center mt-5">
-          <div className="flex flex-col">
-            <div className="block text-xl text-black">Folio de solicitud:</div>
+    <div className="flex space-x-2">
+      <div className="mt-4 mr-1 text-black text-lg">Folio de solicitud:</div>
+      <div className="mt-[22px]">
+      {formData.folio_solicitud}
+
+        </div>
+      </div>
+      <div className="flex flex-col mt-5">
+            <div className="block text-lg text-black mt-2">Nombre del contrato:</div>
             <Input
-              name="folio_solicitud"
-              className="w-[95vh]"
-              value={formData.folio_solicitud}
+              name="nombre_contrato"
+              className="w-full mt-2"
+              value={formData.nombre_contrato}
               onChange={handleChange}
-              disabled
+              readOnly
             />
           </div>
 
-          <div className="flex flex-col">
-            <div className="block text-xl text-black">Nombre del contrato:</div>
-            <Input
-              name="nombre_contrato"
-              className="w-[95vh]"
-              value={formData.nombre_contrato}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
+
+        
       </div>
 
       <h1 className="text-2xl text-black">Información de la toma</h1>
       <div className="mt-5">
-        <div className="block text-xl mb-2 text-black">Clave catastral:</div>
+        <div className="flex space-x-2">
+        <div className="mt-4 mr-1 text-black text-lg">Codigo de toma:</div>
+      <div className="mt-[22px]">
+      {formData.codigo_toma}
+
+        </div>
+        </div>
+ 
+        <div className="block text-lg mb-2 text-black mt-5">Clave catastral:</div>
         <Input
           name="clave_catastral"
           value={formData.clave_catastral}
           onChange={handleChange}
+          readOnly
         />
-         <div className="flex space-x-2">
+         <div className="flex space-x-2 mt-4">
           <div className="flex flex-col space-y-2 w-1/2">
-          <div className="block text-xl mt-2 text-black">Tipo de toma:</div>
+          <div className="block text-lg mt-2 text-black">Tipo de toma:</div>
         
         <Input
           name="tipo_toma"
           value={formData.tipo_toma}
           onChange={handleChange}
+          readOnly
         />
           </div>
          
          <div className="flex flex-col space-y-2 w-1/2">
-         <div className="block text-xl mt-2  text-black">Diametro de la toma:</div>
+         <div className="block text-lg mt-2  text-black">Diametro de la toma:</div>
 
         <Input
           name="diametro_de_la_toma"
           value={formData.diametro_de_la_toma}
           onChange={handleChange}
+          readOnly
         />
           </div>
          </div>
@@ -119,42 +129,46 @@ export const DetalleContrato = ({ selected_contrato }) => {
 
         <h1 className="text-2xl mt-[3vh] text-black">Dirección de la toma</h1>
 
-        <div className="flex space-x-4 mt-2">
+        <div className="flex space-x-4 mt-4">
           <div className="flex flex-col space-y-2 w-1/2">
-            <label className="block text-xl mt-2 text-black">Calle:</label>
+            <label className="block text-lg mt-2 text-black">Calle:</label>
             <Input
               name="calle"
               value={formData.calle}
               onChange={handleChange}
+              readOnly
             />
           </div>
 
           <div className="flex flex-col space-y-2 w-1/2">
-            <label className="block text-xl mt-2 text-black">Número de casa:</label>
+            <label className="block text-lg mt-2 text-black">Número de casa:</label>
             <Input
               name="num_casa"
               value={formData.num_casa}
               onChange={handleChange}
+              readOnly
             />
           </div>
         </div>
 
         <div className="flex space-x-4 mt-2">
           <div className="flex flex-col space-y-2  w-1/2">
-          <div className="block text-xl text-black">Colonia:</div>
+          <div className="block text-lg text-black">Colonia:</div>
             <Input
               name="colonia"
               value={formData.colonia}
               onChange={handleChange}
+              readOnly
             />
           </div>
       
         <div className="flex flex-col space-y-2  w-1/2">
-        <div className="block text-xl text-black">Codigo postal:</div>
+        <div className="block text-lg text-black">Codigo postal:</div>
             <Input
               name="codigo_postal"
               value={formData.codigo_postal}
               onChange={handleChange}
+              readOnly
             />
         </div>
         </div>
@@ -162,38 +176,42 @@ export const DetalleContrato = ({ selected_contrato }) => {
         
         <div className="flex space-x-4 mt-2">
           <div className="flex flex-col space-y-2 w-1/2">
-            <div className="block text-xl text-black">Entre calle 1:</div>
+            <div className="block text-lg text-black">Entre calle 1:</div>
             <Input
               name="entre_calle1"
               value={formData.entre_calle1}
               onChange={handleChange}
+              readOnly
             />
           </div>
           <div className="flex flex-col space-y-2 w-1/2">
-            <div className="block text-xl text-black">Entre calle 2:</div>
+            <div className="block text-lg text-black">Entre calle 2:</div>
             <Input
               name="entre_calle2"
               value={formData.entre_calle2}
               onChange={handleChange}
+              readOnly
             />
           </div>
         </div>
         
         <div className="flex space-x-2">
           <div className="flex flex-col space-y-2 w-1/2">
-          <div className="block text-xl mt-2 text-black">Localidad:</div>
+          <div className="block text-lg mt-2 text-black">Localidad:</div>
         <Input
           name="localidad"
           value={formData.localidad}
           onChange={handleChange}
+          readOnly
         />
           </div>
           <div className="flex flex-col space-y-2 w-1/2">
-          <div className="block text-xl mt-2 text-black">Municipio:</div>
+          <div className="block text-lg mt-2 text-black">Municipio:</div>
         <Input
           name="municipio"
           value={formData.municipio}
           onChange={handleChange}
+          readOnly
         />
         </div>
         </div>
@@ -206,199 +224,45 @@ export const DetalleContrato = ({ selected_contrato }) => {
           name="servicio_contratado"
           value={formData.servicio_contratado}
           onChange={handleChange}
-          disabled
+          readOnly
         />
+                <h1 className="text-2xl mt-[3vh] text-black mb-4">Tipo de Contratación y Giro de Negocio</h1>
 
-        <div className="block text-xl mt-2 text-black">Estatus:</div>
-        <Input
-          name="estatus"
-          value={formData.estatus}
-          onChange={handleChange}
-          disabled
-        />
-      </div>
+        <div className="flex space-x-2  ">
 
-                {accion == "editar" && <div className="flex justify-end">
-                    <Button
-                        onClick={handleUpdate}
-                        className="mt-8"
-                      >
-                        Actualizar información
-                      </Button>
-                </div> }
-                </>
-        :
-        <>
-         <div className="mb-[3vh]">
-      <h1 className="text-2xl mt-[2vh] text-black">Detalle de la contratación</h1>
-    
-        
-        <div className="flex space-x-2 items-center mt-5">
-          <div className="flex flex-col">
-            <div className="block text-xl text-black">Folio de solicitud:</div>
+        <div className="flex flex-col space-y-2">
+        <div className="block text-lg mt-2 text-black">Tipo de contratación:</div>
             <Input
-              name="folio_solicitud"
-              className="w-[95vh]"
-              value={formData.folio_solicitud}
+              name="tipo_contratacion"
+              value={formData.tipo_contratacion}
               onChange={handleChange}
-              disabled
+              readOnly
+              className="w-[120vh]"
             />
-          </div>
 
-          <div className="flex flex-col">
-            <div className="block text-xl text-black">Nombre del contrato:</div>
-            <Input
-              name="nombre_contrato"
-              className="w-[95vh]"
-              value={formData.nombre_contrato}
-              onChange={handleChange}
-              disabled
-            />
-          </div>
-        </div>
-      </div>
-
-      <h1 className="text-2xl text-black">Información de la toma</h1>
-      <div className="mt-5">
-        <div className="block text-xl mb-2 text-black">Clave catastral:</div>
-        <Input
-          name="clave_catastral"
-          value={formData.clave_catastral}
-          onChange={handleChange}
-          disabled
-        />
-         <div className="flex space-x-2">
-          <div className="flex flex-col space-y-2 w-1/2">
-          <div className="block text-xl mt-2 text-black">Tipo de toma:</div>
+                  </div>
+                  <div className="flex flex-col space-y-2 w-1/2">
+                  <div className="block text-lg mt-2 text-black">Giro comercial:</div>
+                  <Input
+                    name="estatus"
+                    value={formData.estatus}
+                    onChange={handleChange}
+                    readOnly
         
-        <Input
-          name="tipo_toma"
-          value={formData.tipo_toma}
-          onChange={handleChange}
-          disabled
-        />
-          </div>
-         
-         <div className="flex flex-col space-y-2 w-1/2">
-         <div className="block text-xl mt-2  text-black">Diametro de la toma:</div>
+                  />
 
-        <Input
-          name="diametro_de_la_toma"
-          value={formData.diametro_de_la_toma}
-          onChange={handleChange}
-          disabled
-        />
-          </div>
-         </div>
+                  </div>
        
-         
-
-        <h1 className="text-2xl mt-[3vh] text-black">Dirección de la toma</h1>
-
-        <div className="flex space-x-4 mt-2">
-          <div className="flex flex-col space-y-2 w-1/2">
-            <label className="block text-xl mt-2 text-black">Calle:</label>
-            <Input
-              name="calle"
-              value={formData.calle}
-              onChange={handleChange}
-              disabled
-            />
-          </div>
-
-          <div className="flex flex-col space-y-2 w-1/2">
-            <label className="block text-xl mt-2 text-black">Número de casa:</label>
-            <Input
-              name="num_casa"
-              value={formData.num_casa}
-              onChange={handleChange}
-              disabled
-            />
-          </div>
-        </div>
-
-        <div className="flex space-x-4 mt-2">
-          <div className="flex flex-col space-y-2  w-1/2">
-          <div className="block text-xl text-black">Colonia:</div>
-            <Input
-              name="colonia"
-              value={formData.colonia}
-              onChange={handleChange}
-              disabled
-            />
-          </div>
-      
-        <div className="flex flex-col space-y-2  w-1/2">
-        <div className="block text-xl text-black">Codigo postal:</div>
-            <Input
-              name="codigo_postal"
-              value={formData.codigo_postal}
-              onChange={handleChange}
-              disabled
-            />
-        </div>
-        </div>
      
-        
-        <div className="flex space-x-4 mt-2">
-          <div className="flex flex-col space-y-2 w-1/2">
-            <div className="block text-xl text-black">Entre calle 1:</div>
-            <Input
-              name="entre_calle1"
-              value={formData.entre_calle1}
-              onChange={handleChange}
-              disabled
-            />
-          </div>
-          <div className="flex flex-col space-y-2 w-1/2">
-            <div className="block text-xl text-black">Entre calle 2:</div>
-            <Input
-              name="entre_calle2"
-              value={formData.entre_calle2}
-              onChange={handleChange}
-              disabled
-            />
-          </div>
         </div>
-        
-        <div className="flex space-x-2">
-          <div className="flex flex-col space-y-2 w-1/2">
-          <div className="block text-xl mt-2 text-black">Localidad:</div>
-        <Input
-          name="localidad"
-          value={formData.localidad}
-          onChange={handleChange}
-          disabled
-        />
-          </div>
-          <div className="flex flex-col space-y-2 w-1/2">
-          <div className="block text-xl mt-2 text-black">Municipio:</div>
-        <Input
-          name="municipio"
-          value={formData.municipio}
-          onChange={handleChange}
-          disabled
-        />
-        </div>
-        </div>
-       
 
-       
-        <h1 className="text-2xl mt-[2vh] text-black mb-4">Servicio contratado</h1>
-    
-        <Input
-          name="servicio_contratado"
-          value={formData.servicio_contratado}
-          onChange={handleChange}
-          disabled
-        />
-
-        <div className="block text-xl mt-2 text-black">Estatus:</div>
+        <div className="block text-lg mt-4 text-black mb-2">Estatus:</div>
         <Input
           name="estatus"
           value={formData.estatus}
           onChange={handleChange}
-          disabled
+          readOnly
+          className="mb-6"
         />
       </div>
 
@@ -410,8 +274,7 @@ export const DetalleContrato = ({ selected_contrato }) => {
                         Actualizar información
                       </Button>
                 </div> }
-                </>
-        }
+        
      
 
     
