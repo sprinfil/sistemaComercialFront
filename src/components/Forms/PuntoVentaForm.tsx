@@ -147,7 +147,6 @@ const PuntoVentaForm = () => {
 
       if (userResponse.data) {
         setDataToma(userResponse.data);
-
       } else {
         setError("No se encontraron datos para el usuario.");
       }
@@ -167,7 +166,7 @@ const PuntoVentaForm = () => {
 
       }
 
-      if (pagosResponse.data) {
+      if (pagosResponse?.data) {
         setPagosData(pagosResponse.data.data);
         console.log(pagosResponse.data)
       }
@@ -181,7 +180,6 @@ const PuntoVentaForm = () => {
 
   const handleSearch = () => {
     if (userInput.trim() !== "") {
-
       fetchdataUser();
     }
   };
@@ -593,10 +591,10 @@ const PuntoVentaForm = () => {
                                 <div className="mb-2">{dataToma?.codigo_toma}</div>
                                 <div className="mb-2">{dataToma?.clave_catastral}</div>
                                 <div className="mb-2">{dataToma?.estatus}</div>
-                                <div className="mb-2">{dataToma?.calle}</div>
+                                <div className="mb-2">{dataToma?.calle?.nombre}</div>
                                 <div className="mb-2">{dataToma?.entre_calle_1}</div>
                                 <div className="mb-2">{dataToma?.entre_calle_2}</div>
-                                <div className="mb-2">{dataToma?.colonia}</div>
+                                <div className="mb-2">{dataToma?.colonia.nombre}</div>
                                 <div className="mb-2">{dataToma?.codigo_postal}</div>
                                 <div className="mb-2">{dataToma?.localidad}</div>
                                 <div className="mb-2">{dataToma?.tipo_servicio}</div>
@@ -737,10 +735,10 @@ const PuntoVentaForm = () => {
                                 <div className="mb-2">{dataCajaUser[0]?.codigo_toma}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.clave_catastral}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.estatus}</div>
-                                <div className="mb-2">{dataCajaUser[0]?.calle}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.calle?.nombre}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.entre_calle_1}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.entre_calle_2}</div>
-                                <div className="mb-2">{dataCajaUser[0]?.colonia}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.colonia.nombre}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.codigo_postal}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.localidad}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.tipo_servicio}</div>
