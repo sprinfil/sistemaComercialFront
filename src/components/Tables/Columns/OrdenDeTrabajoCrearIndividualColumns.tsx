@@ -47,13 +47,24 @@ export type orden_trabajo_encadenadas = {
 
 export const columns: ColumnDef<OrdenDeTrabajo>[] = [
   {
+    accessorKey: "nombre",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Tipo
+      </Button>
+    ),
+  },
+  {
     accessorKey: "descripcion",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Tipo de orden de trabajo
+        Descripción
       </Button>
     ),
   },
@@ -65,9 +76,7 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
       const { setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
       return (
         <div onClick={()=>{setOrdenDeTrabajo(OrdenDeTrabajo);setAccionGeneradaEntreTabs("ver")}}>
-          <IconButton>
-            <EyeOpenIcon className="w-[20px] h-[20px]"/>
-          </IconButton>
+        
         </div>
       )
     },

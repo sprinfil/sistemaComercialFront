@@ -31,6 +31,8 @@ import imprimir from '../../tickets/FuncionesImpresora';
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import ModalSolicitudCancelacionPago from './ModalSolicitudCancelacionPago';
+import Loader from './Loader';
+import { Skeleton } from './skeleton';
 
 const ModalHistorialPagos = ({ trigger }) => {
 
@@ -40,6 +42,7 @@ const ModalHistorialPagos = ({ trigger }) => {
     const input_folio = useRef()
     const input_numero_toma = useRef()
     const input_numero_usuario = useRef()
+    const [loading_pagos, set_loading_pagos] = useState(false);
 
     const { toast } = useToast()
     const [selected_pago, set_selected_pago] = useState([]);
@@ -51,17 +54,20 @@ const ModalHistorialPagos = ({ trigger }) => {
     }, [session_caja.id])
 
     const fetch_pagos = () => {
+        set_loading_pagos(true);
         axiosClient.get("/cajas/pagos", {
             params: {
                 id_caja: session_caja.id
             }
         })
             .then((response) => {
+                set_loading_pagos(false);
                 set_pagos(response.data);
                 console.log(response.data)
                 set_filtered_pagos(response.data)
                 console.log(response.data);
             }).catch((response) => {
+                set_loading_pagos(false);
                 console.log(response)
             })
     }
@@ -290,30 +296,41 @@ const ModalHistorialPagos = ({ trigger }) => {
                                         <div>
                                             <Input ref={input_folio} onChange={hanlde_filter_pagos} className='mb-5 w-[20%]' placeholder='Folio' />
                                         </div>
-                                        <div className='h-[62vh] overflow-auto relative'>
-                                            <Table>
-                                                <TableHeader className="bg-muted ">
-                                                    <TableRow>
-                                                        <TableHead>Folio</TableHead>
-                                                        <TableHead>Monto</TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {
-                                                        filtered_pagos.map((pago) => (
-                                                            <>
-                                                                <TableRow className="cursor-pointer" onClick={() => { set_selected_pago(pago) }}>
-                                                                    <TableCell>{pago.folio}</TableCell>
+                                        {
+                                            loading_pagos &&
+                                            <>
+                                           
+                                                <Skeleton className='h-[65vh] w-[full]'/>
+                                            </>
+                                        }
+                                        {
+                                            !loading_pagos &&
+                                            <div className='h-[62vh] overflow-auto relative'>
+                                                <Table>
+                                                    <TableHeader className="bg-muted ">
+                                                        <TableRow>
+                                                            <TableHead>Folio</TableHead>
+                                                            <TableHead>Monto</TableHead>
+                                                        </TableRow>
+                                                    </TableHeader>
+                                                    <TableBody>
+                                                        {
+                                                            filtered_pagos.map((pago) => (
+                                                                <>
+                                                                    <TableRow className="cursor-pointer" onClick={() => { set_selected_pago(pago) }}>
+                                                                        <TableCell>{pago.folio}</TableCell>
 
-                                                                    <TableCell>$ {pago.total_pagado}</TableCell>
-                                                                </TableRow>
-                                                            </>
-                                                        )
-                                                        )
-                                                    }
-                                                </TableBody>
-                                            </Table>
-                                        </div>
+                                                                        <TableCell>$ {pago.total_pagado}</TableCell>
+                                                                    </TableRow>
+                                                                </>
+                                                            )
+                                                            )
+                                                        }
+                                                    </TableBody>
+                                                </Table>
+                                            </div>
+                                        }
+
                                     </>
                             }
 

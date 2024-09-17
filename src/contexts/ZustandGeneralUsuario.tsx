@@ -33,6 +33,8 @@ interface GeneralUsuario {
   setUsuario: (usuario: BuscarUsuario) => void;
   usuariosEncontrados: BuscarUsuario[];
   setUsuariosEncontrados: (usuarios: BuscarUsuario[]) => void;
+  usuariosEncontradosMonitorContratacion: BuscarUsuario[];
+  setUsuariosEncontradosMonitorContratacion: (usuariosEncontradosMonitorContratacion: BuscarUsuario[]) => void;
   dataCajaUser: BuscarUsuario[];
   setDataCajaUser: (dataCajaUser: BuscarUsuario[]) => void;
   clearUsuariosEncontrados: () => void;
@@ -78,6 +80,10 @@ interface GeneralUsuario {
   setIdSeleccionadoAsignarOrdenDeTrabajoToma: (idSeleccionadoAsignarOrdenDeTrabajoToma: number) => void;
   abrirModalInformativo: boolean
   setAbrirModalInformativo: (abrirModalInformativo: boolean) => void;
+
+  mostrarUsuarioCambioPropietario: boolean
+  setMostrarUsuarioCambioPropietario: (mostrarUsuarioCambioPropietario: boolean) => void;
+
 }
 
 export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
@@ -93,6 +99,8 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setTomas: (tomas) => set({ tomas }),
   usuariosEncontrados: [],
   setUsuariosEncontrados: (usuarios) => set({ usuariosEncontrados: usuarios }),
+  usuariosEncontradosMonitorContratacion: [],
+  setUsuariosEncontradosMonitorContratacion: (usuarios) => set({ usuariosEncontradosMonitorContratacion: usuarios }),
   tomaUsuariosEncontrados: [],
   setTomaUsuariosEncontrados: (usuarios) => set({ tomaUsuariosEncontrados: usuarios }),
   usuariosRecuperado: [],
@@ -134,5 +142,8 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
  setIdSeleccionadoAsignarOrdenDeTrabajoToma: (idSeleccionadoAsignarOrdenDeTrabajoToma: number) => set({idSeleccionadoAsignarOrdenDeTrabajoToma}),
  abrirModalInformativo: false,
  setAbrirModalInformativo:(abrirModalInformativo) => set({abrirModalInformativo}),
+ mostrarUsuarioCambioPropietario: false,
+ setMostrarUsuarioCambioPropietario:(mostrarUsuarioCambioPropietario) => set({mostrarUsuarioCambioPropietario}),
+
 }));
 

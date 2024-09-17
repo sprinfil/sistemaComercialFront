@@ -9,12 +9,16 @@ import { EscogerOrdenDeTrabajoDataTable } from '../../ui/EscogerOrdenDeTrabajoDa
 import { zustandOrdenTrabajoStore } from '../../../contexts/ZustandOrdenesDeTrabajoUsuario.tsx';
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario.tsx';
 import { ZustandFiltrosOrdenTrabajo } from '../../../contexts/ZustandFiltrosOt.tsx';
+import ModalDetalleOrdenTrabajoTomaEnBuscarUsuario from '../../ui/ModalDetalleOrdenTrabajoTomaEnBuscarUsuario.tsx';
+import { EscogerOrdenDeTrabajoDataTableModalDetalle } from '../../ui/EscogerOrdenDeTrabajoDataTableModalDetalle.tsx';
 export default function OrdenDeTrabajoUsuarioTable() {
 
   const {usuariosEncontrados, setIdSeleccionadoTomaAsignacionOT,idSeleccionadoTomaAsignacionOT,setIdSeleccionadoAsignarOrdenDeTrabajoToma} = ZustandGeneralUsuario();
-  const {dataOrdenesDeTrabajoHistorialToma, setDataOrdenesDeTrabajoHistorialToma, setLoadingTable, loadingTable, setLoadingTableOrdenesDeTrabajoHistorial, loadingTableOrdenesDeTrabajoHistorial} = ZustandFiltrosOrdenTrabajo();
+  const {dataOrdenesDeTrabajoHistorialToma, setDataOrdenesDeTrabajoHistorialToma, setLoadingTable, loadingTable, setLoadingTableOrdenesDeTrabajoHistorial, 
+    loadingTableOrdenesDeTrabajoHistorial, setAbrirModalInformacionTomaDetalleUsuarioToma} = ZustandFiltrosOrdenTrabajo();
       console.log("esto llego para asignar individual",usuariosEncontrados[0]?.tomas[0]?.codigo_toma);
       console.log("esto llego para asignar individual",usuariosEncontrados[0]);
+      
   const {
     ordenDeTrabajos,
     setOrdenDeTrabajos,
@@ -25,7 +29,10 @@ export default function OrdenDeTrabajoUsuarioTable() {
   const [data,setData] = useState({})
   const [bool, setBool] = useState(false);
   useEffect(() => {
-    getOrdenDeTrabajoDelUsuario();
+    
+      getOrdenDeTrabajoDelUsuario();
+
+    
   }, []);
 
   const getOrdenDeTrabajoDelUsuario = async () => {
@@ -48,7 +55,7 @@ console.log(data);
   
 
 const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
-    {
+  {
       setOrdenDeTrabajo(tipoDeToma);
     setAccion("ver");
     console.log(tipoDeToma);
@@ -61,9 +68,10 @@ const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
       {
         loadingTableOrdenesDeTrabajoHistorial ? <Loader/>
         :
-        <EscogerOrdenDeTrabajoDataTable columns={columns} data={dataOrdenesDeTrabajoHistorialToma} sorter='orden_trabajo_catalogo.descripcion' onRowClick={HandleClickRow}/>
+        <EscogerOrdenDeTrabajoDataTableModalDetalle columns={columns} data={dataOrdenesDeTrabajoHistorialToma} sorter='orden_trabajo_catalogo.nombre' onRowClick={HandleClickRow}/>
 
       }
+      <ModalDetalleOrdenTrabajoTomaEnBuscarUsuario/>
     </div>
   );
 }

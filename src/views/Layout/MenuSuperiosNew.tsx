@@ -30,7 +30,7 @@ import  logo_menu  from "../../img/logosapamenusuperiornew.png"
 export const MenuSuperiosNew = () => {
     const { setToken, setUser, user, permissions, setPermissions, setServerStatus } = useStateContext();
     const { set_titulo, set_icono, titulo } = subMenuZustand();
-    const [loading_permissions, set_loading_permissions] = useState(false);
+    const [loading_permissions, set_loading_permissions] = useState(true);
 
     const logout = (e: MouseEvent<SVGSVGElement>): void => {
         e.preventDefault();
@@ -50,7 +50,7 @@ export const MenuSuperiosNew = () => {
 
     useEffect(() => {
         getPermissions();
-    }, [user]);
+    }, []);
 
 
     //obtener los permisos del usuario
@@ -262,13 +262,13 @@ export const MenuSuperiosNew = () => {
                     {
                         !loading_permissions &&
                         <>
-                        <img src={logo_menu} className='w-[40px] rounded-md shadow-md' alt=""/>
+                        <img src={logo_menu} className='w-[3vw] rounded-md shadow-md' alt=""/>
                             {opciones.map((opcionPadre, index) => {
                                 if (permissions.includes(opcionPadre.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
                                     return (
                                         
                                         <MenubarMenu>
-                                            <MenubarTrigger ><div className='flex gap-2 items-center'> <span className='text-primary'> {opcionPadre.icon}</span>{opcionPadre.titulo}</div></MenubarTrigger>
+                                            <MenubarTrigger ><div className='flex gap-2 items-center'> <span className='text-primary '> {opcionPadre.icon}</span>{opcionPadre.titulo}</div></MenubarTrigger>
                                             <MenubarContent>
                                                 {opcionPadre.opciones.map((opcion, key) => {
                                                     if (permissions.includes(opcion.permission) || user.id == 1 || user?.roles?.includes("Admin")) {

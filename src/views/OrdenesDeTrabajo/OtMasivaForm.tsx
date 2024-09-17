@@ -5,6 +5,7 @@ import OrdenDeTrabajoCrearTomasTable from '../../components/Tables/Components/Or
 import ModalGenerarOrdenDeTrabajo from '../../components/ui/ModalGenerarOrdenDeTrabajo'
 import { Button } from '../../components/ui/button'
 import { FaSearch } from 'react-icons/fa'
+import { SiGooglesearchconsole } from "react-icons/si";
 import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt'
 import axiosClient from '../../axios-client'
 export const OtMasivaForm = () => {
@@ -13,7 +14,28 @@ export const OtMasivaForm = () => {
 
 
   const { isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
-    setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador, setLoadingTable, loadingTable } = ZustandFiltrosOrdenTrabajo();
+    setInformacionRecibidaPorFiltros, 
+    informacionRecibidaPorFiltros,
+     arregloOrdenesDeTrabajoParaAsignarAOperador, 
+     setLoadingTable, loadingTable, 
+     setInformacionRecibidaPorFiltrosGenerarOtMasiva,
+     isConcluidaChecked, setIsConcluidaChecked,
+     isCanceladaChecked, setIsCanceladaChecked,
+     isDomesticaChecked, setIsDomesticaChecked,
+     isComercialChecked, setIsComercialChecked,
+     isIndustrialChecked, setIsIndustrialChecked,
+     isEspecialChecked, setIsEspecialChecked,
+     idLibroFiltro, idRutaFiltro,
+     saldoMinFiltro, saldoMaxFiltro,
+      informacionRecibidaPorFiltrosGenerarOtMasiva,loadingTablePonerOTMasivas, setLoadingTablePonerOTMasivas, setLoadingTableMonitor,
+      isFechaTipo,
+      setIsFechaTipo,
+      isHastaFecha,
+      setIsHastaFecha,
+      isDesdeFecha,
+      setIsDesdeFecha,
+      isCodigoDeTomaFiltro,
+      setIsCodigoDeTomaFiltro} = ZustandFiltrosOrdenTrabajo();
 
 
   const [abrirModal, setAbrirModal] = useState(false);
@@ -33,30 +55,44 @@ export const OtMasivaForm = () => {
 
   //METODO DE FILTRACION PARA CONSEGUIR LAS ORDENES DE TRABAJO Y PODER ASIGNARLAS
   const getOrdenesDeTrabajo = async () => {
-    setLoadingTable(true);
+    setLoadingTableMonitor(true);
     const values = {
-      asignada: isAsignadaChecked,
-      no_asignada: isNoAsignadaChecked,
+      asignada: "",
+      no_asignada: "",
+      concluida: "",
+      cancelada: "",
+      domestica: isDomesticaChecked,
+      comercial: isComercialChecked,
+      industrial: isIndustrialChecked,
+      especial: isEspecialChecked,
+      ruta_id: idRutaFiltro,
+      libro_id: idLibroFiltro,
+      saldo_min: saldoMinFiltro,
+      saldo_max: saldoMaxFiltro,
+      fecha_tipo:  isFechaTipo,
+      fecha_inicio :isDesdeFecha ,
+      fecha_fin:isHastaFecha,
+      codigo_toma:isCodigoDeTomaFiltro,
     }
     console.log("VALORES ENVIADOS", values);
     try {
-      const response = await axiosClient.post("OrdenTrabajo/filtros", values);
+      const response = await axiosClient.post("Toma/tipo/", values);
       console.log(response);
 
 
-      if (Array.isArray(response.data.ordenes_trabajo)) {
-        const tomas = response.data.ordenes_trabajo.map((item: any) => item.toma);
+      if (Array.isArray(response.data.tomas)) {
+        const tomas = response.data.tomas.map((item: any) => item);
 
         console.log("Tomas extraídas", tomas);
-        setLoadingTable(false);
+        setLoadingTableMonitor(false);
 
-        setInformacionRecibidaPorFiltros(tomas);
+        setInformacionRecibidaPorFiltrosGenerarOtMasiva(tomas);
       } else {
         console.log("No jala", response.data.ordenes_trabajo);
       }
 
     } catch (error) {
-      setLoadingTable(false);
+      setLoadingTableMonitor(false);
       console.error("Failed to fetch anomalias:", error);
     }
   };
@@ -68,17 +104,15 @@ export const OtMasivaForm = () => {
         <div className='flex space-x-2  relative'>
           <p className="text-xl text-[20px] font-medium">Generar ordenes de trabajo masivas</p>
           <div className='flex items-center ml-[2vh] absolute right-2' title='Seleccionar orden de trabajo'>
-            <IconButton onClick={handleGenerarOrdenDeTrabajo}><MdContentPasteSearch className='w-[4vh] h-[4vh]' /></IconButton>
+            <IconButton onClick={handleGenerarOrdenDeTrabajo}><SiGooglesearchconsole className='w-[4vh] h-[4vh]' /></IconButton>
           </div>
         </div>
 
         <div className=''>
           <p className="text-[20px] mt-5 ">
             <div className='flex space-x-2'>
-              <h2 className="text-[20px]">
-                Filtrar
-              </h2>
-              <div className='w-[5vh]' onClick={getOrdenesDeTrabajo}>
+              
+              <div className='w-[5vh] bg-muted rounded-lg' onClick={getOrdenesDeTrabajo}>
                 <IconButton title="Buscar">
                   <FaSearch />
                 </IconButton>

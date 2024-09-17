@@ -30,7 +30,7 @@ export const conceptoSchema = z.object({
   id: z.number(),
   nombre: z.string(),
   descripcion: z.string(),
-  prioridad_abono: z.number(),
+  prioridad_abono: z.string(),
   abonable: z.number(), // Asegúrate de que estas propiedades estén incluidas
   tarifa_fija: z.number().optional(),
   cargo_directo: z.number().optional(),
@@ -46,37 +46,37 @@ export const conceptoSchema = z.object({
 })
 //VALIDACIONES DESCUENTOS
 export const descuentoSchema = z.object({
-    id: z.number(),
-    nombre: z.string().min(1, "El Nombre es requerido"),
-    descripcion: z.string(),
-  })
+  id: z.number(),
+  nombre: z.string().min(1, "El Nombre es requerido"),
+  descripcion: z.string(),
+})
 
- //VALIDACIONES CONVENIO
+//VALIDACIONES CONVENIO
 export const conveniosSchema = z.object({
-    id: z.number(),
-    nombre: z.string().min(1, "El Nombre es requerido"),
-    descripcion: z.string(),
+  id: z.number(),
+  nombre: z.string().min(1, "El Nombre es requerido"),
+  descripcion: z.string(),
 })
 //VALIDACIONES CONTANCIAS
 export const constanciaSchema = z.object({
-    id: z.number(),
-    nombre: z.string().min(1, "El Nombre es requerido"),
-    descripcion: z.string(),
-  })
+  id: z.number(),
+  nombre: z.string().min(1, "El Nombre es requerido"),
+  descripcion: z.string(),
+})
 //VALIDACIONES GIROCOMERCIAL
 export const girocomercialSchema = z.object({
-    id: z.number(),
-    nombre: z.string().min(1, "El Nombre es requerido"),
-    descripcion: z.string(),
-  })
+  id: z.number(),
+  nombre: z.string().min(1, "El Nombre es requerido"),
+  descripcion: z.string(),
+})
 
 
-  //VALIDACIONES BONIFICACIONES
-  export const bonificacionesSchema = z.object({
-    id: z.number(),
-    nombre: z.string().min(1, "El Nombre es requerido"),
-    descripcion: z.string(),
-  })
+//VALIDACIONES BONIFICACIONES
+export const bonificacionesSchema = z.object({
+  id: z.number(),
+  nombre: z.string().min(1, "El Nombre es requerido"),
+  descripcion: z.string(),
+})
 
 
 
@@ -101,7 +101,7 @@ export const tarifaSchema = z.object({
 
 })
 
-export const coloniaSchema = z.object({ 
+export const coloniaSchema = z.object({
   nombre: z.string().min(1, "El Nombre es requerido"),
 
 })
@@ -119,7 +119,7 @@ export const cajaCatalogoSchema = z.object({
 
 export const cajaOperadorCatalogoSchema = z.object({
   operadorSeleccionado: z.array(
-       z.object({
+    z.object({
       id: z.number(),
       id_operador: z.number(),
     })
@@ -134,6 +134,34 @@ export const medidorSchema = z.object({
   marca: z.string().min(1, "El Nombre es requerido"),
   diametro: z.string().min(1, "El Nombre es requerido"),
   tipo: z.string().min(1, "El Nombre es requerido"),
+  lectura_inicial: z.string().min(1, "El Nombre es requerido"),
   estatus: z.boolean()
 
+})
+
+//VALIDACIONES PARA CERRAR LAS OT
+export const cerrarOtSchema = z.object({
+  id: z.number(),
+  obervaciones: z.string().min(1, "Las obervaciones son requeridas."),
+  material_utilizado: z.string(),
+})
+
+export const registroMedidotOtSchema = z.object({
+  id: z.number(),
+  numero_serie: z.string().min(1, "El numero de serie es requerido."),
+  marca: z.string(),
+  diametro: z.string(),
+  tipo: z.string(),
+  estatus: z.boolean(),
+  fecha_instalacion: z.string(),
+  lectura_inicial: z.string(),
+})
+
+
+//validacion combobox nombre
+
+
+export const cambioPropietarioSchema = z.object({
+  id: z.number(),
+  nombre_contrato: z.string(),
 })

@@ -20,7 +20,7 @@ export default function MedidoresTable({ idToma }: { idToma: number }) { // Reci
     setLoadingTable(true);
     try {
       const response = await axiosClient.get(`/medidores/toma/${idToma}`);
-      console.log(response);
+      console.log(response.data);
       setMedidores(response.data);
     } catch (error) {
       console.error("Failed to fetch medidores:", error);

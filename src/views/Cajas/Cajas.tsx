@@ -17,16 +17,18 @@ function App() {
     const [activeTab, setActiveTab] = useState("Punto de Venta");
     const [cajaNombre, setCajaNombre] = useState(""); // Estado para almacenar el nombre de la caja
     const navigate = useNavigate();
-    const {set_session_caja, session_caja} = ZustandPuntoVenta();
+    const { set_session_caja, session_caja } = ZustandPuntoVenta();
 
     useEffect(() => {
         const fetchCajaNombre = async () => {
             try {
-                const response = await axiosClient.get("/cajas/estadoSesionCobro");
-                const { caja_nombre } = response.data;
-                console.log(response.data);
-                set_session_caja(response.data);
-                setCajaNombre(caja_nombre); // Almacenar el nombre de la caja en el estado
+                if (!session_caja.fondo_inicial) {
+                    const response = await axiosClient.get("/cajas/estadoSesionCobro");
+                    const { caja_nombre } = response.data;
+                    console.log(response.data);
+                    set_session_caja(response.data);
+                    setCajaNombre(caja_nombre); // Almacenar el nombre de la caja en el estado
+                }
             } catch (error) {
                 console.error("Error al obtener el nombre de la caja:", error);
             }

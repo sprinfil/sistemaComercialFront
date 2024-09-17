@@ -42,7 +42,7 @@ const CrearUsuarioFisicaForm = () => {
    function successToastCreado() {
     toast({
         title: "¡Éxito!",
-        description: "La anomalía se ha creado correctamente",
+        description: "El usuario se ha creado correctamente",
         variant: "success",
 
     })
@@ -84,18 +84,31 @@ const CrearUsuarioFisicaForm = () => {
             const response = await axiosClient.post('/usuarios/create', values);
             console.log('Usuario creado:', response.data);
             successToastCreado();
-        } catch (error) {
-            if (error.response && error.response.data) {
-                errorToast();
-                console.error('Errores de validación:', error.response.data);
-                setErrors(error.response.data);
+        } catch (response) {
+            console.log(response.response.data.message);
+            if(response.response.data.message === "The curp has already been taken.")
+                toast({
+                    title: "Error",
+                    description: "La CURP ya existe.",
+                    variant: "destructive",
+                    action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                })
+                if(response.response.data.message === "The rfc has already been taken.")
+                    toast({
+                        title: "Error",
+                        description: "El RFC ya existe.",
+                        variant: "destructive",
+                        action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                    })
+                    if(response.response.data.message === "The correo has already been taken.")
+                        toast({
+                            title: "Error",
+                            description: "El correo ya existe.",
+                            variant: "destructive",
+                            action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                        })
               
-            } else {
-                errorToast();
-                console.error('Error general:', error);
-                setErrors({ general: 'Ocurrió un error al crear el usuario' });
-               
-            }
+
         } finally {
             setLoading(false);
         }

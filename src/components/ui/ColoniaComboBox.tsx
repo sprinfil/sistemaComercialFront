@@ -52,9 +52,9 @@ export const ColoniaComboBox = ({ field, form, name = "id_concepto", setCargoSel
     const getConcepto = async () => {
         setLoading(true);
         try {
-            const response = await axiosClient.get("/Concepto");
+            const response = await axiosClient.get("/colonia");
             let ctr = 0;
-            response.data.data.forEach(concepto => {
+            response.data.forEach(concepto => {
                 languages[ctr] = { value: concepto.id, label: concepto.nombre };
                 ctr = ctr + 1;
             });

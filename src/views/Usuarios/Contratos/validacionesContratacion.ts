@@ -8,25 +8,28 @@ export const BuscarContratacionSchema = z.object({
 
 
 export const crearContratoSchema = z.object({
-    id_usuario: z.number().min(1,"Ingresa algo para buscar al usuario"),
-    id_giro_comercial: z.number().min(1,"Ingresa algo para buscar al usuario"),
-    id_libro: z.number().min(1,"Ingresa algo para buscar al usuario"),
-    codigo_toma: z.number().min(1,"Ingresa algo para buscar al usuario"),
-    clave_catastral: z.string().min(1,"Ingresa algo para buscar al usuario"),
-    calle: z.string().min(1,"Ingresa algo para buscar al usuario"),
-    entre_calle_1: z.string().min(1,"Ingresa algo para buscar al usuario"),
-    entre_calle_2: z.string().min(1,"Ingresa algo para buscar al usuario"),
-    colonia: z.string().min(1,"Ingresa algo para buscar al usuario"),
-    codigo_postal: z.string().min(1,"Ingresa algo para buscar al usuario"),
-    localidad: z.string().min(1,"Ingresa algo para buscar al usuario"),
-    diametro_toma: z.string().min(1,"Ingresa algo para buscar al usuario"),
-    calle_notificaciones: z.string().min(1,"Ingresa algo para buscar al usuario"),
-    entre_calle_notificaciones_2: z.string().min(1,"Ingresa algo para buscar al usuario"),
-    tipo_servicio: z.string().min(1,"Ingresa algo para buscar al usuario"),
-    tipo_toma: z.string().min(1,"Ingresa algo para buscar al usuario"),
-    tipo_contratacion: z.string().min(1,"Ingresa algo para buscar al usuario"),
+    id_giro_comercial: z.number().min(1,"Ingresa el diametro de la toma"),
+    nombre_contrato:z.string().min(1,"Ingresa el nombre del contrato"),
+    clave_catastral: z.string().min(10,"Ingresa la clave catastral o ingresa minimo 10 caracteres").max(14, "Deben ser maximo 12 caracteres"),
+    tipo_toma: z.number().min(1,"Ingresa tipo de toma"),
+    diametro_de_la_toma: z.string().min(1,"Ingresa el diametro de la toma"),
+    num_casa: z.string().min(1,"Ingresa el numero de casa"),
+    colonia: z.number().min(1,"Ingresa la colonia"),
+    calle: z.number().min(1,"Ingresa la calle"),
+    codigo_postal: z.string().min(1,"Ingresa el código postal"),
+    entre_calle_1: z.number(),
+    entre_calle_2: z.number(),
+    localidad: z.string().min(1,"Ingresa la localidad"),
+    municipio: z.string().min(1,"Ingresa un municipio"),
     c_agua: z.boolean(),
     c_alc: z.boolean(),
     c_san: z.boolean(),
+    tipo_contratacion: z.string().min(1,"Ingresa el tipo de contratacion"),
 
+
+})
+
+
+export const crearTomaSchema = z.object({
+    direccion:z.string(),
 })

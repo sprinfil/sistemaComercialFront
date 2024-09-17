@@ -12,6 +12,18 @@ import { ZustandFiltrosOrdenTrabajo } from "../../../contexts/ZustandFiltrosOt";
 export type OrdenDeTrabajo = {
   id: number
   codigo_toma: string
+  estado: string
+  clave_catastral: string
+  fecha_finalizada: string
+  toma:
+  {
+    codigo_toma: string
+    clave_catastral: string
+  }
+  orden_trabajo_catalogo:
+  {
+   descripcion: string
+  }
 
 
 }
@@ -82,24 +94,32 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "toma.codigo_toma",
+    accessorFn: (row) => {
+      // Verifica la estructura de los datos en la consola
+      return row?.toma?.clave_catastral;
+    },
+    id: "toma.clave_catastral",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Toma
+        Clave catastral
       </Button>
     ),
   },
   {
-    accessorKey: "orden_trabajo_catalogo.descripcion",
+    accessorFn: (row) => {
+      // Verifica la estructura de los datos en la consola
+      return row.orden_trabajo_catalogo?.descripcion;
+    },
+    id: "orden_trabajo_catalogo.tipo",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Tipo
+       Tipo
       </Button>
     ),
   },
@@ -150,9 +170,7 @@ export const columns: ColumnDef<OrdenDeTrabajo>[] = [
 
       return (
         <div onClick={()=>{setOrdenDeTrabajo(OrdenDeTrabajo);setAccionGeneradaEntreTabs("ver");}}>
-          <IconButton>
-            <EyeOpenIcon className="w-[20px] h-[20px]" onClick={() => handleAbrir()}/>
-          </IconButton>
+        
         </div>
       )
     },

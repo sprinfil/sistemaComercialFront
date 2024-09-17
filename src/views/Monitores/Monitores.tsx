@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { OrdenDeTrabajoMonitor } from './OrdenDeTrabajoMonitor'
 import { useStateContext } from '../../contexts/ContextProvider'
+import { PagosMonitor } from './PagosMonitor'
+import { ContratacionMonitor } from './ContratacionMonitor'
 
 export const Monitores = () => {
 
@@ -13,7 +15,17 @@ export const Monitores = () => {
     {
       titulo: "Orden de trabajo",
       componente: <OrdenDeTrabajoMonitor />,
-      permission: "VerAnomalias"
+      permission: ""
+    },
+    {
+      titulo: "Pagos",
+      componente: <PagosMonitor />,
+      permission: ""
+    },
+    {
+      titulo: "Contratos",
+      componente: <ContratacionMonitor />,
+      permission: ""
     },
    
   ]
@@ -43,7 +55,7 @@ export const Monitores = () => {
         seleccionarCatalogo &&
         <>
           <div className='w-full h-[70vh] mt-[20px] flex flex-col items-center justify-center gap-5'>
-            <p>Selecciona un catálogo.</p>
+            <p>Selecciona un monitor.</p>
           </div>
         </>
       }

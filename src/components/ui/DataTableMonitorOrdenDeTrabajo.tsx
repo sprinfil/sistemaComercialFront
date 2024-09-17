@@ -8,7 +8,6 @@ import {
   useReactTable,
   getFilteredRowModel,
   getSortedRowModel,
-  getPaginationRowModel,
 } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input";
 import {
@@ -26,6 +25,7 @@ import { FaSearch } from "react-icons/fa";
 import { TbFilterPlus } from "react-icons/tb";
 import { ZustandFiltrosOrdenTrabajo } from "../../contexts/ZustandFiltrosOt";
 import axiosClient from "../../axios-client";
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -40,20 +40,35 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
   onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
-  const [control, setControl] =  React.useState(false);
-  const { isAsignadaChecked, setIsAsignadaChecked, isNoAsignadaChecked, setIsNoAsignadaChecked,
-    setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador, boolUsoFiltros, 
-    setBoolUsoFiltros, setvalorParaSaberSiUsaLaTablaDeFiltros, setLoadingTable, loadingTable} = ZustandFiltrosOrdenTrabajo();
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [selectedRow, setSelectedRow] = React.useState<string | null>(null);
+  const [control, setControl] = React.useState(false);
+  const { isAsignadaChecked, setIsAsignadaChecked, 
+    isNoAsignadaChecked, setIsNoAsignadaChecked,
+    setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador, boolUsoFiltros,
+    setBoolUsoFiltros, setvalorParaSaberSiUsaLaTablaDeFiltros, setLoadingTable, loadingTable,
+    isConcluidaChecked, setIsConcluidaChecked,
+    isCanceladaChecked, setIsCanceladaChecked,
+    isDomesticaChecked, setIsDomesticaChecked,
+    isComercialChecked, setIsComercialChecked,
+    isIndustrialChecked, setIsIndustrialChecked,
+    isEspecialChecked, setIsEspecialChecked,
+    idLibroFiltro, idRutaFiltro, setIdLibroFiltro, setIdRutaFiltro,
+    saldoMinFiltro, saldoMaxFiltro,setLoadingTableFiltrarOrdenDeTrabajoMasivas,
+    setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo, informacionCerrarOtMasivamente,isFechaTipo,
+    setIsFechaTipo,
+    isHastaFecha,
+    setIsHastaFecha,
+    isDesdeFecha,
+    setIsDesdeFecha,
+    isCodigoDeTomaFiltro,
+    setIsCodigoDeTomaFiltro} = ZustandFiltrosOrdenTrabajo();
+  
   const table = useReactTable({
     data,
     columns,
     sorter,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -70,94 +85,129 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
   };
 
   const handleControl = () => {
-
-    if(boolUsoFiltros)
-    {
-      setBoolUsoFiltros(false);
-    }
-    else
-    {
-      setBoolUsoFiltros(true);
-
-    }
+    setBoolUsoFiltros(!boolUsoFiltros);
   }
 
-  
-//METODO DE FILTRACION PARA CONSEGUIR LAS ORDENES DE TRABAJO Y PODER ASIGNARLAS
-const getOrdenesDeTrabajo = async () => {
-  setLoadingTable(true);
-  const values = {
-    asignada: isAsignadaChecked,
-    no_asignada: isNoAsignadaChecked,
-  }
-  console.log("VALORES ENVIADOS", values);
-  try {
-    const response = await axiosClient.post("OrdenTrabajo/filtros", values);
-    console.log(response);
-
-    setLoadingTable(false);
-
-    if (Array.isArray(response.data.ordenes_trabajo)) {
-      const tomas = response.data.ordenes_trabajo.map((item: any) => item);
-
-      console.log("Tomas extraídas", tomas);
+  const getOrdenesDeTrabajo = async () => {
+    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
+    const values = {
+      asignada: isAsignadaChecked,
+      no_asignada: isNoAsignadaChecked,
+      concluida: isConcluidaChecked,
+      cancelada: isCanceladaChecked,
+      domestica: isDomesticaChecked,
+      comercial: isComercialChecked,
+      industrial: isIndustrialChecked,
+      especial: isEspecialChecked,
+      ruta_id: idRutaFiltro,
+      libro_id: idLibroFiltro,
+      saldo_min: saldoMinFiltro,
+      saldo_max: saldoMaxFiltro,
+      fecha_tipo:  isFechaTipo,
+      fecha_inicio :isDesdeFecha ,
+      fecha_fin:isHastaFecha,
+      codigo_toma:isCodigoDeTomaFiltro
+    };
+    console.log("VALORES ENVIADOS", values);
+    try {
+      const response = await axiosClient.post("OrdenTrabajo/filtros", values);
+      console.log(response);
       setvalorParaSaberSiUsaLaTablaDeFiltros(true);
-      setInformacionRecibidaPorFiltros(tomas);
-    } else {
-      console.log("No jala", response.data.ordenes_trabajo);
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+      if (Array.isArray(response.data.ordenes_trabajo)) {
+        const tomas = response.data.ordenes_trabajo.map((item: any) => item);
+        console.log("Tomas extraídas", tomas);
+        setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo(tomas);
+        setIdLibroFiltro("");
+        setIdRutaFiltro("");
+      } else {
+        console.log("No jala", response.data.ordenes_trabajo);
+      }
+    } catch (error) {
+      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+      console.error("Failed to fetch anomalias:", error);
     }
+  };
 
-  } catch (error) {
-    setLoadingTable(false);
-    console.error("Failed to fetch anomalias:", error);
-  }
-};
-
-
-
-
+  console.log(informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo);
+  console.log(informacionCerrarOtMasivamente);
 
   return (
-    <div className="">
-      <div className="flex items-center py-4">
-      
-      <IconButton title="Buscar" onClick={getOrdenesDeTrabajo}>
-          <FaSearch />
+    <div className="p-4">
+      <div className="flex items-center space-x-4 mb-4 bg-muted w-[12vh] rounded-xl mkl">
+        <IconButton title="Buscar" onClick={getOrdenesDeTrabajo}>
+          <FaSearch className="ml-2"/>
         </IconButton>
-        <IconButton title="Ver más filtros" onClick={handleControl}>      
-          <TbFilterPlus className="w-[2.5vh] h-[2.5vh]"/> 
+        <IconButton title="Ver más filtros" onClick={handleControl}>
+          <TbFilterPlus className="w-[2.5vh] h-[2.5vh]" />
         </IconButton>
-        {
-          boolUsoFiltros && 
-          <Input
-          placeholder="Buscar..."
-          type="text"
-          value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
-          }
-          className="w-full"
-        />
-        }
-       
       </div>
-      <div className="rounded-md border h-full overflow-auto">
+
+      {boolUsoFiltros && (
+        <div className="flex space-x-10 border shadow-transparent- p-6 w-full h-[10vh] justify-center mb-[3vh]">
+          <Input
+            placeholder="Buscar codigo de toma"
+            type="text"
+            value={(table.getColumn(`toma.codigo_toma`)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(`toma.codigo_toma`)?.setFilterValue(event.target.value)
+            }
+            className="w-[22vh] border border-gray-300 rounded-md p-2"
+          />
+          <Input
+            placeholder="Buscar tipo de OT"
+            type="text"
+            value={(table.getColumn(`orden_trabajo_catalogo.descripcion`)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(`orden_trabajo_catalogo.descripcion`)?.setFilterValue(event.target.value)
+            }
+            className="w-[22vh] border border-gray-300 rounded-md p-2"
+          />
+          <Input
+            placeholder="Buscar estado"
+            type="text"
+            value={(table.getColumn(`estado`)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(`estado`)?.setFilterValue(event.target.value)
+            }
+            className="w-[22vh] border border-gray-300 rounded-md p-2"
+          />
+          <Input
+            placeholder="Buscar creacion"
+            type="text"
+            value={(table.getColumn(`created_at`)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(`created_at`)?.setFilterValue(event.target.value)
+            }
+            className="w-[22vh] border border-gray-300 rounded-md p-2"
+          />
+          <Input
+            placeholder="Buscar concluida"
+            type="text"
+            value={(table.getColumn(`fecha_finalizada`)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(`fecha_finalizada`)?.setFilterValue(event.target.value)
+            }
+            className="w-[22vh] border border-gray-300 rounded-md p-2"
+          />
+        </div>
+      )}
+
+      <div className="rounded-md border h-full overflow-auto max-h-[70vh]">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -168,9 +218,7 @@ const getOrdenesDeTrabajo = async () => {
                 <TableRow
                   key={row.id}
                   onClick={() => handleRowClick(row.id, row.original)}
-                  className={`cursor-pointer hover:bg-border ${
-                    selectedRow === row.id ? "bg-border" : ""
-                  }`}
+                  className={`cursor-pointer hover:bg-border ${selectedRow === row.id ? "bg-border" : ""}`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -189,25 +237,6 @@ const getOrdenesDeTrabajo = async () => {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Anterior
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Siguiente
-        </Button>
-      </div>
     </div>
   );
 }
-

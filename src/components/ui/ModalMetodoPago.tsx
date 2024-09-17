@@ -172,7 +172,7 @@ export const ModalMetodoPago = ({
         cargos: cargos_temp,
         referencia: folio,
         recibido: recibi_real?.current?.value || 0,
-        cambio: cambio
+        cambio: cambio.toFixed(2)
       })
         .then((response) => {
           set_open_modal(false);

@@ -25,7 +25,7 @@ const ModalEstasSeguroCancelarMasivamenteOT = ({ isOpen, setIsOpen, method }) =>
         loadingTable,
         setLoadingTable
     } = zustandOrdenTrabajoStore();
-    const { arregloCrearOrdenesDeTrabajo, setDataOrdenesDeTrabajoHistorialToma } = ZustandFiltrosOrdenTrabajo();
+    const { arregloCrearOrdenesDeTrabajo, setDataOrdenesDeTrabajoHistorialToma, informacionCerrarOtMasivamente, setLoadingTableFiltrarOrdenDeTrabajoMasivas, setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo} = ZustandFiltrosOrdenTrabajo();
 
 
     const { usuariosEncontrados, setUsuariosEncontrados, idSeleccionadoGenerarOrdenDETrabajoToma } = ZustandGeneralUsuario();
@@ -69,11 +69,63 @@ const ModalEstasSeguroCancelarMasivamenteOT = ({ isOpen, setIsOpen, method }) =>
 
     }, [usuariosEncontrados]);
 
+    const getOrdenDeTrabajoMonitor = async () => {
+        setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
+        try {
+          const response = await axiosClient.get("OrdenTrabajo/NoAsignada");
+          setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+          setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo(response.data.data);
+          console.log(response);
+        } catch (error) {
+          setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+          console.error("Failed to fetch orden:", error);
+        }
+      };
 
+console.log(informacionCerrarOtMasivamente);
 
+const cerrarMasivamente = async () => {
+    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
+    const ordenes_trabajo = informacionCerrarOtMasivamente.map((item) => ({
+         id: item.id,
+         genera_OT_encadenadas:false
 
+      }));
 
+      const dataToSend = {
+        ordenes_trabajo: ordenes_trabajo
+      };
+    
+     
+    
+      console.log('Datos a enviar:', dataToSend);
 
+    console.log(ordenes_trabajo); 
+
+    try {
+      const response = await axiosClient.put("OrdenTrabajo/cerrar/masiva", dataToSend);
+      console.log(response.data);  
+      setIsOpen(false);
+      toast({
+        title: "¡Éxito!",
+        description: "Se han cerrado masivamente",
+        variant: "success",
+
+    })
+    getOrdenDeTrabajoMonitor();
+    setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+    } 
+    catch (response) {
+       console.log(response)
+       setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+       toast({
+        variant: "destructive",
+        title: "Oh, no. Error",
+        description: "Algo salió mal.",
+        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+    })
+    }
+  };
 
     return (
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -82,20 +134,20 @@ const ModalEstasSeguroCancelarMasivamenteOT = ({ isOpen, setIsOpen, method }) =>
 
                     <AlertDialogTitle>
 
-                   ¿Estas seguro que desea cancelar las ordenes de trabajo masivamente?
+                   ¿Estas seguro que deseas cerrar las ordenes de trabajo seleccionadas?
     
 
                     </AlertDialogTitle>
 
                     <AlertDialogDescription>
-                    Se van a cancelar las ordenes de trabajo seleccionadas
+                    Se van a cerrar las ordenes de trabajo seleccionadas
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel onClick={() => setIsOpen(false)}>Cancelar</AlertDialogCancel>
 
 
-                    <AlertDialogAction onClick={() => setIsOpen(false)}>
+                    <AlertDialogAction onClick={cerrarMasivamente}>
                         Aceptar
                     </AlertDialogAction>
 
