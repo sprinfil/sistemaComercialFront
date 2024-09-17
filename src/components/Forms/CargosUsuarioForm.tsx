@@ -66,6 +66,8 @@ const CargosUsuarioForm = () => {
                                 <tr key={index}>
                                     <td className="px-2 py-3">{cargo.concepto}</td>
                                     <td className="px-2 py-3">{cargo.estado}</td>
+                                    <td className="px-2 py-3">ninguno</td>
+                                    <td className="px-2 py-3">ninguno</td>
                                 </tr>
                             ))
                         ) : (
