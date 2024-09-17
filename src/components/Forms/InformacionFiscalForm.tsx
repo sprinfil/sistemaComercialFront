@@ -1,5 +1,4 @@
-import { useState } from "react";
-import logo from "../../img/logo.png";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,90 +14,157 @@ import {
 } from "../../components/ui/form.tsx";
 import { Input } from "../../components/ui/input.tsx";
 import { informacionficalSchema } from "./informacionFiscalValidaciones.ts";
-import { ModeToggle } from "../../components/ui/mode-toggle.tsx";
 import axiosClient from "../../axios-client.ts";
-import Loader from "../../components/ui/Loader.tsx";
-import Error from "../../components/ui/Error.tsx";
-import { Textarea } from "../ui/textarea.tsx";
-import { useEffect } from "react";
-import { TrashIcon, Pencil2Icon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 import IconButton from "../ui/IconButton.tsx";
-import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
-import Modal from "../ui/Modal.tsx";
+import { Pencil2Icon } from "@radix-ui/react-icons";
+import MarcoForm from "../ui/MarcoForm.tsx";
+import Loader from "../ui/Loader.tsx";
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 
-
-const InformacionFiscalForm = ({ userId }) => {
+const InformacionFiscalForm = () => {
+  const { toast } = useToast();
   const [mostrarTooltip, setMostrarTooltip] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [abrirInput, setAbrirInput] = useState(false);
-  const [userData, setUserData] = useState(null);
-  const [accion, setAccion] = useState(null);
+  const [datosFiscalesDesplegados, setdatosFiscalesDesplegados] = useState({});
+  const {usuariosEncontrados, setUsuariosEncontrados} = ZustandGeneralUsuario();
+
+  // #region SUCCESSTOAST
+  function successToastCreado() {
+    toast({
+      title: "¡Éxito!",
+      description: "Acción realizada correctamente",
+      variant: "success",
+    });
+  }
+
+  // Funcion de errores para el Toast
+  function errorToast() {
+    toast({
+      variant: "destructive",
+      title: "Oh, no. Error",
+      description: "Algo salió mal.",
+      action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+    });
+  }
 
   const form = useForm<z.infer<typeof informacionficalSchema>>({
     resolver: zodResolver(informacionficalSchema),
     defaultValues: {
       id: 0,
-      regimenfiscal: "",
-      razonsocial: "",
+      id_modelo: 1,
+      modelo: "usuario",
+      regimen_fiscal: "",
+      razon_social: "",
       pais: "",
       estado: "",
       municipio: "",
-      colonia: "",
-      referencia: "",
-      codigopostal: "",
       localidad: "",
-      calle:"",
-      numeroexterior:"",
-      nombre:"",
-      telefono:"",
-      correoelectronico:"",
+      colonia: "",
+      calle: "",
+      referencia: "",
+      numero_exterior: "",
+      codigo_postal: "",
+      nombre: "",
+      telefono: "",
+      correo: "",
     },
   });
-  
-  
-  
-  // Función para obtener los detalles del usuario
-  const fetchUserData = async () => {
-    try {
-      setLoading(true);
-      const response = await axiosClient.get(`/ruta/del/api/usuario/${userId}`);
-      setUserData(response.data); // Actualiza el estado con los datos del usuario
-      setLoading(false);
-    } catch (error) {
-      console.error("Error al obtener los datos del usuario:", error);
-      setLoading(false);
-    }
-  };
-  // Función para actualizar los detalles del usuario
-  const updateUserDetails = async (formData) => {
-    setLoading(true);
-    try {
-      const response = await axiosClient.put(`/ruta/del/api/actualizar-usuario/${userId}`, formData);
-      console.log("Detalles del usuario actualizados:", response.data);
-      // Puedes realizar acciones adicionales aquí, como mostrar un mensaje de éxito o redirigir al usuario
-      setLoading(false);
-    } catch (error) {
-      if (error.response && error.response.data) {
-        setErrors(error.response.data);
-      } else {
-        setErrors({ general: "Ocurrió un error al actualizar los detalles del usuario" });
-      }
-      setLoading(false);
-    }
-  };
 
-  const onSubmit = async (formData) => {
-    try {
-      await form.trigger(); // Dispara validación
-      if (form.getValues()) {
-        await updateUserDetails(formData); // Actualiza los detalles del usuario
-        console.log(formData)
-      }
-    } catch (error) {
-      console.error("Error al enviar el formulario:", error);
+
+  function onSubmit(values: z.infer<typeof informacionficalSchema>) {
+    console.log(values);
+    const { getValues } = form;
+
+    if (!getValues("id")) {
+      axiosClient.post(`/datos_fiscales/create`, values)
+        .then((response) => {
+          const data = response.data;
+          successToastCreado();
+        })
+        .catch((err) => {
+          const response = err.response;
+          errorToast();
+          if (response && response.status === 422) {
+            setErrors(response.data.errors);
+          }
+          setLoading(false);
+        })
+    } else {
+      axiosClient.put(`/datos_fiscales/update/${getValues("id")}`, values)
+        .then((response) => {
+          const data = response.data;
+          successToastCreado();
+          setAbrirInput(false)
+        })
+        .catch((err) => {
+          const response = err.response;
+          errorToast();
+          if (response && response.status === 422) {
+            setErrors(response.data.errors);
+          }
+          setLoading(false);
+        })
     }
-  };
+  }
+  const { setValue } = form;
+
+  useEffect(() => {
+    // Función para obtener los datos de la base de datos
+    let info = {
+        info:{
+          "id_modelo": usuariosEncontrados.id,
+          "modelo": "usuario"
+        }
+    };
+
+    console.log("ESTOS USUARIOS FUERON ENCONTRADOS EN INFOMRACION FISCAL",usuariosEncontrados);
+    console.log(info)
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await axiosClient.get(`/datos_fiscales/showPorModelo`, {
+          info: {
+            id_modelo: usuariosEncontrados.id,
+            modelo: 'usuario'
+          }
+        }
+         
+      );
+        const data = response.data;
+        setLoading(false);
+        // Actualiza los valores del formulario con los datos obtenidos
+        setValue("id", data.id);
+        setValue("modelo", "usuario");
+        setValue("id_modelo", String(data.id_modelo));
+        setValue("regimen_fiscal", data.regimen_fiscal);
+        setValue("razon_social", data.razon_social);
+        setValue("pais", data.pais);
+        setValue("estado", data.estado);
+        setValue("municipio", data.municipio);
+        setValue("localidad", data.localidad);
+        setValue("colonia", data.colonia);
+        setValue("calle", data.calle);
+        setValue("referencia", data.referencia);
+        setValue("numero_exterior", data.numero_exterior);
+        setValue("codigo_postal", data.codigo_postal);
+        setValue("nombre", data.nombre);
+        setValue("telefono", data.telefono);
+        setValue("correo", data.correo);
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [usuariosEncontrados.id, setValue]);
+
+
+  // #region HANDLE
 
   const handleClickEditar = () => {
     setAbrirInput(true); // Cambia abrirInput a true cuando se hace clic en editar
@@ -117,199 +183,198 @@ const InformacionFiscalForm = ({ userId }) => {
     setMostrarTooltip(false);
   };
 
+  // #endregion
 
   return (
-    <div className="overflow-auto w-full  ">
-      <div className="flex h-[40px] items-center mb-[10px] bg-card rounded-sm ">
+    <div className="overflow-auto w-full">
+      <div className="flex h-[40px] items-center mb-[10px] bg-card rounded-sm">
         <div className="flex-1">
           <p className="text-[20px] font-medium mx-4">Información Fiscal</p>
         </div>
-          <div className="relative" onClick={handleClickEditar} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-            
-              <IconButton>
-                  <Pencil2Icon className="w-[20px] h-[20px]" />
-              </IconButton>
-              {mostrarTooltip && (
-              <span className="absolute top-[30px] left-1 transform -translate-x-1/2 bg-gray-800 text-white px-2 py-1 text-xs rounded">
-                Modificar
-              </span>)}
-          </div>
+        <div
+          className="relative"
+          onClick={handleClickEditar}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <IconButton>
+            <Pencil2Icon className="w-[20px] h-[20px]" />
+          </IconButton>
+          {mostrarTooltip && (
+            <span className="absolute top-[30px] left-1 transform -translate-x-1/2 bg-gray-800 text-white px-2 py-1 text-xs rounded">
+              Modificar
+            </span>
+          )}
+        </div>
       </div>
-      <div className="py-[20px] px-[10px] w-full ">
-        <Form {...form }>
-            <div className="py-[40px] px-[10px] flex gap-2 w-full mb-5 rounded-md border border-border  relative">
-            <span className="absolute -top-3 left-2 bg-white px-2 text-gray-500 text-xs">Datos fiscales</span>
-                <div className="w-[50%]">
-                <FormField
-                    control={form.control}
-                    name="regimenfiscal"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Régimen fiscal</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="Régimen fiscal" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                </div>
-                <div className="w-[50%]">
-                <FormField
-                    control={form.control}
-                    name="razonsocial"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Razón social</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="Razón social" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                </div>
-            </div>
-            
-            <div className="py-[40px] px-[10px] flex gap-2 w-full mb-5 rounded-md border border-border relative">
-            <span className="absolute -top-3 left-2 bg-white px-2 text-gray-500 text-xs">Datos de domicilio</span>
-                <div className="w-[50%] ">
-                <FormField
-                    control={form.control}
-                    name="pais"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>País</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="País" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="estado"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Estado</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="Estado" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="municipio"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Municipio</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="Municipio" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="localidad"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Localidad</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="Localidad" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="colonia"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Colomia</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="Colonia" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                </div>
-                <div className="w-[50%] ">
-                <FormField
-                    control={form.control}
-                    name="calle"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Calle</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="Calle" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="referencia"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Referencia</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="Referencia" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="numeroexterior"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Número exterior</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="Número exterior" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="codigopostal"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Código postal</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="Código postal" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                </div>
-            </div>
-            <div className="grid grid-cols-3 gap-1  rounded-md border border-border relative">
-            <span className="absolute -top-3 left-2 bg-white px-2 text-gray-500 text-xs">Datos de contacto</span>
-                <div className="py-[40px] px-[10px]  mb-5">
-                <FormField
+      <div className="py-[20px] px-[10px] w-full">
+      {loading && <Loader/>}
+        {
+          !loading &&
+          <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <MarcoForm title={"Datos fiscales"}>
+              <FormField
+                control={form.control}
+                name="regimen_fiscal"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Régimen fiscal</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="Régimen fiscal" {...field} set />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="razon_social"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Razón social</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="Razón social" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </MarcoForm>
+
+            <MarcoForm title={"Datos de domicilio"}>
+              <FormField
+                control={form.control}
+                name="pais"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>País</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="País" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="estado"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Estado</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="Estado" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="municipio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Municipio</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="Municipio" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="localidad"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Localidad</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="Localidad" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="colonia"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Colonia</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="Colonia" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="calle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Calle</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="Calle" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="referencia"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Referencia</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="Referencia" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="numero_exterior"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Número exterior</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="Número exterior" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="codigo_postal"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Código postal</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="Código postal" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </MarcoForm>
+
+            <MarcoForm title={"Informacion de contacto"}>
+              <FormField
                 control={form.control}
                 name="nombre"
                 render={({ field }) => (
@@ -323,45 +388,44 @@ const InformacionFiscalForm = ({ userId }) => {
                   </FormItem>
                 )}
               />
-                </div>
-                <div className="py-[40px] px-[10px]  mb-5">
-                    <FormField
-                    control={form.control}
-                    name="telefono"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Teléfono</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="Teléfono" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                </div>
-                <div className="py-[40px] px-[10px]  mb-5">
-                    <FormField
-                    control={form.control}
-                    name="correoelectronico"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Correo electrónico</FormLabel>
-                        <FormControl>
-                        <Input readOnly={!abrirInput} placeholder="Correo electrónico" {...field} />
-                        </FormControl>
-                        <FormDescription></FormDescription>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                </div>
-            </div>
+              <FormField
+                control={form.control}
+                name="telefono"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Teléfono</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="Teléfono" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="correo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Correo electrónico</FormLabel>
+                    <FormControl>
+                      <Input readOnly={!abrirInput} placeholder="Correo electrónico" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </MarcoForm>
+               
             <div className="flex space-x-4 mt-7">
               {abrirInput && <Button type="submit">Guardar</Button>}
-              {abrirInput && <Button onClick={handleCancelar} type="submit">Cancelar</Button>}
+              {abrirInput && <Button onClick={handleCancelar} type="button" variant={"destructive"}>Cancelar</Button>}
             </div>
+          </form>
         </Form>
+        }
+       
       </div>
     </div>
   );

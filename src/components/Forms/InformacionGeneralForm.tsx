@@ -25,25 +25,47 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon } from "@radix-ui/react-icons";
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
-
+import { useLocation } from 'react-router-dom';
+import MarcoForm from "../ui/MarcoForm.tsx";
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 const InformacionGeneralForm = () => {
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [abrirInput, setAbrirInput] = useState(false);
 
+  const location = useLocation();
+  const {usuariosEncontrados, setUsuariosEncontrados} = ZustandGeneralUsuario();
+
   const form = useForm<z.infer<typeof informaciongeneralSchema>>({
     resolver: zodResolver(informaciongeneralSchema),
     defaultValues: {
-      id: 0,
-      nombre: "",
-      apellidopaterno: "",
-      apellidomaterno: "",
-      telefono: "",
-      curp: "",
-      rfc: "",
-      correo: "",
+        id: usuariosEncontrados.id || '',
+        nombre: usuariosEncontrados.nombre || '',
+        apellidopaterno: usuariosEncontrados.apellido_paterno || '',
+        apellidomaterno: usuariosEncontrados.apellido_materno || '',
+        telefono: usuariosEncontrados.telefono || '',
+        curp: usuariosEncontrados.curp || '',
+        rfc: usuariosEncontrados.rfc || '',
+        correo: usuariosEncontrados.correo || '',
     },
   });
+
+  useEffect(() => {
+    if (usuariosEncontrados.length > 0) {
+      const usuario = usuariosEncontrados[0]; // Obten el primer usuario del arreglo
+      form.reset({
+        id: usuario.id || '',
+        nombre: usuario.nombre || '',
+        apellidopaterno: usuario.apellido_paterno || '',
+        apellidomaterno: usuario.apellido_materno || '',
+        telefono: usuario.telefono || '',
+        curp: usuario.curp || '',
+        rfc: usuario.rfc || '',
+        correo: usuario.correo || '',
+      });
+    }
+  }, [usuariosEncontrados, form]);
 
   async function onSubmit(values: z.infer<typeof informaciongeneralSchema>) {
     setLoading(true);
@@ -68,7 +90,7 @@ const InformacionGeneralForm = () => {
   }
 
   return (
-    <div className="overflow-auto w-full ">
+    <div className="overflow-auto w-full">
       <div className="flex h-[40px] items-center mb-[10px] bg-card rounded-sm">
         <div className="h-[20px] w-full flex items-center justify-end">
           <div className="mb-[10px] h-full w-full mx-4">
@@ -77,9 +99,13 @@ const InformacionGeneralForm = () => {
         </div>
       </div>
       <div className="py-[20px] px-[10px] w-full">
+
         <Form {...form}>
           <form className=" flex gap-2">
-            <div className="w-[50%] ">
+
+            <MarcoForm title={"Información Principal"}>
+
+
               <FormField
                 control={form.control}
                 name="nombre"
@@ -133,9 +159,9 @@ const InformacionGeneralForm = () => {
                   </FormItem>
                 )}
               />
-            </div>
 
-            <div className="w-[50%]">
+
+
               <FormField
                 control={form.control}
                 name="rfc"
@@ -175,7 +201,7 @@ const InformacionGeneralForm = () => {
                   </FormItem>
                 )}
               />
-            </div>
+            </MarcoForm>
           </form>
         </Form>
       </div>

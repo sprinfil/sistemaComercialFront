@@ -29,6 +29,7 @@ import Modal from "../ui/Modal.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx";
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { Switch } from "../ui/switch.tsx";
 
 const ConstanciaForm = () => {
     const { toast } = useToast()
@@ -38,6 +39,8 @@ const ConstanciaForm = () => {
     const [abrirInput, setAbrirInput] = useState(false);
     const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
+    const [valorObtenidoBool, setValorObtenidoBool] = useState(false);
+    const [control, setControl] = useState(false);
 //#region SUCCESSTOAST
 function successToastCreado() {
     toast({
@@ -104,14 +107,19 @@ function errorYaExisteToast() {
             id: constancia.id,
             nombre: constancia.nombre,
             descripcion: constancia.descripcion,
+            estado: constancia.estado
         },
     })
 
     function onSubmit(values: z.infer<typeof constanciaSchema>) {
         console.log(values);
         setLoading(true);
+        const boolConvetido = constancia.estado ? "activo" : "inactivo"
+
+        let values2 = {...values, estado: boolConvetido}
+        console.log("valores ingresados", values2);
         if (accion == "crear") {
-            axiosClient.post(`/ConstanciasCatalogo/create`, values)
+            axiosClient.post(`/ConstanciasCatalogo/create`, values2)
                 .then((response) => {
                     const data = response.data;
                     if(data.restore)
@@ -131,11 +139,14 @@ function errorYaExisteToast() {
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            estado: false
                         });
                         form.reset({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            estado: false
+
                         });
                         getConstancias();
                         console.log(values);
@@ -154,7 +165,10 @@ function errorYaExisteToast() {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/ConstanciasCatalogo/update/${constancia.id}`, values)
+            const boolConvetido = values.estado == true ? "activo" : "inactivo"
+
+            let values2 = {...values, estado: boolConvetido}
+            axiosClient.put(`/ConstanciasCatalogo/update/${constancia.id}`, values2)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
@@ -230,43 +244,60 @@ function errorYaExisteToast() {
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            setControl(false);
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
+
             });
             setConstancia({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
+            setControl(true);
             setAbrirInput(true);
             setErrors({});
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
+
             });
             setConstancia({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
+
             })
         }
         if (accion == "creado") {
+            setControl(false);
             setAbrirInput(true);
             setErrors({});
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
+
             });
             setConstancia({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
+
             })
         }
         if (accion == "ver") {
+            setControl(false);
+            const valorDesdeBaseDeDatos: string = constancia.estado as unknown as string; 
+            const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
+            setValorObtenidoBool(valorBooleano);
             setAbrirInput(false);
             setErrors({});
             setAccion("");
@@ -274,14 +305,28 @@ function errorYaExisteToast() {
                 id: constancia.id,
                 nombre: constancia.nombre,
                 descripcion: constancia.descripcion,
+                estado: valorObtenidoBool
+
             });
         }
         if (accion == "editar") {
             setAbrirInput(true);
+            setControl(true);
             setErrors({});
         }
         console.log(accion);
     }, [accion]);
+
+    useEffect(() => 
+    {
+        form.reset({
+            id: constancia.id,
+            nombre: constancia.nombre,
+            descripcion: constancia.descripcion,
+            estado: valorObtenidoBool
+
+        });
+    },[valorObtenidoBool])
 
     return (
         <div className="overflow-auto">
@@ -360,6 +405,42 @@ function errorYaExisteToast() {
                                     </FormControl>
                                     <FormDescription>
                                         Agrega una breve descripción.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Estado</FormLabel>
+                                    <FormControl>
+                                        {
+                                            control ?
+                                            <Switch
+                                            className="ml-3"
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            }
+                                            /> 
+                                            :
+                                            <Switch
+                                            disabled
+                                            className="ml-3"
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            }
+                                            /> 
+
+
+                                        }
+                                
+                                    </FormControl>
+                                    <FormDescription>
+                                    Aquí puedes cambiar el estado de la constancia.
+
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

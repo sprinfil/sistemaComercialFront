@@ -29,7 +29,15 @@ import Modal from "../ui/Modal.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
-
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
+  import { Switch } from "../ui/switch.tsx";
+import { faGaugeSimpleMed } from "@fortawesome/free-solid-svg-icons";
 
 const AnomaliaForm = () => {
     const { toast } = useToast()
@@ -39,6 +47,8 @@ const AnomaliaForm = () => {
     const [abrirInput, setAbrirInput] = useState(false);
     const [anomaliaIdParaRestaurar, setAnomaliaIdParaRestaurar] = useState(null);
     const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
+    const [valorObtenidoBool, setValorObtenidoBool] = useState(false);
+    const [control, setControl] = useState(false);
 
      //#region SUCCESSTOAST
     function successToastCreado() {
@@ -103,9 +113,11 @@ const AnomaliaForm = () => {
     const form = useForm<z.infer<typeof anomaliaSchema>>({
         resolver: zodResolver(anomaliaSchema),
         defaultValues: {
-            id: anomalia.id,
-            nombre: anomalia.nombre,
-            descripcion: anomalia.descripcion,
+            id: 0,
+            nombre: "",
+            descripcion: "",
+            facturable: "0",
+            estado: false,
         },
     })
 
@@ -113,8 +125,14 @@ const AnomaliaForm = () => {
 
     function onSubmit(values: z.infer<typeof anomaliaSchema>) {
         setLoading(true);
+        
+        const boolConvetido = anomalia.estado ? "activo" : "inactivo"
+
+        let values2 = {...values, estado: boolConvetido}
+        console.log("valores ingresados", values2);
+
         if (accion == "crear") {
-            axiosClient.post(`/AnomaliasCatalogo/create`, values)
+            axiosClient.post(`/AnomaliasCatalogo/create`, values2)
                 .then((response) => {
                     const data = response.data;
                     if (data.restore) {
@@ -131,11 +149,15 @@ const AnomaliaForm = () => {
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            facturable: "0",
+                            estado: false
                         });
                         form.reset({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            facturable: "0",
+                            estado: false
                         });
                         getAnomalias();
                         successToastCreado();
@@ -154,8 +176,17 @@ const AnomaliaForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/AnomaliasCatalogo/update/${anomalia.id}`, values)
-                .then((data) => {
+            const boolConvetido = values.estado == true ? "activo" : "inactivo"
+
+            let values2 = {...values, estado: boolConvetido}
+            console.log("valores ingresados PARA EDITAR", values2);
+    
+            axiosClient.put(`/AnomaliasCatalogo/update/${anomalia.id}`, values2)
+                .then((response) => {
+                    const data = response.data;
+                    if (data.confirmUpdate) {
+                        setModalReactivacionOpen(true);
+                    } else {
                     setLoading(false);
                     //alert("anomalia creada");
                     setAbrirInput(false);
@@ -164,6 +195,8 @@ const AnomaliaForm = () => {
                     setAnomalia(data.data);
                     //setNotification("usuario creado");
                     successToastEditado();
+                    }
+                    
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -175,6 +208,14 @@ const AnomaliaForm = () => {
                 })
         }
     }
+    const handleConfirmUpdate = async () => {
+        try {
+            const response = await axiosClient.post('/actualizar-tarifa', { confirmUpdate: true });
+            setModalReactivacionOpen(true);
+        } catch (error) {
+            console.error('Error en la actualización:', error);
+        }
+    };
 
     //con este metodo obtienes las anomalias de la bd
     const getAnomalias = async () => {
@@ -215,7 +256,8 @@ const AnomaliaForm = () => {
                     id: 0,
                     nombre: "",
                     descripcion: "ninguna",
-                    estado: "activo"
+                    facturable:"",
+                    estado: false
                 });
                 getAnomalias();
                 successToastRestaurado();
@@ -232,24 +274,32 @@ const AnomaliaForm = () => {
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            setControl(false);
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                facturable:"0",
+               estado: false
             });
             setAnomalia({});
             setAbrirInput(false);
         }
         if (accion == "creado") {
+            setControl(false);
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                facturable:"0",
+
+               estado: false
             });
             setAnomalia({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
+            setControl(true);
             console.log("creando");
             setAbrirInput(true);
             setErrors({});
@@ -257,39 +307,99 @@ const AnomaliaForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                facturable:"0",
+
+               estado: false
             });
             setAnomalia({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                facturable:"0",
+
+               estado: false
             })
         }
+        console.log({ accion });
         if (accion == "ver") {
             setAbrirInput(false);
+            setControl(false);
             setErrors({});
             setAccion("");
+            if (!anomalia?.nombre) {
+                return <div>Nombre no encontrado</div>;
+            }
+
+            // VER QUE LLEGA DE LA BASE DE DATOSs
+            //console.log("Este es el estado recibido desde la base de datos:", anomalia.estado);
+
+            // CONVERTIR STRING A BOOLEANO
+            const valorDesdeBaseDeDatos: string = anomalia.estado as unknown as string; 
+            const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
+            setValorObtenidoBool(valorBooleano);
+            //COMPROBAR LA CONVERCIÓN
+            console.log("Este es el valor booleano convertido:", valorBooleano);
+
+            const valorFacturableBaseDeDatos: number = anomalia.facturable as unknown as number; 
+            const valorStringFacturable: string = valorFacturableBaseDeDatos.toString();
+            console.log("Este es el valor convertido a string:", valorStringFacturable);
+            console.log("Tipo de valorStringFacturable:", typeof valorStringFacturable);
+            
+            
+
+            if (!anomalia) {
+                return <div>Cargando...</div>;
+            }
+
             form.reset({
-                id: anomalia.id,
-                nombre: anomalia.nombre,
-                descripcion: anomalia.descripcion,
+                id: anomalia?.id || 0,
+                nombre: anomalia?.nombre || '',
+                descripcion: anomalia?.descripcion || '',
+                facturable: String(anomalia.facturable), // Asegúrate de que este valor es un string
+                estado: valorObtenidoBool
             });
+
         }
         if (accion == "editar") {
+            setControl(true);
+            if (!anomalia?.nombre) {
+                return <div>Nombre no encontrado</div>;
+            }
+            form.reset({
+                id: anomalia.id || 0,
+                nombre: anomalia?.nombre || '',
+                descripcion: anomalia.descripcion || '',
+                facturable: anomalia.facturable,
+                estado: valorObtenidoBool
+            });
             setAbrirInput(true);
             setErrors({});
+            
         }
     }, [accion]);
+
+    useEffect(() => {
+        if (accion === "ver" && anomalia) {
+            form.reset({
+                id: anomalia.id || 0,
+                nombre: anomalia?.nombre || '',
+                descripcion: anomalia.descripcion || '',
+                facturable: String(anomalia.facturable), // Asegúrate de que este valor es un string
+                estado: valorObtenidoBool
+            });
+        }
+    }, [valorObtenidoBool]);
 
     return (
         <>
             <div className="overflow-auto max-w-full max-h-full">
-                <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+                <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
                             {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva anomalía</p>}
-                            {anomalia.nombre != "" && <p className="text-muted-foreground text-[20px]">{anomalia.nombre}</p>}
+                            {anomalia?.nombre != "" && <p className="text-muted-foreground text-[20px]">{anomalia?.nombre}</p>}
                         </div>
-                        {(anomalia.nombre != null && anomalia.nombre != "") &&
+                        {(anomalia?.nombre != null && anomalia?.nombre != "") &&
                             <>
                                 <Modal
                                     method={onDelete}
@@ -346,7 +456,7 @@ const AnomaliaForm = () => {
                             />
                             <FormField
                                 control={form.control}
-                                name="descripción"
+                                name="descripcion"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Descripción</FormLabel>
@@ -359,6 +469,91 @@ const AnomaliaForm = () => {
                                         </FormControl>
                                         <FormDescription>
                                             Agrega una breve descripción.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="facturable"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>¿Es facturable?</FormLabel>
+                                        {
+                                            control ?
+                                            <Select
+                                            onValueChange={(value) => field.onChange(value)}
+                                            value={field.value}
+                                    >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Es facturable?" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    :
+                                    <Select
+                                    disabled
+                                    onValueChange={(value) => field.onChange(value)}
+                                    value={field.value}
+                                    >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="¿Es facturable?" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        <SelectItem value="1">Si</SelectItem>
+                                        <SelectItem value="0">No</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+
+                                        }
+                                        <FormDescription>
+                                            Selecciona si es facturable o no.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            
+                             <FormField
+                                control={form.control}
+                                name="estado"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Estado</FormLabel>
+                                       
+                                        <FormControl>
+                                            {
+                                                control
+                                                ?
+                                                
+                                                <Switch
+                                                className="ml-3"
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => field.onChange(checked)
+                                                }
+                                                /> 
+                                                :
+                                                <Switch
+                                                className="ml-3"
+                                                disabled
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => field.onChange(checked)
+                                                }
+                                                /> 
+
+                                            }
+                                       
+                                        </FormControl>
+                                        <FormDescription>
+                                            Aquí puedes cambiar el estado de la anomalía.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>

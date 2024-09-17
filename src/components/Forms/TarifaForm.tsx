@@ -26,6 +26,7 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
+import ModalText from "../ui/ModalText.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
@@ -41,14 +42,16 @@ const TarifaForm = () => {
     const [abrirInput, setAbrirInput] = useState(false);
     const [indiceTarifa, setIndiceTarifa] = useState(0);
     const [bloquear, setBloquear] = useState(false);
+    const [abrirModal, setAbrirModal] = useState(false);
+
     const getCurrentDate = () => new Date().toISOString().split("T")[0];
 
     const form = useForm<z.infer<typeof tarifaSchema>>({
         resolver: zodResolver(tarifaSchema),
         defaultValues: {
-            id: tarifa.id,
-            nombre: tarifa.nombre,
-            descripcion: tarifa.descripcion,
+            id: tarifa != null ? tarifa.id : 0,
+            nombre: tarifa != null ? tarifa.nombre : "",
+            descripcion: tarifa != null ? tarifa.descripcion : "",
             fecha: getCurrentDate(), // Establece la fecha por defecto como la fecha actual
             estado: false,
         },
@@ -83,6 +86,14 @@ const TarifaForm = () => {
 
         })
     }
+    function successToastActivo() {
+        toast({
+            title: "¡Éxito!",
+            description: "La tarifa se ha activado correctamente",
+            variant: "success",
+
+        })
+    }
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
@@ -104,15 +115,21 @@ const TarifaForm = () => {
 
     //Funcion de errores para el Toast
     function errorToast() {
-
         toast({
             variant: "destructive",
             title: "Oh, no. Error",
             description: "Algo salió mal.",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
+    }
 
-
+       //Funcion de errores para el Toast
+       function errorToastMensaje(mensaje) {
+        toast({
+            variant: "destructive",
+            title: mensaje,
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
     }
 
 
@@ -166,15 +183,21 @@ const TarifaForm = () => {
         }
         if (accion == "editar") {
             axiosClient.put(`/tarifa/update/${tarifa.id}`, datosAEnviar)
-                .then((data) => {
-                    setLoading(false);
-                    //alert("anomalia creada");
-                    setAbrirInput(false);
-                    setAccion("");
-                    getTarifas();
-                    setTarifa(data.data);
-                    successToastEditado();
-                    //setNotification("usuario creado");
+                .then((response) => {
+                    const data = response.data;
+                    if (response.data.confirmUpdate) {
+                        setAbrirModal(true);
+                    } else {
+                        setLoading(false);
+                        //alert("anomalia creada");
+                        setAbrirInput(false);
+                        setAccion("");
+                        getTarifas();
+                        setTarifa(data);
+                        successToastEditado();
+                        //setNotification("usuario creado");
+                    }
+            
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -182,10 +205,26 @@ const TarifaForm = () => {
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
+                    if (response && response.status === 400) {
+                        errorToastMensaje(response.data.error)
+                    }
                     setLoading(false);
                 })
         }
     }
+    const handleConfirmUpdate = async () => {
+        try {
+            const response = await axiosClient.put('/actualizar-tarifa', { confirmUpdate: true, tarifa_id:tarifa.id});
+            setAbrirModal(false);
+            setLoading(false);
+            getTarifas();
+            setAccion("");
+            setAbrirInput(false);
+            successToastActivo();
+        } catch (error) {
+            console.error('Error en la actualización:', error);
+        }
+    };
 
     //con este metodo obtienes las anomalias de la bd
     const getTarifas = async () => {
@@ -244,6 +283,7 @@ const TarifaForm = () => {
             console.log("creando");
             setAbrirInput(true);
             setBloquear(false);
+            console.log("ASJASJASJAAJS")
             setErrors({});
             form.reset({
                 id: 0,
@@ -287,8 +327,22 @@ const TarifaForm = () => {
             if (accion === "editar") {
                 setBloquear(false);
             }
+            if (accion === "crear") {
+                setBloquear(false);
+            }
         }
     );
+
+
+    useEffect(() => {
+        form.reset({
+            id: tarifa.id,
+            nombre: tarifa.nombre,
+            descripcion: tarifa.descripcion,
+            fecha: tarifa.fecha,
+            estado: tarifa.estado  === "activo" // 
+        });
+    },[])
     
     
 
@@ -366,7 +420,7 @@ const TarifaForm = () => {
                             name="estado"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="items-center">Activo</FormLabel>
+                                    <FormLabel className="items-center">Estatus</FormLabel>
                                     <FormControl className="ml-4">
                                         {
                                             bloquear ? <Switch
@@ -395,7 +449,12 @@ const TarifaForm = () => {
                         />
                         {loading && <Loader />}
                         {abrirInput && <Button type="submit">Siguiente</Button>}
-
+                        <ModalText 
+                            isOpen={abrirModal}
+                            setIsOpen={setAbrirModal}
+                            method={() => handleConfirmUpdate()}
+                            text = {"Si activas esta tarifa se desactivarán todas las demás, ¿Deseas continuar?"}
+                        />
                     </form>
                 </Form>
             </div>

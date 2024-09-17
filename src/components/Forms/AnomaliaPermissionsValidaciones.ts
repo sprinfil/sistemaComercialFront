@@ -61,4 +61,9 @@ export const AnomaliaPermissionsSchema = z.object({
   CrearOperador: z.boolean(),
   EditarOperador: z.boolean(),
   EliminarOperador: z.boolean(),
+
+  //MODULO CONFIGURACIONES
+  VerConfiguraciones: z.boolean(),
+  VerCatalogos: z.boolean(),
+  VerOperadoresSistema: z.boolean(),
 })

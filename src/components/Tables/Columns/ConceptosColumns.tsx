@@ -13,6 +13,19 @@ export type Concepto = {
   nombre: string
   descripcion: string
   prioridad_abono: number
+  genera_iva: string
+  abonable: number,
+  tarifa_fija: number,
+  cargo_directo: number,
+  genera_orden: number,
+  genera_orden_data: number,
+  genera_recargo: number,
+  concepto_rezago: number,
+  pide_monto: number,
+  bonificable:number,
+  recargo:string,
+  estado: boolean,
+  tarifas: Array<{}>
 }
 
 

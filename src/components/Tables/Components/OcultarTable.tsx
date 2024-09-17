@@ -1,10 +1,10 @@
 import React from 'react';
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 
-export const OcultarTable = ({ children, abierto = false, width = '460px', accion}) => {
+export const OcultarTable = ({ children, abierto = false, width = '460px', accion }) => {
   const [open, setOpen] = useState(abierto);
-  
+
   console.log('Accion:', accion);
 
   const handleAbierto = () => {
@@ -13,31 +13,31 @@ export const OcultarTable = ({ children, abierto = false, width = '460px', accio
 
   useEffect(() => {
     if (accion === 'crear') {
-      setOpen(true); 
+      setOpen(true);
     }
     if (accion === 'creado') {
-      setOpen(false); 
+      setOpen(false);
     }
   }, [accion]);
 
 
   return (
     <div className='flex items-center'>
-      
+
       <div
-        className={open ? ` hidden transition-all duration-500 rounded-md border border-border p-4 overflow-auto h-[75vh] ` : `transition-all duration-500 rounded-md border border-border mb-[78px] overflow-auto h-[75vh]`}
-        style={{width: open ? '0' : width }}
+        className={open ? `transition-all duration-500 rounded-md border border-border p-0 overflow-auto max-h-[77vh] h-[77vh]` : `transition-all duration-500 rounded-md border border-border  overflow-auto max-h-[77vh] px-2 h-[77vh] `}
+        style={{ width: open ? '0' : width }}
       >
         {children}
       </div>
 
 
 
-      <div className='flex items-center h-full px-1 py-1' onClick={handleAbierto}>
+      <div className='flex items-center h-full px-1 py-1 cursor-pointer bg-muted rounded-tr-md rounded-br-md' onClick={handleAbierto}>
         {open ? (
-          <ChevronLeftIcon className='w-[20px] h-[20px] rounded-xl hover:bg-primary cursor-pointer' />
+          <ChevronRightIcon className='w-[20px] h-[20px] rounded-xl  cursor-pointer' />
         ) : (
-          <ChevronRightIcon className='w-[20px] h-[20px] rounded-xl hover:bg-primary cursor-pointer' />
+          <ChevronLeftIcon className='w-[20px] h-[20px] rounded-xl  cursor-pointer' />
         )
         }
       </div>

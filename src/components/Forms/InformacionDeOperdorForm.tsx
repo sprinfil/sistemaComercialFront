@@ -45,7 +45,7 @@ const OperadorForm = () => {
         resolver: zodResolver(operadorSchema),
         defaultValues: {
             name: operador.user ? operador.user.name : "",
-            email: "",
+            email: operador.user ? operador.user.email : "",
             password: "",
             password_confirmation: "",
             codigo_empleado: operador ? operador.codigo_empleado : "",
@@ -53,7 +53,7 @@ const OperadorForm = () => {
             apellido_paterno: operador ? operador.apellido_paterno : "",
             apellido_materno: operador ? operador.apellido_materno : "",
             CURP: operador ? operador.CURP : "",
-            fecha_nacimiento: "2001-12-30",
+            fecha_nacimiento:  operador ? operador.fecha_nacimiento : "",
         },
     })
 
@@ -332,7 +332,7 @@ const OperadorForm = () => {
                                 )}
                             />
                         </div>
-                        <div className="py-[40px] px-[10px] grid grid-cols-1 xl:grid-cols-3 gap-2 w-full mb-5 rounded-md border border-border  relative">
+                        <div className=" py-[40px] px-[10px] grid grid-cols-1 xl:grid-cols-3 gap-2 w-full mb-5 rounded-md border border-border  relative">
                             <span className="absolute -top-3 left-2 bg-background px-2 text-gray-500 text-xs">Información del Operador</span>
                             <FormField
                                 control={form.control}
@@ -398,56 +398,25 @@ const OperadorForm = () => {
                                     </FormItem>
                                 )}
                             />
-                            
-                           
-                            
-                                               <FormField
+
+
+
+                            <FormField
                                 control={form.control}
                                 name="fecha_nacimiento"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col mt-[2vh]">
                                         <FormLabel>Fecha de nacimiento</FormLabel>
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <FormControl>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className={cn(
-                                                            "w-[240px] pl-3 text-left font-normal",
-                                                            !field.value && "text-muted-foreground "
-                                                        )}
-                                                        disabled={!abrirInput}
-                                                    >
-                                                        {field.value ? (
-                                                            format(field.value, "PPP")
-                                                        ) : (
-                                                            <span>Seleccionar fecha</span>
-                                                        )}
-                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                    </Button>
-                                                </FormControl>
-                                            </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0 bg-gray-50 rounded-sm border mt-10" align="start">
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={field.value}
-                                                    onSelect={field.onChange}
-                                                    disabled={(date) =>
-                                                        date > new Date() || date < new Date("1900-01-01")
-                                                    }
-                                                    initialFocus
-                                                />
-                                            </PopoverContent>
-                                            
-                                        </Popover>
+                                        <input {...field} readOnly={!abrirInput} type="date" name="fecha_nacimiento" className=" border border-border  w-full  rounded-md p-[4px] bg-background"/>
                                         <FormDescription>
-
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            
+
+
+
 
                             <FormField
                                 control={form.control}

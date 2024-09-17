@@ -10,7 +10,7 @@ const Conceptos = () => {
 
   return (
     <ContextProvider>
-      <div className='w-full max-h-[75vh] '>
+      <div className='w-full max-h-[77vh] '>
         {/*Contenedor principal*/}
         <div className='flex gap-2 '>
 
@@ -31,9 +31,9 @@ const ConceptoFormEdit = () => {
   return (
     <>
         {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
-      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[75vh] p-4 overflow-auto '>
+      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[77vh] p-4 overflow-auto '>
             <ConceptoForm />
-          </div>) : (<div className='w-full rounded-md border border-border h-[75vh] p-4 overflow-auto'>
+          </div>) : (<div className='w-full rounded-md border border-border h-[77vh] p-4 overflow-auto'>
             <ConceptoForm />
           </div>)}
     </>

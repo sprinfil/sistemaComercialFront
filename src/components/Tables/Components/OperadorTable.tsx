@@ -47,7 +47,7 @@ export default function OperadorTable() {
           <div className='flex gap-2 items-center'> Agregar nuevo operador<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
       </div>
-      <DataTable columns={columns} data={operadores} sorter='nombre' onRowClick={handleRowClick}/>
+      <DataTable columns={columns} data={operadores} sorter='nombre_completo' onRowClick={handleRowClick}/>
     </div>
   );
 }

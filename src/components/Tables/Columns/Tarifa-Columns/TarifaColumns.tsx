@@ -14,32 +14,13 @@ export type Tarifa = {
   descripcion: string
   fecha: string
   estado: boolean
+  nombreEstado: string
+
 }
 
 
 export const columns: ColumnDef<Tarifa>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+
   {
     accessorKey: "nombre",
     header: ({ column }) => {
@@ -52,6 +33,25 @@ export const columns: ColumnDef<Tarifa>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
+    },
+    cell: ({ row }) => {
+      const estado = row.original.estado; 
+      const nombre = row.original.nombre; 
+
+      return (
+
+        <div className="flex items-center w-full justify-between">
+        <span>{nombre}</span>
+        
+        <div className="flex items-center">
+          <span className="mr-2">{estado === "activo" ? 'Activo' : 'Inactivo'}</span>
+          <span
+            className={`flex justify-center items-center w-3 h-3 rounded-full text-white ${estado === "activo" ? 'bg-green-500' : 'bg-red-500'}`}
+          >
+          </span>
+        </div>
+      </div>
+      );
     },
   },
   {

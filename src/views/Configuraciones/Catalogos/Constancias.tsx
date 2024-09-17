@@ -37,9 +37,9 @@ const ConstanciasFormEdit = () => {
   return (
     <>
         {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR GG*/}
-      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[75vh] p-4 '>
+      {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[77vh] p-4 '>
             <ConstanciaForm />
-          </div>) : (<div className='w-full rounded-md border border-border h-[75vh] p-4'>
+          </div>) : (<div className='w-full rounded-md border border-border h-[77vh] p-4'>
             <ConstanciaForm />
           </div>)}
     </>

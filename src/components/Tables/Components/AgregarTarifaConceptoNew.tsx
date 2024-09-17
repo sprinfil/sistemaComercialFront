@@ -83,7 +83,6 @@ export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma, update
                                         <FormLabel>Concepto</FormLabel>
                                         <ConceptosComboBoxNew form={form} field={field} />
                                         <FormDescription>
-
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>

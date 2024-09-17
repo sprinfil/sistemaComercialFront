@@ -4,9 +4,9 @@ import InformacionFiscalForm from '../../../../components/Forms/InformacionFisca
 const InformaciónFiscal = () => {
   return (
     <div>
-        <div className=' w-full rounded-md border border-border h-[88vh] p-4 overflow-auto'>
+        <div className=''>
         {/*Formulario*/}
-        <InformacionFiscalForm userId = {1}/>
+        <InformacionFiscalForm/>
     </div>
     </div>
   )

@@ -13,6 +13,8 @@ interface StateContextType {
     setLoadingTable: (loading: boolean) => void;
     editando: boolean;
     setEditando: (loading: boolean) => void;
+    tab: string;
+    setTab: (tab: string) => void;
 }
 
 // Crea el contexto con valores predeterminados adecuados según las interfaces
@@ -27,6 +29,8 @@ const StateContext = createContext<StateContextType>({
     setLoadingTable: () => {},
     editando: false,
     setEditando: () => {},
+    tab: "",
+    setTab: () => {},
 });
 
 // Define el componente proveedor que envuelve a los hijos con el proveedor de contexto
@@ -40,6 +44,7 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
     const [loadingTable, setLoadingTable] = useState<boolean>(false);
     const [accion, setAccion] = useState<string>("");
     const [editando, setEditando] = useState<boolean>(false);
+    const [tab, setTab] = useState<string>("");
 
     return (
         <StateContext.Provider value={{
@@ -52,7 +57,9 @@ export const ContextProvider: FC<ContextProviderProps> = ({ children }) => {
             accion,
             setAccion,
             editando,
-            setEditando
+            setEditando,
+            tab,
+            setTab
         }}>
             {children}
         </StateContext.Provider>

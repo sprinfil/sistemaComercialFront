@@ -13,7 +13,7 @@ const Roles = () => {
         },
         {
             titulo: "Permisos",
-            componente: <Permisos />
+            componente: <Permisos type = "Roles"/>
         },
     ]
 
@@ -27,13 +27,13 @@ const Roles = () => {
                     <div className='flex gap-2 '>
 
                         {/*Datatable*/}
-                        <div className='w-[35%] rounded-md border border-border p-4 overflow-auto h-[88vh]'>
+                        <div className='w-[35%] rounded-md border border-border p-4 overflow-auto h-[80vh]'>
                             <RolTable setActiveTab = {setActiveTab}/>
                         </div>
 
                         {/*VISTAS DEL TAB*/}
 
-                        <div className='w-[65%] rounded-tr-md rounded-tl-md border border-border h-[88vh] p-4 overflow-auto '>
+                        <div className='w-[65%] rounded-tr-md rounded-tl-md border border-border h-[80vh] p-4 overflow-auto '>
                             <Tabs defaultValue={activeTab} className="" onValueChange={setActiveTab}>
                                 <TabsList>
                                     {opciones.map((opcion, index) => (

@@ -26,5 +26,9 @@ export const columns: ColumnDef<TarifaConceptoDetalle>[] = [
     {
         accessorKey: "monto",
         header: "Monto",
+        cell: ({ row }) => {
+            const formatted = parseFloat(row.getValue("monto"))
+            return <div className="">$ {formatted}</div>
+          },
     },
 ]
