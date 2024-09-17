@@ -156,3 +156,12 @@ export const registroMedidotOtSchema = z.object({
   fecha_instalacion: z.string(),
   lectura_inicial: z.string(),
 })
+
+
+//validacion combobox nombre
+
+
+export const cambioPropietarioSchema = z.object({
+  id: z.number(),
+  nombre_contrato: z.string(),
+})

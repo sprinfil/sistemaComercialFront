@@ -17,13 +17,22 @@ import { CallesComboBox } from '../../../components/ui/CallesComboBox.tsx';
 import { ColoniaComboBox } from '../../../components/ui/ColoniaComboBox.tsx';
 import { Button } from '../../../components/ui/button.tsx';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { ZustandFiltrosContratacion } from '../../../contexts/ZustandFiltrosContratacion.tsx';
+
+
+
 const DireccionNotificaciones = () => {
+
   const [errors, setErrors] = useState({});
   const [calleSeleccionada, setCalleSeleccionada] = useState<string | null>(null);
   const [entreCalle1Seleccionada, setEntreCalle1Seleccionada] = useState<string | null>(null);
   const [entreCalle2Seleccionada, setEntreCalle2Seleccionada] = useState<string | null>(null);
   const [coloniaSeleccionada, setColoniaSeleccionada] = useState<string | null>(null);
+const {direccion_notificaciones, setDireccion_Notificaciones} = ZustandFiltrosContratacion();
 
+
+
+  
  const navigate = useNavigate();
   const form = useForm<z.infer<typeof crearTomaSchema>>({
     resolver: zodResolver(crearTomaSchema),
@@ -40,35 +49,26 @@ const detalleContratacion= () =>
 
 const onSubmit = (values: z.infer<typeof crearTomaSchema>) => {
     console.log(values);
+    setDireccion_Notificaciones(values.direccion);
     detalleContratacion();
 };
 
-
-
+console.log(direccion_notificaciones);
   return (
     <div className="overflow-auto">
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-                <div className='h-[20px] w-full flex items-center justify-end '>
-                    <div className="mb-[10px] h-full w-full mx-4">
-
-
-                 <p className="text-[30px] font-medium ml-3">Direccion para notificaciones</p>
-                        <div className="text-[20px] font-medium mt-10 ml-5">Usuario:</div>
-
-                        
-                    </div>
-                     </div>
-            </div>
-            <div className="py-[20px] px-[10px] mt-[5vh]">
+           
+            <div className="py-[20px] px-[10px]">
         {errors.general && <Error errors={errors.general} />}
         <div>
                 
                 </div>
         <Form {...form}>
             
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center mt-10 mb-[15vh]">
-                <div className="rounded-md border border-border shadow-lg p-8 w-[215vh] ">
-                    <div className="text-[20px] font-medium">Toma:</div>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center">
+                <div className="rounded-md border border-border shadow-lg p-8 w-[200vh] ">
+                <h1 className="text-3xl mb-[7vh]">
+                Dirección para las notificaciones
+                </h1>
                         <div className='flex space-x-2 mt-[5vh] items-center'>
                         <div className='w-full'>
                             <FormField
@@ -87,7 +87,7 @@ const onSubmit = (values: z.infer<typeof crearTomaSchema>) => {
                             />
                         </div>
                         
-                        <div className="flex justify-end mt-[3vh]">
+                        <div className="flex justify-end">
                         <Button type="submit" className='flex justify-center items-center'>
                             Guardar
                         </Button>

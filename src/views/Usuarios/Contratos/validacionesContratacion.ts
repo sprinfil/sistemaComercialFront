@@ -8,19 +8,18 @@ export const BuscarContratacionSchema = z.object({
 
 
 export const crearContratoSchema = z.object({
-    id_giro_comercial: z.string().min(1,"Ingresa el diametro de la toma"),
-    nombre_contrato:z.string().min(1,"Ingresa la clave catastral"),
-    clave_catastral: z.string().min(1,"Ingresa la clave catastral"),
-    tipo_toma: z.string().min(1,"Ingresa tipo de toma"),
-    diametro_toma: z.string().min(1,"Ingresa el diametro de la toma"),
+    id_giro_comercial: z.number().min(1,"Ingresa el diametro de la toma"),
+    nombre_contrato:z.string().min(1,"Ingresa el nombre del contrato"),
+    clave_catastral: z.string().min(10,"Ingresa la clave catastral o ingresa minimo 10 caracteres").max(14, "Deben ser maximo 12 caracteres"),
+    tipo_toma: z.number().min(1,"Ingresa tipo de toma"),
     num_casa: z.string().min(1,"Ingresa el numero de casa"),
     colonia: z.number().min(1,"Ingresa la colonia"),
     calle: z.number().min(1,"Ingresa la calle"),
     codigo_postal: z.string().min(1,"Ingresa el código postal"),
     entre_calle_1: z.number(),
     entre_calle_2: z.number(),
-    localidad: z.number().min(1,"Ingresa la localidad"),
-    municipio: z.number().min(1,"Ingresa un municipio"),
+    localidad: z.string().min(1,"Ingresa la localidad"),
+    municipio: z.string().min(1,"Ingresa un municipio"),
     c_agua: z.boolean(),
     c_alc: z.boolean(),
     c_san: z.boolean(),
@@ -31,5 +30,5 @@ export const crearContratoSchema = z.object({
 
 
 export const crearTomaSchema = z.object({
-    direccion:z.string().min(1,"Ingresa la dirección"),
+    direccion:z.string(),
 })

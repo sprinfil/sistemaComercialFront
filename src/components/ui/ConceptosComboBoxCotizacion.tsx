@@ -31,7 +31,7 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void;
 };
 
-export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado }: ConceptosComboBoxNewProps) => {
+export const ConceptosComboBoxCotizacion = ({ field, form, name = "id_concepto", setCargoSeleccionado }: ConceptosComboBoxNewProps) => {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([]);
     const [open, setOpen] = React.useState(false);
@@ -94,7 +94,7 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
                                         key={language.value}
                                         onSelect={() => {
                                             form.setValue(name, language.value);
-                                            setCargoSeleccionado(language.value);
+                                            setCargoSeleccionado(language.label);
                                         }}
                                     >
                                         <Check

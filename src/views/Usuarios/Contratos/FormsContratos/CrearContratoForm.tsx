@@ -34,6 +34,13 @@ import MarcoForm from '../../../../components/ui/MarcoForm.tsx';
 import MarcoFormServiciosAContratar from '../../../../components/ui/MarcoFormServiciosAContratar.tsx';
 import { ZustandFiltrosContratacion } from '../../../../contexts/ZustandFiltrosContratacion.tsx';
 import { noAuto } from '@fortawesome/fontawesome-svg-core';
+import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario.tsx';
+import { GiroComercialComboBox } from '../../../../components/ui/GiroComercialComboBox.tsx';
+import { TipoDeTomaComboBox } from '../../../../components/ui/TipoDeTomaComboBox.tsx';
+
+
+
+
 export const CrearContratoForm = () => {
 
     const navigate = useNavigate();
@@ -41,33 +48,35 @@ export const CrearContratoForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [openModal, setOpenModal] = useState(false);
-    const [calleSeleccionada, setCalleSeleccionada] = useState<string | null>(null);
-    const [coloniaSeleccionada, setColoniaSeleccionada] = useState<string | null>(null);
-    const [entreCalle1Seleccionada, setEntreCalle1Seleccionada] = useState<string | null>(null);
-    const [entreCalle2Seleccionada, setEntreCalle2Seleccionada] = useState<string | null>(null);
     const [items, setItems] = useState([]);
     const [servicioAContratar, setServicioAContratar] = useState([]);
 
-    const {latitudMapa, longitudMapa, libroToma} = ZustandFiltrosContratacion();
+    const {latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial, 
+        setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
+        setServicioContratado, setGiroComercial,setTipoDeToma, tomaPreContratada,isCheckInspeccion,boolPeticionContratacion,
+        setServicioContratado2, selectedLocation, getCoordenadaString, setNombreGiroComercial} = ZustandFiltrosContratacion();
 
+
+    const {usuariosEncontrados} = ZustandGeneralUsuario();
     console.log("Latitud:", latitudMapa); //Latitud seleccionada dentro del poligono
     console.log("Longitud:", longitudMapa); //Longitud seleccionada dentro del poligono
     console.log("Libro:", libroToma); //Longitud seleccionada dentro del poligono
     console.log(JSON.stringify(libroToma));
+        console.log(selectedLocation);
 
     const form = useForm<z.infer<typeof crearContratoSchema>>({
         resolver: zodResolver(crearContratoSchema),
         defaultValues: {
-            id_giro_comercial: "",
+            id_giro_comercial: 0,
+            nombre_contrato:"",
             clave_catastral: "",
             calle:0,
-            num_casa:"",
+            num_casa:"1",
             entre_calle_1: 0,
             entre_calle_2:0,
             colonia: 0,
             codigo_postal:"",
-            localidad: 0,
-            diametro_toma:"" ,
+            localidad: "",
             tipo_toma: "",
             tipo_contratacion:"" ,
             c_agua: false,
@@ -94,51 +103,124 @@ export const CrearContratoForm = () => {
             };
 
       
-
+console.log(tomaPreContratada?.id)
 
        
-
     const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
 
-        //CONVERTIRMOS EL BOOL A STRING
+        const coordenadaString = ZustandFiltrosContratacion.getState().getCoordenadaString();
+
         const agua = values.c_agua ? "agua" : null;
         const alcantarillado = values.c_alc ? "alcantarillado" : null;
         const saneamiento = values.c_san ? "saneamiento" : null;
-        
+    
         // Combinar alcantarillado y saneamiento en una sola variable
         const alcantarillado_y_saneamiento = (alcantarillado && saneamiento)
             ? `${alcantarillado} y ${saneamiento}` // Combina en un solo string si ambos están presentes
             : alcantarillado || saneamiento; // Usa solo alcantarillado o saneamiento si uno de ellos está presente
-        
+    
         // ARREGLO DE SERVICIOS
         const servicios = [agua, alcantarillado_y_saneamiento].filter(service => service !== null);
+    
+        const tipoToma = parseInt(values.tipo_toma, 10);
+        const num_casaDato = Number(values.num_casa);
+    
+        setIdGiroComercial(values.id_giro_comercial);
+        setServicioContratado(agua);
+        setServicioContratado2(alcantarillado_y_saneamiento);
+    
+        let tomaId = 0;
+        if (tomaPreContratada && tomaPreContratada.id !== undefined) {
+            tomaId = tomaPreContratada.id;
+        }
+        console.log(tomaId);
+
+        const isAguaActive = tomaPreContratada.c_agua != null;
+        const isAlcActive = tomaPreContratada.c_alc != null;
+        const isSanActive = tomaPreContratada.c_san != null;
+        console.log(isAguaActive)
+        console.log(isAlcActive)
+        console.log(isAlcActive)
         
-
-        setServicioAContratar(servicios); //ESTE OBTIENE LOS SERVICIOS SELECCIONADOS
-
-
-        
-        console.log(servicioAContratar);
-        handleAbrirModalNotificaciones();
-        const crearContrato = {
-                id_giro_comercial: values.id_giro_comercial,
+        const serviciosSeleccionados = [
+            ...(values.c_agua != null && !isAguaActive ? ["agua"] : []),
+            ...(alcantarillado_y_saneamiento && !isAlcActive && !isSanActive ? [alcantarillado_y_saneamiento] : []),
+        ];
+        let datos; 
+        if (boolPeticionContratacion) {
+            // Estos datos son para enviar
+            datos = {
+                id_usuario: usuariosEncontrados[0]?.id,
                 nombre_contrato: values.nombre_contrato,
                 clave_catastral: values.clave_catastral,
-                tipo_toma:values.clave_catastral,
-                servicio_contratados: servicioAContratar,
-                diametro_toma:values.diametro_toma,
+                tipo_toma: tipoToma,
+                servicio_contratados: serviciosSeleccionados,
+                //diametro_toma: values.diametro_de_la_toma,
                 num_casa: values.num_casa,
                 colonia: values.colonia,
                 calle: values.calle,
                 codigo_postal: values.codigo_postal,
-                entre_calle_1: values.entre_calle_1,
-                entre_calle_2: values.entre_calle_2,
+                entre_calle1: values.entre_calle_1,
+                entre_calle2: values.entre_calle_2,
                 localidad: values.localidad,
                 municipio: values.municipio,
-                c_agua: values.clave_catastral,
-                c_alc:values.clave_catastral,
-                c_san: values.clave_catastral,
                 tipo_contratacion: values.tipo_contratacion,
+                coordenada: coordenadaString,
+                
+            };
+        } else {
+            // Estos datos son para enviar
+            datos = {
+                id_toma: tomaId,
+                id_usuario: usuariosEncontrados[0]?.id,
+                nombre_contrato: values.nombre_contrato,
+                clave_catastral: values.clave_catastral,
+                tipo_toma: tipoToma,
+                servicio_contratados: serviciosSeleccionados,
+                //diametro_toma: values.diametro_de_la_toma, // Usar el campo correcto aquí
+                num_casa: values.num_casa,
+                colonia: values.colonia,
+                calle: values.calle,
+                codigo_postal: values.codigo_postal,
+                entre_calle1: values.entre_calle_1,
+                entre_calle2: values.entre_calle_2,
+                localidad: values.localidad,
+                municipio: values.municipio,
+                tipo_contratacion: values.tipo_contratacion,
+            };
+        }
+        
+        const datosFiltrados = {
+            ...datos,
+            // Incluye c_agua, c_alc, c_san solo si no están activos en tomaPreContratada
+            ...(values.c_agua != null && !isAguaActive ? { c_agua: values.c_agua } : {}),
+            ...(values.c_alc != null && !isAlcActive ? { c_alc: values.c_alc } : {}),
+            ...(values.c_san != null && !isSanActive ? { c_san: values.c_san } : {}),
+        };
+    
+        setContrato(datosFiltrados);
+        console.log(datosFiltrados);
+
+        console.log(servicioAContratar);
+        handleAbrirModalNotificaciones();
+        const crearContrato = {
+                estatus:isCheckInspeccion,
+                id_giro_comercial: values.id_giro_comercial,
+                nombre_contrato: values.nombre_contrato,
+                clave_catastral: values.clave_catastral,
+                tipo_toma:values.tipo_toma,
+                servicio_contratados: servicios,
+                //diametro_toma:values.diametro_de_la_toma,
+                num_casa: values.num_casa,
+                colonia: values.colonia,
+                calle: values.calle,
+                codigo_postal: values.codigo_postal,
+                entre_calle1: values.entre_calle_1,
+                entre_calle2: values.entre_calle_2,
+                localidad: values.localidad,
+                municipio: values.municipio,
+                tipo_contratacion: values.tipo_contratacion,
+                coordenada: selectedLocation
         };
 
 
@@ -153,24 +235,88 @@ export const CrearContratoForm = () => {
 
     };
 
+    console.log(contrato);
+
+    //con esto controlo que no pueda haber un alcantarillado y sanamiento, y viceversa
+    const onSwitchChange = (fieldName: string, value: boolean) => {
+        if (value) {
+          form.setValue("c_alc", true);
+          form.setValue("c_san", true);
+        } else {
+            form.setValue("c_alc", false);
+            form.setValue("c_san", false);
+        }
+      };
+
+
+      const [campoAgua, setCampoAgua] = useState(false);
+      const [contrato2, setContrato2] = useState(false);
+
+
+      useEffect(() => 
+    {
+        console.log(tomaPreContratada);
+        if(tomaPreContratada)
+        {
+          
+            form.reset({
+                clave_catastral: tomaPreContratada?.clave_catastral || '',
+                tipo_toma: tomaPreContratada?.id_tipo_toma || '',
+                diametro_de_la_toma: tomaPreContratada?.diametro_de_la_toma || '',
+                calle:tomaPreContratada?.calle || '',
+                num_casa:String(tomaPreContratada?.numero_casa) || 0,
+                colonia:tomaPreContratada?.colonia || '',
+                codigo_postal:tomaPreContratada?.codigo_postal || '',
+                entre_calle_1:Number(tomaPreContratada?.entre_calle_1) || '',
+                entre_calle_2:Number(tomaPreContratada?.entre_calle_2) || '',
+                localidad:tomaPreContratada?.localidad || '',
+                municipio:tomaPreContratada?.municipio || '',
+                c_agua: Boolean(tomaPreContratada?.c_agua) || false,
+                c_alc: Boolean(tomaPreContratada?.c_alc) || false,
+                c_san: Boolean(tomaPreContratada?.c_san) || false,
+                tipo_contratacion:tomaPreContratada?.tipo_contratacion || '',
+                id_giro_comercial:tomaPreContratada?.id_giro_comercial || '',
+
+            });
+            
+
+                console.log(tomaPreContratada);
+
+            if(tomaPreContratada.c_agua != null)
+            {
+                setCampoAgua(true);
+
+            }
+
+            if(tomaPreContratada.c_alc != true && tomaPreContratada.c_san != null)
+                {
+                    setContrato2(true);
+    
+                }
+
+            
+
+        }
+    },[tomaPreContratada])
+
+
+
+    console.log(tomaPreContratada);
+
+   
     return (
         <div className="">
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-                <div className='h-[20px] w-full flex items-center justify-end '>
-                    <div className="mb-[10px] h-full w-full mx-4">
-                        <p className="text-[30px] font-medium ml-3">Crear contrato</p>
-                        <div className="text-[20px] font-medium mt-10 ml-5">Usuario:</div>
-              
-                    </div>
-                </div>
-            </div>
             <div className="py-[20px] px-[10px]">
         {errors.general && <Error errors={errors.general} />}
     
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center mt-[10vh]">
-            <div className="rounded-md border border-border shadow-lg p-8 w-[210vh] ">
-            <div className="text-[20px] font-medium mb-5">No contrato. </div>
+            
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center ">
+            <div className="rounded-md border border-border shadow-lg p-8 w-[200vh]">
+            <h1 className="text-3xl mb-[7vh]">
+         Crear contrato
+            </h1>
+            <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Nombre del contrato</h3>
             <div className="w-[full]">
                         <FormField
                             control={form.control}
@@ -188,7 +334,18 @@ export const CrearContratoForm = () => {
                         />
                         
                         </div>
-                    <div className="w-[full]">
+
+
+                        <div>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Datos de la toma</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                
+                    </div>
+                </div>
+
+
+                <div className='flex space-x-2'>
+                <div className="w-[120vh]">
                         <FormField
                             control={form.control}
                             name="clave_catastral"
@@ -206,7 +363,7 @@ export const CrearContratoForm = () => {
                         
                         </div>
                         <div className='flex space-x-2'>
-                            <div className='w-[120vh]'>
+                            <div className='w-[100vh]'>
                             <FormField
                                 control={form.control}
                                 name="tipo_toma"
@@ -214,19 +371,7 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Tipo de toma</FormLabel>
                                         <FormControl>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Selecciona tipo de toma" />
-                                        </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                        <SelectItem value="domestica">Domestica</SelectItem>
-                                        <SelectItem value="comercial">Comercial</SelectItem>
-                                        <SelectItem value="industrial">Industrial</SelectItem>
-                                        
-                                        </SelectContent>
-                                    </Select>
+                                        <TipoDeTomaComboBox form={form} field={field} name="tipo_toma" setCargoSeleccionado={setTipoDeToma}/>
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -234,36 +379,13 @@ export const CrearContratoForm = () => {
                                 )}
                             />
                             </div>
-                                <div className='w-[120vh]'>
-                                <FormField
-                                control={form.control}
-                                name="diametro_toma"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Diametro de la toma</FormLabel>
-                                        <FormControl>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Selecciona el diametro de la toma" />
-                                        </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                        <SelectItem value="2-pulgadas">2"</SelectItem>
-                                        <SelectItem value="4-pulgadas">4"</SelectItem>
-                                        
-                                        </SelectContent>
-                                    </Select>
-                                        </FormControl>
-                                        <FormDescription />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                                </div>
+                               
                             
                         </div>
-                        
+                </div>
+                   
+                        <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Dirección de la toma</h3>
+
                         <div className='flex space-x-2'>
                         <div className='w-[160vh]'>
                             <FormField
@@ -289,7 +411,9 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Numero de casa</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Escribe el numero de casa" {...field} />
+                                            <Input 
+                                            type='number'
+                                            placeholder="Escribe el numero de casa" {...field} />
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -301,7 +425,13 @@ export const CrearContratoForm = () => {
                             
                         </div>
                         <div className='flex space-x-4'>
-                        <div className="w-full">
+                       
+                       
+                    </div>
+                    
+                    <div className='flex space-x-2'>
+                   
+                    <div className="w-[160vh]">
                             <FormField
                                 control={form.control}
                                 name="colonia"
@@ -317,11 +447,8 @@ export const CrearContratoForm = () => {
                                 )}
                             />
                         </div>
-                       
-                    </div>
-                    <div className='flex space-x-2'>
-                   
-                    <div className="w-full">
+
+                    <div className="w-[60vh]">
                             <FormField
                                 control={form.control}
                                 name="codigo_postal"
@@ -329,7 +456,9 @@ export const CrearContratoForm = () => {
                                     <FormItem>
                                         <FormLabel>Código postal</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Escribe el código postal" {...field} />
+                                            <Input
+                                            type='number' 
+                                            placeholder="Escribe el código postal" {...field} />
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />
@@ -374,49 +503,88 @@ export const CrearContratoForm = () => {
                            </div>
                         </div>
                         
-                    
-                    <div className='flex flex-col space-y-4'>
+                            <div className='flex space-x-2'>
+                            <div className='w-[110vh]'>
                         <FormField
                             control={form.control}
                             name="localidad"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Localidad</FormLabel>
-                                    <FormControl>
-                                    <LocalidadComboBox form={form} field={field} name="localidad" setCargoSeleccionado={setCalleSeleccionada}/>
-                                    </FormControl>
+                                    <Select
+                                    disabled={false} // Ajusta esto según si el campo debe estar deshabilitado o no
+                                    onValueChange={(value) => {
+                                        field.onChange(value); // Actualiza el valor en react-hook-form
+                                    }}
+                                    value={field.value || ''} // Valor controlado por react-hook-form
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecciona la localidad" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="La Paz">La Paz</SelectItem>
+                                            <SelectItem value="Todos santos">Todos Santos</SelectItem>
+                                            <SelectItem value="Chametla">Chametla</SelectItem>
+                                            <SelectItem value="El Centenario">El Centenario</SelectItem>
+                                            <SelectItem value="El Pescadero">El Pescadero</SelectItem>
+                                            <SelectItem value="Los Barriles">Los Barriles</SelectItem>
+                                            <SelectItem value="Agua Amarga">Agua Amarga</SelectItem>
+
+
+                                        </SelectContent>
+                                    </Select>
                                     <FormDescription />
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
                     </div>
-                    <div className='flex flex-col space-y-4'>
+                    <div className='w-[110vh]'>
                         <FormField
                             control={form.control}
                             name="municipio"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Municipio</FormLabel>
-                                    <FormControl>
-                                    <LocalidadComboBox form={form} field={field} name="municipio" setCargoSeleccionado={setCalleSeleccionada}/>
-                                    </FormControl>
+                                    <Select
+                                    disabled={false} // Ajusta esto según si el campo debe estar deshabilitado o no
+                                    onValueChange={(value) => {
+                                        field.onChange(value); // Actualiza el valor en react-hook-form
+                                    }}
+                                    value={field.value || ''} // Valor controlado por react-hook-form
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecciona el municipio" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="La Paz">La Paz</SelectItem>
+                                            <SelectItem value="Los cabos">Los Cabos</SelectItem>
+                                            <SelectItem value="Comondu">Comondú</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                     <FormDescription />
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
                     </div>
+                            </div>
+                    
                     <div className='flex space-x-2'>
 
                     </div>
 
-               
-                <div className='flex space-x-4 mt-2'>
-                <div className='w-[156vh]'>
-                <MarcoFormServiciosAContratar title={"Servicios a contratar"}>
-                <div className='mr-10'>
-                <FormField
+                        <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-5">Servicios a contratar</h3>
+                    <div className='flex items-center space-x-8 mt-5'>
+                <div className='flex flex-col items-center'>
+                    {!campoAgua
+                    &&
+                    <div>
+                         <FormField
                     control={form.control}
                     name="c_agua"
                     render={({ field }) => (
@@ -424,6 +592,7 @@ export const CrearContratoForm = () => {
                         <FormLabel>Agua</FormLabel>
                         <FormControl>         
                             <Switch
+                           className='ml-2'
                             checked={field.value}
                             onCheckedChange={(checked) => field.onChange(checked)}
                             />
@@ -433,9 +602,12 @@ export const CrearContratoForm = () => {
                         </FormItem>
                     )}
                     />
-                    </div>
+                        </div>}
                    
-                    <div className='mr-5'>
+                </div>
+                    {!contrato2 && 
+                    <div>
+                         <div className='flex flex-col items-center'>
                     <FormField
                     control={form.control}
                     name="c_alc"
@@ -444,8 +616,10 @@ export const CrearContratoForm = () => {
                         <FormLabel>Alcantarillado</FormLabel>
                         <FormControl>         
                             <Switch
+                            className='ml-2'
                             checked={field.value}
-                            onCheckedChange={(checked) => field.onChange(checked)}
+                            onCheckedChange={(checked) => onSwitchChange("c_alc", checked)} 
+                            disabled={contrato2}
                             />
                         </FormControl>
                         <FormDescription />
@@ -453,9 +627,9 @@ export const CrearContratoForm = () => {
                         </FormItem>
                     )}
                     />
-                    </div>
-                   
-                    <div className='mr-5'>
+                </div>
+
+                <div className='flex flex-col items-center'>
                     <FormField
                     control={form.control}
                     name="c_san"
@@ -464,8 +638,10 @@ export const CrearContratoForm = () => {
                         <FormLabel>Saneamiento</FormLabel>
                         <FormControl>         
                             <Switch
+                            className='ml-2'
                             checked={field.value}
-                            onCheckedChange={(checked) => field.onChange(checked)}
+                            onCheckedChange={(checked) => onSwitchChange("c_san", checked)} 
+                            disabled={contrato2}
                             />
                         </FormControl>
                         <FormDescription />
@@ -473,10 +649,25 @@ export const CrearContratoForm = () => {
                         </FormItem>
                     )}
                     />
-                    </div>
-                    
-                </MarcoFormServiciosAContratar>
                 </div>
+                        </div>}
+               
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+                <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Tipo de Contratación y Giro de Negocio</h3>
+
+                <div className='flex space-x-4 mt-2'>
+                
                             
               
                 <div className='w-full mt-4'>
@@ -488,9 +679,12 @@ export const CrearContratoForm = () => {
                                 <FormLabel>Tipo de contratación</FormLabel>
                                 <FormControl>
                                 <Select
-                                        onValueChange={(value) => field.onChange(value)}
-                                        defaultValue={undefined}
-                                        >
+                                    disabled={false} // Ajusta esto según si el campo debe estar deshabilitado o no
+                                    onValueChange={(value) => {
+                                        field.onChange(value); // Actualiza el valor en react-hook-form
+                                    }}
+                                    value={field.value || ''} // Valor controlado por react-hook-form
+                                    >
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Selecciona el tipo de contratación" />
@@ -499,7 +693,7 @@ export const CrearContratoForm = () => {
                                         <SelectContent>
                                             <SelectItem value="normal">Normal</SelectItem>
                                             <SelectItem value="condicionado">Condicionado</SelectItem>
-                                            <SelectItem value="desarrollador">Desarrollador</SelectItem>
+                                            <SelectItem value="pre-contrato">Desarrollador</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </FormControl>
@@ -513,34 +707,19 @@ export const CrearContratoForm = () => {
                 </div>
                 <div className='mt-4 w-full'>
                 <FormField
-                        control={form.control}
-                        name="id_giro_comercial"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Giro comercial</FormLabel>
-                                <FormControl>
-                                <Select
-                                        onValueChange={(value) => field.onChange(value)}
-                                        defaultValue={undefined}
-                                        >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Selecciona el giro" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="1">Domestica</SelectItem>
-                                            <SelectItem value="2">Comercial</SelectItem>
-                                            <SelectItem value="3">Industrial</SelectItem>
-                                            <SelectItem value="4">Especial</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </FormControl>
-                                <FormDescription />
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                control={form.control}
+                name="id_giro_comercial"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Giro comercial</FormLabel>
+                    <FormControl>
+                    <GiroComercialComboBox form={form} field={field} name="id_giro_comercial" setCargoSeleccionado={setNombreGiroComercial}/>
+                    </FormControl>
+                    <FormDescription />
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
                 </div>
             
 
@@ -548,7 +727,7 @@ export const CrearContratoForm = () => {
             </div>
                             
                         <div className='flex justify-end'>
-                        <Button type="submit" className=''>Guardar</Button>
+                        <Button type="submit" className='mt-10'>Guardar</Button>
                             </div>
        
                 

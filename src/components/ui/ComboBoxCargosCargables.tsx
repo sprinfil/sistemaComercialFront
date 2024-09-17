@@ -95,7 +95,7 @@ const ComboBoxCargosCargables = ({set}) => {
                 <Command>
                     <CommandInput placeholder="Busca un Cargo..." />
                     <CommandList>
-                        <CommandEmpty>No framework found.</CommandEmpty>
+                        <CommandEmpty>No se encontraron cargos.</CommandEmpty>
                         <CommandGroup>
                             {conceptos_cargables.length > 0 ? conceptos_cargables.map((framework) => (
                                 <CommandItem
