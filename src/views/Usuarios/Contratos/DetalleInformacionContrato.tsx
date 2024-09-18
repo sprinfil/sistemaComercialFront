@@ -25,10 +25,12 @@ export const DetalleInformacionContrato = () => {
   const { toast } = useToast()
 
 
+  const [mostrarBoton, setMostrarBoton] = useState();
+
 
   const {contrato, direccion_notificaciones, libroToma, idGiroComercial,giroComercial, calleSeleccionada, coloniaSeleccionada, entreCalle1Seleccionada, 
     entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma,tomaPreContratada,setIsCheckInspeccion, boolPeticionContratacion,
-    isCheckInspeccion, setBooleanModalSubirArchivosContratacion, idContrato, setIdContrato,nombreGiroComercial} = ZustandFiltrosContratacion();
+    isCheckInspeccion, setBooleanModalSubirArchivosContratacion, idContrato, setIdContrato,nombreGiroComercial, esPreContratado} = ZustandFiltrosContratacion();
 
   console.log(contrato);
   console.log(direccion_notificaciones);
@@ -45,7 +47,7 @@ export const DetalleInformacionContrato = () => {
 
   const generarSolicitud = async () => {
 
-    if(boolPeticionContratacion)
+    if(esPreContratado)
     {
       const values = {
         contrato: contrato,
@@ -70,6 +72,7 @@ export const DetalleInformacionContrato = () => {
   
         })
         setBooleanModalSubirArchivosContratacion(true);
+        setMostrarBoton(true);
           console.log(response);
       }
       catch(response)
@@ -127,7 +130,7 @@ export const DetalleInformacionContrato = () => {
 
 
 
-
+console.log(nombreGiroComercial);
 
 
 
@@ -216,7 +219,7 @@ export const DetalleInformacionContrato = () => {
           
           <div className='mt-10 p-2'>
           <h2 className="text-2xl  mb-4">
-          Dirección de las notificaciones
+          Dirección alternativa de notificaciones
         </h2>
         <Table className="mt-3">
 
@@ -268,7 +271,9 @@ export const DetalleInformacionContrato = () => {
 
 
         <div className='flex justify-end'>
-        <Button className='mt-8' onClick={generarSolicitud}>Crear solicitud de contrato</Button>
+          {!mostrarBoton &&          
+          <Button className='mt-8' onClick={generarSolicitud}>Crear solicitud de contrato</Button>
+          }
         </div>
 
 

@@ -43,30 +43,51 @@ export const TipoDeTomaComboBox = ({ field, form, name = "id_concepto", setCargo
 
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([]);
+    const [selectedValue, setSelectedValue] = React.useState<number | null>(null);
 
 
     React.useEffect(() => {
         getConcepto();
         console.log(languages);
     }, []);
+    React.useEffect(() => {
+        // Establecer el valor inicial
+        if (field.value) {
+            setSelectedValue(Number(field.value));
+        } else {
+            setSelectedValue(null); // No hay selección, muestra el placeholder
+            form.setValue(name, 0); // Asegúrate de enviar 0 si no hay valor
+        }
+    }, [field.value]);
+
+
+ 
 
     const getConcepto = async () => {
         setLoading(true);
         try {
             const response = await axiosClient.get("/TipoToma");
-            let ctr = 0;
-            response.data.data.forEach(concepto => {
-                languages[ctr] = { value: concepto.id, label: concepto.nombre };
-                ctr = ctr + 1;
-            });
-            setLoading(false);
+            const conceptos = response.data.data.map((concepto: any) => ({
+                value: Number(concepto.id),
+                label: concepto.nombre,
+            }));
+            setLanguages(conceptos);
         } catch (error) {
-            setLoading(false);
             console.error("Failed to fetch concepto:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
+
     const [open, setOpen] = React.useState(false)
+
+    const handleSelect = (value: number, label: string) => {
+        setSelectedValue(value);
+        form.setValue(name, value); // Establece el ID seleccionado
+        setCargoSeleccionado(label);
+    };
+
 
     return (
         <div>
@@ -105,14 +126,9 @@ export const TipoDeTomaComboBox = ({ field, form, name = "id_concepto", setCargo
                                     <>
                                         {languages.map((language) => (
                                             <CommandItem
-                                                value={language.label}
-                                                key={language.value}
-                                                onSelect={() => {
-                                                    form.setValue(name, language.value)
-                                                    setCargoSeleccionado(language.label); 
-
-                                                }}
-                                            >
+                                            key={language.value}
+                                            onSelect={() => handleSelect(language.value, language.label)}
+                                        >
                                                 <Check
                                                     className={cn(
                                                         "mr-2 h-4 w-4",

@@ -28,7 +28,7 @@ const center = {
 
 const PuntoTomaMapa = () => {
   const { setLatitudMapa, setLongitudMapa, setLibroToma, libroToma, setMarcadorSeleccionado, marcadorSeleccionado, 
-    isCheckedPreContratada, puntosFiltradosParaElMapa, setTomaPreContratada,setSeleccionoPuntoEnMapa, selectedLocation, setSelectedLocation } =
+    isCheckedPreContratada, puntosFiltradosParaElMapa, setTomaPreContratada,setSeleccionoPuntoEnMapa, selectedLocation, setSelectedLocation,setEsPreContratado} =
     ZustandFiltrosContratacion();
   const { toast } = useToast();
   const [poligonos, setPoligonos] = useState([]);
@@ -41,6 +41,7 @@ const PuntoTomaMapa = () => {
   
   const handleSiguienteContratacion = () => {
     navigate("/Contrato/Usuario");
+    setEsPreContratado(true);
   };
 
   useEffect(() => {

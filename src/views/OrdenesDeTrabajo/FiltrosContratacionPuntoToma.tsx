@@ -39,19 +39,22 @@ const FiltrosContratacionPuntoToma = () => {
     navigate("/Contrato/Usuario");
     setTomaPreContratada([]);
     setBoolPeticionContratacion(true);
+    setEsPreContratado(false);
+
   }
 
 
 
   const {setIsCheckedPreContratadas, isCheckedPreContratadas, setPuntosFiltradosParaElMapa, 
     tomaPreContratada, setTomaPreContratada, 
-    setBoolPeticionContratacion, seleccionoPuntoEnMapa, codigoToma, setCodigoToma} = ZustandFiltrosContratacion();
+    setBoolPeticionContratacion, seleccionoPuntoEnMapa, codigoToma, setCodigoToma, setEsPreContratado} = ZustandFiltrosContratacion();
 
 //console.log(isCheckedPreContratadas);
 
 const handleLimpiarFiltros = () => {
   setCodigoToma("");
   setIsCheckedPreContratadas(false);
+  setEsPreContratado(false);
 }
 
   const handleBuscarTomas = () => 

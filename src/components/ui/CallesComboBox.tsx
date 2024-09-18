@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
     Command,
     CommandEmpty,
@@ -6,68 +6,64 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command"
-import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/command";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "./form.tsx";
-import { Button } from "@/components/ui/button"
-import axiosClient from '../../axios-client.ts'
-import Loader from './Loader.tsx'
+} from "@/components/ui/popover";
+import { FormControl } from "./form.tsx";
+import { Button } from "@/components/ui/button";
+import axiosClient from '../../axios-client.ts';
+import Loader from './Loader.tsx';
 
 type Status = {
-    value: string
-    label: string
-
-}
-
-type ConceptosComboBoxNewProps = {
-    field: any;
-    onSelect: (selected: Status) => void; // Nueva prop para el callback
+    value: number;
+    label: string;
 };
 
-export const CallesComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado}) => {
-
-
+export const CallesComboBox = ({ field, form, name = "entre_calle_2", setCargoSeleccionado, disabled }) => {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([]);
-
+    const [selectedValue, setSelectedValue] = React.useState<number | null>(null);
 
     React.useEffect(() => {
         getConcepto();
-        console.log(languages);
     }, []);
+
+    React.useEffect(() => {
+        // Establecer el valor inicial
+        if (field.value) {
+            setSelectedValue(Number(field.value));
+        } else {
+            setSelectedValue(null); // No hay selección, muestra el placeholder
+            form.setValue(name, 0); // Asegúrate de enviar 0 si no hay valor
+        }
+    }, [field.value]);
 
     const getConcepto = async () => {
         setLoading(true);
         try {
             const response = await axiosClient.get("/calle");
-            let ctr = 0;
-            response.data.forEach(concepto => {
-                languages[ctr] = { value: concepto.id, label: concepto.nombre };
-                ctr = ctr + 1;
-            });
-            setLoading(false);
+            const conceptos = response.data.map((concepto: any) => ({
+                value: Number(concepto.id),
+                label: concepto.nombre,
+            }));
+            setLanguages(conceptos);
         } catch (error) {
-            setLoading(false);
             console.error("Failed to fetch concepto:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
-
-    const [open, setOpen] = React.useState(false)
+    const handleSelect = (value: number, label: string) => {
+        setSelectedValue(value);
+        form.setValue(name, value); // Establece el ID seleccionado
+        setCargoSeleccionado(label);
+    };
 
     return (
         <div>
@@ -79,13 +75,12 @@ export const CallesComboBox = ({ field, form, name = "id_concepto", setCargoSele
                             role="combobox"
                             className={cn(
                                 "w-full justify-between",
-                                !field.value && "text-muted-foreground"
+                                selectedValue === null && "text-muted-foreground"
                             )}
+                            disabled={disabled}
                         >
-                            {field.value
-                                ? languages.find(
-                                    (language) => language.value === field.value
-                                )?.label
+                            {selectedValue !== null
+                                ? languages.find(language => language.value === selectedValue)?.label
                                 : "Selecciona una calle"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -97,27 +92,18 @@ export const CallesComboBox = ({ field, form, name = "id_concepto", setCargoSele
                         <CommandList>
                             <CommandEmpty>Calle no encontrada.</CommandEmpty>
                             <CommandGroup>
-                                {
-                                    loading &&
-                                    <Loader />
-                                }
-                                {
-                                    !loading &&
+                                {loading && <Loader />}
+                                {!loading && (
                                     <>
-                                        {languages.map((language) => (
+                                        {languages.map(language => (
                                             <CommandItem
-                                                value={language.label}
                                                 key={language.value}
-                                                onSelect={() => {
-                                                    form.setValue(name, language.value)
-                                                    setCargoSeleccionado(language.label); 
-
-                                                }}
+                                                onSelect={() => handleSelect(language.value, language.label)}
                                             >
                                                 <Check
                                                     className={cn(
                                                         "mr-2 h-4 w-4",
-                                                        language.value === field.value
+                                                        language.value === selectedValue
                                                             ? "opacity-100"
                                                             : "opacity-0"
                                                     )}
@@ -126,13 +112,12 @@ export const CallesComboBox = ({ field, form, name = "id_concepto", setCargoSele
                                             </CommandItem>
                                         ))}
                                     </>
-                                }
-
+                                )}
                             </CommandGroup>
                         </CommandList>
                     </Command>
                 </PopoverContent>
             </Popover>
         </div>
-    )
-}
+    );
+};

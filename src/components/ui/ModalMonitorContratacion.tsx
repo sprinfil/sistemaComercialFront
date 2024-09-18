@@ -171,6 +171,41 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
      
   };
 
+
+  const handleFactibilidad = async () => {
+ 
+   
+
+    try {
+    const  response =  await axiosClient.get(`Tomas/factibilidades/${selected_contrato?.toma?.codigo_toma}`);
+      
+      const mensaje = response.data.message;
+      toast({
+        title: "¡Éxito!",
+        description: mensaje,
+        variant: "success",
+      });
+      fetch_contratos();
+      set_open(false);
+      console.log(response);
+    } catch (err) {
+      const mensaje = err.response?.data?.message || "No se pudo cerrar el contrato.";
+
+     console.log(err);
+        
+        toast({
+          variant: "destructive",
+          title: "Oh, no. Error",
+          description: mensaje,
+          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        });
+      
+
+      }
+
+     
+  };
+
   const handleSubirArchivos = () => 
   {
     setBooleanModalSubirArchivosContratacion(true);
@@ -178,39 +213,44 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
   }
 
   const handleDescargarContrato = () => {
-    axiosClient.get(`/contratos/imprimirContrato/${selected_contrato?.id}`, { responseType: 'blob' })
-      .then((response) => {
-
-        // Crea un nuevo objeto URL para el blob recibido
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const fileName = `contrato_folio_${selected_contrato?.folio_solicitud}.pdf`;
-
-        // Crea un enlace temporal y haz clic en él para descargar el archivo
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', fileName);
-        document.body.appendChild(link);
-        link.click();
-        
-      
-        window.URL.revokeObjectURL(url);
-  
-        toast({
-          title: "¡Éxito!",
-          description: "El contrato se descargó.",
-          variant: "success",
-        });
-      })
-      .catch((err) => {
-        console.error("Error descargando el contrato:", err);
+    axiosClient.get(`/contratos/imprimirContrato/${selected_contrato?.id}`, {
+      responseType: 'arraybuffer' 
+    })
+    .then((response) => {
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const newTab = window.open(url, '_blank');
+    
+      if (newTab) {
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+        }, 100);
+      } else {
         toast({
           variant: "destructive",
-          title: "Oh, no. Error",
-          description: "No se pudo descargar el contrato.",
-          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+          title: "Error",
+          description: "No se pudo abrir el documento en una nueva pestaña. Verifica la configuración del navegador.",
         });
+      }
+    
+      toast({
+        title: "¡Éxito!",
+        description: "El contrato se abrió en una nueva pestaña.",
+        variant: "success",
       });
+    })
+    .catch((err) => {
+      console.error("Error abriendo el contrato:", err);
+      toast({
+        variant: "destructive",
+        title: "Oh, no. Error",
+        description: "No se pudo abrir el contrato.",
+        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+      });
+    });
+    
   };
+  
 
   const handleEditarContrato = () => {
     setAccion("editar")
@@ -326,7 +366,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                  <IconButton>
+                  <IconButton onClick={handleFactibilidad}>
                   <FaTools className="w-[3vh] h-[3vh]" />
                 </IconButton>
                   </TooltipTrigger>

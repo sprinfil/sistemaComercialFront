@@ -4,7 +4,7 @@ import { create } from 'zustand';
 
 type contrato = {
   id_usuario: number;
-  id_giro_comercial: string;
+  id_giro_comercial: number;
   nombre_contrato: string;
   clave_catastral: string;
   tipo_toma: string;
@@ -194,6 +194,10 @@ interface FiltrosContratacion {
   nombreGiroComercial: string;
   setNombreGiroComercial: (nombreGiroComercial: string) => void;
 
+  esPreContratado: boolean;
+  setEsPreContratado:(esPreContratado: boolean) => void;
+
+
 }
 
 export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => ({
@@ -273,13 +277,13 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
     servicio_contratados: [],
     diametro_toma: "",
     num_casa: "",
-    colonia: 0,
-    calle: 0,
+    colonia: "",
+    calle: "",
     codigo_postal: "",
-    entre_calle_1: 0,
-    entre_calle_2: 0,
-    localidad: 0,
-    municipio: 0,
+    entre_calle_1: "",
+    entre_calle_2: "",
+    localidad: "",
+    municipio:"",
     tipo_contratacion: "",
     coordenada: "",
   },
@@ -390,6 +394,10 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
 
   nombreGiroComercial: "",
   setNombreGiroComercial: (nombreGiroComercial) => set({ nombreGiroComercial }),
+
+  esPreContratado: false,
+  setEsPreContratado: (esPreContratado) => set({ esPreContratado }),
+
 
 
 }));
