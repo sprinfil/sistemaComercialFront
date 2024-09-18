@@ -50,10 +50,10 @@ const ConceptoForm = () => {
     const form = useForm<z.infer<typeof conveniosSchema>>({
         resolver: zodResolver(conveniosSchema),
         defaultValues: {
-            id: 0,
-            nombre: "",
-            descripcion: "",
-            estado: false
+            id: convenio?.id || 0,
+            nombre: convenio?.nombre || "",
+            descripcion: convenio?.descripcion || "",
+            estado: convenio?.estado ||  false
         },
     })
 

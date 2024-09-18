@@ -89,7 +89,7 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
 
   const fetchCajaInfo = async () => {
     try {
-      const response = await axiosClient.get('/cajas/estadoSesionCobro');
+      const response = await axiosClient.get('/cajas/estadoSesionCobro?id_sesion_caja');
       console.log(response.data)
       setCajaInfo(response.data);
     } catch (error) {

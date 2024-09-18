@@ -91,7 +91,7 @@ export default function PuntoVenta() {
 
   return (
     <div>
-      {!isFondoCajaRegistered ? (
+      {!initialFund ? (
         <ModalFondoCaja
           open={isModalOpen}
           onRegister={handleRegister}
