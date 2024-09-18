@@ -12,19 +12,21 @@ const CargosUsuarioForm = () => {
     const [selectedConvenio, setSelectedConvenio] = useState<any | null>(null);
 
     useEffect(() => {
-        
         if (usuariosEncontrados) {
             setLoading(true); // Empieza a cargar
             axiosClient.get(`/Toma/cargos/${usuariosEncontrados[0].tomas[0].codigo_toma}`)
                 .then(({ data }) => {
                     const filteredCargos = data.data.map((cargo: any) => ({
-                        concepto: cargo.concepto.nombre,
+                        id: cargo.id,
+                        concepto: cargo.nombre,
                         monto: cargo.monto,
                         estado: cargo.estado,
                         fechaCargo: cargo.fecha_cargo,
-                        prioridad: cargo.concepto.prioridad_abono
+                        prioridad: cargo.concepto.prioridad_abono,
+                        
                     }));
                     setCargos(filteredCargos);
+                    console.log(cargos)
                 })
                 .catch(err => {
                     console.error('Error al obtener los cargos:', err);
@@ -47,7 +49,6 @@ const CargosUsuarioForm = () => {
 
     return (
         <div>
-            
             {loading ? (
                 <Loader />
             ) : (
@@ -56,8 +57,7 @@ const CargosUsuarioForm = () => {
                         <tr>
                             <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Concepto</th>
                             <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Estado</th>
-                            <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Convenio</th>
-                            <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Ajuste</th>
+                            
                         </tr>
                     </thead>
                     <tbody className="bg-background">
@@ -66,13 +66,12 @@ const CargosUsuarioForm = () => {
                                 <tr key={index}>
                                     <td className="px-2 py-3">{cargo.concepto}</td>
                                     <td className="px-2 py-3">{cargo.estado}</td>
-                                    <td className="px-2 py-3">ninguno</td>
-                                    <td className="px-2 py-3">ninguno</td>
+                                    
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="5" className="px-2 py-3 text-center">No hay cargos disponibles.</td>
+                                <td colSpan="4" className="px-2 py-3 text-center">No hay cargos disponibles.</td>
                             </tr>
                         )}
                     </tbody>

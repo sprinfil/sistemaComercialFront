@@ -13,6 +13,10 @@ import axiosClient from '../../axios-client';
 import Loader from '../ui/Loader.tsx';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario.tsx';
+import { Checkbox } from "@/components/ui/checkbox"
+import { ComboBoxConvenio } from './ComboBoxConvenio.tsx';
+import { Input } from './input.tsx';
+
 
 interface ModalConvenioProps {
   trigger: React.ReactNode;
@@ -24,13 +28,17 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const [convenios, setConvenios] = useState<any[]>([]);
   const [cargosConveniables, setCargosConveniables] = useState<any[]>([]);
   const [cargosSeleccionados, setCargosSeleccionados] = useState<any[]>([]);
+  const [selectAll, setSelectAll] = useState(false); // Estado para seleccionar todos
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedConvenio, setSelectedConvenio] = useState<any | null>(null);
   const [porcentajeConveniado, setPorcentajeConveniado] = useState<number>(0);
+  const [montoConveniado, setMontoConveniado] = useState<number>(0);
   const [cantidadLetras, setCantidadLetras] = useState<number>(0);
   const [comentario, setComentario] = useState<string>('');
   const { usuariosEncontrados } = ZustandGeneralUsuario();
+  const [activeAccordion, setActiveAccordion] = useState<string | null>("convenios");
+  const [tipoMonto, setTipoMonto] = useState<string>('%');
 
   useEffect(() => {
     setLoading(true);
@@ -59,9 +67,10 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
           nombre: cargo.nombre,
           aplicable: cargo.aplicable,
           id: cargo.id,
-          monto: cargo.monto,  // Asegúrate de incluir el monto aquí
+          monto: cargo.monto,
         }));
         setCargosConveniables(filteredCargos);
+        setActiveAccordion("cargosConveniables");
       })
       .catch(err => {
         console.error('Error al obtener los cargos conveniables:', err);
@@ -76,15 +85,28 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
     }
   };
 
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setCargosSeleccionados([]);
+    } else {
+      setCargosSeleccionados(cargosConveniables);
+    }
+    setSelectAll(!selectAll);
+  };
+
   const handleConfirmar = () => {
     const payload = {
-      porcentaje_conveniado: porcentajeConveniado,
-      id_convenio_catalogo: selectedConvenio.id,
+      id_convenio_catalogo: selectedConvenio.id || 0,
+      id_modelo: usuariosEncontrados[0].tomas[0].id,  // Añadido campo `id_modelo`
+      modelo_origen: "toma",  // Añadido campo `modelo_origen`
       cantidad_letras: cantidadLetras,
-      comentario,
-      cargos_conveniados: cargosSeleccionados.map(cargo => ({ id: cargo.id })),
+      comentario: comentario,
+      cargos_conveniados: cargosSeleccionados.map(cargo => ({
+        id: cargo.id,
+        porcentaje_conveniado: tipoMonto === '%' ? porcentajeConveniado : montoConveniado, // Ajusta según el tipo de monto
+      })),
     };
-    
+  
     axiosClient.post('/Convenio/RegistrarConvenio', payload)
       .then(response => {
         console.log('Convenio registrado', response);
@@ -94,6 +116,8 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
         console.error('Error al registrar convenio:', error);
       });
   };
+  
+  
 
   return (
     <AlertDialog>
@@ -120,7 +144,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <Accordion type="single" collapsible>
+          <Accordion type="single" collapsible value={activeAccordion} onValueChange={setActiveAccordion}>
             <AccordionItem value="convenios">
               <AccordionTrigger className="font-medium">Convenios Disponibles</AccordionTrigger>
               <AccordionContent>
@@ -143,46 +167,95 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
             {selectedConvenio && (
               <AccordionItem value="cargosConveniables">
                 <AccordionTrigger className="font-medium">Cargos Conveniables</AccordionTrigger>
-                <AccordionContent>
-                  {cargosConveniables.length > 0 ? (
+                <div className=''>
+                  <AccordionContent>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th className="px-4 py-2 text-left">Tipo de monto</th>
+                        <th className="px-4 py-2 text-left">Porcentaje Conveniado</th>
+                        <th className="px-4 py-2 text-left">Monto Conveniado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="px-4 py-2">
+                          {/* Aquí agregamos el ComboBoxMonto */}
+                          <ComboBoxConvenio 
+                            placeholder="Tipo de monto"
+                            name="tipoMonto" 
+                            readOnly={false} 
+                            onSelect={setTipoMonto}
+                          />
+                        </td>
+                        <td className="px-4 py-2">
+                                <Input
+                                  type="number"
+                                  value={porcentajeConveniado}
+                                  onChange={(e) => setPorcentajeConveniado(Number(e.target.value))}
+                                  className="border p-1"
+                                  disabled={tipoMonto !== '%'} 
+                                />
+                              </td>
+                              <td className="px-4 py-2">
+                                <Input
+                                  type="number"
+                                  value={montoConveniado}
+                                  onChange={(e) => setMontoConveniado(Number(e.target.value))}
+                                  className="border p-1"
+                                  disabled={tipoMonto !== '$' }
+                                />
+                              </td>
+                      </tr>
+                    </tbody>
+                  </table>
                     <table className="min-w-full table-auto mt-4">
                       <thead>
                         <tr>
-                          <th className="px-4 py-2">Nombre del Cargo</th>
-                          <th className="px-4 py-2">Aplicable</th>
-                          <th className="px-4 py-2">Monto</th>
-                          <th className="px-4 py-2">Porcentaje Conveniado</th>
+                          <th className="px-4 py-2 text-left">
+                            <Checkbox
+                              checked={selectAll}
+                              onCheckedChange={handleSelectAll}
+                            />
+                            {" "} Nombre del Cargo
+                          </th>
+                          <th className="px-4 py-2 text-left">Aplicable</th>
+                          <th className="px-4 py-2 text-left">Monto</th>
                         </tr>
                       </thead>
                       <tbody>
                         {cargosConveniables.map((cargo: any) => (
                           <tr key={cargo.id} className="border-t">
                             <td className="px-4 py-2">
-                              <input
-                                type="checkbox"
+                              <Checkbox
                                 checked={cargosSeleccionados.some((c: any) => c.id === cargo.id)}
-                                onChange={() => handleCargoSeleccionado(cargo)}
-                              />{" "}
-                              {cargo.nombre}
+                                onCheckedChange={() => handleCargoSeleccionado(cargo)}
+                              />
+                              {" "}{cargo.nombre}
                             </td>
                             <td className="px-4 py-2">{cargo.aplicable ? 'Sí' : 'No'}</td>
                             <td className="px-4 py-2">${cargo.monto}</td>
-                            <td className="px-4 py-2">
-                              <input
-                                type="number"
-                                value={porcentajeConveniado}
-                                onChange={(e) => setPorcentajeConveniado(Number(e.target.value))}
-                                className="border p-1 w-full"
-                              />
-                            </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
-                  ) : (
-                    <p className="text-center">No hay cargos conveniables disponibles.</p>
-                  )}
-                </AccordionContent>
+                    <div className='px-4 py-2 text-left font-bold'>Letras
+                      <Input className='w-15 font-normal' 
+                             value={cantidadLetras} 
+                             type='number' 
+                             onChange={(e) => setCantidadLetras(Number(e.target.value))}>
+                      </Input>
+                    </div>
+                    <div className='px-4 py-2 text-left font-bold'>Comentarios
+                      <Input className='font-normal' 
+                             value={comentario} 
+                             type='text' 
+                             onChange={(e) => setComentario(String(e.target.value))} 
+                             placeholder='Añade un comentario'>
+                      </Input>
+                    </div>
+                  </AccordionContent>
+                </div>
               </AccordionItem>
             )}
           </Accordion>
