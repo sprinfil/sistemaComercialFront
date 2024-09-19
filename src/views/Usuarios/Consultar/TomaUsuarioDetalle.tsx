@@ -13,6 +13,7 @@ import CargosUsuario from './VistasDetalleUsuario/CargosUsuario.tsx';
 import TomasUsuario from './VistasDetalleUsuario/TomasUsuario';
 import { BreadCrumbDetalleTomaUsuario } from '../../../components/ui/breadCrumbDetalleTomaUsuario.tsx';
 import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
+import { GestionDescuentos } from './VistasDetalleUsuario/GestionDescuentos.tsx';
 export const TomaUsuarioDetalle = () => {
 
   const {toma, setToma,tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, setTomaUsuariosEncontrados, tomaUsuariosEncontrados}= ZustandGeneralUsuario()
@@ -58,6 +59,10 @@ export const TomaUsuarioDetalle = () => {
         {
           nombre: "Cargos",
           pantalla: <CargosUsuario/>
+        },
+        {
+          nombre: "Descuentos",
+          pantalla: <GestionDescuentos/>
         },
       ]
     }

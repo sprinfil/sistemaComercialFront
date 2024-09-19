@@ -195,7 +195,7 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
         total_cheques_real: parseFloat(total_cheques).toFixed(2),
         total_real: ((total_tarjeta_debito || 0) + (total_tarjeta_credito || 0) + (total_cheques || 0) + (total_efectivo || 0)).toFixed(2),
       };
-
+      console.log(user)
       const cajaData = {
         id_caja_catalogo: user?.caja?.id_caja_catalogo,
         fondo_final: (totalAmount + totalTarjetas + totalCheques).toFixed(2),
