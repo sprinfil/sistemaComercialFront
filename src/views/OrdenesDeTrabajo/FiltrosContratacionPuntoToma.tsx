@@ -60,7 +60,7 @@ const handleLimpiarFiltros = () => {
   const handleBuscarTomas = () => 
   {
 
-    const contratadas = isCheckedPreContratadas && "pre-contrato" 
+    const contratadas = isCheckedPreContratadas ? "pre-contrato" : "" 
 
     const values = {
       filtros: {

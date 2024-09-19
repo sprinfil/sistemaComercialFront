@@ -24,8 +24,8 @@ type contrato = {
 
 
 interface Location {
-  lat: number;
-  lng: number;
+  lat: string | null;
+  lng: string | null;
 }
 
 
@@ -196,6 +196,11 @@ interface FiltrosContratacion {
 
   esPreContratado: boolean;
   setEsPreContratado:(esPreContratado: boolean) => void;
+
+  puntoTomaLatitudLongitudAPI: [string, string];
+  setPuntoTomaLatitudLongitudAPI: (puntoTomaLatitudLongitudAPI: [string, string]) => void;
+
+  getCoordenadaString2: () => string | null;
 
 
 }
@@ -399,6 +404,13 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
   setEsPreContratado: (esPreContratado) => set({ esPreContratado }),
 
 
+  puntoTomaLatitudLongitudAPI: ["0", "0"], // Valor inicial por defecto
+  setPuntoTomaLatitudLongitudAPI: (puntoTomaLatitudLongitudAPI: [string, string]) =>
+    set({ puntoTomaLatitudLongitudAPI }),
+  getCoordenadaString2: (): string | null => {
+    const { puntoTomaLatitudLongitudAPI } = ZustandFiltrosContratacion.getState();
+    return JSON.stringify(puntoTomaLatitudLongitudAPI);
+  },
 
 }));
 

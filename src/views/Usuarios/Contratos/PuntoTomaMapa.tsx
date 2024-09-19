@@ -28,7 +28,8 @@ const center = {
 
 const PuntoTomaMapa = () => {
   const { setLatitudMapa, setLongitudMapa, setLibroToma, libroToma, setMarcadorSeleccionado, marcadorSeleccionado, 
-    isCheckedPreContratada, puntosFiltradosParaElMapa, setTomaPreContratada,setSeleccionoPuntoEnMapa, selectedLocation, setSelectedLocation,setEsPreContratado} =
+    isCheckedPreContratada, puntosFiltradosParaElMapa, setTomaPreContratada,setSeleccionoPuntoEnMapa, selectedLocation, setSelectedLocation,setEsPreContratado
+  ,setPuntoTomaLatitudLongitudAPI,puntoTomaLatitudLongitudAPI} =
     ZustandFiltrosContratacion();
   const { toast } = useToast();
   const [poligonos, setPoligonos] = useState([]);
@@ -92,6 +93,7 @@ const PuntoTomaMapa = () => {
     const lng = event.latLng.lng();
     const clickedLocation = new google.maps.LatLng(lat, lng);
     setSelectedLocation({ lat, lng });
+    setPuntoTomaLatitudLongitudAPI([lat, lng ]);
     setSeleccionoPuntoEnMapa(true);
 
     let isInsidePolygon = false;
@@ -123,6 +125,7 @@ const PuntoTomaMapa = () => {
           ) {
             isInsidePolygon = true;
             setSelectedLocation({ lat, lng });
+            setPuntoTomaLatitudLongitudAPI([lat, lng ]);
             setSeleccionoPuntoEnMapa(true);
 
           }
@@ -164,6 +167,8 @@ const PuntoTomaMapa = () => {
   }
 
 
+  console.log(puntoTomaLatitudLongitudAPI);
+  console.log(selectedLocation);
 
   return (
     <div>
@@ -217,6 +222,7 @@ const PuntoTomaMapa = () => {
                           const lat = event.latLng.lat();
                           const lng = event.latLng.lng();
                           setSelectedLocation({ lat, lng });
+                          setPuntoTomaLatitudLongitudAPI([lat, lng ]);
                           setSeleccionoPuntoEnMapa(true);
                           setLibroToma(libro.id);
                           console.log(libro.id);

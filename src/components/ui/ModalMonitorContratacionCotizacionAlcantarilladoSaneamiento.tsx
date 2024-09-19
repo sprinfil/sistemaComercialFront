@@ -201,7 +201,8 @@ const eliminarConcepto = (index: number) => {
          </div>
           <AlertDialogTitle></AlertDialogTitle>
           <AlertDialogDescription> 
-          <Form {...form}>
+            <div className="max-h-[50vh]">
+            <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
                                 control={form.control}
@@ -253,10 +254,12 @@ const eliminarConcepto = (index: number) => {
                                             </div>
 
                                             {/* Botón Agregar */}
-                                            <Button onClick={agregrarConcepto}>Agregar</Button>
+                                            <Button onClick={agregrarConcepto}  type="button">Agregar</Button>
                                           </div>
                                                                                       
-                                         
+                                          <div className="max-h-[50vh] overflow-auto border border-gray-300 rounded-md p-2">
+
+
                                             <div>
                                               {conceptoEnviar.length > 0 ? (
                                                 conceptoEnviar.map((item, index) => {
@@ -296,6 +299,8 @@ const eliminarConcepto = (index: number) => {
                                                 <p></p>
                                               )}
                                             </div>
+                                            </div>
+
                                           </>
                                      
 
@@ -308,17 +313,25 @@ const eliminarConcepto = (index: number) => {
                                 )}
                             />
                     
-                    
-                  <Button type="submit">Guardar</Button>
+                    <div className="mb-5">
+                    <div className="mt-5 flex space-x-2">
+                    <Button type="submit" >Guardar</Button>
+
+          <AlertDialogCancel onClick={handleCloseModal}>
+            Cancelar
+          </AlertDialogCancel>
+          </div>
+     </div>
+                 
                 </form>
                         </Form>
+            </div>
+        
 
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={handleCloseModal}>
-            Cancelar
-          </AlertDialogCancel>
+          
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

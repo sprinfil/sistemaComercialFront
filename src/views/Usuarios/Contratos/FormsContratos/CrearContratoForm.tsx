@@ -54,7 +54,7 @@ export const CrearContratoForm = () => {
     const { latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial,
         setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
         setServicioContratado, setGiroComercial, setTipoDeToma, tomaPreContratada, isCheckInspeccion, boolPeticionContratacion,
-        setServicioContratado2, selectedLocation, getCoordenadaString, setNombreGiroComercial, esPreContratado } = ZustandFiltrosContratacion();
+        setServicioContratado2, selectedLocation, getCoordenadaString, setNombreGiroComercial, esPreContratado,getCoordenadaString2, puntoTomaLatitudLongitudAPI} = ZustandFiltrosContratacion();
 
 
     const { usuariosEncontrados } = ZustandGeneralUsuario();
@@ -76,7 +76,7 @@ export const CrearContratoForm = () => {
             entre_calle_2: 0,
             colonia: 0,
             codigo_postal: "",
-            localidad: "",
+            localidad: "La Paz",
             tipo_toma: 0,
             tipo_contratacion: "",
             c_agua: false,
@@ -105,7 +105,7 @@ export const CrearContratoForm = () => {
 
     const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
 
-        const coordenadaString = ZustandFiltrosContratacion.getState().getCoordenadaString();
+        const coordenadasComoCadenas = puntoTomaLatitudLongitudAPI.map(coord => coord.toString());
 
         const agua = values.c_agua ? "agua" : null;
         const alcantarillado = values.c_alc ? "alcantarillado" : null;
@@ -143,8 +143,10 @@ export const CrearContratoForm = () => {
             ...(values.c_agua != null && !isAguaActive ? ["agua"] : []),
             ...(alcantarillado_y_saneamiento && !isAlcActive && !isSanActive ? [alcantarillado_y_saneamiento] : []),
         ];
+
+        console.log(serviciosSeleccionados);
         let datos;
-        if (boolPeticionContratacion) {
+        if (!esPreContratado) {
             // Estos datos son para enviar
             datos = {
                 id_usuario: usuariosEncontrados[0]?.id,
@@ -162,7 +164,7 @@ export const CrearContratoForm = () => {
                 localidad: values.localidad,
                 municipio: values.municipio,
                 tipo_contratacion: values.tipo_contratacion,
-                coordenada: coordenadaString,
+                coordenada: coordenadasComoCadenas,
 
             };
         } else {

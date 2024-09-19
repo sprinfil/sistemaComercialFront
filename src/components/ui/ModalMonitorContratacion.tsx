@@ -99,15 +99,14 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
   
     
   const fetch_contratos = async () => {
-    setLoadingTableMonitorContrato(true);
+    //setLoadingTableMonitorContrato(true);
     try {
       const response = await axiosClient.get("/contratos");
-      setLoadingTableMonitorContrato(false);
+      //setLoadingTableMonitorContrato(false);
       setDataMonitorContratos(response.data.contrato);
-      setBoolModalContratacionMonitor(false);
       console.log(response.data.contrato);
     } catch (error) {
-      setLoadingTableMonitorContrato(false);
+      //setLoadingTableMonitorContrato(false);
       console.error("Failed to fetch contratos:", error);
     }
   }
@@ -151,7 +150,6 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
         variant: "success",
       });
       fetch_contratos();
-      set_open(false);
       console.log(response);
     } catch (err) {
       const mensaje = err.response?.data?.message || "No se pudo cerrar el contrato.";

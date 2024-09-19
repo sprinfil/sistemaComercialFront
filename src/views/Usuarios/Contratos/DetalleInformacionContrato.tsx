@@ -30,7 +30,8 @@ export const DetalleInformacionContrato = () => {
 
   const {contrato, direccion_notificaciones, libroToma, idGiroComercial,giroComercial, calleSeleccionada, coloniaSeleccionada, entreCalle1Seleccionada, 
     entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma,tomaPreContratada,setIsCheckInspeccion, boolPeticionContratacion,
-    isCheckInspeccion, setBooleanModalSubirArchivosContratacion, idContrato, setIdContrato,nombreGiroComercial, esPreContratado} = ZustandFiltrosContratacion();
+
+    isCheckInspeccion, setBooleanModalSubirArchivosContratacion, idContrato, setIdContrato,nombreGiroComercial, esPreContratado,puntoTomaLatitudLongitudAPI,getCoordenadaString2} = ZustandFiltrosContratacion();
 
   console.log(contrato);
   console.log(direccion_notificaciones);
@@ -41,53 +42,15 @@ export const DetalleInformacionContrato = () => {
   console.log(idContrato);
   console.log(idGiroComercial);
 
- 
+ console.log(puntoTomaLatitudLongitudAPI);
 
 
 
   const generarSolicitud = async () => {
 
+    const coordenadaString = getCoordenadaString2();
+
     if(esPreContratado)
-    {
-      const values = {
-        contrato: contrato,
-        solicitud_factibilidad: isCheckInspeccion,
-        toma: {
-          id_libro: libroToma,
-          id_giro_comercial: idGiroComercial,
-          direccion_notificacion: direccion_notificaciones
-        }
-      }
-  
-      console.log(values);
-  
-      try{
-          const response = await axiosClient.post("contratos/create", values);
-          console.log(response.data.contrato[0]?.id);
-          setIdContrato(response.data.contrato[0]?.id_toma)
-          toast({
-            title: "¡Éxito!",
-            description: "El contrato se ha creado correctamente",
-            variant: "success",
-  
-        })
-        setBooleanModalSubirArchivosContratacion(true);
-        setMostrarBoton(true);
-          console.log(response);
-      }
-      catch(response)
-      {
-        console.log(response);
-        
-        toast({
-          variant: "destructive",
-          title: "Oh, no. Error",
-          description: "Algo salio mal",
-          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-      })
-      }
-    }
-    else
     {
       const values = {
         contrato: contrato,
@@ -117,6 +80,46 @@ export const DetalleInformacionContrato = () => {
           variant: "destructive",
           title: "Oh, no. Error",
           description: message,
+          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+      })
+      }
+    }
+    else
+    {
+      const values = {
+        contrato: contrato,
+        solicitud_factibilidad: isCheckInspeccion,
+        toma: {
+          id_libro: libroToma,
+          id_giro_comercial: idGiroComercial,
+          direccion_notificacion: direccion_notificaciones,
+        }
+      }
+  
+      console.log(values);
+  
+      try{
+          const response = await axiosClient.post("contratos/create", values);
+          console.log(response.data.contrato[0]?.id);
+          setIdContrato(response.data.contrato[0]?.id_toma)
+          toast({
+            title: "¡Éxito!",
+            description: "El contrato se ha creado correctamente",
+            variant: "success",
+  
+        })
+        setBooleanModalSubirArchivosContratacion(true);
+        setMostrarBoton(true);
+          console.log(response);
+      }
+      catch(response)
+      {
+        console.log(response);
+        
+        toast({
+          variant: "destructive",
+          title: "Oh, no. Error",
+          description: "Algo salio mal",
           action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
       })
       }
