@@ -28,7 +28,8 @@ const center = {
 
 const PuntoTomaMapa = () => {
   const { setLatitudMapa, setLongitudMapa, setLibroToma, libroToma, setMarcadorSeleccionado, marcadorSeleccionado, 
-    isCheckedPreContratada, puntosFiltradosParaElMapa, setTomaPreContratada,setSeleccionoPuntoEnMapa, selectedLocation, setSelectedLocation } =
+    isCheckedPreContratada, puntosFiltradosParaElMapa, setTomaPreContratada,setSeleccionoPuntoEnMapa, selectedLocation, setSelectedLocation,setEsPreContratado
+  ,setPuntoTomaLatitudLongitudAPI,puntoTomaLatitudLongitudAPI} =
     ZustandFiltrosContratacion();
   const { toast } = useToast();
   const [poligonos, setPoligonos] = useState([]);
@@ -41,11 +42,13 @@ const PuntoTomaMapa = () => {
   
   const handleSiguienteContratacion = () => {
     navigate("/Contrato/Usuario");
+    setEsPreContratado(true);
   };
 
   useEffect(() => {
     const mostrarPoligonos = async () => {
       setMapaCargado(false);
+      setPoligonos([]); 
       try {
         const response = await axiosClient.get("/ruta");
         setPoligonos(response.data.data);
@@ -57,7 +60,7 @@ const PuntoTomaMapa = () => {
       }
     };
     mostrarPoligonos();
-  }, []);
+  }, [promise]);
 
   useEffect(() => {
     set_promise(puntosFiltradosParaElMapa)
@@ -91,6 +94,7 @@ const PuntoTomaMapa = () => {
     const lng = event.latLng.lng();
     const clickedLocation = new google.maps.LatLng(lat, lng);
     setSelectedLocation({ lat, lng });
+    setPuntoTomaLatitudLongitudAPI([lat, lng ]);
     setSeleccionoPuntoEnMapa(true);
 
     let isInsidePolygon = false;
@@ -122,6 +126,7 @@ const PuntoTomaMapa = () => {
           ) {
             isInsidePolygon = true;
             setSelectedLocation({ lat, lng });
+            setPuntoTomaLatitudLongitudAPI([lat, lng ]);
             setSeleccionoPuntoEnMapa(true);
 
           }
@@ -163,7 +168,14 @@ const PuntoTomaMapa = () => {
   }
 
 
+  console.log(puntoTomaLatitudLongitudAPI);
+  console.log(selectedLocation);
 
+
+
+
+
+  
   return (
     <div>
       <div className="flex space-x-2">
@@ -216,6 +228,7 @@ const PuntoTomaMapa = () => {
                           const lat = event.latLng.lat();
                           const lng = event.latLng.lng();
                           setSelectedLocation({ lat, lng });
+                          setPuntoTomaLatitudLongitudAPI([lat, lng ]);
                           setSeleccionoPuntoEnMapa(true);
                           setLibroToma(libro.id);
                           console.log(libro.id);
