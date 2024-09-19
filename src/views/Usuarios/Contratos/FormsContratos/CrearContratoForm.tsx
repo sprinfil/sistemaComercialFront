@@ -145,6 +145,8 @@ export const CrearContratoForm = () => {
         ];
 
         console.log(serviciosSeleccionados);
+
+        console.log(servicios);
         let datos;
         if (!esPreContratado) {
             // Estos datos son para enviar
@@ -168,25 +170,51 @@ export const CrearContratoForm = () => {
 
             };
         } else {
-            // Estos datos son para enviar
-            datos = {
-                id_toma: tomaId,
-                id_usuario: usuariosEncontrados[0]?.id,
-                nombre_contrato: values.nombre_contrato,
-                clave_catastral: values.clave_catastral,
-                tipo_toma: tipoToma || 0,
-                servicio_contratados: serviciosSeleccionados,
-                //diametro_toma: values.diametro_de_la_toma, // Usar el campo correcto aquí
-                num_casa: values.num_casa,
-                colonia: values.colonia || 0,
-                calle: values.calle || 0,
-                codigo_postal: values.codigo_postal,
-                entre_calle1: values.entre_calle_1 || 0,
-                entre_calle2: values.entre_calle_2 || 0,
-                localidad: values.localidad,
-                municipio: values.municipio,
-                tipo_contratacion: values.tipo_contratacion,
-            };
+            if(tomaPreContratada?.tipo_contratacion == "pre-contrato")
+                {
+                // Estos datos son para enviar
+                datos = {
+                    id_toma: tomaId,
+                    id_usuario: usuariosEncontrados[0]?.id,
+                    nombre_contrato: values.nombre_contrato,
+                    clave_catastral: values.clave_catastral,
+                    tipo_toma: tipoToma || 0,
+                    servicio_contratados: servicios,
+                    //diametro_toma: values.diametro_de_la_toma, // Usar el campo correcto aquí
+                    num_casa: values.num_casa,
+                    colonia: values.colonia || 0,
+                    calle: values.calle || 0,
+                    codigo_postal: values.codigo_postal,
+                    entre_calle1: values.entre_calle_1 || 0,
+                    entre_calle2: values.entre_calle_2 || 0,
+                    localidad: values.localidad,
+                    municipio: values.municipio,
+                    tipo_contratacion: values.tipo_contratacion,
+                };
+            }
+            else
+            {
+                 // Estos datos son para enviar
+                 datos = {
+                    id_toma: tomaId,
+                    id_usuario: usuariosEncontrados[0]?.id,
+                    nombre_contrato: values.nombre_contrato,
+                    clave_catastral: values.clave_catastral,
+                    tipo_toma: tipoToma || 0,
+                    servicio_contratados: serviciosSeleccionados,
+                    //diametro_toma: values.diametro_de_la_toma, // Usar el campo correcto aquí
+                    num_casa: values.num_casa,
+                    colonia: values.colonia || 0,
+                    calle: values.calle || 0,
+                    codigo_postal: values.codigo_postal,
+                    entre_calle1: values.entre_calle_1 || 0,
+                    entre_calle2: values.entre_calle_2 || 0,
+                    localidad: values.localidad,
+                    municipio: values.municipio,
+                    tipo_contratacion: values.tipo_contratacion,
+                };
+            }
+            
         }
 
         const datosFiltrados = {
@@ -252,42 +280,85 @@ export const CrearContratoForm = () => {
     const [contrato2, setContrato2] = useState(false);
 
 
+    const [campoAguaTomaPropia, setCampoAguaTomaPropia] = useState(false);
+    const [contrato2TomaPropia, setContrato2TomaPropia] = useState(false);
+
+
     useEffect(() => {
         console.log(tomaPreContratada);
         if (tomaPreContratada) {
 
-            form.reset({
-                clave_catastral: tomaPreContratada?.clave_catastral || '',
-                tipo_toma: tomaPreContratada?.id_tipo_toma || '',
-                diametro_de_la_toma: tomaPreContratada?.diametro_de_la_toma || '',
-                calle: tomaPreContratada?.calle || '',
-                num_casa: String(tomaPreContratada?.numero_casa) || 0,
-                colonia: tomaPreContratada?.colonia || '',
-                codigo_postal: tomaPreContratada?.codigo_postal || '',
-                entre_calle_1: Number(tomaPreContratada?.entre_calle_1) || '',
-                entre_calle_2: Number(tomaPreContratada?.entre_calle_2) || '',
-                localidad: tomaPreContratada?.localidad || '',
-                municipio: tomaPreContratada?.municipio || '',
-                c_agua: Boolean(tomaPreContratada?.c_agua) || false,
-                c_alc: Boolean(tomaPreContratada?.c_alc) || false,
-                c_san: Boolean(tomaPreContratada?.c_san) || false,
-                tipo_contratacion: tomaPreContratada?.tipo_contratacion || '',
-                id_giro_comercial: tomaPreContratada?.id_giro_comercial || 0,
+            if(tomaPreContratada?.tipo_contratacion == "pre-contrato")
+            {
+                form.reset({
+                    clave_catastral: tomaPreContratada?.clave_catastral || '',
+                    tipo_toma: tomaPreContratada?.id_tipo_toma || '',
+                    diametro_de_la_toma: tomaPreContratada?.diametro_de_la_toma || '',
+                    calle: tomaPreContratada?.calle || '',
+                    num_casa: String(tomaPreContratada?.numero_casa) || 0,
+                    colonia: tomaPreContratada?.colonia || '',
+                    codigo_postal: tomaPreContratada?.codigo_postal || '',
+                    entre_calle_1: Number(tomaPreContratada?.entre_calle_1) || '',
+                    entre_calle_2: Number(tomaPreContratada?.entre_calle_2) || '',
+                    localidad: tomaPreContratada?.localidad || '',
+                    municipio: tomaPreContratada?.municipio || '',
+                    c_agua: Boolean(tomaPreContratada?.c_agua) || false,
+                    c_alc: Boolean(tomaPreContratada?.c_alc) || false,
+                    c_san: Boolean(tomaPreContratada?.c_san) || false,
+                    tipo_contratacion: tomaPreContratada?.tipo_contratacion || '',
+                    id_giro_comercial: tomaPreContratada?.id_giro_comercial || 0,
+    
+                });
 
-            });
+                if (tomaPreContratada.c_agua != null) {
+                    setCampoAgua(true);
+    
+                }
+    
+                if (tomaPreContratada.c_alc != true && tomaPreContratada.c_san != null) {
+                    setContrato2(true);
+    
+                }
+    
+            }
+            else
+            {
+                form.reset({
+                    clave_catastral: tomaPreContratada?.clave_catastral || '',
+                    tipo_toma: tomaPreContratada?.id_tipo_toma || '',
+                    diametro_de_la_toma: tomaPreContratada?.diametro_de_la_toma || '',
+                    calle: tomaPreContratada?.calle || '',
+                    num_casa: String(tomaPreContratada?.numero_casa) || 0,
+                    colonia: tomaPreContratada?.colonia || '',
+                    codigo_postal: tomaPreContratada?.codigo_postal || '',
+                    entre_calle_1: Number(tomaPreContratada?.entre_calle_1) || '',
+                    entre_calle_2: Number(tomaPreContratada?.entre_calle_2) || '',
+                    localidad: tomaPreContratada?.localidad || '',
+                    municipio: tomaPreContratada?.municipio || '',
+                    c_agua: Boolean(tomaPreContratada?.c_agua) || false,
+                    c_alc: Boolean(tomaPreContratada?.c_alc) || false,
+                    c_san: Boolean(tomaPreContratada?.c_san) || false,
+                    tipo_contratacion: tomaPreContratada?.tipo_contratacion || '',
+                    id_giro_comercial: tomaPreContratada?.id_giro_comercial || 0,
+    
+                });
 
+                if (tomaPreContratada.c_agua != null) {
+                    setCampoAguaTomaPropia(true);
+    
+                }
+    
+                if (tomaPreContratada.c_alc != true && tomaPreContratada.c_san != null) {
+                    setContrato2TomaPropia(true);
+    
+                }
+            }
+
+           
 
             console.log(tomaPreContratada);
 
-            if (tomaPreContratada.c_agua != null) {
-                setCampoAgua(true);
-
-            }
-
-            if (tomaPreContratada.c_alc != true && tomaPreContratada.c_san != null) {
-                setContrato2(true);
-
-            }
+          
 
 
 
@@ -652,8 +723,8 @@ console.log(esPreContratado);
                             <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-5">Servicios a contratar</h3>
                             <div className='flex items-center space-x-8 mt-5'>
                                 <div className='flex flex-col items-center'>
-                                    {!campoAgua
-                                        &&
+                                    {campoAgua && tomaPreContratada?.tipo_contratacion == "pre-contrato" && 
+                                       
                                         <div>
                                             <FormField
                                                 control={form.control}
@@ -665,7 +736,9 @@ console.log(esPreContratado);
                                                             <Switch
                                                                 className='ml-2'
                                                                 checked={field.value}
-                                                                onCheckedChange={(checked) => field.onChange(checked)}
+                                                                onCheckedChange={(checked) => field.onChange(checked)
+                                                                }
+                                                                disabled={campoAgua}
                                                             />
                                                         </FormControl>
                                                         <FormDescription />
@@ -675,8 +748,35 @@ console.log(esPreContratado);
                                             />
                                         </div>}
 
+
+                                        {!campoAguaTomaPropia && tomaPreContratada?.tipo_contratacion != "pre-contrato" && 
+                                       
+                                       <div>
+                                           <FormField
+                                               control={form.control}
+                                               name="c_agua"
+                                               render={({ field }) => (
+                                                   <FormItem>
+                                                       <FormLabel>Agua</FormLabel>
+                                                       <FormControl>
+                                                           <Switch
+                                                               className='ml-2'
+                                                               checked={field.value}
+                                                               onCheckedChange={(checked) => field.onChange(checked)
+                                                               }
+                                                               disabled={campoAgua}
+                                                           />
+                                                       </FormControl>
+                                                       <FormDescription />
+                                                       <FormMessage />
+                                                   </FormItem>
+                                               )}
+                                           />
+                                       </div>}
+
                                 </div>
-                                {!contrato2 &&
+                                
+                                {contrato2 && tomaPreContratada?.tipo_contratacion == "pre-contrato" && 
                                     <div>
                                         <div className='flex flex-col items-center'>
                                             <FormField
@@ -723,6 +823,54 @@ console.log(esPreContratado);
                                         </div>
                                     </div>}
 
+                                    {!contrato2TomaPropia && tomaPreContratada?.tipo_contratacion != "pre-contrato" && 
+                                    <div>
+                                        <div className='flex flex-col items-center'>
+                                            <FormField
+                                                control={form.control}
+                                                name="c_alc"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Alcantarillado</FormLabel>
+                                                        <FormControl>
+                                                            <Switch
+                                                                className='ml-2'
+                                                                checked={field.value}
+                                                                onCheckedChange={(checked) => onSwitchChange("c_alc", checked)}
+                                                                disabled={contrato2}
+                                                            />
+                                                        </FormControl>
+                                                        <FormDescription />
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+
+                                        <div className='flex flex-col items-center'>
+                                            <FormField
+                                                control={form.control}
+                                                name="c_san"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Saneamiento</FormLabel>
+                                                        <FormControl>
+                                                            <Switch
+                                                                className='ml-2'
+                                                                checked={field.value}
+                                                                onCheckedChange={(checked) => onSwitchChange("c_san", checked)}
+                                                                disabled={contrato2}
+                                                            />
+                                                        </FormControl>
+                                                        <FormDescription />
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>}
+                                    
+
                             </div>
 
 
@@ -750,7 +898,7 @@ console.log(esPreContratado);
                                                 <FormLabel>Tipo de contratación</FormLabel>
                                                 <FormControl>
                                                     {
-                                                        esPreContratado ?
+                                                        tomaPreContratada?.tipo_contratacion == "pre-contrato" ?
                                                         <Select
                                                         disabled={true} // Ajusta esto según si el campo debe estar deshabilitado o no
                                                         onValueChange={(value) => {

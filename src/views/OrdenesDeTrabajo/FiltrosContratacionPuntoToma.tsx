@@ -60,14 +60,15 @@ const handleLimpiarFiltros = () => {
   const handleBuscarTomas = () => 
   {
 
-    const contratadas = isCheckedPreContratadas ? "pre-contrato" : "" 
+    // Verifica si el checkbox está marcado
+  const contratadas = isCheckedPreContratadas ? "pre-contrato" : null;
 
-    const values = {
-      filtros: {
-        tipo_contratacion: [contratadas],
-        codigo_toma: codigoToma
-      },
-    };
+  const values = {
+    filtros: {
+      ...(contratadas && { tipo_contratacion: [contratadas] }),
+      codigo_toma: codigoToma,
+    },
+  };
     
     console.log(values);
 
