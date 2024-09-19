@@ -31,6 +31,7 @@ export const DetalleContrato = ({ selected_contrato }) => {
     estatus: selected_contrato?.estatus || "",
     tipo_contratacion: selected_contrato?.toma?.tipo_contratacion|| "",
     codigo_toma: selected_contrato?.toma?.codigo_toma|| "",
+    usuario: selected_contrato?.usuario?.nombre_completo|| "",
 
   });
 
@@ -62,7 +63,15 @@ export const DetalleContrato = ({ selected_contrato }) => {
       
          <div className="mb-[3vh]">
       <h1 className="text-2xl mt-[2vh] text-black">Detalle de la contratación</h1>
+      <div className="flex space-x-2">
+      <div className="mt-4 mr-1 text-black text-lg">Usuario:</div>
+      <div className="mt-[22px]">
+      {formData.usuario}
+
+        </div>
+        </div>
     <div className="flex space-x-2">
+      
       <div className="mt-4 mr-1 text-black text-lg">Folio de solicitud:</div>
       <div className="mt-[22px]">
       {formData.folio_solicitud}

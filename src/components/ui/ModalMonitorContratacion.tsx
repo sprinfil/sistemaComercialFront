@@ -70,7 +70,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
   
   const {setDataMonitorContratos,  setLoadingTableMonitorContrato, boolModalContratacionMonitor, setBoolModalContratacionMonitor, 
     setBoolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick,setBoolModalCotizacionMonitor,
-    setBooleanModalSubirArchivosContratacion, setIdContrato, idContrato, setAccion} =  ZustandFiltrosContratacion();
+    setBooleanModalSubirArchivosContratacion, setIdContrato, idContrato, setAccion, setTarifaDeContratoActual, tarifaDeContratoActual} =  ZustandFiltrosContratacion();
 
     const[openEliminar, setOpenEliminar] = useState(false);
 
@@ -121,15 +121,35 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
     setBoolModalContratacionCambioDeNombre(true);
   }
 
-  const handleCotizacionModal= () => {
-
+  const handleCotizacionModal = async () => {
+    setBoolModalCotizacionMonitor(true);
+    setAbrirModalCotizacionAlcantarilladoS(true);
+    setAbrirModalCotizacionAgua(true);
     
-      setBoolModalCotizacionMonitor(true);
-      setAbrirModalCotizacionAlcantarilladoS(true)
-      setAbrirModalCotizacionAgua(true);
-  }
+    const values = {
+      id_contrato: selected_contrato.id,
+    };
   
+    console.log(values);
+  
+    try {
+      const response = await axiosClient.post("contratos/cotizacion/create", values);
+      console.log(response.data.Tarifa);
+  
+      // Acceder a los datos de la respuesta
+      const tarifa = response.data.Tarifa;
+      setTarifaDeContratoActual(tarifa);
+      
+      // Opcional: Log de los datos de tarifa
+      console.log(tarifa);
+    } catch (err) {
+      console.error('Error al crear la cotización:', err);
+    }
+  };
 
+  
+  
+console.log(tarifaDeContratoActual);
 
   const handleCerrarContrato = async () => {
  
@@ -309,7 +329,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
 
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Cotización</p>
+                    <p>Hacer cotización</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -428,7 +448,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => {setBoolModalContratacionMonitor(false); setAccion("")}} className="w-[10vh] bg-red-500 border  border-black">
+          <AlertDialogCancel onClick={() => {setBoolModalContratacionMonitor(false); setAccion("")}} className="w-[10vh] bg-red-500 border  border-black mb-10">
             Salir
           </AlertDialogCancel>
         </AlertDialogFooter>

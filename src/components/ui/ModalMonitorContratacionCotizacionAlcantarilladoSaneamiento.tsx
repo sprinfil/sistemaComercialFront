@@ -52,7 +52,8 @@ import ComboBoxCargosCargables from "./ComboBoxCargosCargables.tsx";
 const ModalMonitorContratacionCotizacionAlcantarilladoSaneamiento = ({ selected_contrato, open, setOpen }) => {
   const { toast } = useToast();
   
-  const {boolModalCotizacionMonitor, setBoolModalCotizacionMonitor, MonitorsetDataMonitorContratos,  setLoadingTableMonitorContrato, setBoolModalContratacionCambioDeNombre, boolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick} =  ZustandFiltrosContratacion();
+  const {boolModalCotizacionMonitor, setBoolModalCotizacionMonitor, MonitorsetDataMonitorContratos,  setLoadingTableMonitorContrato, setBoolModalContratacionCambioDeNombre, 
+    boolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick, tarifaDeContratoActual} =  ZustandFiltrosContratacion();
 
   console.log(selected_contrato);
 
@@ -209,6 +210,12 @@ const eliminarConcepto = (index: number) => {
                                 name="nombre_contrato"
                                 render={({ field }) => (
                                     <FormItem>
+                                      <div className="flex space-x-2 justify-center">
+                                      <div className="text-base text-black">Precio del contrato de alcantarillado y saneamiento:</div>
+                                   <div className="mt-1 mb-2">
+                                   {tarifaDeContratoActual.monto}
+                                    </div> 
+                                        </div>
                                    
                                         <FormLabel>Selecciona un cargo si es necesario.</FormLabel>
                                         <FormControl>
@@ -257,7 +264,7 @@ const eliminarConcepto = (index: number) => {
                                             <Button onClick={agregrarConcepto}  type="button">Agregar</Button>
                                           </div>
                                                                                       
-                                          <div className="max-h-[50vh] overflow-auto border border-gray-300 rounded-md p-2">
+                                          <div className="max-h-[50vh]  p-2">
 
 
                                             <div>
