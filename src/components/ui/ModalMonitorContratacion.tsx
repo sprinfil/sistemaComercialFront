@@ -60,6 +60,7 @@ import { DetalleContrato } from "../../views/Usuarios/Contratos/DetalleContrato.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ModalEstasSeguroEliminarContrato from "./ModalEstasSeguroEliminarContrato.tsx";
 import { CotizacionContrato } from "../../views/Usuarios/Contratos/FormsContratos/CotizacionContrato.tsx";
+import ModalMonitorContratacionConsultarFactibilidad from "./ModalMonitorContratacionConsultarFactibilidad.tsx";
 
 
 
@@ -75,7 +76,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
 
     const [abrirModalCotizacionAgua, setAbrirModalCotizacionAgua] = useState(false);
     const [abrirModalCotizacionAlcantarilladoS, setAbrirModalCotizacionAlcantarilladoS] = useState(false);
-
+    const [abrirModalFactibilidad, setAbrirModalFactibilidad] = useState(false);
   //console.log(selected_contrato);
     //console.log(selected_contrato?.id_toma)
     //setIdContrato(selected_contrato?.id_toma)
@@ -173,34 +174,8 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
   const handleFactibilidad = async () => {
  
    
-
-    try {
-    const  response =  await axiosClient.get(`Tomas/factibilidades/${selected_contrato?.toma?.codigo_toma}`);
-      
-      const mensaje = response.data.message;
-      toast({
-        title: "¡Éxito!",
-        description: mensaje,
-        variant: "success",
-      });
-      fetch_contratos();
-      set_open(false);
-      console.log(response);
-    } catch (err) {
-      const mensaje = err.response?.data?.message || "No se pudo cerrar el contrato.";
-
-     console.log(err);
-        
-        toast({
-          variant: "destructive",
-          title: "Oh, no. Error",
-          description: mensaje,
-          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-        });
-      
-
-      }
-
+    setAbrirModalFactibilidad(true);
+    
      
   };
 
@@ -367,6 +342,11 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
                   <IconButton onClick={handleFactibilidad}>
                   <FaTools className="w-[3vh] h-[3vh]" />
                 </IconButton>
+                <ModalMonitorContratacionConsultarFactibilidad
+                 selected_contrato={selected_contrato}
+                  open={abrirModalFactibilidad}
+                  setOpen={setAbrirModalFactibilidad}
+                 />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Consultar factibilidad</p>

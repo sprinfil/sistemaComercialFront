@@ -53,7 +53,7 @@ export const CrearContratoForm = () => {
 
     const { latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial,
         setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
-        setServicioContratado, setGiroComercial, setTipoDeToma, tomaPreContratada, isCheckInspeccion, boolPeticionContratacion,
+        setServicioContratado, setGiroComercial, setTipoDeToma, tipoDeToma, tomaPreContratada, isCheckInspeccion, boolPeticionContratacion,
         setServicioContratado2, selectedLocation, getCoordenadaString, setNombreGiroComercial, esPreContratado,getCoordenadaString2, puntoTomaLatitudLongitudAPI} = ZustandFiltrosContratacion();
 
 
@@ -79,6 +79,7 @@ export const CrearContratoForm = () => {
             localidad: "La Paz",
             tipo_toma: 0,
             tipo_contratacion: "",
+            municipio:"La Paz",
             c_agua: false,
             c_alc: false,
             c_san: false,
@@ -164,7 +165,7 @@ export const CrearContratoForm = () => {
                 entre_calle1: values.entre_calle_1,
                 entre_calle2: values.entre_calle_2,
                 localidad: values.localidad,
-                municipio: values.municipio,
+                municipio: values.municipio || "La Paz",
                 tipo_contratacion: values.tipo_contratacion,
                 coordenada: coordenadasComoCadenas,
 
@@ -301,7 +302,7 @@ export const CrearContratoForm = () => {
                     entre_calle_1: Number(tomaPreContratada?.entre_calle_1) || '',
                     entre_calle_2: Number(tomaPreContratada?.entre_calle_2) || '',
                     localidad: tomaPreContratada?.localidad || '',
-                    municipio: tomaPreContratada?.municipio || '',
+                    municipio: tomaPreContratada?.municipio || 'La Paz',
                     c_agua: Boolean(tomaPreContratada?.c_agua) || false,
                     c_alc: Boolean(tomaPreContratada?.c_alc) || false,
                     c_san: Boolean(tomaPreContratada?.c_san) || false,
@@ -310,12 +311,12 @@ export const CrearContratoForm = () => {
     
                 });
 
-                if (tomaPreContratada.c_agua != null) {
+                if (tomaPreContratada.c_agua == 0) {
                     setCampoAgua(true);
     
                 }
     
-                if (tomaPreContratada.c_alc != true && tomaPreContratada.c_san != null) {
+                if (tomaPreContratada.c_alc == 0 && tomaPreContratada.c_san == 0) {
                     setContrato2(true);
     
                 }
@@ -334,7 +335,7 @@ export const CrearContratoForm = () => {
                     entre_calle_1: Number(tomaPreContratada?.entre_calle_1) || '',
                     entre_calle_2: Number(tomaPreContratada?.entre_calle_2) || '',
                     localidad: tomaPreContratada?.localidad || '',
-                    municipio: tomaPreContratada?.municipio || '',
+                    municipio: tomaPreContratada?.municipio || 'La Paz',
                     c_agua: Boolean(tomaPreContratada?.c_agua) || false,
                     c_alc: Boolean(tomaPreContratada?.c_alc) || false,
                     c_san: Boolean(tomaPreContratada?.c_san) || false,
@@ -695,8 +696,8 @@ console.log(esPreContratado);
                                                     onValueChange={(value) => {
                                                         field.onChange(value); // Actualiza el valor en react-hook-form
                                                     }}
-                                                    value={field.value || ''} // Valor controlado por react-hook-form
-                                                >
+                                                    value={field.value || "La Paz"} // Valor por defecto a 'La Paz'
+                                                    >
                                                     <FormControl>
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Selecciona el municipio" />
@@ -738,7 +739,6 @@ console.log(esPreContratado);
                                                                 checked={field.value}
                                                                 onCheckedChange={(checked) => field.onChange(checked)
                                                                 }
-                                                                disabled={campoAgua}
                                                             />
                                                         </FormControl>
                                                         <FormDescription />
@@ -790,7 +790,6 @@ console.log(esPreContratado);
                                                                 className='ml-2'
                                                                 checked={field.value}
                                                                 onCheckedChange={(checked) => onSwitchChange("c_alc", checked)}
-                                                                disabled={contrato2}
                                                             />
                                                         </FormControl>
                                                         <FormDescription />
@@ -812,7 +811,6 @@ console.log(esPreContratado);
                                                                 className='ml-2'
                                                                 checked={field.value}
                                                                 onCheckedChange={(checked) => onSwitchChange("c_san", checked)}
-                                                                disabled={contrato2}
                                                             />
                                                         </FormControl>
                                                         <FormDescription />
@@ -947,7 +945,9 @@ console.log(esPreContratado);
 
 
                                 </div>
-                                <div className='mt-4 w-full'>
+                                {
+                                    tipoDeToma != "Domestica" &&
+                                      <div className='mt-4 w-full'>
                                     <FormField
                                         control={form.control}
                                         name="id_giro_comercial"
@@ -963,6 +963,8 @@ console.log(esPreContratado);
                                         )}
                                     />
                                 </div>
+                                }
+                              
 
 
 

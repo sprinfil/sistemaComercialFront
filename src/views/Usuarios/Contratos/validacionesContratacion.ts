@@ -19,7 +19,7 @@ export const crearContratoSchema = z.object({
     entre_calle_1: z.number(),
     entre_calle_2: z.number(),
     localidad: z.string(),
-    municipio: z.string().min(1,"Ingresa un municipio"),
+    municipio: z.string(),
     c_agua: z.boolean(),
     c_alc: z.boolean(),
     c_san: z.boolean(),

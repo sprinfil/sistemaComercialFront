@@ -288,7 +288,7 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
     entre_calle_1: "",
     entre_calle_2: "",
     localidad: "",
-    municipio:"",
+    municipio:"La Paz",
     tipo_contratacion: "",
     coordenada: "",
   },

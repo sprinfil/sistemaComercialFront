@@ -91,7 +91,7 @@ export const DetalleInformacionContrato = () => {
         solicitud_factibilidad: isCheckInspeccion,
         toma: {
           id_libro: libroToma,
-          id_giro_comercial: idGiroComercial,
+          id_giro_comercial: contrato.id_giro_comercial,
           direccion_notificacion: direccion_notificaciones,
         }
       }

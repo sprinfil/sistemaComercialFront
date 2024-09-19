@@ -48,6 +48,7 @@ const PuntoTomaMapa = () => {
   useEffect(() => {
     const mostrarPoligonos = async () => {
       setMapaCargado(false);
+      setPoligonos([]); 
       try {
         const response = await axiosClient.get("/ruta");
         setPoligonos(response.data.data);
@@ -59,7 +60,7 @@ const PuntoTomaMapa = () => {
       }
     };
     mostrarPoligonos();
-  }, []);
+  }, [promise]);
 
   useEffect(() => {
     set_promise(puntosFiltradosParaElMapa)
@@ -170,6 +171,11 @@ const PuntoTomaMapa = () => {
   console.log(puntoTomaLatitudLongitudAPI);
   console.log(selectedLocation);
 
+
+
+
+
+  
   return (
     <div>
       <div className="flex space-x-2">
