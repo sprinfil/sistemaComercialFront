@@ -198,8 +198,6 @@ const PuntoVentaForm = () => {
   };
 
   const handleCargoSelect = (cargo, entidad = null, busqueda = false, tipo = "") => {
-
-
     setSelectedCargos(prevSelectedCargos => {
       let newCargo = {};
       let entidad_temp;
@@ -346,7 +344,6 @@ const PuntoVentaForm = () => {
         }
       }
     });
-
   };
 
   function quitarElementos(arreglo, elementosAQuitar) {

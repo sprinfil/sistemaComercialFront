@@ -19,16 +19,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import ConceptosService from "../../lib/Conceptos"
-import ZustandConvenios from "../../contexts/ZustandConvenios"
 import { useToast } from "./use-toast"
+import TipoTomasService from "../../lib/TipoTomasService"
 
-export function ComboBoxConceptos({ set, selected_conceptos }) {
+export function ComboBoxTipoTomas({ set, selected_conceptos }) {
   const { toast } = useToast()
 
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState(0)
   const [conceptos, set_conceptos] = React.useState([]);
-  const { convenio_conceptos, set_convenio_conceptos } = ZustandConvenios();
 
 
   React.useEffect(() => {
@@ -36,7 +35,7 @@ export function ComboBoxConceptos({ set, selected_conceptos }) {
   }, [])
 
   async function get() {
-    let temp = await ConceptosService.get_all();
+    let temp = await TipoTomasService.get_all();
     set_conceptos(temp);
   }
 
@@ -83,13 +82,10 @@ export function ComboBoxConceptos({ set, selected_conceptos }) {
                   value={framework.id}
                   onSelect={(currentValue) => {
                     setValue(framework.id === value ? "" : framework.id)
-                  
                     setOpen(false)
-                 
                     if (!validar_concepto(framework)) {
                       let conceptos = [...selected_conceptos, framework];
                       set(conceptos);
-                      set_convenio_conceptos(conceptos);
                     }
                   }}
                 >

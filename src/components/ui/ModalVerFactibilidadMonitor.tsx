@@ -93,13 +93,13 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
 
   const removeFile = (fileName) => {
     setDocumentos(prevFiles => prevFiles.filter(file => file.name !== fileName));
-    if (documentos.length <= 1) {
+    if (documentos?.length <= 1) {
       setFileStatus(null); // Si no hay archivos, restablece el estado
     }
   };
 
   const truncateFileName = (fileName, maxLength = 30) => {
-    if (fileName.length > maxLength) {
+    if (fileName?.length > maxLength) {
       return fileName.slice(0, maxLength) + '...';
     }
     return fileName;
@@ -110,7 +110,7 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
   const handleFileChange = (event) => {
     const selectedFiles = Array.from(event.target.files);
     const validFiles = selectedFiles;
-    if (validFiles.length > 0) {
+    if (validFiles?.length > 0) {
       setDocumentos(prevFiles => [...prevFiles, ...validFiles]);
       setFileStatus('success');
     } else {
@@ -133,7 +133,7 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
 
   const handleUpdate = async (newEstado) => {
     const validationErrors = validateFields();
-    if (Object.keys(validationErrors).length > 0) {
+    if (Object.keys(validationErrors)?.length > 0) {
       setErrorMessages(validationErrors);
       toast({
         title: "Error",
@@ -363,7 +363,7 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
                     className={`mb-3 underline text-blue-500 w-[260px] h-[4vh] gap-2 flex items-center py-2 rounded-md cursor-pointer ease-in duration-100 ${fileStatus === 'success' ? 'bg-green-100 hover:bg-green-200' : fileStatus === 'error' ? 'bg-red-100 hover:bg-red-200' : 'hover:text-[17px]'}`}
                     onClick={triggerFileInput} // Abrir el explorador de archivos al hacer clic
                   >
-                    <p>{documentos.length > 0 ? `${documentos.length} archivo(s) seleccionado(s)` : 'Seleccionar archivo(s)'}</p>
+                    <p>{documentos?.length > 0 ? `${documentos?.length} archivo(s) seleccionado(s)` : 'Seleccionar archivo(s)'}</p>
                   </div>
                   <ul className='list-disc pl-5'>
                     {documentos.map((doc, index) => (
@@ -384,7 +384,7 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
               </div>
               <div className="bg-green-100 p-4 rounded-lg shadow-md w-full min-w-[300px] mb-5">
                 <h2 className="text-sm font-semibold mb-4">Archivos:</h2> {/* Ajusta el tamaño del texto según sea necesario */}
-                {archivos.length > 0 ? (
+                {archivos?.length > 0 ? (
                   <ul className="list-disc list-inside space-y-2">
                     {archivos.map((file) => (
                       <li key={file.id} className="flex items-center justify-between">

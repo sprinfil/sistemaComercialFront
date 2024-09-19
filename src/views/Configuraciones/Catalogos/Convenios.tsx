@@ -6,6 +6,7 @@ import { useStateContext } from "../../../contexts/ContextConvenio.tsx";
 import { OcultarTable } from '../../../components/Tables/Components/OcultarTable.tsx';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ConveniosConceptosForm } from '../../../components/Forms/ConveniosConceptosForm.tsx';
+import { ConvenioTipoTomaForm } from '../../../components/Forms/ConvenioTipoTomaForm.tsx';
 
 const Convenios = () => {
   return (
@@ -71,9 +72,11 @@ const TabsConevios = () => {
         <ConvenioForm />
       </TabsContent>
       <TabsContent value="Conceptos">
-        <ConveniosConceptosForm/>
+        <ConveniosConceptosForm />
       </TabsContent>
-
+      <TabsContent value="TipoTomas">
+        <ConvenioTipoTomaForm />
+      </TabsContent>
     </Tabs>
   )
 

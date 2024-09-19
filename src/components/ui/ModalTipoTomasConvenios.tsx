@@ -26,15 +26,14 @@ import {
 import { CrossCircledIcon } from '@radix-ui/react-icons';
 import IconButton from '../ui/IconButton';
 import { useStateContext } from "../../contexts/ContextConvenio.tsx";
+import { ComboBoxTipoTomas } from './ComboBoxTipoTomas.tsx';
 
 interface ModalProps {
   trigger: React.ReactNode;
 }
 
-const ModalAgregarConceptosConvenios: React.FC<ModalProps> = ({ trigger }) => {
+const ModalTipoTomasConvenios: React.FC<ModalProps> = ({ trigger }) => {
   const [selected_conceptos, set_selected_conceptos] = React.useState([]);
-  const { convenio_conceptos, set_convenio_conceptos } = ZustandConvenios();
-  const [actualizar, set_actualizar] = useState([]);
   const { convenio, setConvenio, loadingTable, setLoadingTable, setConvenios, setAccion, accion } = useStateContext();
 
   const quitar_concepto = (concepto) => {
@@ -46,7 +45,7 @@ const ModalAgregarConceptosConvenios: React.FC<ModalProps> = ({ trigger }) => {
     console.log(selected_conceptos)
   },[selected_conceptos])
 
-  //TODO: AGREGAR API PARA GUARDAR CONCEPTOS A CONVENIOS
+  //TODO: AGREGAR API PARA GUARDAR Tipo de tomas A CONVENIOS
   const guardar_conceptos = () => {
 
     setConvenios((prev) => {
@@ -54,7 +53,7 @@ const ModalAgregarConceptosConvenios: React.FC<ModalProps> = ({ trigger }) => {
         if (convenio_temp?.id == convenio.id) {
           let new_convenio = {
             ...convenio,
-            conceptos: selected_conceptos
+            tipoTomas: selected_conceptos
           }
           setConvenio(new_convenio);
           return new_convenio;
@@ -70,12 +69,12 @@ const ModalAgregarConceptosConvenios: React.FC<ModalProps> = ({ trigger }) => {
     <div>
       <AlertDialog>
         <AlertDialogTrigger asChild onClick={() => {
-          set_selected_conceptos(convenio?.conceptos || []);
+          set_selected_conceptos(convenio?.tipoTomas || []);
         }}>{trigger}</AlertDialogTrigger>
         <AlertDialogContent className="max-w-[80vw] h-[90vh] max-h-[90vh] overflow-auto">
           <div className='w-full h-full relative'>
-            <p className='font-medium text-[20px] mb-5'>Editar Conceptos</p>
-            <ComboBoxConceptos selected_conceptos={selected_conceptos} set={set_selected_conceptos} />
+            <p className='font-medium text-[20px] mb-5'>Editar Tipo de Tomas</p>
+            <ComboBoxTipoTomas selected_conceptos={selected_conceptos} set={set_selected_conceptos} />
             <div className='mt-5 h-[60vh] overflow-auto'>
               <Table>
                 <TableHeader>
@@ -111,5 +110,5 @@ const ModalAgregarConceptosConvenios: React.FC<ModalProps> = ({ trigger }) => {
   );
 };
 
-export default ModalAgregarConceptosConvenios;
+export default ModalTipoTomasConvenios;
 

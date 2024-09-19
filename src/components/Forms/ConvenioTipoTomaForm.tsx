@@ -15,13 +15,14 @@ import {
 import { PlusCircle } from 'lucide-react';
 import ModalAgregarConceptosConvenios from './ModalAgregarConceptosConvenios.tsx';
 import { Button } from 'react-day-picker';
+import ModalTipoTomasConvenios from '../ui/ModalTipoTomasConvenios.tsx';
 
-export const ConveniosConceptosForm = () => {
+export const ConvenioTipoTomaForm = () => {
   const { convenio, setConvenio, loadingTable, setLoadingTable, setConvenios, setAccion, accion } = useStateContext();
-  const [conceptos, set_conceptos] = useState([]);
+  const [tipoTomas, setTipoTomas] = useState([]);
 
   useEffect(() => {
-    set_conceptos(convenio?.conceptos);
+    setTipoTomas(convenio?.tipoTomas);
     console.log(convenio)
   }, [convenio])
 
@@ -30,14 +31,13 @@ export const ConveniosConceptosForm = () => {
       <div className='flex h-[40px] items-center mb-[10px] rounded-sm'>
         <div className='h-[20px] w-full flex items-center justify-end'>
           <div className="mb-[10px] h-full w-full mx-4">
-            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo convenio</p>}
             {convenio.nombre != "" && <p className="text-muted-foreground text-[20px]">{convenio.nombre}</p>}
           </div>
 
           <>
             <div>
               <a title="Editar">
-                <ModalAgregarConceptosConvenios trigger={
+                <ModalTipoTomasConvenios trigger={
                   <IconButton>
                     <Pencil2Icon className="w-[20px] h-[20px]" />
                   </IconButton>
@@ -52,7 +52,7 @@ export const ConveniosConceptosForm = () => {
 
       <div className='mx-4'>
         <Table>
-          <TableCaption>Conceptos Disponibles</TableCaption>
+          <TableCaption>Tomas Disponibles</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>Nombre</TableHead>
@@ -60,10 +60,10 @@ export const ConveniosConceptosForm = () => {
           </TableHeader>
           <TableBody>
             {
-              convenio?.conceptos?.map((concepto: any) => (
+              convenio?.tipoTomas?.map((tipoToma: any) => (
                 <TableRow>
                   <TableCell>
-                    {concepto.nombre}
+                    {tipoToma.nombre}
                   </TableCell>
                 </TableRow>
               ))

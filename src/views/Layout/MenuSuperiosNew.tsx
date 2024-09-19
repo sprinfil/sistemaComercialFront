@@ -250,7 +250,7 @@ export const MenuSuperiosNew = () => {
     return (
         <>
             <p className='relative xl:hidden text-sm text-red-500 p-1 h-[9vh] flex items-center justify-center'>La resolucion no es compatible</p>
-            <div className='relative hidden xl:block '>
+            <div className='relative hidden xl:block'>
                 <Menubar>
                     {
                         loading_permissions &&
