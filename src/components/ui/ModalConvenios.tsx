@@ -12,10 +12,11 @@ import {
 import axiosClient from '../../axios-client';
 import Loader from '../ui/Loader.tsx';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario.tsx';
 import { Checkbox } from "@/components/ui/checkbox"
 import { ComboBoxConvenio } from './ComboBoxConvenio.tsx';
+import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario.tsx';
 import { Input } from './input.tsx';
+import { Toast } from '@radix-ui/react-toast';
 
 
 interface ModalConvenioProps {
@@ -59,7 +60,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
 
     axiosClient.post("/Convenio/BuscarConceptosConveniables", {
       tipo: "toma", 
-      id: convenio.id, 
+      id: usuariosEncontrados[0].tomas[0].id, 
       id_convenio_catalogo: convenio.id 
     })
       .then(({ data }) => {
@@ -71,6 +72,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
         }));
         setCargosConveniables(filteredCargos);
         setActiveAccordion("cargosConveniables");
+        console.log(cargosConveniables)
       })
       .catch(err => {
         console.error('Error al obtener los cargos conveniables:', err);
@@ -96,27 +98,27 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
 
   const handleConfirmar = () => {
     const payload = {
-      id_convenio_catalogo: selectedConvenio.id || 0,
-      id_modelo: usuariosEncontrados[0].tomas[0].id,  // Añadido campo `id_modelo`
-      modelo_origen: "toma",  // Añadido campo `modelo_origen`
-      cantidad_letras: cantidadLetras,
-      comentario: comentario,
-      cargos_conveniados: cargosSeleccionados.map(cargo => ({
-        id: cargo.id,
-        porcentaje_conveniado: tipoMonto === '%' ? porcentajeConveniado : montoConveniado, // Ajusta según el tipo de monto
-      })),
+        id_convenio_catalogo: selectedConvenio.id || 0,
+        id_modelo: usuariosEncontrados[0].tomas[0].id,
+        modelo_origen: "toma",
+        cantidad_letras: cantidadLetras,
+        comentario: comentario,
+        cargos_conveniados: cargosSeleccionados.map(cargo => ({
+            id: cargo.id,
+            porcentaje_conveniado: tipoMonto === '%' ? porcentajeConveniado : montoConveniado,
+        })),
     };
-  
+
     axiosClient.post('/Convenio/RegistrarConvenio', payload)
-      .then(response => {
-        console.log('Convenio registrado', response);
-        onConfirm(selectedConvenio); 
-      })
-      .catch(error => {
-        console.error('Error al registrar convenio:', error);
-      });
-  };
-  
+        .then(response => {
+            console.log('Convenio registrado', response);
+            onConfirm(selectedConvenio);  // Llama a la función para actualizar la tabla
+        })
+        .catch(error => {
+            console.error('Error al registrar convenio:', error);
+        });
+};
+
   
 
   return (
