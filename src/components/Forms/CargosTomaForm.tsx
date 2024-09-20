@@ -51,20 +51,30 @@ const CargosTomaForm = () => {
           },
         })
         .then(({ data }) => {
-          const convenioCatalogo = data.convenio_catalogo;
-          const conveniosData = [convenioCatalogo];
-          setConvenios(conveniosData);
-          console.log(data)
+          if (data.convenio_catalogo) {
+            const convenioCatalogo = data.convenio_catalogo;
+            const conveniosData = [convenioCatalogo];
+            setConvenios(conveniosData);
+          } else {
+            // Si no hay convenio, asegurarse de que convenios esté vacío
+            setConvenios([]);
+          }
         })
         .catch((err) => {
-          console.error('Error al obtener los convenios:', err);
-          setConvenios([]);
+          // Verificar si el error es el mensaje específico de la API
+          if (err.response && err.response.data && err.response.data.error === 'No se encontro convenio asociado a la toma o el usuario seleccionado.') {
+            // No mostrar nada si no se encuentra el convenio
+            setConvenios([]);
+          } else {
+            console.error('Error al obtener los convenios:', err);
+          }
         })
         .finally(() => {
           setLoading(false);
         });
     }
   };
+  
 
   useEffect(() => {
     cargarCargos();
@@ -145,6 +155,7 @@ const CargosTomaForm = () => {
                           title="Detalles del Convenio"
                           convenioData={selectedConvenio}
                           onClose={() => setSelectedConvenio(null)}
+                          onConfirm={handleConvenioConfirm} // Recargar cuando se confirma/cierra
                         />
                       </td>
                     </tr>

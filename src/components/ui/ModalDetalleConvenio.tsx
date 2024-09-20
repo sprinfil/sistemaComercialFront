@@ -11,16 +11,28 @@ import {
 } from "@/components/ui/alert-dialog";
 import axiosClient from '../../axios-client';
 import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario.tsx';
+import { useToast } from './use-toast.ts';
 
 interface ModalConvenioProps {
   trigger: React.ReactNode;
   title: string;
-  onConfirm: (selectedConvenio: any) => void;
+  onConfirm: () => void; 
 }
 
 const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm }) => {
   const { usuariosEncontrados } = ZustandGeneralUsuario();
   const [convenios, setConvenios] = useState<any[]>([]);
+  const [selectedConvenio, setSelectedConvenio] = useState<any>(null);
+  const { toast } = useToast()
+
+  function successToastEliminado() {
+    toast({
+        title: "¡Éxito!",
+        description: "Convenio elimindo exitosamente",
+        variant: "success",
+
+    })
+}
 
   const cargarConvenios = () => {
     if (usuariosEncontrados && usuariosEncontrados.length > 0) {
@@ -69,12 +81,39 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
     cargarConvenios();
   }, [usuariosEncontrados]);
 
+  const handleCancelarConvenio = async (convenioId: number) => {
+    try {
+      // Llamada a la API para cancelar el convenio
+      const response = await axiosClient.put("/Convenio/CancelarConvenio", {
+        id_convenio: convenioId,
+      });
+
+      if (response.status === 200) {
+        console.log("Convenio cancelado:", response.data);
+        // Actualiza la lista de convenios para reflejar la cancelación
+        cargarConvenios();
+        setSelectedConvenio(null); // Limpia la selección
+        successToastEliminado()
+      } else {
+        console.error("Error al cancelar el convenio");
+      }
+    } catch (error) {
+      console.error("Error en la solicitud de cancelación:", error);
+    }
+  };
+
+  const handleConfirm = () => {
+    onConfirm();  // Llama a la función pasada por props para recargar los datos
+  };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
       <AlertDialogContent className="w-[90vw] max-w-none">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-lg font-semibold">{title}</AlertDialogTitle>
+          <AlertDialogTitle className="text-lg font-semibold">
+            {title}
+          </AlertDialogTitle>
         </AlertDialogHeader>
 
         {/* Mostrar los detalles del convenio */}
@@ -90,12 +129,21 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
                   <p><strong>Estado:</strong> {convenio.estado}</p>
                   <p><strong>Comentario:</strong> {convenio.comentario}</p>
                   <p><strong>Letra:</strong> {convenio.letra}</p>
-                  
+
                   {convenio.motivo_cancelacion ? (
                     <p><strong>Motivo de Cancelación:</strong> {convenio.motivo_cancelacion}</p>
                   ) : (
                     <p><strong>Motivo de Cancelación:</strong> No aplicable</p>
                   )}
+
+                  <div className="mt-4">
+                    <button
+                      onClick={() => handleCancelarConvenio(convenio.id)}
+                      className="bg-red-500 text-white p-2 rounded"
+                    >
+                      Cancelar Convenio
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -106,9 +154,7 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
 
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction>
-            Aceptar
-          </AlertDialogAction>
+          <AlertDialogAction onClick={handleConfirm}>Aceptar</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

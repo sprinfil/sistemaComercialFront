@@ -16,7 +16,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { ComboBoxConvenio } from './ComboBoxConvenio.tsx';
 import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario.tsx';
 import { Input } from './input.tsx';
-import { Toast } from '@radix-ui/react-toast';
+import { ToastAction } from '@radix-ui/react-toast';
+import { useToast } from './use-toast.ts';
 
 
 interface ModalConvenioProps {
@@ -40,6 +41,16 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const { usuariosEncontrados } = ZustandGeneralUsuario();
   const [activeAccordion, setActiveAccordion] = useState<string | null>("convenios");
   const [tipoMonto, setTipoMonto] = useState<string>('%');
+  const { toast } = useToast()
+
+  function successToastCreado() {
+    toast({
+        title: "¡Éxito!",
+        description: "Convenio creado exitosamente!",
+        variant: "success",
+
+    })
+}
 
   useEffect(() => {
     setLoading(true);
@@ -112,7 +123,8 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
     axiosClient.post('/Convenio/RegistrarConvenio', payload)
         .then(response => {
             console.log('Convenio registrado', response);
-            onConfirm(selectedConvenio);  // Llama a la función para actualizar la tabla
+            onConfirm(selectedConvenio); 
+            successToastCreado(); // Llama a la función para actualizar la tabla
         })
         .catch(error => {
             console.error('Error al registrar convenio:', error);
