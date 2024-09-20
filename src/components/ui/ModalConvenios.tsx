@@ -80,11 +80,11 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
           nombre: cargo.nombre,
           aplicable: cargo.aplicable,
           id: cargo.id,
-          monto: cargo.monto,
+          monto: cargo.monto_pendiente,
         }));
         setCargosConveniables(filteredCargos);
         setActiveAccordion("cargosConveniables");
-        console.log(cargosConveniables)
+        console.log(filteredCargos)
       })
       .catch(err => {
         console.error('Error al obtener los cargos conveniables:', err);
@@ -97,7 +97,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
         setCargosSeleccionados(cargosSeleccionados.filter((c) => c.id !== cargo.id));
     } else {
         const montoConveniadoActual = tipoMonto === '%' 
-            ? (cargo.monto * porcentajeConveniado) / 100 
+            ? (cargo.monto_pendiente * porcentajeConveniado) / 100 
             : montoConveniado;
         
         setCargosSeleccionados([
@@ -114,7 +114,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
    }, [cargosSeleccionados]);
    
    const calcularTotalSeleccionados = () => {
-    return cargosSeleccionados.reduce((acc, cargo) => acc + (cargo.monto || 0), 0);
+    return cargosSeleccionados.reduce((acc, cargo) => acc + (cargo.monto_pendiente || 0), 0);
   };
   
 
@@ -151,7 +151,7 @@ useEffect(() => {
     if (checked) {
         const nuevosCargosSeleccionados = cargosConveniables.map((cargo) => {
             const montoConveniadoActual = tipoMonto === '%' 
-                ? (cargo.monto * porcentajeConveniado) / 100 
+                ? (cargo.monto_pendiente * porcentajeConveniado) / 100 
                 : montoConveniado;
             return { ...cargo, montoConveniado: montoConveniadoActual };
         });
@@ -187,7 +187,7 @@ useEffect(() => {
         });
 };
 const calcularTotalMontos = () => {
-  return cargosSeleccionados.reduce((total, cargo) => total + (Number(cargo.monto) || 0), 0);
+  return cargosSeleccionados.reduce((total, cargo) => total + (Number(cargo.monto_pendiente) || 0), 0);
 };
 
 useEffect(() => {
@@ -323,7 +323,7 @@ const formatMonto = (monto: number) => {
                                       {" "}{cargo.nombre}
                                   </td>
                                   <td className="px-4 py-2">{cargo.aplicable ? 'Sí' : 'No'}</td>
-                                  <td className="px-4 py-2">${cargo.monto}</td>
+                                  <td className="px-4 py-2">${cargo.monto_pendiente}</td>
                                   <td className="px-4 py-2">
                                       ${cargosSeleccionados.find((c: any) => c.id === cargo.id)?.montoConveniado ?? 0}
                                   </td>
