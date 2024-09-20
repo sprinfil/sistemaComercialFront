@@ -11,6 +11,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import axiosClient from '../../axios-client';
 import Loader from '../ui/Loader.tsx';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Checkbox } from "@/components/ui/checkbox"
+import { ComboBoxConvenio } from './ComboBoxConvenio.tsx';
+import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario.tsx';
+import { Input } from './input.tsx';
+import { ToastAction } from '@radix-ui/react-toast';
+import { useToast } from './use-toast.ts';
+
 
 interface ModalConvenioProps {
   trigger: React.ReactNode;
@@ -20,15 +28,30 @@ interface ModalConvenioProps {
 
 const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm }) => {
   const [convenios, setConvenios] = useState<any[]>([]);
-  const [additionalData, setAdditionalData] = useState<any[]>([]); // For second table
-  const [moreData, setMoreData] = useState<any[]>([]); // For third table
+  const [cargosConveniables, setCargosConveniables] = useState<any[]>([]);
+  const [cargosSeleccionados, setCargosSeleccionados] = useState<any[]>([]);
+  const [selectAll, setSelectAll] = useState(false); // Estado para seleccionar todos
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedConvenio, setSelectedConvenio] = useState<any | null>(null);
-  const [selectedAdditionalData, setSelectedAdditionalData] = useState<any | null>(null);
-  const [isTable1Collapsed, setIsTable1Collapsed] = useState(true); // Initially collapsed
-  const [isTable2Collapsed, setIsTable2Collapsed] = useState(true); // Initially collapsed
-  const [isTable3Collapsed, setIsTable3Collapsed] = useState(true); // Initially collapsed
+  const [porcentajeConveniado, setPorcentajeConveniado] = useState<number>(0);
+  const [montoConveniado, setMontoConveniado] = useState<number>(0);
+  const [cantidadLetras, setCantidadLetras] = useState<number>(0);
+  const [comentario, setComentario] = useState<string>('');
+  const { usuariosEncontrados } = ZustandGeneralUsuario();
+  const [activeAccordion, setActiveAccordion] = useState<string | null>("convenios");
+  const [tipoMonto, setTipoMonto] = useState<string>('%');
+  const { toast } = useToast()
+  
+
+  function successToastCreado() {
+    toast({
+        title: "¡Éxito!",
+        description: "Convenio creado exitosamente!",
+        variant: "success",
+
+    })
+}
 
   useEffect(() => {
     setLoading(true);
@@ -38,179 +61,310 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
         setLoading(false);
       })
       .catch(err => {
-        setError('Error al obtener los datos.');
+        setError('Error al obtener los convenios.');
         console.error('API Error:', err);
         setLoading(false);
       });
-  }, [selectedConvenio]);
-
-  useEffect(() => {
-    if (selectedConvenio) {
-      axiosClient.get('/AdditionalData')
-        .then(({ data }) => {
-          setAdditionalData(data.data);
-        })
-        .catch(err => {
-          console.error('Error al obtener los datos adicionales:', err);
-        });
-    }
-  }, [selectedConvenio]);
-
-  useEffect(() => {
-    if (selectedAdditionalData) {
-      axiosClient.get('/MoreData')
-        .then(({ data }) => {
-          setMoreData(data.data);
-        })
-        .catch(err => {
-          console.error('Error al obtener más datos:', err);
-        });
-    }
-  }, [selectedAdditionalData]);
+  }, []);
 
   const handleRowClick = (convenio: any) => {
     setSelectedConvenio(convenio);
-    setIsTable1Collapsed(true);  // Collapse Table 1
-    setIsTable2Collapsed(false); // Expand Table 2
+
+    axiosClient.post("/Convenio/BuscarConceptosConveniables", {
+      tipo: "toma", 
+      id: usuariosEncontrados[0].tomas[0].id, 
+      id_convenio_catalogo: convenio.id 
+    })
+      .then(({ data }) => {
+        const filteredCargos = data.filter((cargo: any) => ({
+          nombre: cargo.nombre,
+          aplicable: cargo.aplicable,
+          id: cargo.id,
+          monto: cargo.monto_pendiente,
+        }));
+        setCargosConveniables(filteredCargos);
+        setActiveAccordion("cargosConveniables");
+        console.log(filteredCargos)
+      })
+      .catch(err => {
+        console.error('Error al obtener los cargos conveniables:', err);
+      });
   };
 
-  const handleAdditionalDataClick = (data: any) => {
-    setSelectedAdditionalData(data);
-    setIsTable2Collapsed(true);  // Collapse Table 2
-    setIsTable3Collapsed(false); // Expand Table 3
-  };
-
-  const handleHeaderClick = (table: number) => {
-    if (table === 1) {
-      setIsTable1Collapsed(!isTable1Collapsed); 
-    } else if (table === 2) {
-      setIsTable2Collapsed(!isTable2Collapsed); 
+  const handleCargoSeleccionado = (cargo: any) => {
+    const yaSeleccionado = cargosSeleccionados.some((c) => c.id === cargo.id);
+    if (yaSeleccionado) {
+        setCargosSeleccionados(cargosSeleccionados.filter((c) => c.id !== cargo.id));
     } else {
-      setIsTable3Collapsed(!isTable3Collapsed); 
+        const montoConveniadoActual = tipoMonto === '%' 
+            ? (cargo.monto_pendiente * porcentajeConveniado) / 100 
+            : montoConveniado;
+        
+        setCargosSeleccionados([
+            ...cargosSeleccionados,
+            { ...cargo, montoConveniado: montoConveniadoActual }
+        ]);
     }
+};
+
+
+
+  useEffect(() => {
+    console.log(cargosSeleccionados)
+   }, [cargosSeleccionados]);
+   
+   const calcularTotalSeleccionados = () => {
+    return cargosSeleccionados.reduce((acc, cargo) => acc + (cargo.monto_pendiente || 0), 0);
   };
+  
+
+  useEffect(() => {
+    calcularTotalSeleccionados(); // Llama a la función para que actualice el total
+  }, [cargosSeleccionados]); // Dependencia en cargosSeleccionados
+  
+  
+
+useEffect(() => {
+    const totalSeleccionados = calcularTotalSeleccionados();
+    if (tipoMonto === '%') {
+        setMontoConveniado((totalSeleccionados * porcentajeConveniado) / 100);
+    } else if (tipoMonto === '$') {
+        // Aquí se puede manejar el caso de monto fijo si es necesario
+        setPorcentajeConveniado((montoConveniado / totalSeleccionados) * 100);
+    }
+}, [porcentajeConveniado, montoConveniado, cargosSeleccionados, tipoMonto]);
+
+  useEffect(() => {
+    const totalSeleccionados = calcularTotalSeleccionados();
+    if (tipoMonto === '$') {
+      // Si el tipo es monto fijo, recalculamos el porcentaje basado en el monto sobre el total seleccionado
+      setPorcentajeConveniado((montoConveniado / totalSeleccionados) * 100);
+    }
+  }, [montoConveniado, cargosSeleccionados]);
+
+  const calcularTotalMontoConveniado = () => {
+    return cargosSeleccionados.reduce((acc, cargo) => acc + (cargo.montoConveniado || 0), 0);
+};
+
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+        const nuevosCargosSeleccionados = cargosConveniables.map((cargo) => {
+            const montoConveniadoActual = tipoMonto === '%' 
+                ? (cargo.monto_pendiente * porcentajeConveniado) / 100 
+                : montoConveniado;
+            return { ...cargo, montoConveniado: montoConveniadoActual };
+        });
+        setCargosSeleccionados(nuevosCargosSeleccionados);
+    } else {
+        setCargosSeleccionados([]);
+    }
+    setSelectAll(checked);
+};
+
+
+  const handleConfirmar = () => {
+    const payload = {
+        id_convenio_catalogo: selectedConvenio.id || 0,
+        id_modelo: usuariosEncontrados[0].tomas[0].id,
+        modelo_origen: "toma",
+        cantidad_letras: cantidadLetras,
+        comentario: comentario,
+        cargos_conveniados: cargosSeleccionados.map(cargo => ({
+            id: cargo.id,
+            porcentaje_conveniado: tipoMonto === '%' ? porcentajeConveniado : montoConveniado,
+        })),
+    };
+
+    axiosClient.post('/Convenio/RegistrarConvenio', payload)
+        .then(response => {
+            console.log('Convenio registrado', response);
+            onConfirm(selectedConvenio); 
+            successToastCreado(); // Llama a la función para actualizar la tabla
+        })
+        .catch(error => {
+            console.error('Error al registrar convenio:', error);
+        });
+};
+const calcularTotalMontos = () => {
+  return cargosSeleccionados.reduce((total, cargo) => total + (Number(cargo.monto_pendiente) || 0), 0);
+};
+
+useEffect(() => {
+  const totalSeleccionados = calcularTotalMontos();
+  console.log('Total de montos seleccionados:', totalSeleccionados); // Para depuración
+}, [cargosSeleccionados]);
+
+const formatMonto = (monto: number) => {
+  // Convierte el monto a una cadena con 2 decimales solo si es necesario
+  return monto % 1 === 0 ? monto.toString() : monto.toFixed(2);
+};
+
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      {/* Adjust the width using w-[80vw] */}
-      <AlertDialogContent className="w-[90vw] max-w-none ">
+      <AlertDialogContent className="w-[90vw] max-w-none">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-lg font-semibold">{title}</AlertDialogTitle>
+          {selectedConvenio && (
+            <div className="mt-4">
+              <h3 className="font-medium">Resumen:</h3>
+              <p>Convenio: {selectedConvenio.nombre}</p>
+              <p>Cargos Conveniados:</p>
+              <ul>
+                {cargosSeleccionados.map((cargo: any) => (
+                  <li key={cargo.id}>{cargo.nombre}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </AlertDialogHeader>
+        
         {loading ? (
           <Loader />
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <div>
+          <Accordion type="single" collapsible value={activeAccordion} onValueChange={setActiveAccordion}>
+            <AccordionItem value="convenios">
+              <AccordionTrigger className="font-medium">Convenios Disponibles</AccordionTrigger>
+              <AccordionContent>
+                {convenios.length > 0 ? (
+                  convenios.map((convenio: any) => (
+                    <div
+                      key={convenio.id}
+                      className={`cursor-pointer p-2 hover:bg-gray-100 ${selectedConvenio?.id === convenio.id ? 'bg-gray-200' : ''}`}
+                      onClick={() => handleRowClick(convenio)}
+                    >
+                      {convenio.nombre}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center">No hay convenios disponibles.</p>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+
             {selectedConvenio && (
-              <div className="mt-4">
-                <p className="font-semibold">Convenio Seleccionado:</p>
-                <p><strong>{selectedConvenio.nombre}</strong></p>
-              </div>
+              <AccordionItem value="cargosConveniables">
+                <AccordionTrigger className="font-medium">Cargos Conveniables</AccordionTrigger>
+                <div className=''>
+                  <AccordionContent>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th className="px-4 py-2 text-left">Tipo de monto</th>
+                        <th className="px-4 py-2 text-left">Porcentaje Conveniado</th>
+                        <th className="px-4 py-2 text-left">Monto Conveniado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="px-4 py-2">
+                          {/* Aquí agregamos el ComboBoxMonto */}
+                          <ComboBoxConvenio 
+                            placeholder="Tipo de monto"
+                            name="tipoMonto" 
+                            readOnly={false} 
+                            onSelect={setTipoMonto}
+                          />
+                        </td>
+                        <td className="px-4 py-2">
+                        <Input
+                            type="number"
+                            value={porcentajeConveniado}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setPorcentajeConveniado(value === '' ? 0 : Number(value));
+                          }}
+                            className="border p-1"
+                            disabled={tipoMonto !== '%'} 
+                          />
+                              </td>
+                              <td className="px-4 py-2">
+                              <Input
+                            type="number"
+                            value={montoConveniado}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setMontoConveniado(value === '' ? 0 : Number(value));
+                          }}
+                            className="border p-1"
+                            disabled={tipoMonto !== '$'} 
+                          />
+                              </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                    <table className="min-w-full table-auto mt-4">
+                      <thead>
+                        <tr>
+                          <th className="px-4 py-2 text-left">
+                            <Checkbox
+                              checked={selectAll}
+                              onCheckedChange={handleSelectAll}
+                            />
+                            {" "} Nombre del Cargo
+                          </th>
+                          <th className="px-4 py-2 text-left">Aplicable</th>
+                          <th className="px-4 py-2 text-left">Monto</th>
+                          <th className="px-4 py-2 text-left">Monto conveniado</th>
+                        </tr>
+                      </thead>
+                        <tbody>
+                          {cargosConveniables.map((cargo: any) => (
+                              <tr key={cargo.id} className="border-t">
+                                  <td className="px-4 py-2">
+                                      <Checkbox
+                                          checked={cargosSeleccionados.some((c: any) => c.id === cargo.id)}
+                                          onCheckedChange={() => handleCargoSeleccionado(cargo)}
+                                      />
+                                      {" "}{cargo.nombre}
+                                  </td>
+                                  <td className="px-4 py-2">{cargo.aplicable ? 'Sí' : 'No'}</td>
+                                  <td className="px-4 py-2">${cargo.monto_pendiente}</td>
+                                  <td className="px-4 py-2">
+                                      ${cargosSeleccionados.find((c: any) => c.id === cargo.id)?.montoConveniado ?? 0}
+                                  </td>
+                              </tr>
+                          ))}
+                          <tr className="font-bold">
+                          <td className="px-4 py-2" colSpan={2}>Total:</td>
+                          <td className="px-4 py-2">${calcularTotalMontos()}</td>
+                          <td className="px-4 py-2">${calcularTotalMontoConveniado()}</td>
+                         
+                              
+                          </tr>
+                      </tbody>
+
+
+                    </table>
+                    <div className='px-4 py-2 text-left font-bold'>Letras
+                      <Input className='w-15 font-normal' 
+                             value={cantidadLetras} 
+                             type='number' 
+                             onChange={(e) => setCantidadLetras(Number(e.target.value))}>
+                      </Input>
+                    </div>
+                    <div className='px-4 py-2 text-left font-bold'>Comentarios
+                      <Input className='font-normal' 
+                             value={comentario} 
+                             type='text' 
+                             onChange={(e) => setComentario(String(e.target.value))} 
+                             placeholder='Añade un comentario'>
+                      </Input>
+                    </div>
+                  </AccordionContent>
+                </div>
+              </AccordionItem>
             )}
-            <div className="overflow-hidden mb-4">
-              <div className={`transition-all duration-300 ease-in-out ${isTable1Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
-                <table className="w-full table-fixed border border-gray-200">
-                  <thead
-                    className="bg-gray-200 cursor-pointer"
-                    onClick={() => handleHeaderClick(1)}
-                  >
-                    <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Convenios Disponibles</th>
-                    </tr>
-                  </thead>
-                  <tbody className={`bg-white ${isTable1Collapsed ? 'hidden' : ''}`}>
-                    {convenios.length > 0 ? (
-                      convenios.map((convenio: any) => (
-                        <tr
-                          key={convenio.id}
-                          className={`cursor-pointer hover:bg-gray-100 ${selectedConvenio?.id === convenio.id ? 'bg-gray-200' : ''}`}
-                          onClick={() => handleRowClick(convenio)}
-                        >
-                          <td className="px-4 py-2">{convenio.nombre}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="1" className="px-4 py-2 text-center">No hay convenios disponibles.</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Table 2 */}
-            <div className="overflow-hidden mb-4">
-              <div className={`transition-all duration-300 ease-in-out ${isTable2Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
-                <table className="w-full table-fixed border border-gray-200">
-                  <thead
-                    className="bg-gray-200 cursor-pointer"
-                    onClick={() => handleHeaderClick(2)}
-                  >
-                    <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Cargos conveniables</th>
-                    </tr>
-                  </thead>
-                  <tbody className={`bg-white ${isTable2Collapsed ? 'hidden' : ''}`}>
-                    {additionalData.length > 0 ? (
-                      additionalData.map((data: any) => (
-                        <tr
-                          key={data.id}
-                          className="cursor-pointer hover:bg-gray-100"
-                          onClick={() => handleAdditionalDataClick(data)}
-                        >
-                          <td className="px-4 py-2">{data.name}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="1" className="px-4 py-2 text-center">No hay datos adicionales disponibles.</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Table 3 */}
-            <div className="overflow-hidden mb-4">
-              <div className={`transition-all duration-300 ease-in-out ${isTable3Collapsed ? 'max-h-40' : 'max-h-screen'}`}>
-                <table className="w-full table-fixed border border-gray-200">
-                  <thead
-                    className="bg-gray-200 cursor-pointer"
-                    onClick={() => handleHeaderClick(3)}
-                  >
-                    <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Configurar convenio</th>
-                    </tr>
-                  </thead>
-                  <tbody className={`bg-white ${isTable3Collapsed ? 'hidden' : ''}`}>
-                    {moreData.length > 0 ? (
-                      moreData.map((data: any) => (
-                        <tr key={data.id}>
-                          <td className="px-4 py-2">{data.name}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="1" className="px-4 py-2 text-center">No hay más datos disponibles.</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+          </Accordion>
         )}
+
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => selectedConvenio && onConfirm(selectedConvenio)}
-            disabled={!selectedConvenio}
-          >
+          <AlertDialogAction onClick={handleConfirmar} disabled={!selectedConvenio || cargosSeleccionados.length === 0}>
             Aceptar
           </AlertDialogAction>
         </AlertDialogFooter>
