@@ -195,6 +195,11 @@ useEffect(() => {
   console.log('Total de montos seleccionados:', totalSeleccionados); // Para depuración
 }, [cargosSeleccionados]);
 
+const formatMonto = (monto: number) => {
+  // Convierte el monto a una cadena con 2 decimales solo si es necesario
+  return monto % 1 === 0 ? monto.toString() : monto.toFixed(2);
+};
+
 
   return (
     <AlertDialog>
