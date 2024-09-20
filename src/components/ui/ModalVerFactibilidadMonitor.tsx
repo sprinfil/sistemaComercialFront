@@ -55,12 +55,13 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
 
   // Función para manejar la selección de archivo
   useEffect(() => {
-    console.log(selected_fact);
+  
   }, [])
 
   useEffect(() => {
-    if (selected_fact?.contrato?.toma?.posicion?.coordinates) {
-      const [lng, lat] = selected_fact.contrato.toma.posicion.coordinates;
+    console.log(selected_fact?.ubicacion?.coordinates);
+    if (selected_fact?.ubicacion?.coordinates) {
+      const [lng, lat] = selected_fact?.ubicacion?.coordinates;
       console.log(lng, lat);
       setMapCenter({ lat, lng });
     }
