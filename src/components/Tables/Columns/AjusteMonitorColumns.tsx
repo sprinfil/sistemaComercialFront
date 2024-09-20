@@ -48,8 +48,8 @@ export const AjusteMonitorColumns: ColumnDef<Ajuste>[] = [
     ),
   },
   {
-    id: "codigo_toma",
-    header: "Codigo de toma",
+    accessorKey: "id",
+    header: "Folio",
   }, 
   {
     accessorKey: "estado",

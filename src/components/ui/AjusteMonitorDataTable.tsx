@@ -75,9 +75,9 @@ export function AjusteMonitorDataTable<TData, TValue>({
 
           Filtros
           <div className="px-2">
-            <p>Codigo de toma</p>
+            <p>Folio</p>
             <Input
-              placeholder="Codigo de toma"
+              placeholder="Folio"
               value={(table.getColumn("codigo_toma")?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
                 table.getColumn("codigo_toma")?.setFilterValue(event.target.value)
@@ -91,7 +91,7 @@ export function AjusteMonitorDataTable<TData, TValue>({
           <div className="px-2">
             <p>Estatus</p>
             <Select onValueChange={(value) => { table.getColumn("estatus")?.setFilterValue(value === "cualquiera" ? "" : value) }}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full">  
                 <SelectValue placeholder="Estatus" />
               </SelectTrigger>
               <SelectContent>
