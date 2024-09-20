@@ -8,8 +8,10 @@ import IconButton from "../../ui/IconButton";
 import { useState } from "react"
 import ModalVerFactibilidadMonitor from "../../ui/ModalVerFactibilidadMonitor";
 import { EyeIcon } from 'lucide-react';
+import { XCircleIcon } from "lucide-react"
+import ModalVerAjusteMonitor from "../../ui/ModalVerAjusteMonitor"
 
-export type Factibilidad = {
+export type Ajuste = {
   id: number
   id_ajuste_catalogo: number
   id_modelo_dueno: number
@@ -24,7 +26,7 @@ export type Factibilidad = {
   fecha_actualizacion: Date
 }
 
-export const FactiblidadMonitorColumns: ColumnDef<Factibilidad>[] = [
+export const AjusteMonitorColumns: ColumnDef<Ajuste>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -50,27 +52,27 @@ export const FactiblidadMonitorColumns: ColumnDef<Factibilidad>[] = [
     header: "Codigo de toma",
   }, 
   {
-    accessorKey: "fecha_solicitud",
-    header: "Fecha de Factibilidad",
+    accessorKey: "estado",
+    header: "Estatus",
   },
   {
-    accessorKey: "estatus",
-    header: "Estatus",
+    accessorKey: "fecha_solicitud",
+    header: "Fecha de solicitud",
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const [modal_ver_fact, set_modal_ver_fact] = useState(false);
+      const [modal_ver_ajuste, set_modal_ver_ajuste] = useState(false);
 
       return (
         <>
-          <IconButton  onClick={() => { set_modal_ver_fact(true) }} >
-            <EyeIcon className='w-[15px] h-[15px]' />
+          <IconButton  onClick={() => { set_modal_ver_ajuste(true) }} >
+            <XCircleIcon className='w-[15px] h-[15px]' />
           </IconButton>
-          <ModalVerFactibilidadMonitor
-            selected_fact={row?.original}
-            open={modal_ver_fact}
-            set_open={set_modal_ver_fact}
+          <ModalVerAjusteMonitor
+            selected_ajuste={row?.original}
+            open={modal_ver_ajuste}
+            set_open={set_modal_ver_ajuste}
            
             
           />

@@ -1,35 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { OcultarTableFactibilidadMonitor } from '../../components/Tables/Components/OcultarTableFactibilidadMonitor';
 import FiltrosFactibilidadesMonitor from './Factibilidades/FiltrosFactibilidadesMonitor';
-import { FactibilidadMonitorDataTable } from '../../components/ui/FactibilidadMonitorDataTable';
-import { FactiblidadMonitorColumns } from '../../components/Tables/Columns/FactibilidadMonitorColumns';
-import factibilidadService from '../../lib/FactibilidadService';
+import { AjusteMonitorDataTable } from '../../../components/ui/AjusteMonitorDataTable';
+import { AjusteMonitorColumns } from '../../../components/Tables/Columns/AjusteMonitorColumns';
+import ajusteService from '../../../lib/AjusteService';
 import { Skeleton } from '../../components/ui/skeleton';
-import Loader from '../../components/ui/Loader';
-import ModalVerFactibilidadMonitor from '../../components/ui/ModalVerFactibilidadMonitor';
-import ZustandMonitorFactibilidad from '../../contexts/ZustandMonitorFactibilidad';
+import Loader from '../../../components/ui/Loader';
+import ModalVerAjusteMonitor from '../../../components/ui/ModalVerAjusteMonitor';
+import ZustandMonitorAjuste from '../../../contexts/ZustandMonitorAjuste';
 
 
 export const AjustesMonitor = () => {
   const [factibilidad, setFactibilidad] = useState([]);
-  const [loadingFact, setLoadingFact] = useState(false);
-  const { set_factibilidades, factibilidades } = ZustandMonitorFactibilidad();
-  const [factibilidades_temp, set_factibilidades_temp] = useState([]);
+  const [loadingAjuste, setLoadingAjuste] = useState(false);
+  const { set_ajustes, ajustes } = ZustandMonitorAjuste();
+  const [ajustes_temp, set_ajustes_temp] = useState([]);
 
   useEffect(() => {
     fetchFact();
   }, []);
 
   const fetchFact = async () => {
-    setLoadingFact(true);
-    let factTemp = await factibilidadService.get_all();
-    setLoadingFact(false);
-    set_factibilidades(factTemp);
+    setLoadingAjuste(true);
+    let ajusteTemp = await ajusteService.get_all();
+    setLoadingAjuste(false);
+    set_ajustes(ajusteTemp);
   };
 
   useEffect(() => {
-    set_factibilidades_temp(factibilidades)
-  }, [factibilidades])
+    set_ajustes_temp(ajustes)
+  }, [ajustes])
 
   return (
     <div className='flex gap-2 px-2'>
@@ -38,7 +38,7 @@ export const AjustesMonitor = () => {
     </OcultarTableFactibilidadMonitor> */}
       <div className='w-full border rounded-md max-h-[75vh] overflow-auto'>
         {
-          loadingFact ?
+          loadingAjuste ?
             <>
               <div className='h-[60vh] w-full'>
                 <Loader/>
@@ -46,7 +46,7 @@ export const AjustesMonitor = () => {
 
             </>
             :
-            <FactibilidadMonitorDataTable columns={FactiblidadMonitorColumns} data={factibilidades_temp} />
+            <AjusteMonitorDataTable columns={AjusteMonitorColumns} data={ajustes_temp} />
         }
       </div>
     </div>
