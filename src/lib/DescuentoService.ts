@@ -11,17 +11,16 @@ const descuentoService = {
         }
     },
 
-    create_descueto: async (data) => {
+    create_descueto: async (data, archivos) => {
         let formData = new FormData();
+
         for (let key in data) {
-            console.log(key);
             formData.append(key, data[key]);
         }
 
-        // Mostrar el contenido de formData
-        // for (let pair of formData.entries()) {
-        //     console.log(`${pair[0]}: ${pair[1]}`);
-        // }
+        archivos.forEach((file, index) => {
+            formData.append(`evidencia[${index}]`, file);
+        });
 
         try {
             const response = await axiosClient.post("/descuentos-asociado/store", formData, {
@@ -30,6 +29,22 @@ const descuentoService = {
                 }
             }
             );
+            return response.data;
+        } catch (error) {
+            throw error?.response?.data?.message;
+        }
+    },
+
+
+    getDescuentosPorModelo: async (modelo, modelo_id) => {
+        try {
+   
+            const response = await axiosClient.get("/descuentos-asociado/", {
+                params: {
+                    modelo_dueno: modelo,
+                    id_modelo: modelo_id
+                }
+            });
             return response.data;
         } catch (error) {
             throw error?.response?.data.data;

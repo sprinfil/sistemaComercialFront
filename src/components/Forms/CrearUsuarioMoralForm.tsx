@@ -183,7 +183,7 @@ const CrearUsuarioMoralForm = () => {
                          </div>
 
                             {loading && <Loader />}
-                            <Button type="submit" className="ml-[187vh] w-[20vh]">Guardar</Button>
+                            <Button type="submit" className="ml-[2vh] w-[20vh]">Guardar</Button>
 
                         </div>
                         <div className=" w-full flex justify-normal mt-4">

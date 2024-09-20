@@ -30,6 +30,7 @@ import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario';
 import Dropzone from 'react-dropzone'
 import MyDropzone from './dropzone';
 import descuentoService from '../../lib/DescuentoService';
+import { useToast } from './use-toast';
 
 interface ModalProps {
   trigger: React.ReactNode;
@@ -45,9 +46,11 @@ const formSchema = z.object({
   vigencia: z.string().min(2).max(50),
 })
 
-const ModalCrearDescuento: React.FC<ModalProps> = ({ trigger }) => {
+const ModalCrearDescuento: React.FC<ModalProps> = ({ update_data, trigger, open, set_open }) => {
 
+  const { toast } = useToast();
   const { user } = useStateContext();
+  const [archivos, set_archivos] = useState([]);
   const { usuariosEncontrados, toma } = ZustandGeneralUsuario();
   console.log(toma)
   const form = useForm<z.infer<typeof formSchema>>({
@@ -58,28 +61,49 @@ const ModalCrearDescuento: React.FC<ModalProps> = ({ trigger }) => {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    //console.log(values)
     let data = {
       ...values,
       id_registra: user?.operador?.id,
-      id_evidencia: 0,
+      id_evidencia: 9,
       estatus: "vigente",
       modelo_dueno: "toma",
-      id_modelo: toma?.id
+      id_modelo: toma?.id,
     }
 
     upload(data);
   }
 
-  const upload = async (data:any) => {
-    let response = await descuentoService.create_descueto(data);
-    console.log(response);
+  const upload = async (data: any) => {
+
+    try {
+      let data_temp = {};
+      data_temp = await descuentoService.create_descueto(data, archivos);
+      toast({
+        title: "¡Éxito!",
+        description: "El Descuento se ha creado correctamente",
+        variant: "success",
+      })
+      set_open(false);
+
+      update_data(prev => {
+        return [...prev, data_temp];
+      })
+      
+    } catch (err) {
+      console.log(err)
+      toast({
+        title: "Error",
+        description: err,
+        variant: "destructive",
+      })
+    }
   }
 
   return (
     <div>
-      <AlertDialog>
+      <AlertDialog open={open}>
         <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
         <AlertDialogContent className="max-w-[80vw] max-h-[90vh] overflow-auto">
           <div className='h-full w-full relative'>
@@ -134,18 +158,18 @@ const ModalCrearDescuento: React.FC<ModalProps> = ({ trigger }) => {
                           <input {...field} type="date" name="fecha_nacimiento" className=" border border-border  w-full  rounded-md p-[4px] bg-background" />
                         </FormControl>
                         <FormDescription>
-                          This is your public display name.
+                          Vigencia del descuento
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                   <div>
-                    <MyDropzone />
+                    <MyDropzone set={set_archivos} />
                   </div>
                   <div className='w-full flex gap-2 justify-end'>
                     <Button type="submit">Aceptar</Button>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogCancel onClick={() => { set_open(false) }}>Cancelar</AlertDialogCancel>
                   </div>
                 </form>
               </Form>

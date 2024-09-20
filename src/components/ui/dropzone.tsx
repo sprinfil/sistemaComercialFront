@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { Trash2Icon } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-const MyDropzone = () => {
+const MyDropzone = ({ set }) => {
 
   const [archivos, set_archivos] = useState([]);
 
@@ -13,8 +14,17 @@ const MyDropzone = () => {
         ...acceptedFiles
       ]
     })
+  };
 
-    console.log(acceptedFiles);
+  useEffect(() => {
+    set(archivos);
+    console.log(archivos)
+  }, [archivos])
+
+  const quitar_archivo = (key) => {
+
+    const archivos_filtrados = archivos.filter((archivo, index) => index !== key);
+    set_archivos(archivos_filtrados);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -34,8 +44,9 @@ const MyDropzone = () => {
         <>
           <div className='border mt-3'>
             {archivos.map((archivo, index) => (
-              <div className='my-1 px-2' key={index}>
+              <div className='my-1 px-2  flex justify-between' key={index}>
                 {archivo.path}
+                <Trash2Icon className='text-red-500 cursor-pointer' onClick={()=> {quitar_archivo(index)}} />
               </div>
             ))}
           </div>
