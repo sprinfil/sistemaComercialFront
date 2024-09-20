@@ -9,21 +9,32 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Button } from "../../components/ui/button";
 import axiosClient from "../../axios-client";
+import { useToast } from "./use-toast";
 
 interface ModalVerAjusteMonitorProps {
-  selected_ajuste: any; // Puedes cambiar el tipo según el modelo de Ajuste
+  selected_ajuste: any; // Cambia según el modelo de Ajuste
   open: boolean;
   set_open: (open: boolean) => void;
+  onCancelSuccess: () => void; // Nueva prop para actualizar la tabla
 }
 
 const ModalVerAjusteMonitor: React.FC<ModalVerAjusteMonitorProps> = ({
   selected_ajuste,
   open,
   set_open,
+  onCancelSuccess, // Añadimos esta prop
 }) => {
   const [comentario, set_comentario] = useState<string>("");
+  const { toast } = useToast();
+
+  const successToastEliminado = () => {
+    toast({
+      title: "¡Éxito!",
+      description: "El ajuste se ha eliminado correctamente",
+      variant: "success",
+    });
+  };
 
   const handleCancelAjuste = async () => {
     if (!comentario) {
@@ -32,16 +43,17 @@ const ModalVerAjusteMonitor: React.FC<ModalVerAjusteMonitorProps> = ({
     }
 
     try {
-      // Llamada a la API para cancelar el ajuste
       const response = await axiosClient.put("/Ajuste/cancelar", {
         id: selected_ajuste?.id,
         motivo_cancelacion: comentario,
       });
 
       if (response.status === 200) {
-        console.log("Ajuste cancelado:", response.data);
-        // Cierra el modal al completar la cancelación
-        set_open(false);
+        successToastEliminado();
+        set_open(false); // Cerrar el modal
+
+        // Llamar a la función que actualiza la tabla
+        onCancelSuccess();
       } else {
         console.error("Error al cancelar el ajuste");
       }
@@ -60,20 +72,12 @@ const ModalVerAjusteMonitor: React.FC<ModalVerAjusteMonitorProps> = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        {/* Detalles del ajuste */}
         <div>
-          <p>
-            <strong>ID Ajuste:</strong> {selected_ajuste?.id}
-          </p>
-          <p>
-            <strong>Estado:</strong> {selected_ajuste?.estado}
-          </p>
-          <p>
-            <strong>Monto Total:</strong> {selected_ajuste?.monto_total}
-          </p>
+          <p><strong>ID Ajuste:</strong> {selected_ajuste?.id}</p>
+          <p><strong>Estado:</strong> {selected_ajuste?.estado}</p>
+          <p><strong>Monto Total:</strong> {selected_ajuste?.monto_total}</p>
         </div>
 
-        {/* Campo para ingresar el comentario */}
         <div className="mt-4">
           <label htmlFor="comentario">Comentario</label>
           <textarea
@@ -86,9 +90,7 @@ const ModalVerAjusteMonitor: React.FC<ModalVerAjusteMonitorProps> = ({
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => set_open(false)}>
-            Cancelar
-          </AlertDialogCancel>
+          <AlertDialogCancel onClick={() => set_open(false)}>Cancelar</AlertDialogCancel>
           <AlertDialogAction onClick={handleCancelAjuste}>
             Cancelar Ajuste
           </AlertDialogAction>
