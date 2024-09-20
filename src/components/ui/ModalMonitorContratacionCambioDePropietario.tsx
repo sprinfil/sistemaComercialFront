@@ -78,7 +78,18 @@ const form = useForm<z.infer<typeof cambioPropietarioSchema>>({
 
 
 
-
+const fetch_contratos = async () => {
+  //setLoadingTableMonitorContrato(true);
+  try {
+    const response = await axiosClient.get("/contratos");
+    //setLoadingTableMonitorContrato(false);
+    setDataMonitorContratos(response.data.contrato);
+    console.log(response.data.contrato);
+  } catch (error) {
+    //setLoadingTableMonitorContrato(false);
+    console.error("Failed to fetch contratos:", error);
+  }
+}
 
 
 async function onSubmit(values: z.infer<typeof cambioPropietarioSchema>) {
@@ -105,7 +116,8 @@ async function onSubmit(values: z.infer<typeof cambioPropietarioSchema>) {
       variant: 'success',
     });
 
-    
+    fetch_contratos();
+    setBoolModalContratacionCambioDeNombre(false);
     console.log(response);
   } catch (error) {
     console.error('Error eliminando el contrato:', error);

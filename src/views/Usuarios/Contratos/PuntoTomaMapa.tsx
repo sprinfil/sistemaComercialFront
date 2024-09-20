@@ -87,6 +87,7 @@ const PuntoTomaMapa = () => {
     const clickedLocation = new google.maps.LatLng(lat, lng);
     setSelectedLocation({ lat, lng });
     setPuntoTomaLatitudLongitudAPI([lat, lng]);
+    setSeleccionoPuntoEnMapa(true);
 
     let isInsidePolygon = false;
 
@@ -131,6 +132,8 @@ const PuntoTomaMapa = () => {
         description: "Puedes continuar el proceso de contratación si lo deseas.",
       });
     }
+    setSeleccionoPuntoEnMapa(true);
+
   }, [poligonos, setPuntoTomaLatitudLongitudAPI, setSeleccionoPuntoEnMapa, setSelectedLocation, toast]);
 
   const handleSiguienteContratacion = useCallback(() => {
@@ -248,9 +251,12 @@ const PuntoTomaMapa = () => {
                         const clickedLocation = new google.maps.LatLng(lat, lng);
                         setLatitudMapa(lat);
                         setLongitudMapa(lng);
-                        setLibroToma(libro);
+                        setLibroToma(libro.id);
                         setSelectedLocation({ lat, lng });
                         setMarcadorSeleccionado(true);
+                        setSeleccionoPuntoEnMapa(true);
+                        setPuntoTomaLatitudLongitudAPI([lat, lng ]);
+
                       }}
                     />
                   );
