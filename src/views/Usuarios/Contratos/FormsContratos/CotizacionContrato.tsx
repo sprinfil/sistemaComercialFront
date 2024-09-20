@@ -87,8 +87,8 @@ export const CotizacionContrato = ({ selected_contrato }) => {
                     <TableBody>
                         {informacionCotizacion.map((item) => (
                             <TableRow key={item.id}>
-                                <TableCell className="font-medium text-lg w-full">{item.concepto.nombre}</TableCell>
-                                <TableCell className="font-medium text-lg w-full">{item.monto}</TableCell>
+                                <TableCell className="font-medium text-lg w-full">{item?.concepto?.nombre}</TableCell>
+                                <TableCell className="font-medium text-lg w-full">{item?.monto}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

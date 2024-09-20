@@ -54,11 +54,14 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
   };
 
   // Función para manejar la selección de archivo
-
+  useEffect(() => {
+    console.log(selected_fact);
+  }, [])
 
   useEffect(() => {
     if (selected_fact?.contrato?.toma?.posicion?.coordinates) {
       const [lng, lat] = selected_fact.contrato.toma.posicion.coordinates;
+      console.log(lng, lat);
       setMapCenter({ lat, lng });
     }
   }, [selected_fact]);
@@ -311,7 +314,7 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
               <p className='whitespace-nowrap'>
                 <strong>Fact de alc:</strong>
                 <select
-                defaultValue={factibilidadAlcantarillado}
+                  defaultValue={factibilidadAlcantarillado}
                   value={factibilidadAlcantarillado}
                   onChange={(e) => handleFactibilidadChange(e, setFactibilidadAlcantarillado)}
                   className={`ml-2 border rounded p-1 ${errorMessages.factibilidadAlcantarillado ? 'border-red-500' : ''}`}

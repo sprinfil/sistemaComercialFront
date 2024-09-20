@@ -118,7 +118,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0].direccion_completa;
+      return row.tomas?.[0]?.direccion_completa;
     },
     id: "tomas.direccion_completa",
     header: ({ column }) => (
