@@ -146,16 +146,8 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
     axiosClient.post('/Ajuste/create', payload)
         .then(response => {
             console.log('Ajuste registrado', response);
-            onConfirm(selectedAjuste); 
-            successToastCreado(); // Llama a la función para actualizar la tabla
-            // Limpiar estados
-            setAjustes([]);
-            setCargosAjustables([]);
-            setCargosSeleccionados([]);
-            setSelectAll(false);
-            setSelectedAjuste(null);
-            setMontoAjustable(0);
-            setComentario('');
+            successToastCreado(); 
+            onConfirm(selectedAjuste);
         })
         .catch(error => {
             console.error('Error al registrar ajuste:', error);
