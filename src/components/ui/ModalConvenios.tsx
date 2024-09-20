@@ -42,6 +42,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const [activeAccordion, setActiveAccordion] = useState<string | null>("convenios");
   const [tipoMonto, setTipoMonto] = useState<string>('%');
   const { toast } = useToast()
+  
 
   function successToastCreado() {
     toast({
@@ -91,21 +92,76 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   };
 
   const handleCargoSeleccionado = (cargo: any) => {
-    if (cargosSeleccionados.some((c: any) => c.id === cargo.id)) {
-      setCargosSeleccionados(cargosSeleccionados.filter((c: any) => c.id !== cargo.id));
+    const yaSeleccionado = cargosSeleccionados.some((c) => c.id === cargo.id);
+    if (yaSeleccionado) {
+        setCargosSeleccionados(cargosSeleccionados.filter((c) => c.id !== cargo.id));
     } else {
-      setCargosSeleccionados([...cargosSeleccionados, cargo]);
+        const montoConveniadoActual = tipoMonto === '%' 
+            ? (cargo.monto * porcentajeConveniado) / 100 
+            : montoConveniado;
+        
+        setCargosSeleccionados([
+            ...cargosSeleccionados,
+            { ...cargo, montoConveniado: montoConveniadoActual }
+        ]);
     }
-  };
+};
 
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setCargosSeleccionados([]);
-    } else {
-      setCargosSeleccionados(cargosConveniables);
-    }
-    setSelectAll(!selectAll);
+
+
+  useEffect(() => {
+    console.log(cargosSeleccionados)
+   }, [cargosSeleccionados]);
+   
+   const calcularTotalSeleccionados = () => {
+    return cargosSeleccionados.reduce((acc, cargo) => acc + (cargo.monto || 0), 0);
   };
+  
+
+  useEffect(() => {
+    calcularTotalSeleccionados(); // Llama a la función para que actualice el total
+  }, [cargosSeleccionados]); // Dependencia en cargosSeleccionados
+  
+  
+
+useEffect(() => {
+    const totalSeleccionados = calcularTotalSeleccionados();
+    if (tipoMonto === '%') {
+        setMontoConveniado((totalSeleccionados * porcentajeConveniado) / 100);
+    } else if (tipoMonto === '$') {
+        // Aquí se puede manejar el caso de monto fijo si es necesario
+        setPorcentajeConveniado((montoConveniado / totalSeleccionados) * 100);
+    }
+}, [porcentajeConveniado, montoConveniado, cargosSeleccionados, tipoMonto]);
+
+  useEffect(() => {
+    const totalSeleccionados = calcularTotalSeleccionados();
+    if (tipoMonto === '$') {
+      // Si el tipo es monto fijo, recalculamos el porcentaje basado en el monto sobre el total seleccionado
+      setPorcentajeConveniado((montoConveniado / totalSeleccionados) * 100);
+    }
+  }, [montoConveniado, cargosSeleccionados]);
+
+  const calcularTotalMontoConveniado = () => {
+    return cargosSeleccionados.reduce((acc, cargo) => acc + (cargo.montoConveniado || 0), 0);
+};
+
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+        const nuevosCargosSeleccionados = cargosConveniables.map((cargo) => {
+            const montoConveniadoActual = tipoMonto === '%' 
+                ? (cargo.monto * porcentajeConveniado) / 100 
+                : montoConveniado;
+            return { ...cargo, montoConveniado: montoConveniadoActual };
+        });
+        setCargosSeleccionados(nuevosCargosSeleccionados);
+    } else {
+        setCargosSeleccionados([]);
+    }
+    setSelectAll(checked);
+};
+
 
   const handleConfirmar = () => {
     const payload = {
@@ -130,8 +186,15 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
             console.error('Error al registrar convenio:', error);
         });
 };
+const calcularTotalMontos = () => {
+  return cargosSeleccionados.reduce((total, cargo) => total + (Number(cargo.monto) || 0), 0);
+};
 
-  
+useEffect(() => {
+  const totalSeleccionados = calcularTotalMontos();
+  console.log('Total de montos seleccionados:', totalSeleccionados); // Para depuración
+}, [cargosSeleccionados]);
+
 
   return (
     <AlertDialog>
@@ -203,22 +266,28 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
                           />
                         </td>
                         <td className="px-4 py-2">
-                                <Input
-                                  type="number"
-                                  value={porcentajeConveniado}
-                                  onChange={(e) => setPorcentajeConveniado(Number(e.target.value))}
-                                  className="border p-1"
-                                  disabled={tipoMonto !== '%'} 
-                                />
+                        <Input
+                            type="number"
+                            value={porcentajeConveniado}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setPorcentajeConveniado(value === '' ? 0 : Number(value));
+                          }}
+                            className="border p-1"
+                            disabled={tipoMonto !== '%'} 
+                          />
                               </td>
                               <td className="px-4 py-2">
-                                <Input
-                                  type="number"
-                                  value={montoConveniado}
-                                  onChange={(e) => setMontoConveniado(Number(e.target.value))}
-                                  className="border p-1"
-                                  disabled={tipoMonto !== '$' }
-                                />
+                              <Input
+                            type="number"
+                            value={montoConveniado}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setMontoConveniado(value === '' ? 0 : Number(value));
+                          }}
+                            className="border p-1"
+                            disabled={tipoMonto !== '$'} 
+                          />
                               </td>
                       </tr>
                     </tbody>
@@ -235,23 +304,36 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
                           </th>
                           <th className="px-4 py-2 text-left">Aplicable</th>
                           <th className="px-4 py-2 text-left">Monto</th>
+                          <th className="px-4 py-2 text-left">Monto conveniado</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        {cargosConveniables.map((cargo: any) => (
-                          <tr key={cargo.id} className="border-t">
-                            <td className="px-4 py-2">
-                              <Checkbox
-                                checked={cargosSeleccionados.some((c: any) => c.id === cargo.id)}
-                                onCheckedChange={() => handleCargoSeleccionado(cargo)}
-                              />
-                              {" "}{cargo.nombre}
-                            </td>
-                            <td className="px-4 py-2">{cargo.aplicable ? 'Sí' : 'No'}</td>
-                            <td className="px-4 py-2">${cargo.monto}</td>
+                        <tbody>
+                          {cargosConveniables.map((cargo: any) => (
+                              <tr key={cargo.id} className="border-t">
+                                  <td className="px-4 py-2">
+                                      <Checkbox
+                                          checked={cargosSeleccionados.some((c: any) => c.id === cargo.id)}
+                                          onCheckedChange={() => handleCargoSeleccionado(cargo)}
+                                      />
+                                      {" "}{cargo.nombre}
+                                  </td>
+                                  <td className="px-4 py-2">{cargo.aplicable ? 'Sí' : 'No'}</td>
+                                  <td className="px-4 py-2">${cargo.monto}</td>
+                                  <td className="px-4 py-2">
+                                      ${cargosSeleccionados.find((c: any) => c.id === cargo.id)?.montoConveniado ?? 0}
+                                  </td>
+                              </tr>
+                          ))}
+                          <tr className="font-bold">
+                          <td className="px-4 py-2" colSpan={2}>Total:</td>
+                          <td className="px-4 py-2">${calcularTotalMontos()}</td>
+                          <td className="px-4 py-2">${calcularTotalMontoConveniado()}</td>
+                         
+                              
                           </tr>
-                        ))}
                       </tbody>
+
+
                     </table>
                     <div className='px-4 py-2 text-left font-bold'>Letras
                       <Input className='w-15 font-normal' 

@@ -18,6 +18,8 @@ import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario.tsx'
 import { Input } from './input.tsx';
 import { Toast } from '@radix-ui/react-toast'
 import { useStateContext } from '../../contexts/ContextProvider.tsx';
+import { useToast } from './use-toast.ts';
+import { ToastAction } from '@radix-ui/react-toast';
 
 
 interface ModalAjusteProps {
@@ -39,6 +41,17 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
   const { usuariosEncontrados } = ZustandGeneralUsuario();
   const [activeAccordion, setActiveAccordion] = useState<string | null>("ajustes");
   const {user}= useStateContext();
+  const { toast } = useToast();
+  
+  function successToastCreado() {
+    toast({
+        title: "¡Éxito!",
+        description: "Ajuste realizado exitosamente!",
+        variant: "success",
+
+    })
+}
+  
 
   useEffect(() => {
     setLoading(true);
@@ -132,8 +145,9 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
 
     axiosClient.post('/Ajuste/create', payload)
         .then(response => {
-            console.log('Convenio registrado', response);
-            onConfirm(selectedAjuste);  // Llama a la función para actualizar la tabla
+            console.log('Ajuste registrado', response);
+            onConfirm(selectedAjuste); 
+            successToastCreado(); // Llama a la función para actualizar la tabla
             // Limpiar estados
             setAjustes([]);
             setCargosAjustables([]);

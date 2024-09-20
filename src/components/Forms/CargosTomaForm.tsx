@@ -76,6 +76,10 @@ const CargosTomaForm = () => {
   };
   
 
+ 
+
+
+
   useEffect(() => {
     cargarCargos();
     cargarConvenios();
