@@ -62,7 +62,6 @@ export const CrearContratoForm = () => {
     console.log("Longitud:", longitudMapa); //Longitud seleccionada dentro del poligono
     console.log("Libro:", libroToma); //Longitud seleccionada dentro del poligono
     console.log(JSON.stringify(libroToma));
-    console.log(selectedLocation);
 
     const form = useForm<z.infer<typeof crearContratoSchema>>({
         resolver: zodResolver(crearContratoSchema),

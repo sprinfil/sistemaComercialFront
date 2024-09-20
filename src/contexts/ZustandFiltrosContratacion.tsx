@@ -202,6 +202,8 @@ interface FiltrosContratacion {
 
   getCoordenadaString2: () => string | null;
 
+  tarifaDeContratoActual:[];
+  setTarifaDeContratoActual:(tarifaDeContratoActual: []) => void;
 
 }
 
@@ -411,6 +413,10 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
     const { puntoTomaLatitudLongitudAPI } = ZustandFiltrosContratacion.getState();
     return JSON.stringify(puntoTomaLatitudLongitudAPI);
   },
+
+
+  tarifaDeContratoActual:[],
+  setTarifaDeContratoActual: (tarifaDeContratoActual) => set({ tarifaDeContratoActual }),
 
 }));
 

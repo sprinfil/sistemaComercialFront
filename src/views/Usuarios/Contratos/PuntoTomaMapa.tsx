@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { OcultarTable } from "../../../components/Tables/Components/OcultarTable";
 import FiltrosContratacionPuntoToma from "../../OrdenesDeTrabajo/FiltrosContratacionPuntoToma";
 import {
@@ -6,15 +6,12 @@ import {
   Marker,
   Polygon,
   useJsApiLoader,
-  InfoWindow
 } from "@react-google-maps/api";
 import axiosClient from "../../../axios-client";
 import { Button } from "../../../components/ui/button";
 import { useToast } from "../../../components/ui/use-toast";
 import { ZustandFiltrosContratacion } from "../../../contexts/ZustandFiltrosContratacion";
 import { useNavigate } from "react-router-dom";
-import GoogleMapsProvider from "../../GoogleMapsProvider";
-import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 
 const mapContainerStyle = {
   width: "100%",
@@ -27,74 +24,69 @@ const center = {
 };
 
 const PuntoTomaMapa = () => {
-  const { setLatitudMapa, setLongitudMapa, setLibroToma, libroToma, setMarcadorSeleccionado, marcadorSeleccionado, 
-    isCheckedPreContratada, puntosFiltradosParaElMapa, setTomaPreContratada,setSeleccionoPuntoEnMapa, selectedLocation, setSelectedLocation,setEsPreContratado
-  ,setPuntoTomaLatitudLongitudAPI,puntoTomaLatitudLongitudAPI} =
-    ZustandFiltrosContratacion();
+  const {
+    setLatitudMapa,
+    setLongitudMapa,
+    setLibroToma,
+    libroToma,
+    setMarcadorSeleccionado,
+    marcadorSeleccionado,
+    isCheckedPreContratada,
+    puntosFiltradosParaElMapa,
+    setTomaPreContratada,
+    setSeleccionoPuntoEnMapa,
+    selectedLocation,
+    setSelectedLocation,
+    setEsPreContratado,
+    setPuntoTomaLatitudLongitudAPI,
+    puntoTomaLatitudLongitudAPI
+  } = ZustandFiltrosContratacion();
+
   const { toast } = useToast();
   const [poligonos, setPoligonos] = useState([]);
-  const [mapaCargado, setMapaCargado] = useState(false);
-  const [infoWindowPosition, setInfoWindowPosition] = useState(null);
-  const [tomas_filtradas, set_tomas_filtradas] = useState([]);
-  const navigate = useNavigate();
-  const [promise, set_promise] = useState();
+  const [tomasFiltradas, setTomasFiltradas] = useState([]);
+  const [map, setMap] = useState(null);
+  const markerRefs = useRef([]);
 
-  
-  const handleSiguienteContratacion = () => {
-    navigate("/Contrato/Usuario");
-    setEsPreContratado(true);
-  };
+  const navigate = useNavigate();
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: "AIzaSyARlsiPBIt9Cv5EiSNKTZVENYMZwJo-KJ0",
+  });
 
   useEffect(() => {
-    const mostrarPoligonos = async () => {
-      setMapaCargado(false);
-      setPoligonos([]); 
+    const fetchPoligonos = async () => {
       try {
         const response = await axiosClient.get("/ruta");
         setPoligonos(response.data.data);
-        setMapaCargado(true);
-        console.log(response);
       } catch (error) {
         console.error("Error fetching polygons:", error);
-        setMapaCargado(false);
       }
     };
-    mostrarPoligonos();
-  }, [promise]);
+    fetchPoligonos();
+  }, []);
 
   useEffect(() => {
-    set_promise(puntosFiltradosParaElMapa)
-  }, [puntosFiltradosParaElMapa])
-
-  useEffect(() => {
-    if (promise instanceof Promise) {
-      promise
-        .then((data) => {
-          console.log(data.data.tomas);
-          set_tomas_filtradas(data.data.tomas);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+    if (puntosFiltradosParaElMapa instanceof Promise) {
+      puntosFiltradosParaElMapa
+        .then((data) => setTomasFiltradas(data.data.tomas))
+        .catch((e) => console.log(e));
     } else {
-      console.log('No es una promesa', promise);
+      setTomasFiltradas(puntosFiltradosParaElMapa.data?.tomas || []);
     }
-  }, [promise])
-
+  }, [puntosFiltradosParaElMapa]);
 
   useEffect(() => {
-    return () => {
-      setSeleccionoPuntoEnMapa(false); 
-    };
+    return () => setSeleccionoPuntoEnMapa(false);
   }, [setSeleccionoPuntoEnMapa]);
 
-
-  const handleMapClick = (event) => {
+  const handleMapClick = useCallback((event) => {
+    console.log("Map clicked", event);
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
     const clickedLocation = new google.maps.LatLng(lat, lng);
     setSelectedLocation({ lat, lng });
-    setPuntoTomaLatitudLongitudAPI([lat, lng ]);
+    setPuntoTomaLatitudLongitudAPI([lat, lng]);
     setSeleccionoPuntoEnMapa(true);
 
     let isInsidePolygon = false;
@@ -126,9 +118,8 @@ const PuntoTomaMapa = () => {
           ) {
             isInsidePolygon = true;
             setSelectedLocation({ lat, lng });
-            setPuntoTomaLatitudLongitudAPI([lat, lng ]);
+            setPuntoTomaLatitudLongitudAPI([lat, lng]);
             setSeleccionoPuntoEnMapa(true);
-
           }
         }
       });
@@ -139,43 +130,76 @@ const PuntoTomaMapa = () => {
         variant: "destructive",
         title: "No hay factibilidad",
         description: "Puedes continuar el proceso de contratación si lo deseas.",
-      })
+      });
     }
     setSeleccionoPuntoEnMapa(true);
-  };
 
+  }, [poligonos, setPuntoTomaLatitudLongitudAPI, setSeleccionoPuntoEnMapa, setSelectedLocation, toast]);
 
-  const handleMapLoad = (map) => {
-    setMapaCargado(true);
-  };
+  const handleSiguienteContratacion = useCallback(() => {
+    navigate("/Contrato/Usuario");
+    setEsPreContratado(true);
+  }, [navigate, setEsPreContratado]);
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyARlsiPBIt9Cv5EiSNKTZVENYMZwJo-KJ0",
-  });
+  useEffect(() => {
+    if (map) {
+      markerRefs.current.forEach(marker => marker.setMap(null));
+      markerRefs.current = [];
 
-  const [map, setMap] = useState(null);
+      tomasFiltradas.forEach(toma => {
+        if (toma.posicion?.coordinates) {
+          const markerPosition = {
+            lat: toma.posicion.coordinates[1],
+            lng: toma.posicion.coordinates[0],
+          };
 
-  const onLoad = useCallback(function callback(map) {
-    setMap(map);
+          const marker = new google.maps.Marker({
+            position: markerPosition,
+            map: map,
+            title: `Toma: ${toma.codigo_toma}`,
+          });
+
+          const infoWindow = new google.maps.InfoWindow({
+            content: `<div class="text-black">
+                      <strong>Código de Toma: ${toma.codigo_toma}</strong></br>
+                      <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
+                      <strong>Calle: ${toma.calle}</strong></br>
+                      <strong>Número de casa: ${toma.numero_casa}</strong></br>
+                      <strong>Colonia: ${toma.colonia}</strong></br>
+                      <strong>Código Postal: ${toma.codigo_postal}</strong></br>
+                      <br>
+                      <button id="view-details-btn" class="text-green-800 text-xl"><strong>Contratar esta toma</strong></button>
+                    </div>`,
+          });
+
+          infoWindow.addListener('domready', () => {
+            document.getElementById('view-details-btn')?.addEventListener('click', handleSiguienteContratacion);
+            setTomaPreContratada(toma);
+          });
+
+          marker.addListener('click', () => {
+            infoWindow.open(map, marker);
+          });
+
+          markerRefs.current.push(marker);
+        }
+      });
+    }
+  }, [map, tomasFiltradas, handleSiguienteContratacion]);
+
+  const onLoad = useCallback((mapInstance) => {
+    setMap(mapInstance);
   }, []);
 
-  const onUnmount = useCallback(function callback(map) {
+  const onUnmount = useCallback(() => {
     setMap(null);
   }, []);
 
   if (!isLoaded) {
     return <div>Cargando mapa...</div>;
   }
-
-
-  console.log(puntoTomaLatitudLongitudAPI);
-  console.log(selectedLocation);
-
-
-
-
-
   
+
   return (
     <div>
       <div className="flex space-x-2">
@@ -193,10 +217,8 @@ const PuntoTomaMapa = () => {
             onClick={handleMapClick}
             onLoad={onLoad}
             onUnmount={onUnmount}
-
           >
             {selectedLocation && <Marker position={selectedLocation} />}
-
 
             {poligonos.map((polygon, index) =>
               polygon.libros.map((libro, libroIndex) => {
@@ -212,91 +234,36 @@ const PuntoTomaMapa = () => {
                   );
 
                   return (
-                    <>
-                      <Polygon
-                        key={`polygon-${index}-${libroIndex}`}
-                        paths={polygonCoordinates}
-                        options={{
-                          fillColor: '#00913f ',
-                          fillOpacity: 0.4,
-                          strokeColor: '#00913f ',
-                          strokeOpacity: 1,
-                          strokeWeight: 2,
-                          clickable: true,
-                        }}
-                        onClick={(event) => {
-                          const lat = event.latLng.lat();
-                          const lng = event.latLng.lng();
-                          setSelectedLocation({ lat, lng });
-                          setPuntoTomaLatitudLongitudAPI([lat, lng ]);
-                          setSeleccionoPuntoEnMapa(true);
-                          setLibroToma(libro.id);
-                          console.log(libro.id);
-                        }}
-                      />
+                    <Polygon
+                      key={`polygon-${index}-${libroIndex}`}
+                      paths={polygonCoordinates}
+                      options={{
+                        fillColor: '#00913f',
+                        fillOpacity: 0.4,
+                        strokeColor: '#00913f',
+                        strokeOpacity: 1,
+                        strokeWeight: 2,
+                        clickable: true,
+                      }}
+                      onClick={(event) => {
+                        const lat = event.latLng.lat();
+                        const lng = event.latLng.lng();
+                        const clickedLocation = new google.maps.LatLng(lat, lng);
+                        setLatitudMapa(lat);
+                        setLongitudMapa(lng);
+                        setLibroToma(libro.id);
+                        setSelectedLocation({ lat, lng });
+                        setMarcadorSeleccionado(true);
+                        setSeleccionoPuntoEnMapa(true);
+                        setPuntoTomaLatitudLongitudAPI([lat, lng ]);
 
-                      {libro.tomas?.map((toma, tomaIndex) => {
-                        
-                        if (tomas_filtradas?.some(filtrada => filtrada.id === toma.id)) {
-                          
-
-                          if (toma.posicion?.coordinates) {
-                            const markerPosition = {
-                              lat: toma.posicion.coordinates[1], // Latitud
-                              lng: toma.posicion.coordinates[0], // Longitud
-                            };
-
-                            const marker = new google.maps.Marker({
-                              position: markerPosition,
-                              map: map,
-                              title: `Toma: ${toma.codigo_toma}`,
-
-                            });
-
-                            const infoWindow = new google.maps.InfoWindow({
-                              content: `<div class="text-black">
-                                          <strong>Código de Toma: ${toma.codigo_toma}</strong></br>
-                                          <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
-                                          <strong>Calle: ${toma.calle}</strong></br>
-                                          <strong>Número de casa: ${toma.numero_casa}</strong></br>
-                                          <strong>Colonia: ${toma.colonia}</strong></br>
-                                          <strong>Código Postal: ${toma.codigo_postal}</strong></br>
-                                          <br>
-                                          <button id="view-details-btn" class="text-green-800 text-xl"><strong>Contratar esta toma</strong></button>
-                                        </div>`,
-                            });
-                            infoWindow.addListener('domready', () => {
-                              document.getElementById('view-details-btn')?.addEventListener('click', handleSiguienteContratacion);
-                              setTomaPreContratada(toma);
-                            });
-
-                            marker.addListener('click', () => {
-                              infoWindow.open(map, marker);
-                            });
-
-
-
-                            return null;
-                          }
-                        }
-
-
-
-
-
-
-
-
-                        return null;
-                      })}
-                    </>
+                      }}
+                    />
                   );
                 }
                 return null;
               })
             )}
-
-
           </GoogleMap>
         </div>
       </div>

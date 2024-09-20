@@ -52,7 +52,9 @@ import ComboBoxCargosCargables from "./ComboBoxCargosCargables.tsx";
 const ModalMonitorContratacionCotizacionAgua = ({ selected_contrato, open, setOpen }) => {
   const { toast } = useToast();
   
-  const {boolModalCotizacionMonitor, setBoolModalCotizacionMonitor, MonitorsetDataMonitorContratos,  setLoadingTableMonitorContrato, setBoolModalContratacionCambioDeNombre, boolModalContratacionCambioDeNombre, setControlModalMonitorContratacionClick} =  ZustandFiltrosContratacion();
+  const {boolModalCotizacionMonitor, setBoolModalCotizacionMonitor, MonitorsetDataMonitorContratos, 
+     setLoadingTableMonitorContrato, setBoolModalContratacionCambioDeNombre, boolModalContratacionCambioDeNombre,
+      setControlModalMonitorContratacionClick, tarifaDeContratoActual } =  ZustandFiltrosContratacion();
 
   console.log(selected_contrato);
 
@@ -211,7 +213,12 @@ const eliminarConcepto = (index: number) => {
                                 name="nombre_contrato"
                                 render={({ field }) => (
                                     <FormItem>
-                                   
+                                    <div className="flex space-x-2 justify-center">
+                                      <div className="text-base text-black">Precio del contrato de agua:</div>
+                                   <div className="mt-1 mb-2">
+                                   {tarifaDeContratoActual.monto}
+                                    </div> 
+                                        </div>
                                         <FormLabel>Selecciona un cargo si es necesario.</FormLabel>
                                         <FormControl>
                                           <>
