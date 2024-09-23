@@ -97,7 +97,28 @@ const CargosTomaForm = () => {
         <Loader />
       ) : (
         <>
-          <div>Cargos
+          <div>
+          <div className="mb-4 flex justify-end gap-2">
+        <ModalConvenio
+          trigger={
+            <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+              Convenios
+            </button>
+          }
+          title="Convenios"
+          onConfirm={handleConvenioConfirm}
+        />
+        <ModalAjuste
+          trigger={
+            <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+              Ajustes
+            </button>
+          }
+          title="Ajustes"
+        />
+      </div>
+      <strong>Cargos</strong>
+          
             <table className="w-full table-fixed">
               <thead className="bg-muted">
                 <tr>
@@ -128,9 +149,9 @@ const CargosTomaForm = () => {
             </table>
           </div>
           
-          <div className="mt-4"> Convenios
-            <table className="w-full table-fixed">
-              <thead className="bg-muted">
+          <div className="mt-4"> <strong>Convenios</strong> 
+            <table className="w-full ">
+              <thead className="bg-muted ">
                 <tr>
                   <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Nombre
@@ -176,25 +197,7 @@ const CargosTomaForm = () => {
           </div>
         </>
       )}
-      <div className="mb-4 flex justify-end gap-2">
-        <ModalConvenio
-          trigger={
-            <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-              Convenios
-            </button>
-          }
-          title="Convenios"
-          onConfirm={handleConvenioConfirm}
-        />
-        <ModalAjuste
-          trigger={
-            <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-              Ajustes
-            </button>
-          }
-          title="Ajustes"
-        />
-      </div>
+      
     </div>
   );
 };
