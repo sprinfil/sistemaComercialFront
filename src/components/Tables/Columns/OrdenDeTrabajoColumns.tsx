@@ -54,6 +54,10 @@ export type orden_trabajo_encadenadas = {
   id: number
   id_OT_Catalogo_padre: number
   id_OT_Catalogo_encadenada: number
+  OT_Encadenada: 
+  {
+    nombre:string
+  }
 }
 
 
