@@ -458,38 +458,79 @@ useEffect(() => {
   }
 }, [modelo, campo]);
 // Actualiza la acción correspondiente en totalAccionesComponente
+// Actualiza la acción correspondiente en totalAccionesComponente
 const handleAccionChange = (index, value) => {
   const nuevasAcciones = [...totalAccionesComponente];
+
+  // Actualiza la acción seleccionada
   nuevasAcciones[index].accion = value;
+
+  // Limpia el modelo, campo y valor
+  nuevasAcciones[index].modelo = ''; 
+  nuevasAcciones[index].campo = ''; 
+  nuevasAcciones[index].valor = '';
+
+  // Actualiza el estado con las nuevas acciones
   setTotalAccionesComponente(nuevasAcciones);
 
-  // Limpia el modelo, campo y valor al cambiar la acción
-  nuevasAcciones[index].modelo = ''; // Limpia el modelo
-  nuevasAcciones[index].campo = ''; // Limpia el campo
-  nuevasAcciones[index].valor = ''; // Limpia el valor
+  // Limpia las opciones de campos y valores
+  setOpcionesCampos([]);
+  setOpcionesValores([]);
 
   // Define las entidades según la acción
   if (value === 'registrar') {
-    setOpcionesEntidades(['toma', 'medidores', 'contratos']); // Por ejemplo, si la acción es registrar
+    setOpcionesEntidades(['medidores']); // Muestra 'medidores' como opción
+  } else if (value === 'modificar') {
+    setOpcionesEntidades(['toma', 'medidores', 'contratos']); // Muestra las opciones disponibles para 'modificar'
   } else {
-    setOpcionesEntidades(['medidores', 'contratos']); // Otras acciones
+    setOpcionesEntidades([]);
   }
-
-  setOpcionesCampos([]); // Limpia las opciones de campos
-  setOpcionesValores([]); // Limpia las opciones de valores
+  
+  // Asegúrate de que el modelo esté vacío para que el usuario elija
+  // Aquí eliminamos el comentario anterior para evitar confusiones
+  setTotalAccionesComponente((prevAcciones) => {
+    const updatedAcciones = [...prevAcciones];
+    updatedAcciones[index].modelo = ''; // Asegúrate de que el modelo quede vacío
+    return updatedAcciones;
+  });
 };
 
-// Actualiza el modelo y sus campos
-const handleModeloChange = (index, value) => {
+
+
+const handleEntidadChange = (index, value) => {
   const nuevasAcciones = [...totalAccionesComponente];
+
+  // Actualiza la entidad (modelo en tu caso) y resetea los campos y valores
   nuevasAcciones[index].modelo = value;
-  nuevasAcciones[index].campo = ''; // Resetea el campo
-  nuevasAcciones[index].valor = ''; // Resetea el valor
+  nuevasAcciones[index].campo = '';  // Limpia el campo seleccionado
+  nuevasAcciones[index].valor = '';  // Limpia el valor seleccionado
+
+  // Actualiza el estado de las acciones
   setTotalAccionesComponente(nuevasAcciones);
 
-  // Actualiza las opciones de campos según el modelo seleccionado
-  setOpcionesCampos(Object.keys(opcionesPorEntidad[value] || {}));
+  // Limpia las opciones de campos y valores
+  setOpcionesCampos([]); 
+  setOpcionesValores([]); 
+
+  // Define las opciones de campos según la entidad seleccionada
+  if (value === 'medidores') {
+    setOpcionesCampos(['estatus']); // Campos disponibles para 'medidores'
+  } else if (value === 'toma') {
+    setOpcionesCampos(['tipo_contratacion', 'tipo_servicio']); // Campos disponibles para 'toma'
+  } else if (value === 'contratos') {
+    setOpcionesCampos(['servicio_contratado', 'estatus']); // Campos disponibles para 'contratos'
+  } else {
+    setOpcionesCampos([]); // Limpia las opciones si no es ninguna de las anteriores
+  }
+
+  // Si deseas que el select de acción se resetee y quede vacío:
+  setTotalAccionesComponente((prevAcciones) => {
+    const updatedAcciones = [...prevAcciones];
+    updatedAcciones[index].accion = ''; // Deja vacío el select de acción para que el usuario elija
+    return updatedAcciones;
+  });
 };
+
 
 // Actualiza el campo y sus valores
 const handleCampoChange = (index, value) => {
@@ -502,6 +543,11 @@ const handleCampoChange = (index, value) => {
   const nuevasOpcionesValores = opcionesPorEntidad[nuevasAcciones[index].modelo]?.[value] || [];
   setOpcionesValores(nuevasOpcionesValores);
 };
+
+
+
+
+
 
   console.log(form.getValues());
 
@@ -594,7 +640,7 @@ const handleCampoChange = (index, value) => {
                                 field.onChange(value);
                                 handleAccionChange(index, value);
                               }}
-                              value={field.value}
+                              value={field.value || ''} 
                               disabled
                             >
                               <SelectTrigger>
@@ -618,8 +664,8 @@ const handleCampoChange = (index, value) => {
                                 field.onChange(value);
                                 handleAccionChange(index, value);
                               }}
-                              value={field.value}
-                            >
+                              value={field.value || ''} 
+                              >
                               <SelectTrigger>
                                 <SelectValue placeholder="Selecciona una acción" />
                               </SelectTrigger>
@@ -648,9 +694,9 @@ const handleCampoChange = (index, value) => {
                           disabled={accionGeneradaEntreTabs === "ver"}
                           onValueChange={(value) => {
                             field.onChange(value);
-                            handleModeloChange(index, value);
+                            handleEntidadChange(index, value);
                           }}
-                          value={field.value}
+                          value={field.value || ''}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Selecciona una entidad" />
@@ -701,8 +747,8 @@ const handleCampoChange = (index, value) => {
                          <SelectValue placeholder="Selecciona un campo" />
                        </SelectTrigger>
                        <SelectContent>
-                         {opcionesCampos.map((campo) => (
-                           <SelectItem key={campo} value={campo}>
+                         {opcionesCampos.map((campo, index) => (
+                           <SelectItem key={index} value={campo}>
                              {campo.charAt(0).toUpperCase() + campo.slice(1)}
                            </SelectItem>
                          ))}
