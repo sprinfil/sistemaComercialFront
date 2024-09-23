@@ -34,6 +34,8 @@ import {
 import ModalVerPago from "./ModalVerPago"
 import ModalVerFactibilidadMonitor from "./ModalVerFactibilidadMonitor"
 import ModalVerAjusteMonitor from "./ModalVerAjusteMonitor"
+import { ExternalLinkIcon } from "lucide-react"
+import IconButton from "./IconButton"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -116,6 +118,8 @@ export function AjusteMonitorDataTable<TData, TValue>({
             />
           </div>
         </div>
+         
+         
 
         <div className="w-[85%] p-4">
           <div className="rounded-md border max-h-[55vh] overflow-auto">
@@ -163,41 +167,35 @@ export function AjusteMonitorDataTable<TData, TValue>({
             </Table>
           </div>
 
-          <div className="flex items-center justify-end space-x-2 py-4">
-            {/* <Select onValueChange={(value) => { }}>
-              <SelectTrigger className="w-[200px] my-1">
-                <SelectValue placeholder="Accion" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Accion</SelectLabel>
-                  <SelectItem value="aceptar factibilidades">Aceptar factibilidades</SelectItem>
-                  <SelectItem value="rechazar">Rechazar factibilidades</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <div className=" flex-1 text-sm text-muted-foreground">
-              {table.getFilteredSelectedRowModel().rows.length} of{" "}
-              {table.getFilteredRowModel().rows.length} row(s) selected.
-            </div> */}
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              Next
-            </Button>
+          <div className=" flex items-center justify-between space-x-2 py-4">
+            
+            
+            <div className="flex space-x-2 ml-auto">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                Next
+              </Button>
+            </div>
           </div>
+          <div className=" flex items-center justify-between space-x-2 py-4">
+          <div className="flex space-x-2">
+              <Button className="w-full">Exportar a PDF</Button>
+              <Button className="w-full">Exportar a Excel</Button>
+            </div>
+          </div>
+
         </div>
       </div>
 

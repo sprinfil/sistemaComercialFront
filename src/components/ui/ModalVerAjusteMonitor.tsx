@@ -12,6 +12,7 @@ import {
 import axiosClient from "../../axios-client";
 import { useToast } from "./use-toast";
 
+
 interface ModalVerAjusteMonitorProps {
   selected_ajuste: any; // Cambia según el modelo de Ajuste
   open: boolean;
@@ -73,9 +74,9 @@ const ModalVerAjusteMonitor: React.FC<ModalVerAjusteMonitorProps> = ({
         </AlertDialogHeader>
 
         <div>
-          <p><strong>ID Ajuste:</strong> {selected_ajuste?.id}</p>
+          <p><strong>Folio:</strong> {selected_ajuste?.id}</p>
           <p><strong>Estado:</strong> {selected_ajuste?.estado}</p>
-          <p><strong>Monto Total:</strong> {selected_ajuste?.monto_total}</p>
+          <p><strong>Monto total ajustado:</strong> {selected_ajuste?.monto_total}</p>
         </div>
 
         <div className="mt-4">
@@ -91,7 +92,7 @@ const ModalVerAjusteMonitor: React.FC<ModalVerAjusteMonitorProps> = ({
 
         <AlertDialogFooter>
           <AlertDialogCancel onClick={() => set_open(false)}>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={handleCancelAjuste}>
+          <AlertDialogAction onClick={handleCancelAjuste} disabled={!comentario}>
             Cancelar Ajuste
           </AlertDialogAction>
         </AlertDialogFooter>
