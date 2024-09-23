@@ -51,7 +51,7 @@ const OrdenDeTrabajoAccionesForm = () => {
   const [abrirInput, setAbrirInput] = useState(false);
   const [IdParaRestaurar, setIdParaRestaurar] = useState<number | null>(null);
   const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
-  const [totalAccionesComponente, setTotalAccionesComponente] = useState<{ id: number, accion: string, campo: string, modelo: string }[]>([{ id: 0, accion: "", campo: "", modelo: "" }]);
+  const [totalAccionesComponente, setTotalAccionesComponente] = useState<{ id: number, accion: string, campo: string, modelo: string, valor: string}[]>([{ id: 0, accion: "", campo: "", modelo: "", valor:"" }]);
   const [aumentarAcciones, setAumentarAcciones] = useState(1);
   const [control2, setControl2] = useState(false);
   const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
@@ -61,7 +61,8 @@ const OrdenDeTrabajoAccionesForm = () => {
   console.log("esta es la accion generada", accionGeneradaEntreTabs);
   const [accionControl, setAccionControl] = useState('');
   
-  const opcionesEntidades = accion === 'registrar' ? ['medidores'] : ['toma', 'medidores', 'contratos'];
+  const [opcionesEntidades, setOpcionesEntidades] = useState<string[]>([]);
+
 
   //#region SUCCESSTOAST
   function successToastCreado() {
@@ -96,11 +97,9 @@ const OrdenDeTrabajoAccionesForm = () => {
 
     })
   }
-  //#endregion
 
-
-  //Funcion de errores para el Toast
-  function errorToast() {
+   //Funcion de errores para el Toast
+   function errorToast() {
 
     toast({
       variant: "destructive",
@@ -121,6 +120,11 @@ const OrdenDeTrabajoAccionesForm = () => {
     })
   }
 
+
+  //#endregion
+
+
+ 
 
 
 
@@ -171,6 +175,7 @@ const OrdenDeTrabajoAccionesForm = () => {
       try {
         const response = await axiosClient.put(`/OrdenTrabajoCatalogo/create/acciones`, orden_trabajo_accion);
         const data = response.data;
+        console.log(response);
         if (data.restore) {
           setIdParaRestaurar(data.tipoToma_id);
           setModalReactivacionOpen(true);
@@ -196,15 +201,24 @@ const OrdenDeTrabajoAccionesForm = () => {
           getAnomalias();
           successToastCreado();
         }
-      } catch (response) {
+      } catch (err) {
         errorToast();
-        console.log(response);
+        console.log(err.response.data.message);
+        const message = err.response.data.message;
+        toast({
+          variant: "destructive",
+          title: "Oh, no. Error",
+          description: message,
+          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+    
         setLoading(false);
       }
     }
 
   };
 
+  //#region metodos no usados
   const getAnomalias = async () => {
     setLoadingTable(true);
     try {
@@ -252,6 +266,8 @@ const OrdenDeTrabajoAccionesForm = () => {
     }
   };
 
+  //#endregion
+  
   
 
   useEffect(() => {
@@ -292,6 +308,7 @@ const OrdenDeTrabajoAccionesForm = () => {
           campo: item.campo,
           valor: item.valor
         })) : [];
+        console.log(ordenTrabajoAcciones);
 
       //una vez recorrido reseteamos el formulario. que viene siendo el objeto orden_trabajo_accion
       //con sus propiedades.
@@ -301,7 +318,10 @@ const OrdenDeTrabajoAccionesForm = () => {
       });
 
       setIsDataLoaded(true); // Marca los datos como cargados
-
+      // Asegúrate de que el estado también se esté limpiando aquí si es necesario
+      setModelo(ordenTrabajoAcciones[0]?.modelo || '');
+      setCampo(ordenTrabajoAcciones[0]?.campo || '');
+      setValorSeleccionado(ordenTrabajoAcciones[0]?.valor || '');
 
       setTotalAccionesComponente(ordenTrabajoAcciones)
       setLongitudAcciones(ordenTrabajoAcciones.length);
@@ -368,40 +388,91 @@ const OrdenDeTrabajoAccionesForm = () => {
   const [opcionesValores, setOpcionesValores] = useState([]);
   const [campoDisabled, setCampoDisabled] = useState(false);
   const [acciongg, setAcciongg] = useState('');
+  const [valorSeleccionado, setValorSeleccionado] = useState('');
+
+  
+  useEffect(() => {
+    // Si hay un modelo seleccionado
+    if (modelo) {
+      setOpcionesCampos(Object.keys(opcionesPorEntidad[modelo] || {}));
+      setCampo(''); // Resetea el campo
+      setValorSeleccionado(''); // Limpia el valor del campo 'valor'
+      setOpcionesValores([]); // Limpia las opciones de valores
+      
+    }
+  }, [modelo]);
+
+
+  useEffect(() => {
+    // Actualiza las opciones de entidades y limpia todos los estados al cambiar la acción
+    setOpcionesEntidades(acciongg === 'registrar' ? ['medidores'] : ['toma', 'medidores', 'contratos']);
+    
+    // Limpia todos los estados
+    setModelo(''); // Limpia el modelo
+    setCampo(''); // Limpia el campo
+    setValorSeleccionado(''); // Limpia el valor del campo 'valor'
+    setOpcionesCampos([]); // Limpia las opciones de campos
+    setOpcionesValores([]); // Limpia las opciones de valores
+  }, [acciongg]);
+
+  useEffect(() => {
+    // Actualiza las opciones de entidades al cambiar la acción
+    setOpcionesEntidades(acciongg === 'registrar' ? ['medidores'] : ['toma', 'medidores', 'contratos']);
+  }, [acciongg]);
+
+  
 
   useEffect(() => {
     if (modelo && campo) {
-      setOpcionesCampos(Object.keys(opcionesPorEntidad[modelo] || {}));
-      setOpcionesValores(opcionesPorEntidad[modelo]?.[campo] || []);
+      const nuevasOpcionesValores = opcionesPorEntidad[modelo]?.[campo] || [];
+      setOpcionesValores(nuevasOpcionesValores);
+      if (nuevasOpcionesValores.length === 0) {
+        setValorSeleccionado(''); // Limpia el valor del campo 'valor'
+      }
     }
   }, [modelo, campo]);
-
-  const handleAccionChange = (value) => {
-    setAcciongg(value);
-    updateCampoDisabled(value, modelo);
+  
+  const handleAccionChange = (index, value) => {
+    const nuevasAcciones = [...totalAccionesComponente];
+    nuevasAcciones[index].accion = value;
+    setTotalAccionesComponente(nuevasAcciones);
+    // Aquí podrías manejar el campo y modelo si es necesario
+  };
+  const handleModeloChange = (index, value) => {
+    const nuevasAcciones = [...totalAccionesComponente];
+    nuevasAcciones[index].modelo = value;
+    nuevasAcciones[index].campo = ''; // Resetea el campo
+    nuevasAcciones[index].valor = ''; // Resetea el valor
+    setTotalAccionesComponente(nuevasAcciones);
+    console.log('Modelo cambiado:', value);
   };
 
-  const handleModeloChange = (value) => {
-    setModelo(value);
-    updateCampoDisabled(accion, value);
-    setCampo('');
-    setOpcionesCampos(Object.keys(opcionesPorEntidad[value] || {}));
-  };
 
-  const handleCampoChange = (value) => {
-    setCampo(value);
-    setOpcionesValores(opcionesPorEntidad[modelo]?.[value] || []);
-  };
 
-  const updateCampoDisabled = (accionValue, modeloValue) => {
-    setCampoDisabled(accionValue === 'registrar' && modeloValue === 'medidores');
+  const handleCampoChange = (index, value) => {
+    const nuevasAcciones = [...totalAccionesComponente];
+    nuevasAcciones[index].campo = value;
+    const nuevasOpcionesValores = opcionesPorEntidad[nuevasAcciones[index].modelo]?.[value] || [];
+    nuevasAcciones[index].valor = ''; // Limpia el valor anterior
+    setOpcionesValores(nuevasOpcionesValores);
+    console.log('Campo cambiado:', value, 'Nuevas opciones de valores:', nuevasOpcionesValores);
+    setTotalAccionesComponente(nuevasAcciones);
   };
+  
+const updateCampoDisabled = (accionValue, modeloValue) => {
+  setCampoDisabled(accionValue === 'registrar' && modeloValue === 'medidores');
+}
 
   console.log(form.getValues());
 
+  const formatearClave = (clave: string) => {
+    return clave
+      .replace(/_/g, " ") // Reemplaza guion bajo con espacio
+      .replace(/\b\w/g, (letra) => letra.toUpperCase()); // Capitaliza la primera letra de cada palabra
+  };
   return (
     <div>
-      <div className="overflow-auto">
+      <div className="">
         <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
           <div className='h-[20px] w-full flex items-center justify-end '>
             <div className="mb-[10px] h-full w-full mx-4">
@@ -413,6 +484,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                   method={onDelete}
                   button={
                     <a title="Eliminar">
+                      
                       <IconButton>
                         <TrashIcon className="w-[20px] h-[20px]" />
                       </IconButton>
@@ -457,49 +529,17 @@ const OrdenDeTrabajoAccionesForm = () => {
                 <p>Acción {index + 1}</p>
                 <div className="flex justify-end mb-5">
                   <button type="button" onClick={() => handleRemoveComponent(item.id)}>
-                    <a title="Borrar acción">
+                    {
+                      accionGeneradaEntreTabs == "editar"
+                      &&
+                      <a title="Borrar acción">
                       <TrashIcon className="w-[2.5vh] h-[2.5vh]" />
                     </a>
+                    }
+                  
                   </button>
                 </div>
-
-                <div className="w-full flex space-x-2">
-                <div className="w-full">
-                    <div className="text-sm font-medium mb-2">
-                      Selecciona una entidad.
-                    </div>
-                    <Controller
-                      name={`orden_trabajo_accion.${index}.modelo`}
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          disabled={accionGeneradaEntreTabs === "ver"}
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                            handleModeloChange(value);
-                          }}
-                          value={field.value}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecciona una entidad" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {opcionesEntidades.map((entidad) => (
-                              <SelectItem key={entidad} value={entidad}>
-                                {entidad.charAt(0).toUpperCase() + entidad.slice(1)}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    />
-                  </div>
-                </div>
-                  <div>
-
-                
-
-                    <div className="text-sm font-medium mb-2 mt-2">
+                <div className="text-sm font-medium mb-2">
                       Selecciona una acción.
                     </div>
                     <div className="w-full">
@@ -511,7 +551,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                             <Select
                               onValueChange={(value) => {
                                 field.onChange(value);
-                                handleAccionChange(value);
+                                handleAccionChange(index, value);
                               }}
                               value={field.value}
                               disabled
@@ -535,7 +575,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                             <Select
                               onValueChange={(value) => {
                                 field.onChange(value);
-                                handleAccionChange(value);
+                                handleAccionChange(index, value);
                               }}
                               value={field.value}
                             >
@@ -552,6 +592,46 @@ const OrdenDeTrabajoAccionesForm = () => {
                         />
                       )}
                     </div>
+
+                <div className="w-full flex space-x-2">
+                  
+                <div className="w-full mt-4">
+                    <div className="text-sm font-medium mb-2">
+                      Selecciona una entidad.
+                    </div>
+                    <Controller
+                      name={`orden_trabajo_accion.${index}.modelo`}
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          disabled={accionGeneradaEntreTabs === "ver"}
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            handleModeloChange(index, value);
+                          }}
+                          value={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecciona una entidad" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {opcionesEntidades.map((entidad) => (
+                              <SelectItem key={entidad} value={entidad}>
+                                {entidad.charAt(0).toUpperCase() + entidad.slice(1)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                
+                  <div>
+
+            
+                 
                   </div>
 
                  
@@ -569,7 +649,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                       disabled={campoDisabled}
                       onValueChange={(value) => {
                         field.onChange(value);
-                        handleCampoChange(value);
+                        handleCampoChange(index, value);
                       }}
                       value={field.value}
                       disabled
@@ -596,7 +676,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                         disabled={campoDisabled}
                         onValueChange={(value) => {
                           field.onChange(value);
-                          handleCampoChange(value);
+                          handleCampoChange(index, value);
                         }}
                         value={field.value}
                       >
@@ -606,7 +686,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                         <SelectContent>
                           {opcionesCampos.map((campo) => (
                             <SelectItem key={campo} value={campo}>
-                              {campo.charAt(0).toUpperCase() + campo.slice(1)}
+                              {formatearClave(campo)}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -661,7 +741,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                     <SelectContent>
                       {opcionesValores.map((valor) => (
                         <SelectItem key={valor} value={valor}>
-                          {valor.charAt(0).toUpperCase() + valor.slice(1)}
+                          {valor}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -674,7 +754,10 @@ const OrdenDeTrabajoAccionesForm = () => {
               </div>
             ))}
             <div className="flex justify-end">
-            <Button type= "submit">Actualizar</Button>
+              {accionGeneradaEntreTabs == "editar" &&
+                          <Button type= "submit">Actualizar</Button>
+
+              }
 
             </div>
           </form>

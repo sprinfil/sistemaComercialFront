@@ -78,6 +78,8 @@ const CargosDeLaOrdenTrabajoForm = () => {
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
     const [control, setControl] = useState(false);
+    const [nombreConcepto, setNombreConcepto] = useState([]);
+
 
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0
@@ -289,8 +291,14 @@ const CargosDeLaOrdenTrabajoForm = () => {
                 ? ordenDeTrabajo.ordenes_trabajo_cargos.map(item => ({
                     id: item.id,
                     id_concepto_catalogo: item.id_concepto_catalogo,
+                    conceptos: item.conceptos 
+
                 }))
                 : [];
+
+                const nombresConceptos = ordenTrabajoCargos.map(cargo => cargo.conceptos?.nombre);
+                setNombreConcepto(nombresConceptos);
+                console.log(nombresConceptos);
     
             if (accionGeneradaEntreTabs === "ver") {
                 form.reset({
@@ -347,6 +355,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
     
     const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
     console.log(accionGeneradaEntreTabs);
+    console.log(nombreConcepto);
 
     return (
         <div>
@@ -411,22 +420,45 @@ const CargosDeLaOrdenTrabajoForm = () => {
                                     </div>
                                     <div className="flex items-center space-x-2">
                                         <div className="w-full">
-
+                                        
+                                        {
+                                            accionGeneradaEntreTabs == "editar" ? 
                                             <Controller
-                                                name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`}
-                                                control={form.control}
-                                                render={({ field }) => (
+                                            name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`}
+                                            control={form.control}
+                                            render={({ field }) => (
+                                       <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control} />
 
+                                            )}
+                                        />
+                                            :
+                                            <Controller
+                                            name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`}
+                                            control={form.control}
+                                            render={({ field: { value, ...rest } }) => ( // Desestructuramos field
+                                              <Input
+                                                readOnly
+                                                placeholder=""
+                                                value={nombreConcepto || ""} // Usa el nombre del concepto aquí
+                                                {...rest} // Pasa el resto de las props sin incluir value
+                                              />
+                                            )}
+                                          />
 
-                                                    <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control} />
-
-                                                )}
-                                            />
+                                        }
+                                          
                                         </div>
                                         <FormMessage />
-                                        <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
-                                            <TrashIcon className="w-4 h-4" />
-                                        </Button>
+                                        {
+                                         accionGeneradaEntreTabs == "editar" &&
+                                         <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
+                                           
+                                         <a title="Eliminar">
+                                         <TrashIcon className="w-4 h-4" />
+                                         </a>
+                                     </Button>
+                                        }
+                                       
                                     </div>
                                 </div>
                             )
