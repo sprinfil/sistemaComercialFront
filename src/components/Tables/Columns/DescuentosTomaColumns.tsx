@@ -17,6 +17,10 @@ export const columns: ColumnDef<Descuento>[] = [
     header: "Folio",
   },
   {
+    accessorKey: "descuento_catalogo.nombre",
+    header: "Nombre",
+  },
+  {
     accessorKey: "estatus",
     header: "Estatus",
   },
