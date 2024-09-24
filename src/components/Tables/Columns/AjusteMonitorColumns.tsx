@@ -7,9 +7,11 @@ import { FactibilidadMonitor } from "../../../views/Monitores/FactibilidadMonito
 import IconButton from "../../ui/IconButton";
 import { useState } from "react"
 import ModalVerFactibilidadMonitor from "../../ui/ModalVerFactibilidadMonitor";
-import { EyeIcon } from 'lucide-react';
+import { Eye, EyeIcon } from 'lucide-react';
 import { XCircleIcon } from "lucide-react"
 import ModalVerAjusteMonitor from "../../ui/ModalVerAjusteMonitor"
+import { ExternalLinkIcon } from "@radix-ui/react-icons"
+import ModalExportarAjustesMonitor from "../../ui/ModalExportarAjustesMonitor"
 
 export type Ajuste = {
   id: number
@@ -67,18 +69,16 @@ export const AjusteMonitorColumns: ColumnDef<Ajuste>[] = [
       return (
         <>
           <IconButton  onClick={() => { set_modal_ver_ajuste(true) }} >
-            <XCircleIcon className='w-[15px] h-[15px]' />
+            <EyeIcon className='w-[15px] h-[15px]' />
           </IconButton>
           <ModalVerAjusteMonitor
             selected_ajuste={row?.original}
             open={modal_ver_ajuste}
             set_open={set_modal_ver_ajuste}
-           
-            
           />
         </>
-
       )
     },
   },
+  
 ]
