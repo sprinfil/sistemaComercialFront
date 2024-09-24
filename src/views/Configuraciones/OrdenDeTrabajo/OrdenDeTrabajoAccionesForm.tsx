@@ -145,18 +145,21 @@ const OrdenDeTrabajoAccionesForm = () => {
     defaultValues: {
       orden_trabajo_accion: totalAccionesComponente.map(item => ({
         id: item.id,
-        accion: "",
-        modelo: "",
-        campo: "",
-        valor: ""
+        accion: item.accion || "", // Manejo de valores vacíos
+        modelo: item.modelo || "", // Manejo de valores vacíos
+        campo: item.campo || "", // Manejo de valores vacíos
+        valor: item.valor || "", // Manejo de valores vacíos
       })),
     },
   });
 
   const { control, handleSubmit, reset, getValues} = form;
 
+
+  
   const onSubmit = async (values: OrdenDeTrabajoAcciones) => {
 
+    console.log(values);
     // COMO OCUPO MANDARLE EL OBJETO orden_trabajo_accion
     //Agarramos los valores del form, lo recorremos, y accedemos a sus propiedades
     //COMO ES UN ARREGLO PUEDE SER 1 O MAS, y le metemos el id del catalogo(que es aparte del form)
@@ -353,11 +356,8 @@ const OrdenDeTrabajoAccionesForm = () => {
 
 
   const handleAddComponent = () => {
-    setTotalAccionesComponente(prevAcciones => [
-      ...prevAcciones,
-      { id: aumentarAcciones }
-    ]);
-    setAumentarAcciones(aumentarAcciones + 1);
+    const nuevaAccion = { id: Date.now(), modelo: '', campo: '', valor: '', accion: '' };
+    setTotalAccionesComponente((prev) => [...prev, nuevaAccion]);
   };
 
   const handleRemoveComponent = (idToRemove: number) => {
@@ -520,25 +520,39 @@ const handleEntidadChange = (index, value) => {
   });
 };
 
-
-// Actualiza el campo y sus valores
 const handleCampoChange = (index, value) => {
   const nuevasAcciones = [...totalAccionesComponente];
+
+  // Actualiza el campo sin limpiar el valor por ahora
   nuevasAcciones[index].campo = value;
-  nuevasAcciones[index].valor = ''; // Limpia el valor anterior
+  
+  // Puedes dejar el valor como está para que el usuario lo seleccione después
+  console.log('Campo actualizado:', nuevasAcciones[index]);
+
+  // Actualiza el estado de las acciones
   setTotalAccionesComponente(nuevasAcciones);
 
-  // Actualiza las opciones de valores según el campo seleccionado
-  const nuevasOpcionesValores = opcionesPorEntidad[nuevasAcciones[index].modelo]?.[value] || [];
-  setOpcionesValores(nuevasOpcionesValores);
+  // Define las opciones de valores según el campo seleccionado
+  const opcionesPorCampo = {
+    tipo_contratacion: ['normal', 'condicionado', 'desarrollador'],
+    tipo_servicio: ['lectura', 'promedio'],
+    estatus: ['activa', 'baja temporal'],
+  };
+
+  // Establece las opciones de valores
+  setOpcionesValores(opcionesPorCampo[value] || []); // Limpia si no hay coincidencia
+
+  // Resetea la acción solo si es necesario
+  setTotalAccionesComponente((prevAcciones) => {
+    const updatedAcciones = [...prevAcciones];
+    updatedAcciones[index].accion = ''; // Deja vacío el select de acción para que el usuario elija
+    return updatedAcciones;
+  });
 };
 
 
 
-
-
-
-console.log(JSON.stringify(form.getValues(), null, 2));
+  console.log(form.getValues());
 
   const formatearClave = (clave: string) => {
     return clave
@@ -788,7 +802,9 @@ console.log(JSON.stringify(form.getValues(), null, 2));
                    render={({ field }) => (
                      <Select
                        disabled={campoDisabled}
-                       onValueChange={(value) => field.onChange(value)}
+                       onValueChange={(value) => {
+                        console.log('Valor seleccionado:', value); // Debugging
+                        field.onChange(value)}}
                        value={field.value}
                        disabled
                      >
@@ -812,7 +828,9 @@ console.log(JSON.stringify(form.getValues(), null, 2));
                 render={({ field }) => (
                   <Select
                     disabled={campoDisabled}
-                    onValueChange={(value) => field.onChange(value)}
+                    onValueChange={(value) =>{
+                      console.log('Valor seleccionado:', value); // Debugging
+                      field.onChange(value)}}
                     value={field.value}
                   >
                     <SelectTrigger>
