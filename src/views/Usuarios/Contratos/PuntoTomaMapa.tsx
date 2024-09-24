@@ -84,6 +84,13 @@ const PuntoTomaMapa = () => {
     console.log("Map clicked", event);
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
+
+    if (selectedLocation) {
+      setSelectedLocation(null);
+      setPuntoTomaLatitudLongitudAPI([]);
+      setSeleccionoPuntoEnMapa(false);
+    }
+
     const clickedLocation = new google.maps.LatLng(lat, lng);
     setSelectedLocation({ lat, lng });
     setPuntoTomaLatitudLongitudAPI([lat, lng]);
@@ -136,6 +143,8 @@ const PuntoTomaMapa = () => {
 
   }, [poligonos, setPuntoTomaLatitudLongitudAPI, setSeleccionoPuntoEnMapa, setSelectedLocation, toast]);
 
+console.log(selectedLocation);
+
   const handleSiguienteContratacion = useCallback(() => {
     navigate("/Contrato/Usuario");
     setEsPreContratado(true);
@@ -145,6 +154,7 @@ const PuntoTomaMapa = () => {
     if (map) {
       markerRefs.current.forEach(marker => marker.setMap(null));
       markerRefs.current = [];
+      setSelectedLocation(null);
 
       tomasFiltradas.forEach(toma => {
         if (toma.posicion?.coordinates) {
