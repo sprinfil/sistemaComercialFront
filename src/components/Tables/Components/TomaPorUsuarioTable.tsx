@@ -20,18 +20,18 @@ export default function TomaPorUsuarioTable() {
 
   const location = useLocation();
 
-  const {obtenerIdUsuarioInDetalle,tomas, setTomas, toma, setToma, loadingTable, setLoadingTable, setAccion, setTomasRuta, usuariosEncontrados, setUsuariosEncontrados, clearUsuariosEncontrado, setTomaUsuariosEncontrados} = ZustandGeneralUsuario();
-
+  const { obtenerIdUsuarioInDetalle, tomas, setTomas, toma, setToma, loadingTable, setLoadingTable, setAccion, setTomasRuta, usuariosEncontrados, setUsuariosEncontrados, clearUsuariosEncontrado, setTomaUsuariosEncontrados } = ZustandGeneralUsuario();
+  const [tomas_real, set_tomas_real] = useState([])
   const navigate = useNavigate();
   const idUsuario = location.state?.idUsuario;
-  console.log("ESTE ES EL ID DEL USUARIO SELECCIONADO", toma?.id);
 
-  
+  console.log("ESTE ES EL ID DEL USUARIO SELECCIONADO", usuariosEncontrados[0].id);
+
   useEffect(() => {
-    if (toma?.id) {
-      gettomaPorUsuario(toma?.id);
+    if (usuariosEncontrados[0].id) {
+      gettomaPorUsuario(usuariosEncontrados[0].id);
     }
-    
+
   }, [setToma, toma, usuariosEncontrados]);
 
   const gettomaPorUsuario = async (idUsuario) => {
@@ -47,10 +47,14 @@ export default function TomaPorUsuarioTable() {
     }
   };
 
+  useEffect(() => {
+    console.log(tomas)
+    set_tomas_real(tomas);
+  }, [tomas])
+
   //metodo para las filas
 
-  const handleRowClick = (tomaPorUsuario: TomaPorUsuario) =>
-  {
+  const handleRowClick = (tomaPorUsuario: TomaPorUsuario) => {
     setToma(tomaPorUsuario);
     setTomasRuta(true);
     setMostrarSiguiente(true)
@@ -66,8 +70,8 @@ export default function TomaPorUsuarioTable() {
 
   return (
 
-    <div>      
-      <DataTable columns={columns} data={tomas} sorter='clave_catastral' onRowClick={handleRowClick}/>
+    <div>
+      <DataTable columns={columns} data={tomas_real} sorter='clave_catastral' onRowClick={handleRowClick} />
     </div>
   );
 }

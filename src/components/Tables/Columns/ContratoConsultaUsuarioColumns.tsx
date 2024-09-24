@@ -103,7 +103,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0].clave_catastral;
+      return row.tomas?.[0]?.clave_catastral;
     },
     id: "tomas.clave_catastral",
     header: ({ column }) => (
@@ -118,7 +118,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0].direccion_completa;
+      return row.tomas?.[0]?.direccion_completa;
     },
     id: "tomas.direccion_completa",
     header: ({ column }) => (
@@ -133,7 +133,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0].localidad;
+      return row.tomas?.[0]?.localidad;
     },
     id: "tomas.localidad",
     header: ({ column }) => (

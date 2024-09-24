@@ -15,7 +15,8 @@ import ZustandPuntoVenta from '../../contexts/ZustandPuntoVenta';
 function App() {
     const { user } = useStateContext();
     const [activeTab, setActiveTab] = useState("Punto de Venta");
-    const [cajaNombre, setCajaNombre] = useState(""); // Estado para almacenar el nombre de la caja
+    const [cajaNombre, setCajaNombre] = useState("");
+    const [nombreOperador, setNombreOperador] = useState(""); // Estado para almacenar el nombre de la caja
     const navigate = useNavigate();
     const { set_session_caja, session_caja } = ZustandPuntoVenta();
 
@@ -23,7 +24,11 @@ function App() {
         const fetchCajaNombre = async () => {
             try {
                 if (!session_caja.fondo_inicial) {
-                    const response = await axiosClient.get("/cajas/estadoSesionCobro");
+                    const response = await axiosClient.get("/cajas/estadoSesionCobro?id_sesion_caja", {
+                        params: {
+                            id_sesion_caja: null
+                        },
+                    });
                     const { caja_nombre } = response.data;
                     console.log(response.data);
                     set_session_caja(response.data);
@@ -36,6 +41,11 @@ function App() {
 
         fetchCajaNombre(); // Llamada a la función para obtener el nombre de la caja
     }, []);
+
+    useEffect(() => {
+        setNombreOperador(session_caja.nombre_operador);
+        setCajaNombre(session_caja.caja_nombre)
+    }, [session_caja])
 
     const handleExitClick = () => {
         navigate("/dashboard");
@@ -68,7 +78,7 @@ function App() {
                         <FechaHora />
                     </nav>
                     <p>{cajaNombre}</p> {/* Mostrar el nombre de la caja */}
-                    <p>{user.name}</p>
+                    <p>{nombreOperador}</p>
                     <Avatar>
                         <AvatarImage src="https://github.com/shadcn.png" />
                         <AvatarFallback>CN</AvatarFallback>

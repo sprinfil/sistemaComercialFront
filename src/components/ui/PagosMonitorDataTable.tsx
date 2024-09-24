@@ -111,6 +111,7 @@ export function PagosMonitorDataTable<TData, TValue>({
                   <SelectItem value="realizado">Realizado</SelectItem>
                   <SelectItem value="cancelado">Cancelado</SelectItem>
                   <SelectItem value="pendiente">Pendiente</SelectItem>
+                  <SelectItem value="fallido">Fallido</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -149,6 +150,7 @@ export function PagosMonitorDataTable<TData, TValue>({
                   <SelectItem value="abonado">Abonado</SelectItem>
                   <SelectItem value="pendiente">Pendiente</SelectItem>
                   <SelectItem value="cancelado">Cancelado</SelectItem>
+       
                 </SelectGroup>
               </SelectContent>
             </Select>

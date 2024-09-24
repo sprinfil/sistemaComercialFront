@@ -16,20 +16,20 @@ export type Medidor = {
   estatus: boolean;
   lectura_inicial: string;
   nombreEstado: string;
+  fecha_instalacion: Date;
 };
 
 export const columns: ColumnDef<Medidor>[] = [
   {
+    accessorKey: "fecha_instalacion",
+    header: "Fecha de instalacion",
+  },
+  {
+    
+
     accessorKey: "numero_serie", // Nombre de la propiedad en el objeto de datos
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Número de serie
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
+    
+    
     cell: ({ row }) => {
       const numero_serie = row.original.numero_serie;
       const estatus = row.original.estatus; 
@@ -48,6 +48,7 @@ export const columns: ColumnDef<Medidor>[] = [
         </div>
       );
     },
+    
   },
   {
     id: "actions",
@@ -55,13 +56,7 @@ export const columns: ColumnDef<Medidor>[] = [
       const medidor = row.original;
       const { setMedidor, setAccion } = useStateContext();
 
-      return (
-        <div onClick={() => { setMedidor(medidor); setAccion("ver"); }}>
-          <IconButton>
-            <EyeOpenIcon className="w-[20px] h-[20px]" />
-          </IconButton>
-        </div>
-      );
+     
     },
   },
 ];

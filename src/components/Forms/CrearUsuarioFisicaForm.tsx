@@ -116,7 +116,7 @@ const CrearUsuarioFisicaForm = () => {
 
     return (
         
-        <div className="overflow-auto">
+        <div className="overflow-auto ">
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
@@ -128,10 +128,10 @@ const CrearUsuarioFisicaForm = () => {
                 {errors.general && <Error errors={errors.general} />}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <div className="border p-9">
+                        <div className="border p-9 overflow-auto">
                            
                             <div className="">
-                            <div className="flex space-x-5 w-[100%] items-center justify-normal">
+                            <div className="flex space-x-5 w-[100%]  items-center justify-normal">
                                 <div className="w-[68vh]">
                                 <FormField
                                     control={form.control}
@@ -239,7 +239,7 @@ const CrearUsuarioFisicaForm = () => {
                                         </FormItem>
                                     )}
                                 /> 
-                                <div className="flex space-x-20 w-[202vh]">
+                                <div className="flex space-x-5 w-[120vh]">
                                     <div className="w-[200vh]">
                                         <FormField
                                     control={form.control}
@@ -281,7 +281,7 @@ const CrearUsuarioFisicaForm = () => {
                                 
                             </div>
                             {loading && <Loader />}
-                            <Button type="submit" className="mt-[5vh] w-[20vh] ml-[182vh]">Guardar</Button>
+                            <Button type="submit" className="mt-[5vh] w-[20vh]">Guardar</Button>
                         </div>
                 
                     </form>

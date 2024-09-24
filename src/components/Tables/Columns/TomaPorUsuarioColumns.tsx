@@ -48,6 +48,19 @@ export const columns: ColumnDef<TomaPorUsuario>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "codigo_toma",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Codigo 
+        </Button>
+      )
+    },
+  },
+  {
     accessorKey: "clave_catastral",
     header: ({ column }) => {
       return (

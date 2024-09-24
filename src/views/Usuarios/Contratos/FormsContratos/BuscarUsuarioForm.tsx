@@ -295,35 +295,35 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     return (
         <ContextProvider>
             <div>
-                <div className='mt-5 ml-[5vh] w-[100vh] rounded-md border border-border  shadow-inherit p-6 h-[20vh] '>
+                <div className='mt-5 ml-[5vh] w-[100vh] rounded-md border border-border  shadow-inherit p-6 h-[25vh] overflow-auto'>
                     <Form {...form}>
                         <div className="justify-center items-center">
-                         
+
                             <div className="flex space-x-2">
                                 <div className="w-[200vh] mr-[180]">
-                                <div className="text-muted-foreground text-[20px] mb-5">Consultar al usuario </div>
+                                    <div className="text-muted-foreground text-[20px] mb-5">Consultar al usuario </div>
                                 </div>
                                 {
                                     botonCrearUsuario &&
                                     <div className="flex items-center mb-5 w-[3.5] h-[3.5vh]" onClick={handleNavigationCrearUsuario}>
-                                    <IconButton><TiUserAdd className="w-[3.5] h-[3.5vh]" /></IconButton>
+                                        <IconButton><TiUserAdd className="w-[3.5] h-[3.5vh]" /></IconButton>
                                     </div>
                                 }
                             </div>
-                                
+
                         </div>
-                   
-                       
+
+
                         <form onSubmit={form.handleSubmit(onSubmit)} className="">
                             <div className="flex space-x-2">
-                                <div className="w-[50vh] mr-5">
-
+                                <div className="w-[50vh]">
+                                    <p className="ml-1 mb-3 text-[13px]">Filtrar Por</p>
                                     <FormField
                                         control={form.control}
                                         name="filtro"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Filtrar por:</FormLabel>
+
                                                 <BuscarUsuarioComboBox form={form} field={field} name="filtro" setCargoSeleccionado={setNombreSeleccionado} />
                                                 <FormDescription>
                                                     {/* AQUI PUEDE IR DESCRIPCIÓN DEBAJO DEL INPUT EN EL FORM */}
@@ -334,12 +334,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                                     />
                                 </div>
 
-                                <div className="w-[50vh]">
-                                    {nombreSeleccionado === "Nombre, Código de usuario, Código de toma" && "Nombre, Código de usuario, Código de toma"}
-                                    {nombreSeleccionado === "Código usuario" && "Escribe el código del usuario"}
-                                    {nombreSeleccionado === "Correo" && "Escribe el correo del usuario"}
-                                    {nombreSeleccionado === "Dirección" && "Escribe la dirección de la toma"}
-                                    {nombreSeleccionado === "Código toma" && "Escribe el código de la toma"}
+                                <div className="w-[50vh] text-[13px] mt-6">
                                     <FormField
                                         control={form.control}
                                         name="nombre"
