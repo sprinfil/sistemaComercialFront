@@ -88,9 +88,9 @@ const ModalCrearDescuento: React.FC<ModalProps> = ({ update_data, trigger, open,
       set_open(false);
 
       update_data(prev => {
-        return [...prev, data_temp];
+        return [data_temp, ...prev];
       })
-      
+
     } catch (err) {
       console.log(err)
       toast({

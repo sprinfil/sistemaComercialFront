@@ -450,6 +450,7 @@ const PuntoVentaForm = () => {
             setdataUser={setDataToma}
             cerrarForm={booleanCerrarModalFiltros}
           />
+
           <ModalCorteCaja
             trigger={
               <IconButton title="Corte de caja">
@@ -1158,7 +1159,7 @@ const PuntoVentaForm = () => {
                         {cargo?.entidad}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                        ${(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ${(parseFloat(cargo?.monto_pendiente || cargo?.monto)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap text-sm ">
                         {cargo.concepto.prioridad_abono}

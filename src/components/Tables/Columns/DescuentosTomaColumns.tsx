@@ -21,11 +21,30 @@ export const columns: ColumnDef<Descuento>[] = [
     header: "Nombre",
   },
   {
-    accessorKey: "estatus",
-    header: "Estatus",
+    accessorKey: "vigencia",
+    header: "Vigencia hasta",
   },
   {
-    accessorKey: "vigencia",
-    header: "Vigencia",
+    accessorKey: "estatus",
+    header: "Estatus",
+    cell: ({ row }) => {
+      let estatus = row.original.estatus;
+      let formatted = "";
+      let styles = "";
+      if (estatus == "vigente") {
+        formatted = "Activo"
+        styles = "bg-green-500"
+      }
+      if (estatus == "no_vigente") {
+        formatted = "Inactivo"
+        styles = "bg-red-500"
+      }
+
+      return <div className="flex gap-2 items-center w-[100px] justify-between">
+        {formatted}
+        <div className={`w-3 rounded-full ${styles} h-3`}></div>
+      </div>
+    },
+
   },
 ]

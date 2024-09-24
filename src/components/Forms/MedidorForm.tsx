@@ -47,7 +47,7 @@ const MedidorForm = () => {
     const [bloquear, setBloquear] = useState(false);
     const [abrirModal, setAbrirModal] = useState(false);
 
-    const {toma, setToma,tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, setTomaUsuariosEncontrados, tomaUsuariosEncontrados}= ZustandGeneralUsuario()
+    const { toma, setToma, tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, setTomaUsuariosEncontrados, tomaUsuariosEncontrados } = ZustandGeneralUsuario()
     const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
     const [activeTab, setActiveTab] = useState("Detalles");
 
@@ -55,17 +55,16 @@ const MedidorForm = () => {
 
     useEffect(() => {
         //console.log("ESTE USUARIO LLEGA A LA TOMA DETALLE:", tomaUsuariosEncontrados[0]?.usuario);
-    
+
         if (usuariosEncontrados.length > 0) {
-          // Establece el estado global solo si hay usuarios encontrados
-          setUsuariosRecuperado(usuariosEncontrados); // Debe ser un arreglo de usuarios
-          setMostrarSiguiente(true);
+            // Establece el estado global solo si hay usuarios encontrados
+            setUsuariosRecuperado(usuariosEncontrados); // Debe ser un arreglo de usuarios
+            setMostrarSiguiente(true);
         }
-        else
-        {
-          console.log("no hay longitud");
+        else {
+            console.log("no hay longitud");
         }
-      }, [usuariosEncontrados, setUsuariosRecuperado, tomaUsuariosEncontrados]);
+    }, [usuariosEncontrados, setUsuariosRecuperado, tomaUsuariosEncontrados]);
 
     const form = useForm<z.infer<typeof medidorSchema>>({
         resolver: zodResolver(medidorSchema),
@@ -147,8 +146,8 @@ const MedidorForm = () => {
         })
     }
 
-       //Funcion de errores para el Toast
-       function errorToastMensaje(mensaje) {
+    //Funcion de errores para el Toast
+    function errorToastMensaje(mensaje) {
         toast({
             variant: "destructive",
             title: mensaje,
@@ -162,19 +161,19 @@ const MedidorForm = () => {
     function onSubmit(values: z.infer<typeof medidorSchema>) {
         console.log("submit");
 
-        
+
         const estadoConvertido = values.estatus ? 'activo' : 'inactivo';
 
-            const datosAEnviar = {
-                ...values,
-                estatus: estadoConvertido,
-            };
+        const datosAEnviar = {
+            ...values,
+            estatus: estadoConvertido,
+        };
 
 
         setLoading(true);
         if (accion == "crear") {
 
-            
+
             axiosClient.post(`/medidor/nuevo`, datosAEnviar)
                 .then((response) => {
                     console.log(response)
@@ -182,8 +181,8 @@ const MedidorForm = () => {
                     setLoading(false);
                     setMedidor({
                         id: 0,
-                        id_toma:0,
-                        numero_serie:"",
+                        id_toma: 0,
+                        numero_serie: "",
                         marca: "",
                         diametro: "",
                         tipo: "",
@@ -192,8 +191,8 @@ const MedidorForm = () => {
                     });
                     form.reset({
                         id: 0,
-                        id_toma:0,
-                        numero_serie:"",
+                        id_toma: 0,
+                        numero_serie: "",
                         marca: "",
                         diametro: "",
                         tipo: "",
@@ -231,7 +230,7 @@ const MedidorForm = () => {
                         successToastEditado();
                         //setNotification("usuario creado");
                     }
-            
+
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -248,7 +247,7 @@ const MedidorForm = () => {
     }
     const handleConfirmUpdate = async () => {
         try {
-            const response = await axiosClient.put('/actualizar-tarifa', { confirmUpdate: true, medidor_id:medidor.id});
+            const response = await axiosClient.put('/actualizar-tarifa', { confirmUpdate: true, medidor_id: medidor.id });
             setAbrirModal(false);
             setLoading(false);
             getMedidores();
@@ -294,12 +293,12 @@ const MedidorForm = () => {
             setBloquear(false);
             form.reset({
                 id: 0,
-                id_toma:0,
+                id_toma: 0,
                 numero_serie: "",
                 marca: "",
                 diametro: "",
                 tipo: "",
-                lectura_inicial: "", 
+                lectura_inicial: "",
                 estatus: false,
             });
             setMedidor({});
@@ -309,12 +308,12 @@ const MedidorForm = () => {
             setBloquear(false);
             form.reset({
                 id: 0,
-                id_toma:0,
+                id_toma: 0,
                 numero_serie: "",
                 marca: "",
                 diametro: "",
                 tipo: "",
-                lectura_inicial: "",        
+                lectura_inicial: "",
                 estatus: false,
             });
             setMedidor({});
@@ -328,22 +327,22 @@ const MedidorForm = () => {
             setErrors({});
             form.reset({
                 id: 0,
-                id_toma:0,
+                id_toma: 0,
                 numero_serie: "",
                 marca: "",
                 diametro: "",
                 tipo: "",
-                lectura_inicial: "",             
+                lectura_inicial: "",
                 estatus: false,
             });
             setMedidor({
                 id: 0,
-                id_toma:0,
+                id_toma: 0,
                 numero_serie: "",
                 marca: "",
                 diametro: "",
                 tipo: "",
-                lectura_inicial: "",        
+                lectura_inicial: "",
                 estatus: false,
             });
         }
@@ -359,7 +358,7 @@ const MedidorForm = () => {
                 marca: medidor.marca,
                 diametro: medidor.diametro,
                 tipo: medidor.tipo,
-                lectura_inicial: medidor.lectura_inicial,      
+                lectura_inicial: medidor.lectura_inicial,
                 estatus: medidor.estatus === "activo" // Convertir "activo" a true y "inactivo" a false
             });
         }
@@ -371,16 +370,15 @@ const MedidorForm = () => {
         console.log(accion);
     }, [accion]);
 
-    useEffect(() =>
-        {
-            setBloquear(true); 
-            if (accion === "editar") {
-                setBloquear(false);
-            }
-            if (accion === "crear") {
-                setBloquear(false);
-            }
+    useEffect(() => {
+        setBloquear(true);
+        if (accion === "editar") {
+            setBloquear(false);
         }
+        if (accion === "crear") {
+            setBloquear(false);
+        }
+    }
     );
 
 
@@ -392,16 +390,16 @@ const MedidorForm = () => {
             marca: medidor.marca,
             diametro: medidor.diametro,
             tipo: medidor.tipo,
-            lectura_inicial: medidor.lectura_inicial,     
+            lectura_inicial: medidor.lectura_inicial,
             estatus: medidor.estatus === "activo"  // 
         });
-    },[medidor, usuariosEncontrados])
-    
+    }, [medidor, usuariosEncontrados])
+
 
 
     return (
         <div className="overflow-auto">
-            <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
+            <div className='flex h-[40px] items-center mb-[10px] rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
                         {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo medidor</p>}
@@ -426,11 +424,11 @@ const MedidorForm = () => {
                 </div>
             </div>
 
-            <div className="py-[20px] px-[10px] ">
+            <div className=" px-[10px] ">
 
                 {errors && <Error errors={errors} />}
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField
                             control={form.control}
                             name="numero_serie"
@@ -512,12 +510,7 @@ const MedidorForm = () => {
                             )}
                         />
 
-
-
-
-                        
-                        
-                    <FormField
+                        <FormField
                             control={form.control}
                             name="estatus"
                             render={({ field }) => (
@@ -526,21 +519,21 @@ const MedidorForm = () => {
                                     <FormControl className="ml-4">
                                         {
                                             bloquear ? <Switch
-                                            checked={field.value}
-                                            onCheckedChange={(checked) => field.onChange(checked)
-                                            
-                                            }
-                                            disabled
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => field.onChange(checked)
+
+                                                }
+                                                disabled
                                             /> :
-                                            <Switch
-                                            checked={field.value}
-                                            onCheckedChange={(checked) => field.onChange(checked)
-                                            
-                                            }
-                                            
-                                            />
+                                                <Switch
+                                                    checked={field.value}
+                                                    onCheckedChange={(checked) => field.onChange(checked)
+
+                                                    }
+
+                                                />
                                         }
-                                    
+
                                     </FormControl>
                                     <FormDescription>
                                         Aquí puedes activar el medidor.
@@ -551,11 +544,11 @@ const MedidorForm = () => {
                         />
                         {loading && <Loader />}
                         {abrirInput && <Button type="submit">Siguiente</Button>}
-                        <ModalText 
+                        <ModalText
                             isOpen={abrirModal}
                             setIsOpen={setAbrirModal}
                             method={() => handleConfirmUpdate()}
-                            text = {"Si activas esta tarifa se desactivarán todas las demás, ¿Deseas continuar?"}
+                            text={"Si activas esta tarifa se desactivarán todas las demás, ¿Deseas continuar?"}
                         />
                     </form>
                 </Form>

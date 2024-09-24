@@ -262,7 +262,7 @@ export const MenuSuperiosNew = () => {
                     {
                         !loading_permissions &&
                         <>
-                        <img src={logo_menu} className='w-[3vw] rounded-md shadow-md' alt=""/>
+                        {/* <img src={logo_menu} className='w-[3vw] rounded-md shadow-md' alt=""/> */}
                             {opciones.map((opcionPadre, index) => {
                                 if (permissions.includes(opcionPadre.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
                                     return (
