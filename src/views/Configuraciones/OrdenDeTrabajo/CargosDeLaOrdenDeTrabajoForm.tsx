@@ -79,7 +79,9 @@ const CargosDeLaOrdenTrabajoForm = () => {
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
     const [control, setControl] = useState(false);
     const [nombreConcepto, setNombreConcepto] = useState([]);
+    const [valoresPrevios, setValoresPrevios] = useState({});
 
+    console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
 
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0
@@ -91,12 +93,31 @@ const CargosDeLaOrdenTrabajoForm = () => {
             { id: newId, id_concepto_catalogo: 0 }
         ]);
     };
-
     const handleRemoveComponent = (idToRemove: number) => {
-        setTotalAccionesComponente(prevAcciones =>
-            prevAcciones.filter(({ id }) => id !== idToRemove)
-        );
+        console.log("Eliminar cargo con ID:", idToRemove); // Verifica el ID
+        setTotalAccionesComponente(prevAcciones => {
+            const nuevasAcciones = prevAcciones.filter(({ id }) => id !== idToRemove);
+            
+            // Obtener los valores actuales del formulario
+            const currentValues = form.getValues('orden_trabajo_cargos');
+    
+            // Filtrar y mapear solo los valores que no han sido eliminados
+            const updatedValues = nuevasAcciones.map(item => {
+                const existingValue = currentValues.find(value => value.id === item.id);
+                return {
+                    id: item.id,
+                    id_concepto_catalogo: existingValue ? existingValue.id_concepto_catalogo : 0, // Mantiene el valor existente o establece 0
+                };
+            });
+    
+            // Resetea el formulario después de eliminar el componente
+            form.setValue('orden_trabajo_cargos', updatedValues);
+    
+            return nuevasAcciones; // Devuelve el nuevo estado
+        });
     };
+    
+    
 
     function successToastCreado() {
         toast({
@@ -160,17 +181,25 @@ const CargosDeLaOrdenTrabajoForm = () => {
             })),
         },
     });
+    const [isInitialized, setIsInitialized] = useState(false); // Estado para verificar si ya se inicializó
 
     useEffect(() => {
         if (accionGeneradaEntreTabs === "editar") {
-            form.reset({
-                orden_trabajo_cargos: totalAccionesComponente.map(item => ({
-                    id: item.id,
-                    id_concepto_catalogo: 0,
-                })),
-            });
+            const valoresActuales = form.getValues('orden_trabajo_cargos');
+    
+            const nuevosValores = totalAccionesComponente.map((item, index) => ({
+                id: item.id,
+                id_concepto_catalogo: 0,
+            }));
+    
+            // Combina los valores existentes con los nuevos
+            const todosLosValores = [...valoresActuales, ...nuevosValores];
+    
+            // Resetea el formulario con todos los valores
+            form.reset({ orden_trabajo_cargos: todosLosValores });
         }
     }, [totalAccionesComponente, accionGeneradaEntreTabs]);
+    
 
     const onSubmit = async (values: OrdenTrabajoCargo) => {
         console.log(values);
@@ -204,16 +233,25 @@ const CargosDeLaOrdenTrabajoForm = () => {
                     setLoading(false);
                 } else {
                     setLoading(false);
-                    setOrdenDeTrabajo({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    form.reset({
-                        orden_trabajo_cargos: totalAccionesComponente,
-                    });
+                   
+                    setValoresPrevios(values);
+                    setOrdenDeTrabajos(prev => {
+                        return prev.map(orden_trabajo => {
+                            if(orden_trabajo.id == idSeleccionadoConfiguracionOrdenDeTrabajo)
+                            {
+                                let nuevaOrden = ordenDeTrabajo;
+
+                                nuevaOrden.ordenes_trabajo_cargos = response;
+                                setOrdenDeTrabajo(nuevaOrden);
+                                return nuevaOrden;
+                            }
+                            else{
+                                return orden_trabajo;
+                            }
+                        })
+                    })
                     console.log(response);
-                    setAccionGeneradaEntreTabs("creado");
+                    //setAccionGeneradaEntreTabs("creado");
                     getAnomalias();
                     successToastCreado();
                 }
@@ -267,22 +305,6 @@ const CargosDeLaOrdenTrabajoForm = () => {
 
 
 
-    useEffect(() => {
-        if (accionGeneradaEntreTabs === "eliminar") {
-            setAbrirInput(false);
-        }
-        if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
-            setAbrirInput(true);
-            setErrors({});
-            setOrdenDeTrabajo({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            });
-        }
-
-
-    }, [accion, form.reset, totalAccionesComponente, idSeleccionadoConfiguracionOrdenDeTrabajo]);
 
     useEffect(() => {
    
@@ -327,28 +349,13 @@ const CargosDeLaOrdenTrabajoForm = () => {
     }, [accionGeneradaEntreTabs, ordenDeTrabajo]);
 
     useEffect(() => {
-        if (accionGeneradaEntreTabs === "creado" && ordenDeTrabajo) {
-            const ordenTrabajoCargos = Array.isArray(ordenDeTrabajo.ordenes_trabajo_cargos)
-                ? ordenDeTrabajo.ordenes_trabajo_cargos.map(item => ({
-                    id: item.id,
-                    id_concepto_catalogo: item.id_concepto_catalogo,
-                }))
-                : [];
-    
-            form.reset({
-                orden_trabajo_cargos: ordenTrabajoCargos,
-               
-            });
+ 
     
             setControl(false);
             setAbrirInput(true);
     
-            if (JSON.stringify(ordenTrabajoCargos) !== JSON.stringify(totalAccionesComponente)) {
-                setTotalAccionesComponente(ordenTrabajoCargos);
-            }
-    
-            console.log("Formulario cargado con valores actuales:", form.getValues());
-        }
+
+       
     }, [accionGeneradaEntreTabs, ordenDeTrabajo]);
  
 
@@ -413,6 +420,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {totalAccionesComponente.map((accion, index) => {
+                            console.log(accion.id);
                             return (
                                 <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
                                     <div className="text-sm font-medium mb-3">
@@ -439,7 +447,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
                                               <Input
                                                 readOnly
                                                 placeholder=""
-                                                value={nombreConcepto || ""} // Usa el nombre del concepto aquí
+                                                value={nombreConcepto[index] || ""} // Usa el nombre del concepto aquí
                                                 {...rest} // Pasa el resto de las props sin incluir value
                                               />
                                             )}

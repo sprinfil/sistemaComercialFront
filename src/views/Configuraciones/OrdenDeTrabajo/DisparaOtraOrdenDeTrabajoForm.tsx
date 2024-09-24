@@ -432,7 +432,7 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                                                 <Input
                                                 readOnly
                                                 placeholder=""
-                                                value={nombreConcepto || ""} // Usa el nombre del concepto aquí
+                                                value={nombreConcepto[index] || ""} // Usa el nombre del concepto aquí
                                                 {...rest} // Pasa el resto de las props sin incluir value
                                               />
                                             )}
@@ -450,9 +450,10 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
 
                                         </div>
                                         <FormMessage />
-                                        <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
+                                        {accionGeneradaEntreTabs == "editar" &&  <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
                                             <TrashIcon className="w-4 h-4" />
-                                        </Button>
+                                        </Button>}
+                                       
                                     </div>
                                 </div>
                             )

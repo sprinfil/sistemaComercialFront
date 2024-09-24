@@ -153,7 +153,7 @@ const OrdenDeTrabajoAccionesForm = () => {
     },
   });
 
-  const { control, handleSubmit, reset } = form;
+  const { control, handleSubmit, reset, getValues} = form;
 
   const onSubmit = async (values: OrdenDeTrabajoAcciones) => {
 
@@ -196,7 +196,7 @@ const OrdenDeTrabajoAccionesForm = () => {
             descripcion: "ninguna",
           });
           setAccionGeneradaEntreTabs("ver");
-          reset({
+          form.reset({
             orden_trabajo_accion: totalAccionesComponente.map(item => ({
               id: item.id,
               accion: item.accion,
@@ -286,7 +286,7 @@ const OrdenDeTrabajoAccionesForm = () => {
       setControl2(false);
       setAbrirInput(true);
       setErrors({});
-      reset({
+      form.reset({
         orden_trabajo_accion: totalAccionesComponente.map(item => ({
           id: item.id,
           accion: item.accion,
@@ -322,7 +322,7 @@ const OrdenDeTrabajoAccionesForm = () => {
 
       //una vez recorrido reseteamos el formulario. que viene siendo el objeto orden_trabajo_accion
       //con sus propiedades.
-      reset({
+      form.reset({
         orden_trabajo_accion: ordenTrabajoAcciones,
 
       });
@@ -377,16 +377,16 @@ const OrdenDeTrabajoAccionesForm = () => {
   //ESTE OBJETO MAPEA LAS ENTIDADES a un conjunto de propiedades, cada una de las cuales tiene un array de opciones.
   const opcionesPorEntidad = {
     medidores: {
-      estatus: ["activo", "inactivo"],
+      estatus: ["activa", "inactivo"],
     },
     toma: {
       estatus: ["pendiente confirmación inspección", "pendiente de inspeccion", "pendiente de instalacion", "activa", "baja definitiva", "baja temporal", "en proceso", "limitado"],
       tipo_contratacion: ["normal", "condicionado", "desarrollador"],
       tipo_servicio: ["lectura", "promedio"],
     },
-    contratos: {
-      servicio_contratado: ["agua", "alcantarillado y saneamiento"],
-      estatus: ["pendiente de inspeccion", "contrato no factible", "inspeccionado", "pendiente de pago", "contratado", "terminado", "cancelado"],
+    servicios: {
+      servicio_contratado: ["agua", "alcantarillado", "saneamiento"],
+      estatus: ["activa", "de baja"],
     },
   };
   const [modelo, setModelo] = useState('');
@@ -415,7 +415,7 @@ const OrdenDeTrabajoAccionesForm = () => {
   useEffect(() => {
     // Si la acción es "ver", no limpia nada
     if (accionGeneradaEntreTabs === 'ver') {
-      setOpcionesEntidades(acciongg === 'registrar' ? ['medidores'] : ['toma', 'medidores', 'contratos']);
+      setOpcionesEntidades(acciongg === 'registrar' ? ['medidores'] : ['toma', 'medidores', 'servicios']);
       return; 
     }
   
@@ -429,7 +429,7 @@ const OrdenDeTrabajoAccionesForm = () => {
       setOpcionesCampos([]); 
       setOpcionesValores([]); 
     } else {
-      setOpcionesEntidades(['medidores', 'contratos']); // Otras acciones
+      setOpcionesEntidades(['medidores', 'servicios']); // Otras acciones
     }
   
     // Si no estás en modo "editar", limpia las opciones de campos y valores
@@ -457,42 +457,31 @@ useEffect(() => {
       console.error("Error en useEffect:", error);
   }
 }, [modelo, campo]);
-// Actualiza la acción correspondiente en totalAccionesComponente
+
 // Actualiza la acción correspondiente en totalAccionesComponente
 const handleAccionChange = (index, value) => {
-  const nuevasAcciones = [...totalAccionesComponente];
+  const currentValues = getValues();
+  let nuevasOpcionesEntidades = [];
 
-  // Actualiza la acción seleccionada
-  nuevasAcciones[index].accion = value;
-
-  // Limpia el modelo, campo y valor
-  nuevasAcciones[index].modelo = ''; 
-  nuevasAcciones[index].campo = ''; 
-  nuevasAcciones[index].valor = '';
-
-  // Actualiza el estado con las nuevas acciones
-  setTotalAccionesComponente(nuevasAcciones);
-
-  // Limpia las opciones de campos y valores
-  setOpcionesCampos([]);
-  setOpcionesValores([]);
-
-  // Define las entidades según la acción
+  // Define las entidades según la acción seleccionada
   if (value === 'registrar') {
-    setOpcionesEntidades(['medidores']); // Muestra 'medidores' como opción
+    nuevasOpcionesEntidades = ['medidores']; // Cambiado a array
   } else if (value === 'modificar') {
-    setOpcionesEntidades(['toma', 'medidores', 'contratos']); // Muestra las opciones disponibles para 'modificar'
-  } else {
-    setOpcionesEntidades([]);
+    nuevasOpcionesEntidades = ['toma', 'medidores', 'servicios']; // Cambiado a array
   }
-  
-  // Asegúrate de que el modelo esté vacío para que el usuario elija
-  // Aquí eliminamos el comentario anterior para evitar confusiones
-  setTotalAccionesComponente((prevAcciones) => {
-    const updatedAcciones = [...prevAcciones];
-    updatedAcciones[index].modelo = ''; // Asegúrate de que el modelo quede vacío
-    return updatedAcciones;
-  });
+
+  // Log para ver qué opciones se están agregando
+ // console.log('Opciones para la acción:', value, nuevasOpcionesEntidades);
+
+  setOpcionesEntidades(nuevasOpcionesEntidades); // Directamente como un array
+
+  const updatedValues = {
+    ...currentValues,
+    orden_trabajo_accion: currentValues.orden_trabajo_accion.map((accion, idx) =>
+      idx === index ? { ...accion, accion: value, modelo: '', campo: '', valor: '' } : accion
+    )
+  };
+  reset(updatedValues); 
 };
 
 
@@ -516,8 +505,8 @@ const handleEntidadChange = (index, value) => {
   if (value === 'medidores') {
     setOpcionesCampos(['estatus']); // Campos disponibles para 'medidores'
   } else if (value === 'toma') {
-    setOpcionesCampos(['tipo_contratacion', 'tipo_servicio']); // Campos disponibles para 'toma'
-  } else if (value === 'contratos') {
+    setOpcionesCampos(['tipo_contratacion', 'tipo_servicio', 'estatus']); // Campos disponibles para 'toma'
+  } else if (value === 'servicios') {
     setOpcionesCampos(['servicio_contratado', 'estatus']); // Campos disponibles para 'contratos'
   } else {
     setOpcionesCampos([]); // Limpia las opciones si no es ninguna de las anteriores
@@ -549,7 +538,7 @@ const handleCampoChange = (index, value) => {
 
 
 
-  console.log(form.getValues());
+console.log(JSON.stringify(form.getValues(), null, 2));
 
   const formatearClave = (clave: string) => {
     return clave
