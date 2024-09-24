@@ -39,7 +39,8 @@ const PuntoTomaMapa = () => {
     setSelectedLocation,
     setEsPreContratado,
     setPuntoTomaLatitudLongitudAPI,
-    puntoTomaLatitudLongitudAPI
+    puntoTomaLatitudLongitudAPI,
+    setBoolPeticionContratacion
   } = ZustandFiltrosContratacion();
 
   const { toast } = useToast();
@@ -148,6 +149,7 @@ console.log(selectedLocation);
   const handleSiguienteContratacion = useCallback(() => {
     navigate("/Contrato/Usuario");
     setEsPreContratado(true);
+    setBoolPeticionContratacion(false);
   }, [navigate, setEsPreContratado]);
 
   useEffect(() => {
@@ -213,7 +215,7 @@ console.log(selectedLocation);
   return (
     <div>
       <div className="flex space-x-2">
-        <div className="mb-5">
+        <div className="">
           <OcultarTable accion={""}>
             <FiltrosContratacionPuntoToma />
           </OcultarTable>

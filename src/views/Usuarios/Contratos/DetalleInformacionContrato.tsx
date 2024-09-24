@@ -31,13 +31,14 @@ export const DetalleInformacionContrato = () => {
   const {contrato, direccion_notificaciones, libroToma, idGiroComercial,giroComercial, calleSeleccionada, coloniaSeleccionada, entreCalle1Seleccionada, 
     entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma,tomaPreContratada,setIsCheckInspeccion, boolPeticionContratacion,
 
-    isCheckInspeccion, setBooleanModalSubirArchivosContratacion, idContrato, setIdContrato,nombreGiroComercial, esPreContratado,puntoTomaLatitudLongitudAPI,getCoordenadaString2} = ZustandFiltrosContratacion();
+    isCheckInspeccion, setBooleanModalSubirArchivosContratacion, idContrato, setIdContrato,nombreGiroComercial, esPreContratado,puntoTomaLatitudLongitudAPI,
+    getCoordenadaString2, setTomaPreContratada, setBoolPeticionContratacion} = ZustandFiltrosContratacion();
 
   console.log(contrato);
   console.log(direccion_notificaciones);
 
-
-
+  
+console.log(tomaPreContratada);
 
   console.log(idContrato);
   console.log(idGiroComercial);
@@ -125,7 +126,6 @@ export const DetalleInformacionContrato = () => {
       }
     }
 
-    
   }
 
 
@@ -135,7 +135,9 @@ export const DetalleInformacionContrato = () => {
 
 console.log(nombreGiroComercial);
 
+console.log(servicioContratado);
 
+console.log(tomaPreContratada);
 
   return (
     <div className=''>
@@ -179,42 +181,97 @@ console.log(nombreGiroComercial);
           <h2 className="text-2xl mb-4">
           Datos de la toma
         </h2>
-          <Table className="mt-3">
-      <TableCaption></TableCaption>
-      <TableHeader className="bg-muted">
-        <TableRow>
-          <TableHead>Clave catastral</TableHead>
-          <TableHead>Direccion</TableHead>
-          <TableHead>Localidad</TableHead>
-          <TableHead>Giro comercial</TableHead>
-          <TableHead>Municipio</TableHead>
-          <TableHead>Servicios contratados</TableHead>
-          <TableHead>Tipo de contratación</TableHead>
-          <TableHead>Tipo de toma</TableHead>
 
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-          <TableRow key={""}>
-            <TableCell className="font-medium"> {contrato.clave_catastral}</TableCell>
-            <TableCell className="font-medium"> 
-              {"Calle " + calleSeleccionada + " " + contrato.num_casa + ", Colonia " + coloniaSeleccionada + ", Entre calles " + entreCalle1Seleccionada + ", " + 
-              entreCalle2Seleccionada + ", Codigo postal " + contrato.codigo_postal}
-              </TableCell>
-              <TableCell className="font-medium">{contrato.localidad}</TableCell>
-            <TableCell className="font-medium">{nombreGiroComercial}</TableCell>
-            <TableCell className="font-medium">{contrato.municipio}</TableCell>
-            <TableCell className="font-medium">{servicioContratado + ", " + servicioContratado2}</TableCell>
-            <TableCell className="font-medium">{contrato.tipo_contratacion}</TableCell>
-            <TableCell className="font-medium">{tipoDeToma}</TableCell>
+    {boolPeticionContratacion ?
+     <Table className="mt-3">
+     <TableCaption></TableCaption>
+     <TableHeader className="bg-muted">
+       <TableRow>
+         <TableHead>Clave catastral</TableHead>
+         <TableHead>Direccion</TableHead>
+         <TableHead>Localidad</TableHead>
+         <TableHead>Giro comercial</TableHead>
+         <TableHead>Municipio</TableHead>
+         <TableHead>Servicios contratados</TableHead>
+         <TableHead>Tipo de contratación</TableHead>
+         <TableHead>Tipo de toma</TableHead>
 
-          </TableRow>
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-        </TableRow>
-      </TableFooter>
-    </Table>
+       </TableRow>
+     </TableHeader>
+     <TableBody>
+         <TableRow key={""}>
+           <TableCell className="font-medium"> {contrato.clave_catastral}</TableCell>
+           <TableCell className="font-medium"> 
+             {"Calle " + calleSeleccionada + " " + contrato.num_casa + ", Colonia " + coloniaSeleccionada + ", Entre calles " + entreCalle1Seleccionada + ", " + 
+             entreCalle2Seleccionada + ", Codigo postal " + contrato.codigo_postal}
+             </TableCell>
+             <TableCell className="font-medium">{contrato.localidad}</TableCell>
+           <TableCell className="font-medium">{nombreGiroComercial}</TableCell>
+           <TableCell className="font-medium">{contrato.municipio}</TableCell>
+                   <TableCell className="font-medium">
+
+                   {servicioContratado + ", " + servicioContratado2}
+    
+       </TableCell>
+          
+         
+           <TableCell className="font-medium">{contrato.tipo_contratacion}</TableCell>
+           <TableCell className="font-medium">{tipoDeToma}</TableCell>
+
+         </TableRow>
+     </TableBody>
+     <TableFooter>
+       <TableRow>
+       </TableRow>
+     </TableFooter>
+   </Table>
+     :
+     <Table className="mt-3">
+     <TableCaption></TableCaption>
+     <TableHeader className="bg-muted">
+       <TableRow>
+         <TableHead>Clave catastral</TableHead>
+         <TableHead>Direccion</TableHead>
+         <TableHead>Localidad</TableHead>
+         <TableHead>Giro comercial</TableHead>
+         <TableHead>Municipio</TableHead>
+         <TableHead>Servicios contratados</TableHead>
+         <TableHead>Tipo de contratación</TableHead>
+         <TableHead>Tipo de toma</TableHead>
+
+       </TableRow>
+     </TableHeader>
+     <TableBody>
+         <TableRow key={""}>
+           <TableCell className="font-medium"> {contrato.clave_catastral}</TableCell>
+           <TableCell className="font-medium"> 
+             {"Calle " + calleSeleccionada + " " + contrato.num_casa + ", Colonia " + coloniaSeleccionada + ", Entre calles " + entreCalle1Seleccionada + ", " + 
+             entreCalle2Seleccionada + ", Codigo postal " + contrato.codigo_postal}
+             </TableCell>
+             <TableCell className="font-medium">{contrato.localidad}</TableCell>
+           <TableCell className="font-medium">{nombreGiroComercial}</TableCell>
+           <TableCell className="font-medium">{contrato.municipio}</TableCell>
+           <TableCell className="font-medium">
+
+            {tomaPreContratada?.c_agua === 0 && "Agua"}
+            ,
+            {tomaPreContratada?.c_alc === 0 && " Alcantarillado y Saneamiento"}
+
+          </TableCell>
+       
+           <TableCell className="font-medium">{contrato.tipo_contratacion}</TableCell>
+           <TableCell className="font-medium">{tipoDeToma}</TableCell>
+
+         </TableRow>
+     </TableBody>
+     <TableFooter>
+       <TableRow>
+       </TableRow>
+     </TableFooter>
+   </Table>
+    }
+       
+          
           </div>
          
          

@@ -30,6 +30,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario";
+import { MdOutlineNavigateNext } from "react-icons/md";
+import IconButtonContratos from "../../components/ui/IconButtonContratos";
 
 const FiltrosContratacionPuntoToma = () => {
 
@@ -40,7 +43,7 @@ const FiltrosContratacionPuntoToma = () => {
     setTomaPreContratada([]);
     setBoolPeticionContratacion(true);
     setEsPreContratado(false);
-
+    setTomaPreContratada([]);
   }
 
 
@@ -48,7 +51,8 @@ const FiltrosContratacionPuntoToma = () => {
   const {setIsCheckedPreContratadas, isCheckedPreContratadas, setPuntosFiltradosParaElMapa, 
     tomaPreContratada, setTomaPreContratada, 
     setBoolPeticionContratacion, seleccionoPuntoEnMapa, codigoToma, setCodigoToma, setEsPreContratado} = ZustandFiltrosContratacion();
-
+ 
+    const {usuariosEncontrados} = ZustandGeneralUsuario();
 //console.log(isCheckedPreContratadas);
 
 const handleLimpiarFiltros = () => {
@@ -85,7 +89,7 @@ const handleLimpiarFiltros = () => {
     }
 
   }
-
+console.log(usuariosEncontrados);
   const handleChangeCodigoToma = (e) => {
     setCodigoToma(e.target.value);
   };
@@ -93,21 +97,35 @@ const handleLimpiarFiltros = () => {
   console.log(codigoToma);
   return (
     <div className="overflow-auto min-h-[20vh]">
-      <div className="ml-5 mb-[20vh] mt-[1vh] h-full p-3">
+      <div className="mt-[1vh]">
+        <div className="flex space-x-2 ">
+        <div className="mb-5 text-xl">
+          Usuario:
+        </div>
+        <div className="text-lg truncate flex-grow min-w-[20vh]">
+        {usuariosEncontrados[0]?.nombre_completo}
+        </div>
+        <div className="flex justify-end w-[20vh]">
+        {seleccionoPuntoEnMapa && (
+          <div className="rounded-md bg-green-400 h-[33px]" title="Continuar proceso">
+            <IconButtonContratos onClick={handleSiguienteContratacion}>
+              <FaArrowRight className="text-black"/>
+            </IconButtonContratos>
+          </div>
+        )}
+        </div>
+    
+        </div>
+        
       <div className="flex justify-between items-center space-x-4">
 
-        <div className="flex items-center space-x-2">
+
+        <div className="flex items-center space-x-2 w-full h-full">
           <FiFilter className="w-[3vh] h-[3vh]" />
           <span>Filtros</span>
         </div>
 
-        {seleccionoPuntoEnMapa && (
-          <div className="rounded-xl" title="Continuar proceso">
-            <IconButton onClick={handleSiguienteContratacion}>
-              <FaArrowRight />
-            </IconButton>
-          </div>
-        )}
+     
       </div>
 
         <div className="flex justify-between items-center space-x-2 mt-5">
