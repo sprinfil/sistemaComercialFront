@@ -264,6 +264,7 @@ console.log(selectedLocation);
                         setLatitudMapa(lat);
                         setLongitudMapa(lng);
                         setLibroToma(libro.id);
+                        localStorage.setItem("libro", libro.id); 
                         setSelectedLocation({ lat, lng });
                         setMarcadorSeleccionado(true);
                         setSeleccionoPuntoEnMapa(true);

@@ -247,31 +247,14 @@ export const CrearContratoForm = () => {
         handleAbrirModalNotificaciones();
 
 
-        const crearContrato = {
-            estatus: isCheckInspeccion,
-            id_giro_comercial: values.id_giro_comercial,
-            nombre_contrato: values.nombre_contrato,
-            clave_catastral: values.clave_catastral,
-            tipo_toma: values.tipo_toma,
-            servicio_contratados: servicios,
-            //diametro_toma:values.diametro_de_la_toma,
-            num_casa: values.num_casa,
-            colonia: values.colonia,
-            calle: values.calle,
-            codigo_postal: values.codigo_postal,
-            entre_calle1: values.entre_calle_1,
-            entre_calle2: values.entre_calle_2,
-            localidad: values.localidad,
-            municipio: values.municipio,
-            tipo_contratacion: values.tipo_contratacion,
-            coordenada: selectedLocation
-        };
 
 
-        const contratoString = JSON.stringify(crearContrato);
+        const contratoString = JSON.stringify(datos);
         console.log("estos valores llegaron y se almacenaron en el localstorage", contratoString);
 
-        localStorage.setItem("contrato", contratoString); //AQUI SE GUARDA CONTRATO STRING QUE GUARDA EN EL LOCALSTORAGE EL OBJETO.
+        
+        //AQUI SE GUARDA CONTRATO STRING QUE GUARDA EN EL LOCALSTORAGE EL OBJETO.
+        localStorage.setItem("contrato", contratoString); 
 
 
         //navegarCrearNuevaToma();

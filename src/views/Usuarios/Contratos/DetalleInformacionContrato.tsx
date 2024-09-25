@@ -35,6 +35,23 @@ export const DetalleInformacionContrato = () => {
     getCoordenadaString2, setTomaPreContratada, setBoolPeticionContratacion} = ZustandFiltrosContratacion();
 
 
+    console.log(localStorage.getItem("contrato"));
+    console.log(localStorage.getItem("libro"));
+    console.log(localStorage.getItem("notificaciones"));
+
+
+      //contratacion obtenemos y despues lo parseamos 
+      const contratacionLocalStorage = localStorage.getItem("contrato");
+      const contratacionConvertido = JSON.parse(contratacionLocalStorage); 
+
+
+
+    console.log(contratacionConvertido);
+
+    const libroLocalStorage = localStorage.getItem("libro");
+    const NotificacionesLocalStorage = localStorage.getItem("notificaciones");
+
+
 
   const generarSolicitud = async () => {
 
@@ -43,7 +60,7 @@ export const DetalleInformacionContrato = () => {
     if(esPreContratado)
     {
       const values = {
-        contrato: contrato,
+        contrato: contratacionConvertido,
         solicitud_factibilidad: isCheckInspeccion,
       }
   
@@ -77,12 +94,12 @@ export const DetalleInformacionContrato = () => {
     else
     {
       const values = {
-        contrato: contrato,
+        contrato: contratacionConvertido,
         solicitud_factibilidad: isCheckInspeccion,
         toma: {
-          id_libro: libroToma,
+          id_libro: libroLocalStorage,
           id_giro_comercial: contrato.id_giro_comercial,
-          direccion_notificacion: direccion_notificaciones,
+          direccion_notificacion: NotificacionesLocalStorage,
         }
       }
   
@@ -114,6 +131,11 @@ export const DetalleInformacionContrato = () => {
       })
       }
     }
+
+    //ELIMINACION DEL CONTRATO DEL LOCAL STORAGE
+    localStorage.removeItem("contrato");
+    localStorage.removeItem("libro");
+    localStorage.removeItem("notificaciones");
 
   }
 
