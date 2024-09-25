@@ -57,7 +57,6 @@ const OrdenDeTrabajoAccionesForm = () => {
   const [longitudAcciones, setLongitudAcciones] = useState<number>(0);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-  console.log("esta es la accion generada", accionGeneradaEntreTabs);
   const [accionControl, setAccionControl] = useState('');
   
   const [opcionesEntidades, setOpcionesEntidades] = useState<string[]>([]);
@@ -67,7 +66,6 @@ const OrdenDeTrabajoAccionesForm = () => {
     setCurrentIndex(index);
   };
   
-  console.log(ordenDeTrabajo);
 
   //#region SUCCESSTOAST
   function successToastCreado() {
@@ -387,8 +385,6 @@ const OrdenDeTrabajoAccionesForm = () => {
 
 
   const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
-  console.log("esto se le mete al objeto total acciones", JSON.stringify(totalAccionesComponente));
-  console.log("esto es lo que recibe al final", form.getValues());
 
 
 
@@ -430,7 +426,6 @@ const OrdenDeTrabajoAccionesForm = () => {
     
   }, [modelo, accionGeneradaEntreTabs]);
 
-console.log(accionGeneradaEntreTabs);
 
 useEffect(() => {
   if(accionGeneradaEntreTabs == "crear")
@@ -458,109 +453,51 @@ useEffect(() => {
 }, [acciongg, accionGeneradaEntreTabs]);
 
   
-  useEffect(() => {
-    try {
-        console.log("Modelo:", modelo);
-        console.log("Campo:", campo);
-        console.log("Opciones por entidad:", opcionesPorEntidad);
-  
-        if (modelo && campo) {
-            const nuevasOpcionesValores = opcionesPorEntidad[modelo]?.[campo] || [];
-            setOpcionesValores(nuevasOpcionesValores);
-            if (nuevasOpcionesValores.length === 0) {
-                setValorSeleccionado(''); // Limpia el valor del campo 'valor'
-            }
-        }
-    } catch (error) {
-        console.error("Error en useEffect:", error);
+useEffect(() => {
+  if (modelo && campo) {
+    const nuevasOpcionesValores = opcionesPorEntidad[modelo]?.[campo] || [];
+    
+    // Asegúrate de que totalAccionesComponente está actualizado y no vacío
+    if (totalAccionesComponente.length > 0) {
+      const nuevasAcciones = [...totalAccionesComponente];
+      // Si tienes un índice específico que deseas actualizar, podrías definirlo aquí
+      // Por ejemplo, podrías usar el primer índice (0) para demostración
+      const index = 0; // Cambia esto según tu lógica
+
+      nuevasAcciones[index].valor = ''; // Limpia el valor anterior
+      setTotalAccionesComponente(nuevasAcciones);
     }
-  }, [modelo, campo]);
 
-// Actualiza la acción correspondiente en totalAccionesComponente
-const handleAccionChange = (index, value) => {
-  const currentValues = getValues();
-  console.log(currentValues);
-  let nuevasOpcionesEntidades = [];
-
-  // Define las entidades según la acción seleccionada
-  if (value === 'registrar') {
-    nuevasOpcionesEntidades = ['medidores']; // Cambiado a array
-  } else if (value === 'modificar') {
-    nuevasOpcionesEntidades = ['toma', 'medidores', 'servicios']; // Cambiado a array
+    setOpcionesValores(nuevasOpcionesValores);
   }
-
-
-
-
-  setOpcionesEntidades(nuevasOpcionesEntidades);
-
-  const updatedValues = {
-    ...currentValues,
-    orden_trabajo_accion: currentValues.orden_trabajo_accion.map((accion, idx) =>
-      idx === index ? { ...accion, accion: value, modelo: '', campo: '', valor: '' } : accion
-    )
-  };
-  reset(updatedValues); 
-};
+}, [modelo, campo]);
 
 
 
 const handleEntidadChange = (index, value) => {
-
-
   const nuevasAcciones = [...totalAccionesComponente];
-
-  // Actualiza la entidad (modelo en tu caso) y resetea los campos y valores
-  nuevasAcciones[index].modelo = value;
-  nuevasAcciones[index].campo = '';  // Limpia el campo seleccionado
-  nuevasAcciones[index].valor = '';  // Limpia el valor seleccionado
-
-  // Actualiza el estado de las acciones
+  nuevasAcciones[index] = { ...nuevasAcciones[index], modelo: value, campo: '', valor: '' };
   setTotalAccionesComponente(nuevasAcciones);
-
-  // Limpia las opciones de campos y valores
-  setOpcionesCampos([]); 
-  setOpcionesValores([]); 
-
-  // Define las opciones de campos según la entidad seleccionada
-  if (value === 'medidores') {
-    setOpcionesCampos(['estatus']); // Campos disponibles para 'medidores'
-  } else if (value === 'toma') {
-    setOpcionesCampos(['tipo_contratacion', 'tipo_servicio', 'estatus']); // Campos disponibles para 'toma'
-  } else if (value === 'servicios') {
-    setOpcionesCampos(['servicio_contratado', 'estatus']); // Campos disponibles para 'contratos'
-  } else {
-    setOpcionesCampos([]); // Limpia las opciones si no es ninguna de las anteriores
-  }
-
-  // Si deseas que el select de acción se resetee y quede vacío:
-  setTotalAccionesComponente((prevAcciones) => {
-    const updatedAcciones = [...prevAcciones];
-    updatedAcciones[index].accion = ''; // Deja vacío el select de acción para que el usuario elija
-    return updatedAcciones;
-  });
+  
+  // Limpia opciones y actualiza campos
+  setOpcionesCampos(value === 'medidores' ? ['estatus'] : value === 'toma' ? ['tipo_contratacion', 'tipo_servicio', 'estatus'] : ['servicio_contratado', 'estatus']);
 };
+
 
 
 // Actualiza el campo y sus valores
 const handleCampoChange = (index, value) => {
   const nuevasAcciones = [...totalAccionesComponente];
   nuevasAcciones[index].campo = value;
-  nuevasAcciones[index].valor = ''; // Limpia el valor anterior
+  nuevasAcciones[index].valor = ''; // Resetea valor
   setTotalAccionesComponente(nuevasAcciones);
 
-  // Actualiza las opciones de valores según el campo seleccionado
-  const nuevasOpcionesValores = opcionesPorEntidad[nuevasAcciones[index].modelo]?.[value] || [];
-
-  setOpcionesValores(nuevasOpcionesValores);
+  // Actualiza opciones de valores
+  setOpcionesValores(opcionesPorEntidad[nuevasAcciones[index].modelo]?.[value] || []);
 };
 
 
 
-
-
-
-  console.log(form.getValues());
 
   const formatearClave = (clave: string) => {
     return clave
@@ -743,7 +680,6 @@ const handleCampoChange = (index, value) => {
                  name={`orden_trabajo_accion.${index}.campo`}
                  control={control}
                  render={({ field }) => {
-                   console.log('Campo actual:', field.value); // Agrega este log
                    return (
                      <Select
                        disabled={campoDisabled}
@@ -837,7 +773,6 @@ const handleCampoChange = (index, value) => {
                   <Select
                     disabled={campoDisabled}
                     onValueChange={(value) =>{
-                      console.log('Valor seleccionado:', value); // Debugging
                       field.onChange(value)}}
                     value={field.value}
                   >
