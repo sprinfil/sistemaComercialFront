@@ -20,7 +20,9 @@ export type Lectura = {
   id_toma: number
   toma: string
   id_periodo: number
-  periodo: string
+  periodo:{
+    periodo:string
+  }
   id_origen: number
   modelo_origen: string
   origen: string
@@ -62,8 +64,9 @@ export const LecturaMonitorColumns: ColumnDef<Lectura>[] = [
     header: "Lectura",
   },
   {
-    accessorKey: "periodo",
+    id: "periodo",
     header: "Periodo",
+    accessorFn: (row) => row.periodo.periodo, // Custom accessor function
   },
   {
     accessorKey: "fecha_creacion",
