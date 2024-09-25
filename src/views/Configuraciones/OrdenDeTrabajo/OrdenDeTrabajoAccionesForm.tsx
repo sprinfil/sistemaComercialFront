@@ -359,10 +359,32 @@ const OrdenDeTrabajoAccionesForm = () => {
   };
 
   const handleRemoveComponent = (idToRemove: number) => {
-    setTotalAccionesComponente(prevAcciones =>
-      prevAcciones.filter(({ id }) => id !== idToRemove)
-    );
-  };
+    console.log("Eliminar acción con ID:", idToRemove); // Verifica el ID
+    setTotalAccionesComponente(prevAcciones => {
+        const nuevasAcciones = prevAcciones.filter(({ id }) => id !== idToRemove);
+        
+        // Obtener los valores actuales del formulario
+        const currentValues = form.getValues('orden_trabajo_accion');
+
+        // Filtrar y mapear solo los valores que no han sido eliminados
+        const updatedValues = nuevasAcciones.map(item => {
+            const existingValue = currentValues.find(value => value.id === item.id);
+            return {
+                id: item.id,
+                accion: existingValue ? existingValue.accion : '', 
+                modelo: existingValue ? existingValue.modelo : '', 
+                campo: existingValue ? existingValue.campo : '',
+                valor: existingValue ? existingValue.valor : '', 
+            };
+        });
+
+        // Resetea el formulario después de eliminar el componente
+        form.setValue('orden_trabajo_accion', updatedValues);
+
+        return nuevasAcciones; // Devuelve el nuevo estado
+    });
+};
+
 
   const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
   console.log("esto se le mete al objeto total acciones", JSON.stringify(totalAccionesComponente));
