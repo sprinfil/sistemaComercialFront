@@ -438,7 +438,22 @@ useEffect(() => {
 
   });
   }
+  if(accionGeneradaEntreTabs == "editar")
+  {
+    if(totalAccionesComponente.length < 1)
+      {
+        totalAccionesComponente.forEach((item, index) => {
+          form.setValue(`orden_trabajo_accion.${index}.accion`, ''); 
+          form.setValue(`orden_trabajo_accion.${index}.modelo`, ''); 
+          form.setValue(`orden_trabajo_accion.${index}.campo`, ''); 
+          form.setValue(`orden_trabajo_accion.${index}.valor`, ''); 
+    
+      });
+      }
+  }
+ 
 }, [acciongg, accionGeneradaEntreTabs]);
+
 
 useEffect(() => {
   // Si la acción es "ver", no limpia nada
