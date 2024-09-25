@@ -32,7 +32,7 @@ export const DetalleInformacionContrato = () => {
     entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma,tomaPreContratada,setIsCheckInspeccion, boolPeticionContratacion,
 
     isCheckInspeccion, setBooleanModalSubirArchivosContratacion, idContrato, setIdContrato,nombreGiroComercial, esPreContratado,puntoTomaLatitudLongitudAPI,
-    getCoordenadaString2, setTomaPreContratada, setBoolPeticionContratacion} = ZustandFiltrosContratacion();
+    getCoordenadaString2, setTomaPreContratada, setBoolPeticionContratacion,contratoLocalStorage} = ZustandFiltrosContratacion();
 
 
     console.log(localStorage.getItem("contrato"));

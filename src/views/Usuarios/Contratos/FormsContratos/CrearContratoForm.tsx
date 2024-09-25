@@ -55,7 +55,7 @@ export const CrearContratoForm = () => {
         setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
         setServicioContratado, setGiroComercial, setTipoDeToma, tipoDeToma, tomaPreContratada, isCheckInspeccion, boolPeticionContratacion,
         setServicioContratado2, selectedLocation, getCoordenadaString, setNombreGiroComercial, esPreContratado,getCoordenadaString2, 
-        puntoTomaLatitudLongitudAPI} = ZustandFiltrosContratacion();
+        puntoTomaLatitudLongitudAPI,contratoLocalStorage} = ZustandFiltrosContratacion();
 
 
     const { usuariosEncontrados,setUsuariosEncontrados } = ZustandGeneralUsuario();
@@ -242,25 +242,26 @@ export const CrearContratoForm = () => {
             ...(values.c_san != null && !isSanActive ? { c_san: values.c_san } : {}),
         };
 
-        setContrato(datosFiltrados);
+        if(!contratoLocalStorage )
+        {
+    
+            setContrato(datosFiltrados);
 
-        handleAbrirModalNotificaciones();
-
-
-
-
-        const contratoString = JSON.stringify(datos);
-        console.log("estos valores llegaron y se almacenaron en el localstorage", contratoString);
-
-        
-        //AQUI SE GUARDA CONTRATO STRING QUE GUARDA EN EL LOCALSTORAGE EL OBJETO.
-        localStorage.setItem("contrato", contratoString); 
-
-
+            const contratoString = JSON.stringify(datos);
+            console.log("estos valores llegaron y se almacenaron en el localstorage", contratoString);
+    
+            
+            //AQUI SE GUARDA CONTRATO STRING QUE GUARDA EN EL LOCALSTORAGE EL OBJETO.
+            localStorage.setItem("contrato", contratoString); 
+        }
+      
+            handleAbrirModalNotificaciones();
         //navegarCrearNuevaToma();
 
     };
+    console.log(localStorage.getItem("contrato"));
 
+    console.log(contratoLocalStorage);
 
     //con esto controlo que no pueda haber un alcantarillado y sanamiento, y viceversa
     const onSwitchChange = (fieldName: string, value: boolean) => {
@@ -362,6 +363,57 @@ export const CrearContratoForm = () => {
 
         }
     }, [tomaPreContratada])
+
+
+    useEffect(() => {
+        console.log(localStorage.getItem('contrato'));
+        // Obtener los datos de localStorage
+        const contratoConversionLocalStorage = JSON.parse(localStorage.getItem('contrato') || '{}');
+        let agua = false;
+        if (contratoLocalStorage) {
+      
+            
+            //PARA QUE ME JALE LO SELECCIONADO YA QUE SE GUARDA TEXTO, SE CONVIERTE A BOOL
+            let agua = false;
+            let alc = false;
+            if(contratoConversionLocalStorage.servicio_contratados.includes("agua"))
+            {
+                agua = true;
+
+            }
+            if (contratoConversionLocalStorage.servicio_contratados.includes("agua") && contratoConversionLocalStorage.servicio_contratados.includes("alcantarillado y saneamiento"))
+            {
+                agua = true;
+                alc = true;
+            }
+            if (contratoConversionLocalStorage.servicio_contratados.includes("alcantarillado y saneamiento"))
+                {
+                    alc = true;
+                }
+
+            form.reset({
+            nombre_contrato:contratoConversionLocalStorage?.nombre_contrato || '',
+              clave_catastral: contratoConversionLocalStorage?.clave_catastral || '',
+              tipo_toma: contratoConversionLocalStorage?.tipo_toma || '',
+              diametro_de_la_toma: contratoConversionLocalStorage?.diametro_de_la_toma || '',
+              calle: contratoConversionLocalStorage?.calle || '',
+              num_casa: String(contratoConversionLocalStorage?.num_casa) || 0,
+              colonia: contratoConversionLocalStorage?.colonia || '',
+              codigo_postal: contratoConversionLocalStorage?.codigo_postal || '',
+              entre_calle_1: Number(contratoConversionLocalStorage?.entre_calle1) || '',
+              entre_calle_2: Number(contratoConversionLocalStorage?.entre_calle2) || '',
+              localidad: contratoConversionLocalStorage?.localidad || '',
+              municipio: contratoConversionLocalStorage?.municipio || 'La Paz',
+              c_agua: agua || false,
+              c_alc: alc || false,
+              c_san: alc|| false,
+              tipo_contratacion: contratoConversionLocalStorage?.tipo_contratacion || '',
+              id_giro_comercial: contratoConversionLocalStorage?.id_giro_comercial || 0,
+            });
+          
+      
+        }
+      }, [form]); 
 
     useEffect(() => {
         const nombreCompletoUsuario = usuariosEncontrados[0]?.nombre_completo;
