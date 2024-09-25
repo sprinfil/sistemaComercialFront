@@ -479,6 +479,7 @@ useEffect(() => {
 // Actualiza la acción correspondiente en totalAccionesComponente
 const handleAccionChange = (index, value) => {
   const currentValues = getValues();
+  console.log(currentValues);
   let nuevasOpcionesEntidades = [];
 
   // Define las entidades según la acción seleccionada
@@ -488,10 +489,10 @@ const handleAccionChange = (index, value) => {
     nuevasOpcionesEntidades = ['toma', 'medidores', 'servicios']; // Cambiado a array
   }
 
-  // Log para ver qué opciones se están agregando
- // console.log('Opciones para la acción:', value, nuevasOpcionesEntidades);
 
-  setOpcionesEntidades(nuevasOpcionesEntidades); // Directamente como un array
+
+
+  setOpcionesEntidades(nuevasOpcionesEntidades);
 
   const updatedValues = {
     ...currentValues,
@@ -505,6 +506,8 @@ const handleAccionChange = (index, value) => {
 
 
 const handleEntidadChange = (index, value) => {
+
+
   const nuevasAcciones = [...totalAccionesComponente];
 
   // Actualiza la entidad (modelo en tu caso) y resetea los campos y valores
@@ -548,6 +551,7 @@ const handleCampoChange = (index, value) => {
 
   // Actualiza las opciones de valores según el campo seleccionado
   const nuevasOpcionesValores = opcionesPorEntidad[nuevasAcciones[index].modelo]?.[value] || [];
+
   setOpcionesValores(nuevasOpcionesValores);
 };
 
