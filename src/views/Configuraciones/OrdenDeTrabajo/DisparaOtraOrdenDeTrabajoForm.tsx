@@ -52,7 +52,6 @@ type OrdenDeTrabajo = {
 const OrdenDeTrabajoEncadenadasSchema = z.object({
     orden_trabajo_encadenadas: z.array(
         z.object({
-            id: z.number(),
             id_OT_Catalogo_encadenada: z.number().min(1, "La OT es requerida"),
         })
     ),
@@ -166,7 +165,6 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     resolver: zodResolver(OrdenDeTrabajoEncadenadasSchema),
     defaultValues: {
         orden_trabajo_encadenadas: totalAccionesComponente.map(item => ({
-        id: item.id,
         id_OT_Catalogo_encadenada: 0,
       })),
     },
@@ -174,15 +172,23 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
 
   useEffect(() => {
     if (accionGeneradaEntreTabs === "editar") {
-        form.reset({
-            orden_trabajo_encadenadas: totalAccionesComponente.map(item => ({
-                id: item.id,
-                id_OT_Catalogo_encadenada: 0, // O el valor predeterminado adecuado
-            })),
-        });
-    }
-}, [totalAccionesComponente, accion]);
+        const valoresActuales = form.getValues('orden_trabajo_encadenadas');
 
+        
+        const nuevosValores = totalAccionesComponente.map(item => ({
+            id_OT_Catalogo_encadenada: 0, 
+        }));
+
+        const todosLosValores = [...valoresActuales, ...nuevosValores];
+
+        const valoresFiltrados = todosLosValores.filter(cargo => cargo.id_OT_Catalogo_encadenada !== 0);
+
+        form.reset({ orden_trabajo_encadenadas: valoresFiltrados });
+    }
+}, [totalAccionesComponente, accionGeneradaEntreTabs]);
+
+
+console.log(form.getValues());
     const onSubmit = async (values: OrdenDeTrabajoEncadenadas) => {
         console.log(values);
 

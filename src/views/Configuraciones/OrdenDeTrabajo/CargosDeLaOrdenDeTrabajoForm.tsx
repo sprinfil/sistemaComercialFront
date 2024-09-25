@@ -52,7 +52,6 @@ type OrdenDeTrabajo = {
 const OrdenTrabajoCargosSchema = z.object({
     orden_trabajo_cargos: z.array(
         z.object({
-            id: z.number(),
             id_concepto_catalogo: z.number(),
         })
     ),
@@ -80,6 +79,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
     const [control, setControl] = useState(false);
     const [nombreConcepto, setNombreConcepto] = useState([]);
     const [valoresPrevios, setValoresPrevios] = useState({});
+    const [quitarEdicion, setQuitarEdicion] = useState('');
 
     console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
 
@@ -176,7 +176,6 @@ const CargosDeLaOrdenTrabajoForm = () => {
         resolver: zodResolver(OrdenTrabajoCargosSchema),
         defaultValues: {
             orden_trabajo_cargos: totalAccionesComponente.map(item => ({
-                id: item.id,
                 id_concepto_catalogo: 0,
             })),
         },
@@ -204,14 +203,27 @@ const CargosDeLaOrdenTrabajoForm = () => {
     const onSubmit = async (values: OrdenTrabajoCargo) => {
         console.log(values);
 
-        const cargos = values.orden_trabajo_cargos.map((item) => ({
-            id: item.id,
+        // Filtrar los cargos para eliminar aquellos con id_concepto_catalogo igual a 0
+        const filteredCargos = values.orden_trabajo_cargos.filter(
+            (cargo) => cargo.id_concepto_catalogo !== 0
+        );
+    
+        console.log(filteredCargos);
+    
+        // Crear un nuevo array en el formato deseado
+        const cargos = filteredCargos.map((cargo) => ({
+            id:0,
             id_orden_trabajo_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo,
-            id_concepto_catalogo: item.id_concepto_catalogo
+            id_concepto_catalogo: cargo.id_concepto_catalogo // Solo guardar el id_concepto_catalogo
         }));
-
-
-        console.log("Cargos:", cargos);
+    
+        // Formar el objeto final que deseas enviar
+        const payload = {
+            orden_trabajo_cargos: cargos
+        };
+    
+        console.log("Cargos:", payload);
+    
 
 
         const orden_trabajo_cargos = {
@@ -235,29 +247,21 @@ const CargosDeLaOrdenTrabajoForm = () => {
                     setLoading(false);
                    
                     setValoresPrevios(values);
-                    setOrdenDeTrabajos(prev => {
-                        return prev.map(orden_trabajo => {
-                            if(orden_trabajo.id == idSeleccionadoConfiguracionOrdenDeTrabajo)
-                            {
-                                let nuevaOrden = ordenDeTrabajo;
-
-                                nuevaOrden.ordenes_trabajo_cargos = response;
-                                setOrdenDeTrabajo(nuevaOrden);
-                                return nuevaOrden;
-                            }
-                            else{
-                                return orden_trabajo;
-                            }
-                        })
-                    })
+             
                     console.log(response);
-                    //setAccionGeneradaEntreTabs("creado");
+                    setAccionGeneradaEntreTabs("recargar");
+                    setQuitarEdicion("quitar")
                     getAnomalias();
                     successToastCreado();
                 }
-            } catch (response) {
-                errorToast();
-                console.log(response);
+            } catch (err) {
+                const message = err.response.data.message;
+                toast({
+                    variant: "destructive",
+                    title: "Oh, no. Error",
+                    description: message,
+                    action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+                });
                 setLoading(false);
             }
         }
@@ -321,6 +325,8 @@ const CargosDeLaOrdenTrabajoForm = () => {
                 const nombresConceptos = ordenTrabajoCargos.map(cargo => cargo.conceptos?.nombre);
                 setNombreConcepto(nombresConceptos);
                 console.log(nombresConceptos);
+
+               
     
             if (accionGeneradaEntreTabs === "ver") {
                 form.reset({
@@ -359,7 +365,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
     }, [accionGeneradaEntreTabs, ordenDeTrabajo]);
  
 
-    
+    console.log(form.getValues());
     const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
     console.log(accionGeneradaEntreTabs);
     console.log(nombreConcepto);

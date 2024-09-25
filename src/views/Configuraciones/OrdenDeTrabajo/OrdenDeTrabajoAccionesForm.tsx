@@ -30,7 +30,6 @@ import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario.t
 const OrdenDeTrabajoAccionesSchema = z.object({
   orden_trabajo_accion: z.array(
     z.object({
-      id: z.number().min(0),
       accion: z.string().min(1,"Acción es requerida"),
       modelo: z.string().min(1,"Modelo es requerido"),
       campo: z.string(),
@@ -144,7 +143,6 @@ const OrdenDeTrabajoAccionesForm = () => {
     resolver: zodResolver(OrdenDeTrabajoAccionesSchema),
     defaultValues: {
       orden_trabajo_accion: totalAccionesComponente.map(item => ({
-        id: item.id,
         accion: item.accion || "", // Manejo de valores vacíos
         modelo: item.modelo || "", // Manejo de valores vacíos
         campo: item.campo || "", // Manejo de valores vacíos
@@ -164,7 +162,7 @@ const OrdenDeTrabajoAccionesForm = () => {
     //Agarramos los valores del form, lo recorremos, y accedemos a sus propiedades
     //COMO ES UN ARREGLO PUEDE SER 1 O MAS, y le metemos el id del catalogo(que es aparte del form)
     const valoresAcciones = values.orden_trabajo_accion.map(accion => ({
-      id: accion.id,
+      id: 0,
       accion: accion.accion || "", // Manejo de valores vacíos
       modelo: accion.modelo || "", // Manejo de valores vacíos
       campo: accion.campo || "", // Manejo de valores vacíos
@@ -396,6 +394,7 @@ const OrdenDeTrabajoAccionesForm = () => {
   const [campoDisabled, setCampoDisabled] = useState(false);
   const [acciongg, setAcciongg] = useState('');
   const [valorSeleccionado, setValorSeleccionado] = useState('');
+  const [accionSeleccionada, setAccionSeleccionada] = useState('');
 
   
 
@@ -409,54 +408,51 @@ const OrdenDeTrabajoAccionesForm = () => {
     
   }, [modelo, accionGeneradaEntreTabs]);
 
-
-
-
-  useEffect(() => {
-    // Si la acción es "ver", no limpia nada
-    if (accionGeneradaEntreTabs === 'ver') {
-      setOpcionesEntidades(acciongg === 'registrar' ? ['medidores'] : ['toma', 'medidores', 'servicios']);
-      return; 
-    }
-  
-    // Actualiza las opciones de entidades según la acción seleccionada
-    if (acciongg === 'registrar') {
-      setOpcionesEntidades(['toma']); // Entidades para registrar
-      // Limpia los campos y valores al registrar
-      setModelo(''); 
-      setCampo(''); 
-      setValorSeleccionado(''); 
-      setOpcionesCampos([]); 
-      setOpcionesValores([]); 
-    } else {
-      setOpcionesEntidades(['medidores', 'servicios']); // Otras acciones
-    }
-  
-    // Si no estás en modo "editar", limpia las opciones de campos y valores
-    if (accionGeneradaEntreTabs !== 'editar') {
-      setOpcionesCampos([]); 
-      setOpcionesValores([]); 
-    }
-  }, [acciongg, accionGeneradaEntreTabs]);
-  
+console.log(accionGeneradaEntreTabs);
 
 useEffect(() => {
-  try {
-      console.log("Modelo:", modelo);
-      console.log("Campo:", campo);
-      console.log("Opciones por entidad:", opcionesPorEntidad);
+  if(accionGeneradaEntreTabs == "crear")
+  {
+    totalAccionesComponente.forEach((item, index) => {
+      form.setValue(`orden_trabajo_accion.${index}.accion`, ''); 
+      form.setValue(`orden_trabajo_accion.${index}.modelo`, ''); 
+      form.setValue(`orden_trabajo_accion.${index}.campo`, ''); 
+      form.setValue(`orden_trabajo_accion.${index}.valor`, ''); 
 
-      if (modelo && campo) {
-          const nuevasOpcionesValores = opcionesPorEntidad[modelo]?.[campo] || [];
-          setOpcionesValores(nuevasOpcionesValores);
-          if (nuevasOpcionesValores.length === 0) {
-              setValorSeleccionado(''); // Limpia el valor del campo 'valor'
-          }
-      }
-  } catch (error) {
-      console.error("Error en useEffect:", error);
+  });
   }
-}, [modelo, campo]);
+}, [acciongg, accionGeneradaEntreTabs]);
+
+useEffect(() => {
+  // Si la acción es "ver", no limpia nada
+  if (accionGeneradaEntreTabs === 'ver') {
+    setOpcionesEntidades(acciongg === 'registrar' ? ['medidores'] : ['toma', 'medidores', 'servicios']);
+    
+    return; 
+  }
+
+ 
+ 
+}, [acciongg, accionGeneradaEntreTabs]);
+
+  
+  useEffect(() => {
+    try {
+        console.log("Modelo:", modelo);
+        console.log("Campo:", campo);
+        console.log("Opciones por entidad:", opcionesPorEntidad);
+  
+        if (modelo && campo) {
+            const nuevasOpcionesValores = opcionesPorEntidad[modelo]?.[campo] || [];
+            setOpcionesValores(nuevasOpcionesValores);
+            if (nuevasOpcionesValores.length === 0) {
+                setValorSeleccionado(''); // Limpia el valor del campo 'valor'
+            }
+        }
+    } catch (error) {
+        console.error("Error en useEffect:", error);
+    }
+  }, [modelo, campo]);
 
 // Actualiza la acción correspondiente en totalAccionesComponente
 const handleAccionChange = (index, value) => {
@@ -520,35 +516,21 @@ const handleEntidadChange = (index, value) => {
   });
 };
 
+
+// Actualiza el campo y sus valores
 const handleCampoChange = (index, value) => {
   const nuevasAcciones = [...totalAccionesComponente];
-
-  // Actualiza el campo sin limpiar el valor por ahora
   nuevasAcciones[index].campo = value;
-  
-  // Puedes dejar el valor como está para que el usuario lo seleccione después
-  console.log('Campo actualizado:', nuevasAcciones[index]);
-
-  // Actualiza el estado de las acciones
+  nuevasAcciones[index].valor = ''; // Limpia el valor anterior
   setTotalAccionesComponente(nuevasAcciones);
 
-  // Define las opciones de valores según el campo seleccionado
-  const opcionesPorCampo = {
-    tipo_contratacion: ['normal', 'condicionado', 'desarrollador'],
-    tipo_servicio: ['lectura', 'promedio'],
-    estatus: ['activa', 'baja temporal'],
-  };
-
-  // Establece las opciones de valores
-  setOpcionesValores(opcionesPorCampo[value] || []); // Limpia si no hay coincidencia
-
-  // Resetea la acción solo si es necesario
-  setTotalAccionesComponente((prevAcciones) => {
-    const updatedAcciones = [...prevAcciones];
-    updatedAcciones[index].accion = ''; // Deja vacío el select de acción para que el usuario elija
-    return updatedAcciones;
-  });
+  // Actualiza las opciones de valores según el campo seleccionado
+  const nuevasOpcionesValores = opcionesPorEntidad[nuevasAcciones[index].modelo]?.[value] || [];
+  setOpcionesValores(nuevasOpcionesValores);
 };
+
+
+
 
 
 
