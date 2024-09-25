@@ -59,11 +59,7 @@ export const CrearContratoForm = () => {
 
 
     const { usuariosEncontrados,setUsuariosEncontrados } = ZustandGeneralUsuario();
-    console.log("Latitud:", latitudMapa); //Latitud seleccionada dentro del poligono
-    console.log("Longitud:", longitudMapa); //Longitud seleccionada dentro del poligono
-    console.log("Libro:", libroToma); //Longitud seleccionada dentro del poligono
-    console.log(JSON.stringify(libroToma));
-
+  
 
 
 
@@ -104,7 +100,6 @@ export const CrearContratoForm = () => {
     };
 
 
-    console.log(tomaPreContratada);
 
     //ID CONVERTIDOS A NOMBRE PARA CARGARLOS EN LOS INPUTS
     const [nombreCompletoUsuario, setNombreCompletoUsuario] = useState('');
@@ -164,10 +159,11 @@ export const CrearContratoForm = () => {
             ...(alcantarillado_y_saneamiento && !isAlcActive && !isSanActive ? [alcantarillado_y_saneamiento] : []),
         ];
 
-        console.log(serviciosSeleccionados);
 
-        console.log(servicios);
         let datos;
+
+        //DEPENDIENDO EL CASO DE CONTRATACIÓN SE ENVIARÁN ESTOS DATOS
+        
         if (!esPreContratado) {
             // Estos datos son para enviar
             datos = {
@@ -247,10 +243,10 @@ export const CrearContratoForm = () => {
         };
 
         setContrato(datosFiltrados);
-        console.log(datosFiltrados);
 
-        console.log(servicioAContratar);
         handleAbrirModalNotificaciones();
+
+
         const crearContrato = {
             estatus: isCheckInspeccion,
             id_giro_comercial: values.id_giro_comercial,
@@ -277,13 +273,11 @@ export const CrearContratoForm = () => {
 
         localStorage.setItem("contrato", contratoString); //AQUI SE GUARDA CONTRATO STRING QUE GUARDA EN EL LOCALSTORAGE EL OBJETO.
 
-        //handleAbrirModalNotificaciones();
 
         //navegarCrearNuevaToma();
 
     };
 
-    console.log(contrato);
 
     //con esto controlo que no pueda haber un alcantarillado y sanamiento, y viceversa
     const onSwitchChange = (fieldName: string, value: boolean) => {
@@ -386,7 +380,6 @@ export const CrearContratoForm = () => {
         }
     }, [tomaPreContratada])
 
-console.log(tipoDeToma);
     useEffect(() => {
         const nombreCompletoUsuario = usuariosEncontrados[0]?.nombre_completo;
     

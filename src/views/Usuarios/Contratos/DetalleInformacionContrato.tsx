@@ -34,17 +34,6 @@ export const DetalleInformacionContrato = () => {
     isCheckInspeccion, setBooleanModalSubirArchivosContratacion, idContrato, setIdContrato,nombreGiroComercial, esPreContratado,puntoTomaLatitudLongitudAPI,
     getCoordenadaString2, setTomaPreContratada, setBoolPeticionContratacion} = ZustandFiltrosContratacion();
 
-  console.log(contrato);
-  console.log(direccion_notificaciones);
-
-  
-console.log(tomaPreContratada);
-
-  console.log(idContrato);
-  console.log(idGiroComercial);
-
- console.log(puntoTomaLatitudLongitudAPI);
-
 
 
   const generarSolicitud = async () => {
@@ -133,11 +122,7 @@ console.log(tomaPreContratada);
 
 
 
-console.log(nombreGiroComercial);
 
-console.log(servicioContratado);
-
-console.log(tomaPreContratada);
 
   return (
     <div className=''>
