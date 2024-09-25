@@ -35,12 +35,14 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const [error, setError] = useState<string | null>(null);
   const [selectedConvenio, setSelectedConvenio] = useState<any | null>(null);
   const [porcentajeConveniado, setPorcentajeConveniado] = useState<number>(0);
-  const [montoConveniado, setMontoConveniado] = useState<number>(0);
+  const [montoBonificado, setmontoBonificado] = useState<number>(0);
   const [cantidadLetras, setCantidadLetras] = useState<number>(0);
   const [comentario, setComentario] = useState<string>('');
   const { usuariosEncontrados } = ZustandGeneralUsuario();
   const [activeAccordion, setActiveAccordion] = useState<string | null>("convenios");
   const [tipoMonto, setTipoMonto] = useState<string>('%');
+  const [montoConveniado, setMontoConveniado] = useState<number>(0);
+
   const { toast } = useToast()
   
 
@@ -96,13 +98,13 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
     if (yaSeleccionado) {
         setCargosSeleccionados(cargosSeleccionados.filter((c) => c.id !== cargo.id));
     } else {
-        const montoConveniadoActual = tipoMonto === '%' 
+        const montoBonificadoActual = tipoMonto === '%' 
             ? (cargo.monto_pendiente * porcentajeConveniado) / 100 
-            : montoConveniado;
+            : montoBonificado;
         
         setCargosSeleccionados([
             ...cargosSeleccionados,
-            { ...cargo, montoConveniado: montoConveniadoActual }
+            { ...cargo, montoBonificado: montoBonificadoActual }
         ]);
     }
 };
@@ -127,33 +129,35 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
 useEffect(() => {
     const totalSeleccionados = calcularTotalSeleccionados();
     if (tipoMonto === '%') {
-        setMontoConveniado((totalSeleccionados * porcentajeConveniado) / 100);
+        setmontoBonificado((totalSeleccionados * porcentajeConveniado) / 100);
     } else if (tipoMonto === '$') {
         // Aquí se puede manejar el caso de monto fijo si es necesario
-        setPorcentajeConveniado((montoConveniado / totalSeleccionados) * 100);
+        setPorcentajeConveniado((montoBonificado / totalSeleccionados) * 100);
     }
-}, [porcentajeConveniado, montoConveniado, cargosSeleccionados, tipoMonto]);
+}, [porcentajeConveniado, montoBonificado, cargosSeleccionados, tipoMonto]);
 
   useEffect(() => {
     const totalSeleccionados = calcularTotalSeleccionados();
     if (tipoMonto === '$') {
       // Si el tipo es monto fijo, recalculamos el porcentaje basado en el monto sobre el total seleccionado
-      setPorcentajeConveniado((montoConveniado / totalSeleccionados) * 100);
+      setPorcentajeConveniado((montoBonificado / totalSeleccionados) * 100);
     }
-  }, [montoConveniado, cargosSeleccionados]);
+  }, [montoBonificado, cargosSeleccionados]);
 
-  const calcularTotalMontoConveniado = () => {
-    return cargosSeleccionados.reduce((acc, cargo) => acc + (cargo.montoConveniado || 0), 0);
+  const calcularTotalmontoBonificado = () => {
+    return cargosSeleccionados.reduce((acc, cargo) => acc + (cargo.montoBonificado || 0), 0);
+    
+    
 };
 
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
         const nuevosCargosSeleccionados = cargosConveniables.map((cargo) => {
-            const montoConveniadoActual = tipoMonto === '%' 
+            const montoBonificadoActual = tipoMonto === '%' 
                 ? (cargo.monto_pendiente * porcentajeConveniado) / 100 
-                : montoConveniado;
-            return { ...cargo, montoConveniado: montoConveniadoActual };
+                : montoBonificado;
+            return { ...cargo, montoBonificado: montoBonificadoActual };
         });
         setCargosSeleccionados(nuevosCargosSeleccionados);
     } else {
@@ -172,7 +176,7 @@ useEffect(() => {
         comentario: comentario,
         cargos_conveniados: cargosSeleccionados.map(cargo => ({
             id: cargo.id,
-            porcentaje_conveniado: tipoMonto === '%' ? porcentajeConveniado : montoConveniado,
+            porcentaje_conveniado: tipoMonto === '%' ? porcentajeConveniado : montoBonificado,
         })),
     };
 
@@ -199,6 +203,14 @@ const formatMonto = (monto: number) => {
   // Convierte el monto a una cadena con 2 decimales solo si es necesario
   return monto % 1 === 0 ? monto.toString() : monto.toFixed(2);
 };
+
+const totalMontos = calcularTotalMontos();
+const totalBonificado = calcularTotalmontoBonificado();
+const resultadoResta = totalMontos - totalBonificado;
+const resultadoDivision = cantidadLetras > 0 ? resultadoResta / cantidadLetras : 0;
+
+
+
 
 
 return (
@@ -273,8 +285,8 @@ return (
                       <thead>
                         <tr>
                           <th className="px-4 py-2 text-left">Tipo de monto</th>
-                          <th className="px-4 py-2 text-left">Porcentaje Conveniado</th>
-                          <th className="px-4 py-2 text-left">Monto Conveniado</th>
+                          <th className="px-4 py-2 text-left">Porcentaje bonificado</th>
+                          <th className="px-4 py-2 text-left">Monto bonificado</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -290,7 +302,7 @@ return (
                           <td className="px-4 py-2">
                             <Input
                               type="number"
-                              value={porcentajeConveniado}
+                              
                               onChange={(e) => {
                                 const value = e.target.value;
                                 setPorcentajeConveniado(
@@ -304,10 +316,10 @@ return (
                           <td className="px-4 py-2">
                             <Input
                               type="number"
-                              value={montoConveniado}
+                              
                               onChange={(e) => {
                                 const value = e.target.value;
-                                setMontoConveniado(value === '' ? 0 : Number(value));
+                                setmontoBonificado(value === '' ? 0 : Number(value));
                               }}
                               className="border p-1"
                               disabled={tipoMonto !== '$'}
@@ -324,7 +336,8 @@ return (
                             {" "}Nombre del Cargo
                           </th>
                           <th className="px-4 py-2 text-left">Aplicable</th>
-                          <th className="px-4 py-2 text-left">Monto</th>
+                          <th className="px-4 py-2 text-left">Monto total</th>
+                          <th className="px-4 py-2 text-left">Monto bonificado</th>
                           <th className="px-4 py-2 text-left">Monto conveniado</th>
                         </tr>
                       </thead>
@@ -339,16 +352,22 @@ return (
                               {" "}{cargo.nombre}
                             </td>
                             <td className="px-4 py-2">{cargo.aplicable ? 'Sí' : 'No'}</td>
-                            <td className="px-4 py-2">${cargo.monto_pendiente}</td>
+                            <td className="px-4 py-2">${cargo.monto_pendiente.toFixed(2)}</td>
                             <td className="px-4 py-2">
-                              ${cargosSeleccionados.find((c: any) => c.id === cargo.id)?.montoConveniado ?? 0}
+                              ${ (cargosSeleccionados.find((c: any) => c.id === cargo.id)?.montoBonificado ?? 0).toFixed(2) }
+                            </td>
+                            <td className="px-4 py-2">
+                              ${ 
+                                (cargo.monto_pendiente - (cargosSeleccionados.find((c: any) => c.id === cargo.id)?.montoBonificado ?? 0)).toFixed(2)
+                              }
                             </td>
                           </tr>
                         ))}
                         <tr className="font-bold">
                           <td className="px-4 py-2" colSpan={2}>Total:</td>
-                          <td className="px-4 py-2">${calcularTotalMontos()}</td>
-                          <td className="px-4 py-2">${calcularTotalMontoConveniado()}</td>
+                          <td className="px-4 py-2">${calcularTotalMontos().toFixed(2)}</td>
+                          <td className="px-4 py-2">${calcularTotalmontoBonificado().toFixed(2)}</td>
+                          <td className="px-4 py-2">$ {resultadoResta.toFixed(2)  }</td>
                         </tr>
                       </tbody>
                     </table>
@@ -359,6 +378,9 @@ return (
                         type="number"
                         onChange={(e) => setCantidadLetras(Number(e.target.value))}
                       />
+                    </div>
+                    <div className="px-4 py-2">
+                      Cantidad por letra: ${resultadoDivision.toFixed(2)}
                     </div>
                     <div className="px-4 py-2 text-left font-bold">Comentarios
                       <Input
