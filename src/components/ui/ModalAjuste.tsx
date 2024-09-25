@@ -156,6 +156,8 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
         });
 };
 
+
+
   
 
   return (
@@ -237,23 +239,33 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
                             />
                             {" "} Nombre del Cargo
                           </th>
-                          <th className="px-4 py-2 text-left">Monto</th>
+                          <th className="px-4 py-2 text-left">Monto total</th>
+                          <th className="px-4 py-2 text-left">Monto bonificado</th>
+                          <th className="px-4 py-2 text-left">Monto ajustado</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {cargosAjustables.map((cargo: any) => (
-                          <tr key={cargo.id} className="border-t">
-                            <td className="px-4 py-2">
-                              <Checkbox
-                                checked={cargosSeleccionados.some((c: any) => c.id === cargo.id)}
-                                onCheckedChange={() => handleCargoSeleccionado(cargo)}
-                              />
-                              {" "}{cargo.nombre}
-                            </td>
-                            <td className="px-4 py-2">${cargo.monto}</td>
-                          </tr>
-                        ))}
+                        {cargosAjustables.map((cargo: any) => {
+                          // Calcula el monto ajustado restando el monto ajustable
+                          const totalAjustado = cargo.monto - montoAjustable;
+
+                          return (
+                            <tr key={cargo.id} className="border-t">
+                              <td className="px-4 py-2">
+                                <Checkbox
+                                  checked={cargosSeleccionados.some((c: any) => c.id === cargo.id)}
+                                  onCheckedChange={() => handleCargoSeleccionado(cargo)}
+                                />
+                                {" "}{cargo.nombre}
+                              </td>
+                              <td className="px-4 py-2">${cargo.monto}</td>
+                              <td className="px-4 py-2">${montoAjustable}</td>
+                              <td className="px-4 py-2">${totalAjustado}</td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
+
                     </table>
                     
                     
