@@ -22,7 +22,7 @@ import { useBreadcrumbStore } from "../../contexts/ZustandGeneralUsuario";
 
 export const Mapa3 = () => {
     const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
-    const {  tomaUsuariosEncontrados,   setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma, setFindUserMapaGeo, setToma} = ZustandGeneralUsuario();
+    const { tomaUsuariosEncontrados, setTomaUsuariosEncontrados, findUserOrToma, setFindUserOrToma, setFindUserMapaGeo, setToma } = ZustandGeneralUsuario();
     const { ruta_visibility, libro_visibility, loading_rutas, set_loading_rutas, set_ruta_visibility, set_libro_visibility } = PoligonosZustand();
     const navigate = useNavigate();
     const { setRutas, rutas } = useStateContext();
@@ -37,21 +37,9 @@ export const Mapa3 = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const search_input = useRef(null);
     const [hide_all_polygons, set_hide_all_polygons] = useState(false);
-    const [hide_all_tomas, set_hide_all_tomas] = useState(false);
+    const [hide_all_tomas, set_hide_all_tomas] = useState(true);
     const [hide_all_tomas_bool, set_hide_all_tomas_bool] = useState(false);
-
-    const getRutas = async () => {
-        set_loading_rutas(true);
-        try {
-            const response = await axiosClient.get("/ruta");
-            setRutas(response.data.data);
-            console.log(response.data.data)
-            set_loading_rutas(false);
-        } catch (error) {
-            console.error("Error fetching rutas:", error.response?.data?.message || error.message);
-            set_loading_rutas(false);
-        }
-    };
+    const [tomasMarkers, setTomasMarkers] = useState<google.maps.Marker[]>([]);
 
     useEffect(() => {
         if (rutas) {
@@ -73,6 +61,7 @@ export const Mapa3 = () => {
     }, []);
 
     useEffect(() => {
+        clearMarkers();
         const newTomasMarkers = [];
         polygons.forEach(polygon => {
             polygon.setMap(null);
@@ -128,8 +117,6 @@ export const Mapa3 = () => {
             }
 
             return ruta.libros.map((libro) => {
-
-                console.log(libro_visibility)
 
                 if (libro.polygon && libro_visibility[libro.id] && libro.polygon.coordinates[0].length > 0 && !loading_rutas) {
 
@@ -208,7 +195,6 @@ export const Mapa3 = () => {
                     if (libro.tomas.length > 0) {
                         libro.tomas.map((toma, index) => {
                             if (toma.posicion) {
-                                console.log(toma)
 
                                 /* TOMA INFO */
                                 const marker = new google.maps.Marker({
@@ -225,9 +211,10 @@ export const Mapa3 = () => {
                                     }
                                     // Puedes agregar un título o descripción si está disponible
                                 });
-                                if (hide_all_polygons) {
-                                    marker.setMap(null);
-                                }
+
+                                // if (hide_all_polygons) {
+                                //     marker.setMap(null);
+                                // }
                                 newTomasMarkers.push(marker);
                                 // Crear una etiqueta utilizando InfoWindow
                                 const infoWindow = new google.maps.InfoWindow({
@@ -267,17 +254,16 @@ export const Mapa3 = () => {
         }).flat();
         setPolygons(newPolygons.map(p => p.polygon));
         setOverlays(newPolygons.map(p => p.labelOverlay));
+        setTomasMarkers(newTomasMarkers);
 
-    }, [libro_visibility, ruta_visibility]);
+    }, [libro_visibility, ruta_visibility, hide_all_tomas]);
 
     const toggle_modo_edicion = () => {
         set_editando(!editando);
     };
 
     const handleViewDetails = (toma: TomaPorUsuario) => {
-        console.log(toma);
         setToma(toma);
-        console.log(tomaUsuariosEncontrados);
         setFindUserOrToma(true);
         setMostrarSiguiente(true);
         setFindUserMapaGeo(true);
@@ -358,35 +344,41 @@ export const Mapa3 = () => {
     };
 
     const handle_hide_all_polygons = () => {
-  
+
         let new_libro_visibility = {};
         rutas.forEach(ruta => {
             ruta.libros.forEach(libro => {
-                if(!hide_all_tomas_bool){
+                if (!hide_all_tomas_bool) {
                     new_libro_visibility[libro.id] = false;
-                }else{
+                } else {
                     new_libro_visibility[libro.id] = true;
                 }
             });
         });
         set_libro_visibility(new_libro_visibility);
-    
+
         let new_ruta_visibility = {};
         rutas.forEach(ruta => {
-            if(!hide_all_tomas_bool){
+            if (!hide_all_tomas_bool) {
                 new_ruta_visibility[ruta.id] = false;
-            }else{
+            } else {
                 new_ruta_visibility[ruta.id] = true;
             }
         });
         set_ruta_visibility(new_ruta_visibility);
         set_hide_all_tomas_bool(!hide_all_tomas_bool);
-   
+
     }
 
     const handle_hide_all_tomas = () => {
-        set_hide_all_tomas(!hide_all_tomas);
+        set_hide_all_tomas(prevState => !prevState);
     }
+
+    const clearMarkers = () => {
+        console.log(tomasMarkers)
+        tomasMarkers.forEach(marker => marker.setMap(null));
+        setTomasMarkers([]);
+    };
 
     return (
         <>
@@ -434,7 +426,7 @@ export const Mapa3 = () => {
                     {
                         !loading_rutas &&
                         <>
-                            {/*
+
                             <div onClick={handle_hide_all_tomas}>
                                 <IconButton>
                                     <div className='flex gap-2 items-center text-[10px]'>
@@ -444,7 +436,6 @@ export const Mapa3 = () => {
                                     </div>
                                 </IconButton>
                             </div>
-                         */}
 
                         </>
                     }
