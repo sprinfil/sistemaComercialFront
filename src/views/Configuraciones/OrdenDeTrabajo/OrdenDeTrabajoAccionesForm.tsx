@@ -62,7 +62,7 @@ const OrdenDeTrabajoAccionesForm = () => {
   const [opcionesEntidades, setOpcionesEntidades] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(null);
 
-  const handleSelect = (index) => {
+  const handleSelect = (index: any) => {
     setCurrentIndex(index);
   };
   
@@ -200,7 +200,9 @@ const OrdenDeTrabajoAccionesForm = () => {
               id: item.id,
               accion: item.accion,
               modelo: item.modelo,
-              campo: item.modelo,
+              campo: item.campo,
+              valor: item.valor,
+
             })),
           });
           setAccionGeneradaEntreTabs("creado");
@@ -209,7 +211,7 @@ const OrdenDeTrabajoAccionesForm = () => {
         }
       } catch (err) {
         errorToast();
-        console.log(err.response.data.message);
+        console.log(err);
         const message = err.response.data.message;
         toast({
           variant: "destructive",
@@ -290,7 +292,9 @@ const OrdenDeTrabajoAccionesForm = () => {
           id: item.id,
           accion: item.accion,
           modelo: item.modelo,
-          campo: item.modelo,
+          campo: item.campo,
+          valor: item.valor,
+
         })),
       });
     }
@@ -315,9 +319,12 @@ const OrdenDeTrabajoAccionesForm = () => {
           accion: item.accion,
           modelo: item.modelo,
           campo: item.campo,
-          valor: item.valor
+          valor: item.valor,
         })) : [];
         console.log(ordenTrabajoAcciones);
+
+
+   
 
       //una vez recorrido reseteamos el formulario. que viene siendo el objeto orden_trabajo_accion
       //con sus propiedades.
@@ -325,6 +332,9 @@ const OrdenDeTrabajoAccionesForm = () => {
         orden_trabajo_accion: ordenTrabajoAcciones,
 
       });
+
+
+
       console.log("Formulario reseteado con:", form.getValues());
 
       setIsDataLoaded(true); // Marca los datos como cargados
@@ -399,6 +409,9 @@ const OrdenDeTrabajoAccionesForm = () => {
       estatus: ["pendiente confirmación inspección", "pendiente de inspeccion", "pendiente de instalacion", "activa", "baja definitiva", "baja temporal", "en proceso", "limitado"],
       tipo_contratacion: ["normal", "condicionado", "desarrollador"],
       tipo_servicio: ["lectura", "promedio"],
+      contrato_agua: ["activa", "de baja"], 
+      contrato_alcantarillado: ["activa", "de baja"], 
+      contrato_saneamiento: ["activa", "de baja"],
     },
     servicios: {
       servicio_contratado: ["agua", "alcantarillado", "saneamiento"],
@@ -451,6 +464,7 @@ useEffect(() => {
       });
       }
   }
+
  
 }, [acciongg, accionGeneradaEntreTabs]);
 
@@ -495,7 +509,7 @@ const handleEntidadChange = (index, value) => {
   setTotalAccionesComponente(nuevasAcciones);
   
   // Limpia opciones y actualiza campos
-  setOpcionesCampos(value === 'medidores' ? ['estatus'] : value === 'toma' ? ['tipo_contratacion', 'tipo_servicio', 'estatus'] : ['servicio_contratado', 'estatus']);
+  setOpcionesCampos(value === 'medidores' ? ['estatus'] : value === 'toma' ? ['tipo_contratacion', 'tipo_servicio', 'estatus', 'contrato_agua', 'contrato_alcantarillado', 'contrato_saneamiento'] : ['servicio_contratado', 'estatus']);
 };
 
 
@@ -504,15 +518,16 @@ const handleEntidadChange = (index, value) => {
 const handleCampoChange = (index, value) => {
   const nuevasAcciones = [...totalAccionesComponente];
   nuevasAcciones[index].campo = value;
-  nuevasAcciones[index].valor = ''; // Resetea valor
+  nuevasAcciones[index].valor = ''; 
   setTotalAccionesComponente(nuevasAcciones);
 
   // Actualiza opciones de valores
   setOpcionesValores(opcionesPorEntidad[nuevasAcciones[index].modelo]?.[value] || []);
 };
 
+const [prueba, setPrueba] = useState(['lectura', 'promedio'])
 
-
+console.log(opcionesValores);
 
   const formatearClave = (clave: string) => {
     return clave
@@ -526,7 +541,9 @@ const handleCampoChange = (index, value) => {
           <div className='h-[20px] w-full flex items-center justify-end '>
             <div className="mb-[10px] h-full w-full mx-4">
               {ordenDeTrabajo.nombre && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
-
+              {opcionesValores.map((valor, index) => (
+                           <div> {valor}</div>
+                         ))}
             </div>
             {ordenDeTrabajo.nombre && (
               <>
@@ -771,9 +788,9 @@ const handleCampoChange = (index, value) => {
                          <SelectValue placeholder="Selecciona un valor" />
                        </SelectTrigger>
                        <SelectContent>
-                         {opcionesValores.map((valor, index) => (
-                           <SelectItem key={index} value={valor}>
-                             {valor.charAt(0).toUpperCase() + valor.slice(1)}
+                         {opcionesValores.map((valor) => (
+                           <SelectItem value={valor}>
+                             {valor}
                            </SelectItem>
                          ))}
                        </SelectContent>
