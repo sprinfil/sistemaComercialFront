@@ -94,7 +94,10 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
         console.log(values);
         setLoading(true);
         setUsuariosEncontrados([]);
-
+        //PARA ELIMINAR EL CONTRATO QUE LLEVABA
+        localStorage.removeItem("contrato");
+        localStorage.removeItem("libro");
+        localStorage.removeItem("notificaciones");
         const criterio = values.nombre.trim();
 
         let endpoint = "";

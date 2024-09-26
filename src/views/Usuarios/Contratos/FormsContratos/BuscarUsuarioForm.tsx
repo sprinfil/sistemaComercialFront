@@ -29,7 +29,7 @@ import { Pencil2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { TbFilterPlus } from "react-icons/tb";
 import { TiUserAdd } from "react-icons/ti";
 import IconButton from "../../../../components/ui/IconButton.tsx";
-
+import { ZustandFiltrosContratacion } from "../../../../contexts/ZustandFiltrosContratacion.tsx";
 
 interface BuscarUsuarioProps {
     navegacion: string;
@@ -46,7 +46,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     const [mostrarTablaTomaUsuario, setMostrarTablaTomaUsuario] = useState(false);
 
     const [filtroSeleccionado, setFiltroSeleccionado] = useState("");
-
+    const {setContratoLocalStorage} = ZustandFiltrosContratacion();
     //variables globales del zustand
     const { nombreBuscado, setNombreBuscado,
         nombreSeleccionado, setNombreSeleccionado,
@@ -94,7 +94,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
         console.log(values);
         setLoading(true);
         setUsuariosEncontrados([]);
-
+        setContratoLocalStorage(false);
         const criterio = values.nombre.trim();
 
         let endpoint = "";

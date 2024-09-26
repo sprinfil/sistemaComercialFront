@@ -39,7 +39,8 @@ const PuntoTomaMapa = () => {
     setSelectedLocation,
     setEsPreContratado,
     setPuntoTomaLatitudLongitudAPI,
-    puntoTomaLatitudLongitudAPI
+    puntoTomaLatitudLongitudAPI,
+    setBoolPeticionContratacion
   } = ZustandFiltrosContratacion();
 
   const { toast } = useToast();
@@ -84,6 +85,13 @@ const PuntoTomaMapa = () => {
     console.log("Map clicked", event);
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
+
+    if (selectedLocation) {
+      setSelectedLocation(null);
+      setPuntoTomaLatitudLongitudAPI([]);
+      setSeleccionoPuntoEnMapa(false);
+    }
+
     const clickedLocation = new google.maps.LatLng(lat, lng);
     setSelectedLocation({ lat, lng });
     setPuntoTomaLatitudLongitudAPI([lat, lng]);
@@ -136,15 +144,19 @@ const PuntoTomaMapa = () => {
 
   }, [poligonos, setPuntoTomaLatitudLongitudAPI, setSeleccionoPuntoEnMapa, setSelectedLocation, toast]);
 
+console.log(selectedLocation);
+
   const handleSiguienteContratacion = useCallback(() => {
     navigate("/Contrato/Usuario");
     setEsPreContratado(true);
+    setBoolPeticionContratacion(false);
   }, [navigate, setEsPreContratado]);
 
   useEffect(() => {
     if (map) {
       markerRefs.current.forEach(marker => marker.setMap(null));
       markerRefs.current = [];
+      setSelectedLocation(null);
 
       tomasFiltradas.forEach(toma => {
         if (toma.posicion?.coordinates) {
@@ -203,7 +215,7 @@ const PuntoTomaMapa = () => {
   return (
     <div>
       <div className="flex space-x-2">
-        <div className="mb-5">
+        <div className="">
           <OcultarTable accion={""}>
             <FiltrosContratacionPuntoToma />
           </OcultarTable>
@@ -252,6 +264,7 @@ const PuntoTomaMapa = () => {
                         setLatitudMapa(lat);
                         setLongitudMapa(lng);
                         setLibroToma(libro.id);
+                        localStorage.setItem("libro", libro.id); 
                         setSelectedLocation({ lat, lng });
                         setMarcadorSeleccionado(true);
                         setSeleccionoPuntoEnMapa(true);

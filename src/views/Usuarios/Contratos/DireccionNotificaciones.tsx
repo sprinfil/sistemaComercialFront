@@ -50,6 +50,7 @@ const detalleContratacion= () =>
 const onSubmit = (values: z.infer<typeof crearTomaSchema>) => {
     console.log(values);
     setDireccion_Notificaciones(values.direccion);
+    localStorage.setItem("notificaciones", values.direccion); 
     detalleContratacion();
 };
 

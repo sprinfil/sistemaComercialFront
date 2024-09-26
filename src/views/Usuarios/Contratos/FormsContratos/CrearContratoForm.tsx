@@ -54,14 +54,14 @@ export const CrearContratoForm = () => {
     const { latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial,
         setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
         setServicioContratado, setGiroComercial, setTipoDeToma, tipoDeToma, tomaPreContratada, isCheckInspeccion, boolPeticionContratacion,
-        setServicioContratado2, selectedLocation, getCoordenadaString, setNombreGiroComercial, esPreContratado,getCoordenadaString2, puntoTomaLatitudLongitudAPI} = ZustandFiltrosContratacion();
+        setServicioContratado2, selectedLocation, getCoordenadaString, setNombreGiroComercial, esPreContratado,getCoordenadaString2, 
+        puntoTomaLatitudLongitudAPI,contratoLocalStorage} = ZustandFiltrosContratacion();
 
 
-    const { usuariosEncontrados } = ZustandGeneralUsuario();
-    console.log("Latitud:", latitudMapa); //Latitud seleccionada dentro del poligono
-    console.log("Longitud:", longitudMapa); //Longitud seleccionada dentro del poligono
-    console.log("Libro:", libroToma); //Longitud seleccionada dentro del poligono
-    console.log(JSON.stringify(libroToma));
+    const { usuariosEncontrados,setUsuariosEncontrados } = ZustandGeneralUsuario();
+  
+
+
 
     const form = useForm<z.infer<typeof crearContratoSchema>>({
         resolver: zodResolver(crearContratoSchema),
@@ -100,8 +100,23 @@ export const CrearContratoForm = () => {
     };
 
 
-    console.log(tomaPreContratada?.id)
 
+    //ID CONVERTIDOS A NOMBRE PARA CARGARLOS EN LOS INPUTS
+    const [nombreCompletoUsuario, setNombreCompletoUsuario] = useState('');
+    const [nombreCalle, setNombreCalle] = useState('');
+    const [nombreEntreCalle1, setNombreEntreCalle1] = useState('');
+    const [nombreEntreCalle2, setNombreEntreCalle2] = useState('');
+    const [nombreColonia, setNombreColonia] = useState('');
+
+    useEffect(() => {
+
+        setNombreCalle(tomaPreContratada?.calle1?.nombre);
+        setNombreEntreCalle1(tomaPreContratada?.entre_calle1?.nombre);
+        setNombreEntreCalle2(tomaPreContratada?.entre_calle2?.nombre);
+        setNombreColonia(tomaPreContratada?.colonia1?.nombre);
+        setNombreCompletoUsuario(usuariosEncontrados[0]?.nombre_completo);
+
+    }, []); 
 
     const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
 
@@ -144,10 +159,11 @@ export const CrearContratoForm = () => {
             ...(alcantarillado_y_saneamiento && !isAlcActive && !isSanActive ? [alcantarillado_y_saneamiento] : []),
         ];
 
-        console.log(serviciosSeleccionados);
 
-        console.log(servicios);
         let datos;
+
+        //DEPENDIENDO EL CASO DE CONTRATACIÓN SE ENVIARÁN ESTOS DATOS
+        
         if (!esPreContratado) {
             // Estos datos son para enviar
             datos = {
@@ -191,6 +207,7 @@ export const CrearContratoForm = () => {
                     municipio: values.municipio,
                     tipo_contratacion: values.tipo_contratacion,
                 };
+                
             }
             else
             {
@@ -225,44 +242,26 @@ export const CrearContratoForm = () => {
             ...(values.c_san != null && !isSanActive ? { c_san: values.c_san } : {}),
         };
 
-        setContrato(datosFiltrados);
-        console.log(datosFiltrados);
+        if(!contratoLocalStorage )
+        {
+    
+            setContrato(datosFiltrados);
 
-        console.log(servicioAContratar);
-        handleAbrirModalNotificaciones();
-        const crearContrato = {
-            estatus: isCheckInspeccion,
-            id_giro_comercial: values.id_giro_comercial,
-            nombre_contrato: values.nombre_contrato,
-            clave_catastral: values.clave_catastral,
-            tipo_toma: values.tipo_toma,
-            servicio_contratados: servicios,
-            //diametro_toma:values.diametro_de_la_toma,
-            num_casa: values.num_casa,
-            colonia: values.colonia,
-            calle: values.calle,
-            codigo_postal: values.codigo_postal,
-            entre_calle1: values.entre_calle_1,
-            entre_calle2: values.entre_calle_2,
-            localidad: values.localidad,
-            municipio: values.municipio,
-            tipo_contratacion: values.tipo_contratacion,
-            coordenada: selectedLocation
-        };
-
-
-        const contratoString = JSON.stringify(crearContrato);
-        console.log("estos valores llegaron y se almacenaron en el localstorage", contratoString);
-
-        localStorage.setItem("contrato", contratoString); //AQUI SE GUARDA CONTRATO STRING QUE GUARDA EN EL LOCALSTORAGE EL OBJETO.
-
-        //handleAbrirModalNotificaciones();
-
+            const contratoString = JSON.stringify(datos);
+            console.log("estos valores llegaron y se almacenaron en el localstorage", contratoString);
+    
+            
+            //AQUI SE GUARDA CONTRATO STRING QUE GUARDA EN EL LOCALSTORAGE EL OBJETO.
+            localStorage.setItem("contrato", contratoString); 
+        }
+      
+            handleAbrirModalNotificaciones();
         //navegarCrearNuevaToma();
 
     };
+    console.log(localStorage.getItem("contrato"));
 
-    console.log(contrato);
+    console.log(contratoLocalStorage);
 
     //con esto controlo que no pueda haber un alcantarillado y sanamiento, y viceversa
     const onSwitchChange = (fieldName: string, value: boolean) => {
@@ -366,10 +365,66 @@ export const CrearContratoForm = () => {
     }, [tomaPreContratada])
 
 
+    useEffect(() => {
+        console.log(localStorage.getItem('contrato'));
+        // Obtener los datos de localStorage
+        const contratoConversionLocalStorage = JSON.parse(localStorage.getItem('contrato') || '{}');
+        let agua = false;
+        if (contratoLocalStorage) {
+      
+            
+            //PARA QUE ME JALE LO SELECCIONADO YA QUE SE GUARDA TEXTO, SE CONVIERTE A BOOL
+            let agua = false;
+            let alc = false;
+            if(contratoConversionLocalStorage.servicio_contratados.includes("agua"))
+            {
+                agua = true;
 
-    console.log(tomaPreContratada);
-console.log(esPreContratado);
+            }
+            if (contratoConversionLocalStorage.servicio_contratados.includes("agua") && contratoConversionLocalStorage.servicio_contratados.includes("alcantarillado y saneamiento"))
+            {
+                agua = true;
+                alc = true;
+            }
+            if (contratoConversionLocalStorage.servicio_contratados.includes("alcantarillado y saneamiento"))
+                {
+                    alc = true;
+                }
 
+            form.reset({
+            nombre_contrato:contratoConversionLocalStorage?.nombre_contrato || '',
+              clave_catastral: contratoConversionLocalStorage?.clave_catastral || '',
+              tipo_toma: contratoConversionLocalStorage?.tipo_toma || '',
+              diametro_de_la_toma: contratoConversionLocalStorage?.diametro_de_la_toma || '',
+              calle: contratoConversionLocalStorage?.calle || '',
+              num_casa: String(contratoConversionLocalStorage?.num_casa) || 0,
+              colonia: contratoConversionLocalStorage?.colonia || '',
+              codigo_postal: contratoConversionLocalStorage?.codigo_postal || '',
+              entre_calle_1: Number(contratoConversionLocalStorage?.entre_calle1) || '',
+              entre_calle_2: Number(contratoConversionLocalStorage?.entre_calle2) || '',
+              localidad: contratoConversionLocalStorage?.localidad || '',
+              municipio: contratoConversionLocalStorage?.municipio || 'La Paz',
+              c_agua: agua || false,
+              c_alc: alc || false,
+              c_san: alc|| false,
+              tipo_contratacion: contratoConversionLocalStorage?.tipo_contratacion || '',
+              id_giro_comercial: contratoConversionLocalStorage?.id_giro_comercial || 0,
+            });
+          
+      
+        }
+      }, [form]); 
+
+    useEffect(() => {
+        const nombreCompletoUsuario = usuariosEncontrados[0]?.nombre_completo;
+    
+  
+        if (usuariosEncontrados.length > 0) {
+            form.setValue('nombre_contrato', nombreCompletoUsuario);
+        } else {
+            form.resetField('nombre_contrato');
+        }
+    }, [usuariosEncontrados, form, esPreContratado, boolPeticionContratacion]); 
     return (
         <div className="">
             <div className="py-[20px] px-[10px]">
@@ -392,7 +447,14 @@ console.log(esPreContratado);
                                             <FormLabel>Nombre del contrato</FormLabel>
                                             <FormControl>
 
-                                                <Input placeholder="Escribe a nombre de quien estará el contrato" {...field} />
+                                            <Input
+                                            placeholder="Escribe a nombre de quien estará el contrato"
+                                            {...field}
+                                            defaultValue={usuariosEncontrados[0]?.nombre_completo} // Usa defaultValue aquí
+                                            onChange={(e) => {
+                                                field.onChange(e); // Maneja el cambio para actualizar el estado del formulario
+                                            }}
+                                        />
                                             </FormControl>
                                             <FormDescription />
                                             <FormMessage />
@@ -470,8 +532,7 @@ console.log(esPreContratado);
                                                 <FormLabel>Calle</FormLabel>
                                                 <FormControl>
                                                     {esPreContratado ?
-                                                        <CallesComboBox form={form} field={field} name="calle" setCargoSeleccionado={setCalleSeleccionada} disabled={true} />
-
+                                                        <Input readOnly placeholder="" value={nombreCalle} />
                                                         :
                                                         <CallesComboBox form={form} field={field} name="calle" setCargoSeleccionado={setCalleSeleccionada} disabled={false} />
 
@@ -528,7 +589,7 @@ console.log(esPreContratado);
                                                 <FormControl>
                                                     {
                                                         esPreContratado ? 
-                                                        <ColoniaComboBox form={form} field={field} name="colonia" setCargoSeleccionado={setColoniaSeleccionada} disabled={true} />
+                                                        <Input readOnly placeholder="" value={nombreColonia} />
                                                         :
                                                         <ColoniaComboBox form={form} field={field} name="colonia" setCargoSeleccionado={setColoniaSeleccionada} disabled={false} />
 
@@ -579,7 +640,7 @@ console.log(esPreContratado);
                                                 <FormControl>
                                                     {
                                                         esPreContratado ? 
-                                                        <CallesComboBox form={form} field={field} name="entre_calle_1" setCargoSeleccionado={setEntreCalle1Seleccionada} disabled={true} />
+                                                        <Input readOnly placeholder="" value={nombreEntreCalle1} />
                                                         :
                                                         <CallesComboBox form={form} field={field} name="entre_calle_1" setCargoSeleccionado={setEntreCalle1Seleccionada} disabled={false} />
                                                     }
@@ -600,7 +661,7 @@ console.log(esPreContratado);
                                                 <FormControl>
                                                     {
                                                         esPreContratado ? 
-                                                        <CallesComboBox form={form} field={field} name="entre_calle_2" setCargoSeleccionado={setEntreCalle2Seleccionada}  disabled={true} />
+                                                        <Input readOnly placeholder="" value={nombreEntreCalle2} />
 
                                                         :
 
@@ -690,6 +751,28 @@ console.log(esPreContratado);
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Municipio</FormLabel>
+                                                {
+                                                    esPreContratado ?
+                                                    <Select
+                                                    disabled={true} // Ajusta esto según si el campo debe estar deshabilitado o no
+                                                    onValueChange={(value) => {
+                                                        field.onChange(value); // Actualiza el valor en react-hook-form
+                                                    }}
+                                                    value={field.value || "La Paz"} // Valor por defecto a 'La Paz'
+                                                    >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Selecciona el municipio" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="La Paz">La Paz</SelectItem>
+                                                        <SelectItem value="Los cabos">Los Cabos</SelectItem>
+                                                        <SelectItem value="Comondu">Comondú</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                :
+
                                                 <Select
                                                     disabled={false} // Ajusta esto según si el campo debe estar deshabilitado o no
                                                     onValueChange={(value) => {
@@ -708,6 +791,8 @@ console.log(esPreContratado);
                                                         <SelectItem value="Comondu">Comondú</SelectItem>
                                                     </SelectContent>
                                                 </Select>
+                                                }
+                                           
                                                 <FormDescription />
                                                 <FormMessage />
                                             </FormItem>
@@ -735,7 +820,7 @@ console.log(esPreContratado);
                                                         <FormControl>
                                                             <Switch
                                                                 className='ml-2'
-                                                                checked={field.value}
+                                                                checked={true}
                                                                 onCheckedChange={(checked) => field.onChange(checked)
                                                                 }
                                                             />
@@ -787,7 +872,7 @@ console.log(esPreContratado);
                                                         <FormControl>
                                                             <Switch
                                                                 className='ml-2'
-                                                                checked={field.value}
+                                                                checked={true}
                                                                 onCheckedChange={(checked) => onSwitchChange("c_alc", checked)}
                                                             />
                                                         </FormControl>
@@ -808,7 +893,7 @@ console.log(esPreContratado);
                                                         <FormControl>
                                                             <Switch
                                                                 className='ml-2'
-                                                                checked={field.value}
+                                                                checked={true}
                                                                 onCheckedChange={(checked) => onSwitchChange("c_san", checked)}
                                                             />
                                                         </FormControl>
@@ -945,8 +1030,8 @@ console.log(esPreContratado);
 
                                 </div>
                                 {
-                                    tipoDeToma != "Domestica" &&
-                                      <div className='mt-4 w-full'>
+                                tipoDeToma != "Domestica" &&
+                                    <div className='mt-4 w-full'>
                                     <FormField
                                         control={form.control}
                                         name="id_giro_comercial"
@@ -962,6 +1047,28 @@ console.log(esPreContratado);
                                         )}
                                     />
                                 </div>
+                                        
+                                    
+                                     
+                                }
+                                {
+                                   !tomaPreContratada && tomaPreContratada?.id_tipo_toma != 1 && 
+                                    <div className='mt-4 w-full'>
+                                        <FormField
+                                            control={form.control}
+                                            name="id_giro_comercial"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Giro comercial</FormLabel>
+                                                    <FormControl>
+                                                        <GiroComercialComboBox form={form} field={field} name="id_giro_comercial" setCargoSeleccionado={setNombreGiroComercial} />
+                                                    </FormControl>
+                                                    <FormDescription />
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
                                 }
                               
 

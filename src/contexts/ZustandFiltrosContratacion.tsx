@@ -205,6 +205,8 @@ interface FiltrosContratacion {
   tarifaDeContratoActual:[];
   setTarifaDeContratoActual:(tarifaDeContratoActual: []) => void;
 
+  contratoLocalStorage: boolean;
+  setContratoLocalStorage:(contratoLocalStorage: boolean) => void;
 }
 
 export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => ({
@@ -417,6 +419,9 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
 
   tarifaDeContratoActual:[],
   setTarifaDeContratoActual: (tarifaDeContratoActual) => set({ tarifaDeContratoActual }),
+
+  contratoLocalStorage:false,
+  setContratoLocalStorage: (contratoLocalStorage) => set({ contratoLocalStorage }),
 
 }));
 
