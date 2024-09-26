@@ -52,7 +52,6 @@ type OrdenDeTrabajo = {
 const OrdenTrabajoCargosSchema = z.object({
     orden_trabajo_cargos: z.array(
         z.object({
-            id: z.number(),
             id_concepto_catalogo: z.number(),
         })
     ),
@@ -78,6 +77,11 @@ const CargosDeLaOrdenTrabajoForm = () => {
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
     const [control, setControl] = useState(false);
+    const [nombreConcepto, setNombreConcepto] = useState([]);
+    const [valoresPrevios, setValoresPrevios] = useState({});
+    const [quitarEdicion, setQuitarEdicion] = useState('');
+
+    console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
 
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0
@@ -89,12 +93,31 @@ const CargosDeLaOrdenTrabajoForm = () => {
             { id: newId, id_concepto_catalogo: 0 }
         ]);
     };
-
     const handleRemoveComponent = (idToRemove: number) => {
-        setTotalAccionesComponente(prevAcciones =>
-            prevAcciones.filter(({ id }) => id !== idToRemove)
-        );
+        console.log("Eliminar cargo con ID:", idToRemove); // Verifica el ID
+        setTotalAccionesComponente(prevAcciones => {
+            const nuevasAcciones = prevAcciones.filter(({ id }) => id !== idToRemove);
+            
+            // Obtener los valores actuales del formulario
+            const currentValues = form.getValues('orden_trabajo_cargos');
+    
+            // Filtrar y mapear solo los valores que no han sido eliminados
+            const updatedValues = nuevasAcciones.map(item => {
+                const existingValue = currentValues.find(value => value.id === item.id);
+                return {
+                    id: item.id,
+                    id_concepto_catalogo: existingValue ? existingValue.id_concepto_catalogo : 0, // Mantiene el valor existente o establece 0
+                };
+            });
+    
+            // Resetea el formulario después de eliminar el componente
+            form.setValue('orden_trabajo_cargos', updatedValues);
+    
+            return nuevasAcciones; // Devuelve el nuevo estado
+        });
     };
+    
+    
 
     function successToastCreado() {
         toast({
@@ -153,34 +176,54 @@ const CargosDeLaOrdenTrabajoForm = () => {
         resolver: zodResolver(OrdenTrabajoCargosSchema),
         defaultValues: {
             orden_trabajo_cargos: totalAccionesComponente.map(item => ({
-                id: item.id,
                 id_concepto_catalogo: 0,
             })),
         },
     });
+    const [isInitialized, setIsInitialized] = useState(false); // Estado para verificar si ya se inicializó
 
     useEffect(() => {
         if (accionGeneradaEntreTabs === "editar") {
-            form.reset({
-                orden_trabajo_cargos: totalAccionesComponente.map(item => ({
-                    id: item.id,
-                    id_concepto_catalogo: 0,
-                })),
-            });
+            const valoresActuales = form.getValues('orden_trabajo_cargos');
+    
+            const nuevosValores = totalAccionesComponente.map((item, index) => ({
+                id: item.id,
+                id_concepto_catalogo: 0,
+            }));
+    
+            // Combina los valores existentes con los nuevos
+            const todosLosValores = [...valoresActuales, ...nuevosValores];
+    
+            // Resetea el formulario con todos los valores
+            form.reset({ orden_trabajo_cargos: todosLosValores });
         }
     }, [totalAccionesComponente, accionGeneradaEntreTabs]);
+    
 
     const onSubmit = async (values: OrdenTrabajoCargo) => {
         console.log(values);
 
-        const cargos = values.orden_trabajo_cargos.map((item) => ({
-            id: item.id,
+        // Filtrar los cargos para eliminar aquellos con id_concepto_catalogo igual a 0
+        const filteredCargos = values.orden_trabajo_cargos.filter(
+            (cargo) => cargo.id_concepto_catalogo !== 0
+        );
+    
+        console.log(filteredCargos);
+    
+        // Crear un nuevo array en el formato deseado
+        const cargos = filteredCargos.map((cargo) => ({
+            id:0,
             id_orden_trabajo_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo,
-            id_concepto_catalogo: item.id_concepto_catalogo
+            id_concepto_catalogo: cargo.id_concepto_catalogo // Solo guardar el id_concepto_catalogo
         }));
-
-
-        console.log("Cargos:", cargos);
+    
+        // Formar el objeto final que deseas enviar
+        const payload = {
+            orden_trabajo_cargos: cargos
+        };
+    
+        console.log("Cargos:", payload);
+    
 
 
         const orden_trabajo_cargos = {
@@ -202,22 +245,23 @@ const CargosDeLaOrdenTrabajoForm = () => {
                     setLoading(false);
                 } else {
                     setLoading(false);
-                    setOrdenDeTrabajo({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    form.reset({
-                        orden_trabajo_cargos: totalAccionesComponente,
-                    });
+                   
+                    setValoresPrevios(values);
+             
                     console.log(response);
-                    setAccionGeneradaEntreTabs("creado");
+                    setAccionGeneradaEntreTabs("recargar");
+                    setQuitarEdicion("quitar")
                     getAnomalias();
                     successToastCreado();
                 }
-            } catch (response) {
-                errorToast();
-                console.log(response);
+            } catch (err) {
+                const message = err.response.data.message;
+                toast({
+                    variant: "destructive",
+                    title: "Oh, no. Error",
+                    description: message,
+                    action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+                });
                 setLoading(false);
             }
         }
@@ -265,22 +309,6 @@ const CargosDeLaOrdenTrabajoForm = () => {
 
 
 
-    useEffect(() => {
-        if (accionGeneradaEntreTabs === "eliminar") {
-            setAbrirInput(false);
-        }
-        if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
-            setAbrirInput(true);
-            setErrors({});
-            setOrdenDeTrabajo({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            });
-        }
-
-
-    }, [accion, form.reset, totalAccionesComponente, idSeleccionadoConfiguracionOrdenDeTrabajo]);
 
     useEffect(() => {
    
@@ -289,8 +317,16 @@ const CargosDeLaOrdenTrabajoForm = () => {
                 ? ordenDeTrabajo.ordenes_trabajo_cargos.map(item => ({
                     id: item.id,
                     id_concepto_catalogo: item.id_concepto_catalogo,
+                    conceptos: item.conceptos 
+
                 }))
                 : [];
+
+                const nombresConceptos = ordenTrabajoCargos.map(cargo => cargo.conceptos?.nombre);
+                setNombreConcepto(nombresConceptos);
+                console.log(nombresConceptos);
+
+               
     
             if (accionGeneradaEntreTabs === "ver") {
                 form.reset({
@@ -319,34 +355,20 @@ const CargosDeLaOrdenTrabajoForm = () => {
     }, [accionGeneradaEntreTabs, ordenDeTrabajo]);
 
     useEffect(() => {
-        if (accionGeneradaEntreTabs === "creado" && ordenDeTrabajo) {
-            const ordenTrabajoCargos = Array.isArray(ordenDeTrabajo.ordenes_trabajo_cargos)
-                ? ordenDeTrabajo.ordenes_trabajo_cargos.map(item => ({
-                    id: item.id,
-                    id_concepto_catalogo: item.id_concepto_catalogo,
-                }))
-                : [];
-    
-            form.reset({
-                orden_trabajo_cargos: ordenTrabajoCargos,
-               
-            });
+ 
     
             setControl(false);
             setAbrirInput(true);
     
-            if (JSON.stringify(ordenTrabajoCargos) !== JSON.stringify(totalAccionesComponente)) {
-                setTotalAccionesComponente(ordenTrabajoCargos);
-            }
-    
-            console.log("Formulario cargado con valores actuales:", form.getValues());
-        }
+
+       
     }, [accionGeneradaEntreTabs, ordenDeTrabajo]);
  
 
-    
+    console.log(form.getValues());
     const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
     console.log(accionGeneradaEntreTabs);
+    console.log(nombreConcepto);
 
     return (
         <div>
@@ -404,6 +426,7 @@ const CargosDeLaOrdenTrabajoForm = () => {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {totalAccionesComponente.map((accion, index) => {
+                            console.log(accion.id);
                             return (
                                 <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
                                     <div className="text-sm font-medium mb-3">
@@ -411,22 +434,45 @@ const CargosDeLaOrdenTrabajoForm = () => {
                                     </div>
                                     <div className="flex items-center space-x-2">
                                         <div className="w-full">
-
+                                        
+                                        {
+                                            accionGeneradaEntreTabs == "editar" ? 
                                             <Controller
-                                                name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`}
-                                                control={form.control}
-                                                render={({ field }) => (
+                                            name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`}
+                                            control={form.control}
+                                            render={({ field }) => (
+                                       <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control} />
 
+                                            )}
+                                        />
+                                            :
+                                            <Controller
+                                            name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`}
+                                            control={form.control}
+                                            render={({ field: { value, ...rest } }) => ( // Desestructuramos field
+                                              <Input
+                                                readOnly
+                                                placeholder=""
+                                                value={nombreConcepto[index] || ""} // Usa el nombre del concepto aquí
+                                                {...rest} // Pasa el resto de las props sin incluir value
+                                              />
+                                            )}
+                                          />
 
-                                                    <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control} />
-
-                                                )}
-                                            />
+                                        }
+                                          
                                         </div>
                                         <FormMessage />
-                                        <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
-                                            <TrashIcon className="w-4 h-4" />
-                                        </Button>
+                                        {
+                                         accionGeneradaEntreTabs == "editar" &&
+                                         <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
+                                           
+                                         <a title="Eliminar">
+                                         <TrashIcon className="w-4 h-4" />
+                                         </a>
+                                     </Button>
+                                        }
+                                       
                                     </div>
                                 </div>
                             )

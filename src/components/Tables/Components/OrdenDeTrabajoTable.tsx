@@ -42,6 +42,7 @@ const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
   if (loadingTable) {
     return <div><Loader /></div>;
   }
+  console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
 
   return (
 
