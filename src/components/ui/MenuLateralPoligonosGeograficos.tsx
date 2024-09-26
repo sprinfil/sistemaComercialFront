@@ -26,7 +26,6 @@ import ModalEliminarRuta from './ModalEliminarRuta';
 import ModalGestionarLibro from './ModalGestionarLibro';
 
 const MenuLateralPoligonosGeograficos = () => {
-
   const [effect, setEffect] = useState(false);
   const { setRutas, rutas } = useStateContext();
   const [open, set_open] = useState(false);

@@ -14,6 +14,7 @@ export const useSortable = (ref: RefObject<HTMLUListElement>, onEnd: (evt: any) 
         animation: 150,
         ghostClass: 'sortable-ghost',
         group: "secuencia",
+        sort: true,
         onEnd: (evt) => {
           //console.log(evt);
           onEnd(evt);
@@ -67,11 +68,12 @@ export function useGetCenterMap(libroCoords: any) {
 //FORMATEAR LAS COORDENADAS DEL LIBRO
 export function useFormatCoords(coords) {
   let newCoords: any = [];
+  console.log(coords)
 
-  coords.map(coord => {
+  coords[0].map(coord => {
     newCoords.push({
-      lat: coord[0][1],
-      lng: coord[0][0]
+      lat: parseFloat(coord[1]),
+      lng: parseFloat(coord[0]) 
     })
   })
 

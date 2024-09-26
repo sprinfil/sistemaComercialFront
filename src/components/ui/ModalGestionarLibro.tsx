@@ -38,33 +38,56 @@ interface ModalProps {
 
 
 const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description, children, onConfirm, libro }) => {
-  const tomasSecuenciaRef = useRef<HTMLUListElement>(null);
-  const tomasSinSecuenciaRef = useRef<HTMLUListElement>(null);
-  const [changeTab, setChangeTab] = useState(false);
-  const mapContainerStyles = { width: '100%', height: '100%' };
-  const { libroCoords } = useFormatCoords(libro?.polygon?.coordinates)
+  const [changeTab, setChangeTab] = useState(false)//SIRVE PARA REFRESCAR EL COMPONENTE
+  const [triggerClick, setTriggerClick] = useState(false);
+  const tomasSecuenciaRef = useRef<HTMLUListElement>(null);//REF DE SEUCUENCIA 
+  const tomasSinSecuenciaRef = useRef<HTMLUListElement>(null);//REF DE TOMAS SIN SECUENCIA
+  const [secuencia, setSecuencia] = useState([]);
+
+  useEffect(() => {
+    setSecuencia(libro?.secuencias[0]?.ordenes_secuencia);
+  }, [triggerClick])
+
   useSortable(tomasSecuenciaRef, (evt) => {
-    console.log('Orden actualizado:', evt.oldIndex, evt.newIndex);
+    console.log(secuencia)
+    console.log('Orden actualizado:', evt.oldIndex, evt.newIndex); //SORTABLE SECUENCIA
+
+    let secuenciaTemp = secuencia;
+
+    // setSecuencia(prev => {
+    //   return prev.map(orden => {
+    //     if (orden.numero_secuencia == evt.oldIndex) {
+    //       orden.numero_secuencia = evt.newIndex;
+    //       return orden;
+    //     } else {
+    //       return orden;
+    //     }
+    //   })
+    // })
   });
+
+  useEffect(() => {
+    console.log(secuencia)
+  }, [secuencia])
+
 
   useSortable2(tomasSinSecuenciaRef, (evt) => {
-    console.log('Orden actualizado:', evt.oldIndex, evt.newIndex);
+    console.log('Orden actualizado:', evt.oldIndex, evt.newIndex); //SORTABLE SIN SECUENICA
   });
 
-  const { center } = useGetCenterMap(libro?.polygon?.coordinates)
+  const mapContainerStyles = { width: '100%', height: '100%' };//ESTILOS DEL MAPA
 
-  const zoom = 16;
-  const polygonPath = [
-    { lat: 19.433, lng: -99.135 },
-    { lat: 19.435, lng: -99.132 },
-    { lat: 19.431, lng: -99.128 },
-    { lat: 19.429, lng: -99.133 }
-  ];
+  const { center } = useGetCenterMap(libro?.polygon?.coordinates) //CENTRO DEL MAPA
+
+  const zoom = 16; //ZOOM DEL MAPA
+
+  const { newCoords } = useFormatCoords(libro?.polygon?.coordinates)//COORDENADAS DEL LIBRO
+
 
   return (
     <div>
       <AlertDialog>
-        <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+        <AlertDialogTrigger onClick={() => { setTriggerClick(!triggerClick) }} >{trigger}</AlertDialogTrigger>
         <AlertDialogContent className="min-w-[98vw] min-h-[98vh] max-h-[98vh] flex">
           <div className='flex-grow relative'>
             <p className='font-medium text-[25px]'>{title}</p>
@@ -106,9 +129,11 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                           <ul ref={tomasSecuenciaRef} id='secuencia'>
                             {
                               <>
-                                {libro?.tomas?.map(toma => (
-                                  <li className='select-none my-3 border py-4 rounded-md flex items-center px-3 cursor-pointer'>
-                                    {toma?.codigo_toma}
+                                {libro?.secuencias[0]?.ordenes_secuencia?.map(orden => (
+                                  <li className='shadow-md gap-4 select-none my-3 border py-4 rounded-md flex items-center px-3 cursor-pointer relative'>
+                                    <p className='bg-orange-500 text-white rounded-full px-3 py-1'>{orden?.numero_secuencia}</p>
+                                    <p>{orden?.toma?.codigo_toma}</p>
+                                    <input defaultValue={orden?.numero_secuencia} type="number" className='bg-background border rounded-md w-[20%] outline-none p-2 absolute right-2' placeholder='Posicion' />
                                   </li>
                                 ))}
                               </>
@@ -127,9 +152,9 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                           <ul ref={tomasSinSecuenciaRef} id='sinSecuencia'>
                             {
                               <>
-                                {libro?.tomas?.map(toma => (
+                                {secuencia.map(orden => (
                                   <li className='select-none my-3 border py-4 rounded-md flex items-center px-3 cursor-pointer'>
-                                    {toma?.codigo_toma}
+                                    {orden?.toma?.codigo_toma}
                                   </li>
                                 ))}
                               </>
@@ -152,18 +177,18 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                   center={center}
                   zoom={zoom}
                 >
-            <p>fdsf</p>
-                    <Polygon
-                      paths={libroCoords}
-                      options={{
-                        fillColor: "lightblue",
-                        fillOpacity: 1,
-                        strokeColor: "blue",
-                        strokeOpacity: 1,
-                        strokeWeight: 2
-                      }}
-                    /> 
-               
+
+                  <Polygon
+                    paths={newCoords}
+                    options={{
+                      fillColor: "lightblue",
+                      fillOpacity: 1,
+                      strokeColor: "blue",
+                      strokeOpacity: 1,
+                      strokeWeight: 2
+                    }}
+                  />
+
                 </GoogleMap>
               </div>
             </div>
