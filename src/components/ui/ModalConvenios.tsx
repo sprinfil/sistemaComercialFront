@@ -240,7 +240,7 @@ return (
         </div>
 
         {/* Segunda parte - Contenido restante (2/3 del ancho) */}
-        <div className="w-[135vh] p-4 ">
+        <div className="w-[60vh] p-4 ">
           {loading ? (
             <Loader />
           ) : error ? (

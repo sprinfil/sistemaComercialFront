@@ -46,21 +46,24 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
         .then(({ data }) => {
           if (data && data.convenio_catalogo) {
             const convenioCatalogo = data.convenio_catalogo;
+            console.log(data)
             const conveniosData = [{
-              id: data.id,
-              id_convenio_catalogo: convenioCatalogo.id,
-              id_modelo: data.id_modelo,
-              modelo_origen: data.modelo_origen,
-              monto_conveniado: data.monto_conveniado,
-              monto_total: data.monto_total,
-              periodicidad: data.periodicidad,
-              cantidad_letras: data.cantidad_letras,
-              estado: data.estado,
-              comentario: data.comentario,
-              motivo_cancelacion: data.motivo_cancelacion,
-              letra: data.letra[0].monto
+              id: data?.id,
+              id_convenio_catalogo: convenioCatalogo?.id,
+              id_modelo: data?.id_modelo,
+              modelo_origen: data?.modelo_origen,
+              monto_conveniado: data?.monto_conveniado,
+              monto_total: data?.monto_total,
+              periodicidad: data?.periodicidad,
+              //cantidad_letras: data?.cantidad_letras,
+              estado: data?.estado,
+              comentario: data?.comentario,
+              //motivo_cancelacion: data.motivo_cancelacion,
+              letra: data?.letras[0]?.monto
             }];
-            setConvenios(conveniosData);
+            console.log(conveniosData)
+         
+            //setConvenios(conveniosData);
           } else {
             setConvenios([]);
           }
