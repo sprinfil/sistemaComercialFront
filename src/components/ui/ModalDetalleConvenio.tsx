@@ -22,6 +22,7 @@ interface ModalConvenioProps {
 const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm }) => {
   const { usuariosEncontrados } = ZustandGeneralUsuario();
   const [convenios, setConvenios] = useState<any[]>([]);
+  const [comentario, set_comentario] = useState<string>("");
   const [selectedConvenio, setSelectedConvenio] = useState<any>(null);
   const { toast } = useToast();
 
@@ -44,7 +45,7 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
           },
         })
         .then(({ data }) => {
-          if (data && data.convenio_catalogo) {
+          if (data && data.id_convenio_catalogo) {
             const convenioCatalogo = data.convenio_catalogo;
             const conveniosData = [{
               id: data.id,
@@ -57,8 +58,7 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
               cantidad_letras: data.cantidad_letras,
               estado: data.estado,
               comentario: data.comentario,
-              motivo_cancelacion: data.motivo_cancelacion,
-              letra: data.letra[0].monto
+              letras: data.letras, // Actualizar para incluir las letras
             }];
             setConvenios(conveniosData);
           } else {
@@ -80,11 +80,13 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
     try {
       const response = await axiosClient.put("/Convenio/CancelarConvenio", {
         id_convenio: convenioId,
+        motivo_cancelacion: comentario,
       });
 
       if (response.status === 200) {
         cargarConvenios();
         setSelectedConvenio(null);
+        set_comentario(""); // Clear the comment when canceling
         successToastEliminado();
       } else {
         console.error("Error al cancelar el convenio");
@@ -120,8 +122,6 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
                   <th className="text-left px-4 py-2">Cantidad en Letras</th>
                   <th className="text-left px-4 py-2">Estado</th>
                   <th className="text-left px-4 py-2">Comentario</th>
-                  <th className="text-left px-4 py-2">Letra</th>
-                  <th className="text-left px-4 py-2">Motivo de Cancelación</th>
                 </tr>
               </thead>
               <tbody>
@@ -132,17 +132,27 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
                     <td className="px-4 py-2">{convenio.periodicidad}</td>
                     <td className="px-4 py-2">{convenio.cantidad_letras}</td>
                     <td className="px-4 py-2">{convenio.estado}</td>
-                    <td className="px-4 py-2">{convenio.comentario}</td>
-                    <td className="px-4 py-2">{convenio.letra}</td>
-                    <td className="px-4 py-2">
-                      {convenio.motivo_cancelacion || 'No aplicable'}
-                    </td>
+                    <td className="px-4 py-2">{convenio.comentario}</td>    
                   </tr>
                 ))}
               </tbody>
             </table>
           ) : (
             <p>No hay convenios disponibles.</p>
+          )}
+          
+          {/* Mostrar el comentario solo si hay un convenio seleccionado */}
+          {selectedConvenio && (
+            <div className="mt-4">
+              <label htmlFor="comentario">Comentario</label>
+              <textarea
+                id="comentario"
+                className="w-full mt-2 p-2 border rounded-md"
+                value={comentario}
+                onChange={(e) => set_comentario(e.target.value)}
+                placeholder="Agrega un comentario..."
+              />
+            </div>
           )}
         </div>
 
