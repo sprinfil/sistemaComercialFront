@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SiMicrosoftexcel } from "react-icons/si";
 // Cherrypick default plugins
 import Sortable, { AutoScroll } from 'sortablejs/modular/sortable.core.esm.js';
-import { useSortable, useSortable2, click, useGetCenterMap, useFormatCoords, updateSecuencia } from '../../lib/Services/ModalGestionarLibroService';
+import { useSortable, useSortable2, click, useGetCenterMap, useFormatCoords, updateSecuencia, moverPosicionLibro } from '../../lib/Services/ModalGestionarLibroService';
 import { RiFileDownloadFill } from "react-icons/ri";
 import { FaFileImport } from "react-icons/fa6";
 import {
@@ -31,6 +31,7 @@ import { CheckCircledIcon, Pencil1Icon, Pencil2Icon } from '@radix-ui/react-icon
 import IconButton from './IconButton';
 import { Check } from 'lucide-react';
 import Loader from './Loader';
+import { Skeleton } from './skeleton';
 
 interface ModalProps {
   trigger: React.ReactNode;
@@ -41,7 +42,7 @@ interface ModalProps {
 }
 
 
-const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description, children, onConfirm, libro }) => {
+const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description, children, onConfirm, libro, setRutas, rutas }) => {
   const [changeTab, setChangeTab] = useState(false)//SIRVE PARA REFRESCAR EL COMPONENTE
   const [triggerClick, setTriggerClick] = useState(false);
   const tomasSecuenciaRef = useRef<HTMLUListElement>(null);//REF DE SEUCUENCIA 
@@ -61,9 +62,9 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
   }, [triggerClick])
 
   useEffect(() => {
-    setSecuencia(libro?.secuencias[0]?.ordenes_secuencia);
+    //const secuenciaOrdenada = libro?.secuencias[0]?.ordenes_secuencia.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
+    //setSecuencia(secuenciaOrdenada);
     setSecuenciaPrincipal(libro?.secuencias[0])
-    console.log(secuenciaPrincipal)
   }, [changeTab])
 
   useSortable(tomasSecuenciaRef, (evt) => {
@@ -95,6 +96,7 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
         });
       }
 
+      //const secuenciaOrdenada = nuevaSecuencia.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
       return nuevaSecuencia;
     });
   });
@@ -144,10 +146,10 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                                   editandoSecuencia ?
                                     <>
                                       <div onClick={() => {
-                                        updateSecuencia(secuenciaPrincipal, secuencia, setLoadingUpdateSecuencia, setEditandoSecuencia);
+                                        updateSecuencia(secuenciaPrincipal, secuencia, setLoadingUpdateSecuencia, setEditandoSecuencia, setRutas, setSecuencia);
                                       }}>
                                         <IconButton>
-                                          <div className={`flex gap-2 items-center underline ${loadingUpdateSecuencia == true ? "pointer-events-none" : ""}`}>
+                                          <div className={`select-none flex gap-2 items-center underline ${loadingUpdateSecuencia == true ? "pointer-events-none" : ""}`}>
                                             {
                                               loadingUpdateSecuencia &&
                                               <div className='h-6 w-6 flex '>
@@ -164,7 +166,7 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                                     <>
                                       <div onClick={() => { setEditandoSecuencia(!editandoSecuencia) }}>
                                         <IconButton>
-                                          <div className='flex gap-2 items-center underline'>
+                                          <div className='flex gap-2 items-center underline select-none '>
                                             <p>editar</p>
                                             <Pencil2Icon />
                                           </div>
@@ -188,37 +190,59 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                         </div>
                         <div className='max-h-[60vh] overflow-auto w-full px-3 no-scrollbar'>
                           <div className='flex w-full gap-3'>
-                            <div className='flex flex-col'>
-                              {
-                                secuencia?.map((orden, index) => (
-                                  <>
-                                    <div className=' h-20 flex items-center justify-center'>
-                                      <p>{index + 1}</p>
-                                    </div>
-                                  </>
-                                ))
-                              }
-                            </div>
-
-                            <ul ref={tomasSecuenciaRef} id='secuencia' className={`w-full ${editandoSecuencia == true ? "" : "pointer-events-none"}`} >
-                              {
+                            {
+                              !loadingUpdateSecuencia ?
                                 <>
-                                  {secuencia?.map((orden, index) => (
-                                    <>
-                                      <li className={`shadow-md gap-4 select-none my-3 border py-4 rounded-md flex items-center px-3 cursor-pointer relative
+                                  <div className='flex flex-col'>
+                                    {
+                                      secuencia?.map((orden, index) => (
+                                        <>
+                                          <div className=' h-20 flex items-center justify-center'>
+                                            <p>{index + 1}</p>
+                                          </div>
+                                        </>
+                                      ))
+                                    }
+                                  </div>
+
+                                  <ul ref={tomasSecuenciaRef} id='secuencia' className={`w-full ${editandoSecuencia == true ? "" : "pointer-events-none"}`} >
+                                    {
+                                      <>
+                                        {secuencia?.map((orden, index) => (
+                                          <>
+                                            <li className={`shadow-md gap-4 select-none my-3 border py-4 rounded-md flex items-center px-3 cursor-pointer relative
                                           ${editandoSecuencia == true ? "border-green-500" : ""}
                                         `}>
-                                        <p className={`bg-orange-500 text-white rounded-full px-3 py-1`}>{orden?.numero_secuencia}</p>
-                                        <p>{orden?.toma?.codigo_toma}</p>
-                                        <input value={orden?.numero_secuencia} defaultValue={orden?.numero_secuencia} type="number" className='bg-background border rounded-md w-[20%] outline-none p-2 absolute right-2' placeholder='Posicion' />
-                                      </li>
-                                    </>
-                                  ))}
+                                              <p className={`bg-orange-500 text-white rounded-full px-3 py-1`}>{orden?.numero_secuencia}</p>
+                                              <p>{orden?.toma?.codigo_toma}</p>
+                                              <input
+                                                defaultValue={orden?.numero_secuencia}
+                                                type="number"
+                                                className='bg-background border rounded-md w-[20%] outline-none p-2 absolute right-2'
+                                                placeholder='Posicion'
+                                                onKeyDown={(e) => {
+                                                  if (e.key === 'Enter') {
+                                                    const nuevaPosicion = e.target.value;
+                                                    moverPosicionLibro(nuevaPosicion, secuencia, setSecuencia, orden?.numero_secuencia, setLoadingUpdateSecuencia, setRutas, libro?.id);
+                                                  }
+                                                }}
+                                              />
+                                            </li>
+                                          </>
+                                        ))}
+                                      </>
+                                    }
+                                  </ul>
                                 </>
-                              }
-                            </ul>
+                                :
+                                <>
+                                  {/* <Skeleton className='w-full h-[60vh]' /> */}
+                                  <div className='w-full flex h-[60vh] items-center justify-center'>
+                                    <p>  Cargando ...</p>
+                                  </div>
+                                </>
+                            }
                           </div>
-
                         </div>
                       </div>
 

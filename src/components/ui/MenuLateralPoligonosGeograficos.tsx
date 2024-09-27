@@ -61,7 +61,6 @@ const MenuLateralPoligonosGeograficos = () => {
       new_visibility[ruta.id] = true;
     });
     set_ruta_visibility(new_visibility);
-
   }, [rutas]);
 
   //useEffect((()=>{console.log(libro_visibility)}),[libro_visibility])
@@ -306,6 +305,7 @@ const MenuLateralPoligonosGeograficos = () => {
                                   description='Opciones del libro'
                                   libro={libro}
                                   setRutas = {setRutas}
+                                  rutas = {rutas}
                                 />
 
                                 {/*

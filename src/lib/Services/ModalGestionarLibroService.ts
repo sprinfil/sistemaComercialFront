@@ -81,12 +81,10 @@ export function useFormatCoords(coords) {
   return { newCoords };
 }
 // Custom Hook for Task Management
-export async function updateSecuencia (secuenciaTemp, secuenciaOrden, setLoading, setEditandando) {
+export async function updateSecuencia(secuenciaTemp, secuenciaOrden, setLoading, setEditandando, setRutas) {
   setLoading(true);
-  console.log(secuenciaTemp)
-  console.log(secuenciaOrden)
 
-  let secuencia = 
+  let secuencia =
   {
     id: secuenciaTemp?.id,
     tipo_secuencia: "padre",
@@ -101,17 +99,105 @@ export async function updateSecuencia (secuenciaTemp, secuenciaOrden, setLoading
     secuencia: secuencia,
     secuencia_ordenes: secuencia_ordenes
   }
+  const secuenciaOrdenada = secuenciaOrden.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
+  console.log(secuenciaOrdenada)
+  try {
 
-  try{
     let response = await axiosClient.post("secuencia/crear", data);
-    //console.log(response)
-  }catch(e){
+    setRutas(prev => {
+      return prev.map(ruta => {
+        return {
+          ...ruta,
+          libros: ruta.libros.map(libro => {
+            if (libro.id === secuenciaTemp?.id_libro) {
+              return {
+                ...libro,
+                secuencias: [
+                  {
+                    ...libro.secuencias[0],
+                    ordenes_secuencia: secuenciaOrdenada,
+                  },
+                  ...libro.secuencias.slice(1),
+                ]
+              };
+            } else {
+              return libro;
+            }
+          })
+        };
+      });
+    });
+
+  } catch (e) {
     console.log(e);
   }
-  finally{
+  finally {
     setLoading(false);
     setEditandando(false);
   }
+}
+
+export async function moverPosicionLibro(nuevaPosicion, secuencia, setSecuencia, antiguaPosicion, setLoading, setRutas, libroId) {
+  setLoading(true); // Mostrar el indicador de carga
+
+  // Simulamos la "petición" usando setTimeout
+  await new Promise(resolve => setTimeout(resolve, 5));
+  const nuevaSecuencia = [...secuencia];
+
+  const oldIndex = antiguaPosicion;
+  const newIndex = nuevaPosicion;
+
+  const elementoMovido = nuevaSecuencia.find(orden => orden.numero_secuencia === oldIndex);
+
+  if (elementoMovido) {
+    nuevaSecuencia.forEach(orden => {
+      if (orden.numero_secuencia === oldIndex) {
+        orden.numero_secuencia = newIndex;
+      } else if (
+        oldIndex < newIndex &&
+        orden.numero_secuencia > oldIndex &&
+        orden.numero_secuencia <= newIndex
+      ) {
+        orden.numero_secuencia -= 1;
+      } else if (
+        oldIndex > newIndex &&
+        orden.numero_secuencia < oldIndex &&
+        orden.numero_secuencia >= newIndex
+      ) {
+        orden.numero_secuencia += 1;
+      }
+    });
+  }
+
+  const secuenciaOrdenada = nuevaSecuencia.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
+
+  setRutas(prev => {
+    return prev.map(ruta => {
+      return {
+        ...ruta,
+        libros: ruta.libros.map(libro => {
+          if (libro.id === libroId) {
+            return {
+              ...libro,
+              secuencias: [
+                {
+                  ...libro.secuencias[0],
+                  ordenes_secuencia: secuenciaOrdenada,
+                },
+                ...libro.secuencias.slice(1),
+              ]
+            };
+          } else {
+            return libro;
+          }
+        })
+      };
+    });
+  });
+
+  setSecuencia(secuenciaOrdenada);
+
+  setLoading(false);
 }
 
 // Custom Hook for Task Management
