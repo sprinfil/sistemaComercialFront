@@ -305,6 +305,7 @@ const MenuLateralPoligonosGeograficos = () => {
                                   title={libro?.nombre}
                                   description='Opciones del libro'
                                   libro={libro}
+                                  setRutas = {setRutas}
                                 />
 
                                 {/*
