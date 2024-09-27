@@ -700,13 +700,22 @@ export const CrearContratoForm = () => {
                                                                 </SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                <SelectItem value="La Paz">La Paz</SelectItem>
+                                                            <SelectItem value="La Paz">La Paz</SelectItem>
                                                                 <SelectItem value="Todos santos">Todos Santos</SelectItem>
                                                                 <SelectItem value="Chametla">Chametla</SelectItem>
                                                                 <SelectItem value="El Centenario">El Centenario</SelectItem>
                                                                 <SelectItem value="El Pescadero">El Pescadero</SelectItem>
-                                                                <SelectItem value="Los Barriles">Los Barriles</SelectItem>
+                                                                <SelectItem value="Colonia Calafia">Colonia Calafia</SelectItem>
+                                                                <SelectItem value="El Sargento">El Sargento</SelectItem>
+                                                                <SelectItem value="El Carrizal">El Carrizal</SelectItem>
+                                                                <SelectItem value="San Pedro">San Pedro</SelectItem>
                                                                 <SelectItem value="Agua Amarga">Agua Amarga</SelectItem>
+                                                                <SelectItem value="Los Barriles">Los Barriles</SelectItem>
+                                                                <SelectItem value="Buena Vista">Buena Vista</SelectItem>
+                                                                <SelectItem value="San Bartolo">San Bartolo</SelectItem>
+                                                                <SelectItem value="San Juan de los Planes">San Juan de los Planes</SelectItem>
+                                                                <SelectItem value="La Matanza">La Matanza</SelectItem>
+                                                                <SelectItem value="Puerto Chale">Puerto Chale</SelectItem>
 
 
                                                             </SelectContent>
@@ -730,8 +739,17 @@ export const CrearContratoForm = () => {
                                                                 <SelectItem value="Chametla">Chametla</SelectItem>
                                                                 <SelectItem value="El Centenario">El Centenario</SelectItem>
                                                                 <SelectItem value="El Pescadero">El Pescadero</SelectItem>
-                                                                <SelectItem value="Los Barriles">Los Barriles</SelectItem>
+                                                                <SelectItem value="Colonia Calafia">Colonia Calafia</SelectItem>
+                                                                <SelectItem value="El Sargento">El Sargento</SelectItem>
+                                                                <SelectItem value="El Carrizal">El Carrizal</SelectItem>
+                                                                <SelectItem value="San Pedro">San Pedro</SelectItem>
                                                                 <SelectItem value="Agua Amarga">Agua Amarga</SelectItem>
+                                                                <SelectItem value="Los Barriles">Los Barriles</SelectItem>
+                                                                <SelectItem value="Buena Vista">Buena Vista</SelectItem>
+                                                                <SelectItem value="San Bartolo">San Bartolo</SelectItem>
+                                                                <SelectItem value="San Juan de los Planes">San Juan de los Planes</SelectItem>
+                                                                <SelectItem value="La Matanza">La Matanza</SelectItem>
+                                                                <SelectItem value="Puerto Chale">Puerto Chale</SelectItem>
 
 
                                                             </SelectContent>
