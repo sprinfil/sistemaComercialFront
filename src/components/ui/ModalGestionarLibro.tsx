@@ -49,21 +49,46 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
   }, [triggerClick])
 
   useSortable(tomasSecuenciaRef, (evt) => {
-    console.log(secuencia)
-    console.log('Orden actualizado:', evt.oldIndex, evt.newIndex); //SORTABLE SECUENCIA
+    console.log(secuencia);
+    console.log('Orden actualizado:', evt.oldIndex + 1, evt.newIndex + 1); // Mostrar los índices como si empezaran en 1
 
-    let secuenciaTemp = secuencia;
+    // Actualizar el estado sin mutar el arreglo original
+    setSecuencia(prev => {
+      // Crear una copia del arreglo anterior
+      const nuevaSecuencia = [...prev];
 
-    // setSecuencia(prev => {
-    //   return prev.map(orden => {
-    //     if (orden.numero_secuencia == evt.oldIndex) {
-    //       orden.numero_secuencia = evt.newIndex;
-    //       return orden;
-    //     } else {
-    //       return orden;
-    //     }
-    //   })
-    // })
+      // Convertir los índices de 0-based a 1-based
+      const oldIndex = evt.oldIndex + 1;
+      const newIndex = evt.newIndex + 1;
+
+      // Encontrar el elemento que se movió
+      const elementoMovido = nuevaSecuencia.find(orden => orden.numero_secuencia === oldIndex);
+
+      if (elementoMovido) {
+        // Actualizar el numero_secuencia del elemento movido
+        nuevaSecuencia.forEach(orden => {
+          if (orden.numero_secuencia === oldIndex) {
+            orden.numero_secuencia = newIndex;
+          } else if (
+            oldIndex < newIndex &&
+            orden.numero_secuencia > oldIndex &&
+            orden.numero_secuencia <= newIndex
+          ) {
+            // Ajustar las secuencias intermedias si el elemento se movió hacia adelante
+            orden.numero_secuencia -= 1;
+          } else if (
+            oldIndex > newIndex &&
+            orden.numero_secuencia < oldIndex &&
+            orden.numero_secuencia >= newIndex
+          ) {
+            // Ajustar las secuencias intermedias si el elemento se movió hacia atrás
+            orden.numero_secuencia += 1;
+          }
+        });
+      }
+
+      return nuevaSecuencia;
+    });
   });
 
   useEffect(() => {
