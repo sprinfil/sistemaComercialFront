@@ -53,9 +53,11 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
   const [loadingUpdateSecuencia, setLoadingUpdateSecuencia] = useState(false);
 
   useEffect(() => {
-    setSecuencia(libro?.secuencias[0]?.ordenes_secuencia);
-    const { newCoords } = useFormatCoords(libro?.polygon?.coordinates)//COORDENADAS DEL LIBRO
-    setLibroCoords(newCoords);
+    if (libro?.secuencias[0] != null) {
+      setSecuencia(libro?.secuencias[0]?.ordenes_secuencia);
+      const { newCoords } = useFormatCoords(libro?.polygon?.coordinates)//COORDENADAS DEL LIBRO
+      setLibroCoords(newCoords);
+    }
   }, [triggerClick])
 
   useEffect(() => {
@@ -230,7 +232,7 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                           <ul ref={tomasSinSecuenciaRef} id='sinSecuencia'>
                             {
                               <>
-                                {secuencia.map((orden, index) => (
+                                {secuencia?.map((orden, index) => (
                                   <>
                                     <li className='select-none my-3 border py-4 rounded-md flex items-center px-3 cursor-pointer'>
                                       {orden?.toma?.codigo_toma}
