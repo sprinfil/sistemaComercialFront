@@ -3,6 +3,7 @@ import { group } from 'console';
 import { useEffect, RefObject } from 'react';
 import Sortable, { AutoScroll } from 'sortablejs/modular/sortable.core.esm.js';
 import { GoogleMap, LoadScript, Polygon } from "@react-google-maps/api";
+import axiosClient from '../../axios-client';
 
 //Sortable.mount(new AutoScroll());
 
@@ -73,11 +74,44 @@ export function useFormatCoords(coords) {
   coords[0].map(coord => {
     newCoords.push({
       lat: parseFloat(coord[1]),
-      lng: parseFloat(coord[0]) 
+      lng: parseFloat(coord[0])
     })
   })
 
   return { newCoords };
+}
+// Custom Hook for Task Management
+export async function updateSecuencia (secuenciaTemp, secuenciaOrden, setLoading, setEditandando) {
+  setLoading(true);
+  console.log(secuenciaTemp)
+  console.log(secuenciaOrden)
+
+  let secuencia = 
+  {
+    id: secuenciaTemp?.id,
+    tipo_secuencia: "padre",
+    id_libro: secuenciaTemp?.id_libro
+  }
+
+  let secuencia_ordenes = [
+    ...secuenciaOrden
+  ]
+
+  let data = {
+    secuencia: secuencia,
+    secuencia_ordenes: secuencia_ordenes
+  }
+
+  try{
+    let response = await axiosClient.post("secuencia/crear", data);
+    //console.log(response)
+  }catch(e){
+    console.log(e);
+  }
+  finally{
+    setLoading(false);
+    setEditandando(false);
+  }
 }
 
 // Custom Hook for Task Management
