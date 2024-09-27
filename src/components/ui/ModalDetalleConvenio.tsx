@@ -47,6 +47,7 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
         .then(({ data }) => {
           if (data && data.id_convenio_catalogo) {
             const convenioCatalogo = data.convenio_catalogo;
+            console.log(data)
             const conveniosData = [{
               id: data.id,
               id_convenio_catalogo: convenioCatalogo.id,
@@ -60,7 +61,9 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
               comentario: data.comentario,
               letras: data.letras, // Actualizar para incluir las letras
             }];
-            setConvenios(conveniosData);
+            console.log(conveniosData)
+         
+            //setConvenios(conveniosData);
           } else {
             setConvenios([]);
           }
