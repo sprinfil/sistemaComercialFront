@@ -85,12 +85,14 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
     let efectivo = parseFloat(total_efectivo);
     let retirado = parseFloat(cajaInfo?.Total_retirado);
     let fondo_inicial = parseFloat(cajaInfo?.fondo_inicial);
+
     set_total_esperado_caja(efectivo - retirado + fondo_inicial);
   }, [total_efectivo])
 
   const fetchCajaInfo = async () => {
     try {
-      const response = await axiosClient.get('/cajas/estadoSesionCobro?id_sesion_caja');
+      console.log(session_caja?.id)
+      const response = await axiosClient.get(`/cajas/estadoSesionCobro?id_sesion_caja=${session_caja?.id}`);
       console.log(response.data)
       setCajaInfo(response.data);
     } catch (error) {
@@ -275,7 +277,9 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
         let total_tarjeta_debito_temp: any = 0;
         let total_transferencia_temp: any = 0;
 
-        response.data.map((pago: any) => {
+        console.log(response.data)
+
+        response?.data?.map((pago: any) => {
           total_efectivo_temp += (pago.forma_pago == "efectivo" ? parseFloat(pago.total_abonado) : 0);
           total_cheques_temp += (pago.forma_pago == "cheque" ? parseFloat(pago.total_abonado) : 0);
           total_tarjeta_credito_temp += (pago.forma_pago == "tarjeta_credito" ? parseFloat(pago.total_abonado) : 0);

@@ -12,8 +12,12 @@ import {
 import axiosClient from '../../axios-client';
 import { useToast } from './use-toast';
 import { ToastAction } from '@radix-ui/react-toast';
+import { ContextProvider, useStateContext } from '../../contexts/ContextProvider';
 
 export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja }) => {
+
+  const {user} = useStateContext();
+
   const [billetesCentavos, setBilletesCentavos] = useState({
     0.05: 0,
     0.20: 0,
@@ -53,8 +57,6 @@ export const ModalRetiroCaja = ({ trigger, onRegister, initialFund, idSesionCaja
     const cajaSesion = 51; // Obtener sesion la caja
 
     setCajaSesionId(cajaSesion ? parseInt(cajaSesion, 10) : null);
-
-    
   }, []);
   
 

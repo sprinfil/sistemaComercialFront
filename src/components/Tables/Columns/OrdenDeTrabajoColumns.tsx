@@ -44,12 +44,20 @@ export type orden_trabajo_cargos = {
   id: number
   id_concepto_catalogo: number
   id_orden_trabajo_catalogo: number
+  conceptos: {
+    nombre: string
+  }
+
 }
 
 export type orden_trabajo_encadenadas = {
   id: number
   id_OT_Catalogo_padre: number
   id_OT_Catalogo_encadenada: number
+  OT_Encadenada: 
+  {
+    nombre:string
+  }
 }
 
 

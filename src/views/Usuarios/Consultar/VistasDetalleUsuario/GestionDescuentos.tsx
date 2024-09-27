@@ -25,15 +25,20 @@ export const GestionDescuentos = () => {
   }, [descuentos_asociados])
 
   const get = async () => {
-    set_loading(true);
-    try {
-      let data = await descuentoService.getDescuentosPorModelo("toma", toma?.id);
-      set_descuentos_asociados(data);
-      set_loading(false);
-    } catch (err) {
-      //error
-      set_loading(false);
+    if (toma) {
+      set_loading(true);
+      try {
+        let data = await descuentoService.getDescuentosPorModelo("toma", toma?.id);
+        set_descuentos_asociados(data);
+        set_loading(false);
+      } catch (err) {
+        //error
+        set_loading(false);
+      }
+    }else{
+      
     }
+
   }
 
   return (
@@ -46,7 +51,7 @@ export const GestionDescuentos = () => {
       <div className='mt-10'>
         {
           !loading ?
-            <><DataTable columns={columns} data={descuentos_asociados} /></>
+            <><DataTable columns={columns} data={descuentos_asociados} updateData={set_descuentos_asociados} /></>
             :
             <><Loader /></>
         }

@@ -38,18 +38,29 @@ const descuentoService = {
 
     getDescuentosPorModelo: async (modelo, modelo_id) => {
         try {
-   
+
             const response = await axiosClient.get("/descuentos-asociado/", {
                 params: {
                     modelo_dueno: modelo,
                     id_modelo: modelo_id
                 }
             });
-            return response.data;
+            return response.data.data;
         } catch (error) {
             throw error?.response?.data.data;
         }
     },
+
+    ModificarEstadoDescuento: async (estado, id) => {
+        try {
+            const response = await axiosClient.put(`/cancelar-descuentos-asociado/${id}`, {
+                estatus: estado
+            });
+            return response.data;
+        } catch (error) {
+            throw error?.response?.data.data;
+        }
+    }
 
 }
 

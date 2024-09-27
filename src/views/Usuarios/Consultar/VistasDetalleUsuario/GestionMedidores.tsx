@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ContextProvider, useStateContext } from "../../../../contexts/ContextMedidores.tsx";
 import MedidoresTable from '../../../../components/Tables/Components/MedidoresTable.tsx';
 import MedidorForm from '../../../../components/Forms/MedidorForm.tsx';
@@ -9,7 +9,7 @@ import { useBreadcrumbStore } from '../../../../contexts/ZustandGeneralUsuario.t
 
 export const GestionMedidores = () => { // Recibir idToma como prop
 
-  const {toma, setToma,tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, setTomaUsuariosEncontrados, tomaUsuariosEncontrados}= ZustandGeneralUsuario()
+  const { toma, setToma, tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, setTomaUsuariosEncontrados, tomaUsuariosEncontrados } = ZustandGeneralUsuario()
   const [accion, setAccion] = useState<string | undefined>();
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
   const [activeTab, setActiveTab] = useState("Detalles");
@@ -22,36 +22,19 @@ export const GestionMedidores = () => { // Recibir idToma como prop
       setUsuariosRecuperado(usuariosEncontrados); // Debe ser un arreglo de usuarios
       setMostrarSiguiente(true);
     }
-    else
-    {
+    else {
       console.log("no hay longitud");
     }
   }, [usuariosEncontrados, setUsuariosRecuperado, tomaUsuariosEncontrados]);
 
-
-  const opciones = [
-    {
-      titulo: "Detalles",
-      componente: <MedidorFormEdit />
-    },
-  ]
   console.log(usuariosEncontrados)
   return (
     <ContextProvider>
       <div className='w-full max-h-[50vh] mt-[15px]'>
         <div className='flex gap-2'>
           <MostrarTable idToma={usuariosEncontrados[0].tomas[0].id} /> {/* Pasar el idToma */}
-          <div className='w-full rounded-md border border-border h-[80vh] p-4 overflow-auto'>
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList>
-                {opciones.map((opcion, index) => (
-                  <TabsTrigger value={opcion.titulo} key={index}>{opcion.titulo}</TabsTrigger>
-                ))}
-              </TabsList>
-              {opciones.map((opcion, index) => (
-                <TabsContent value={opcion.titulo} key={index}>{opcion.componente}</TabsContent>
-              ))}
-            </Tabs>
+          <div className='w-full rounded-md h-[70vh] p-4 overflow-auto'>
+            <MedidorFormEdit />
           </div>
         </div>
       </div>
@@ -64,14 +47,12 @@ const MostrarTable = ({ idToma }) => { // Recibir idToma como prop
 
   const { accion } = useStateContext();
 
-  const{usuariosEncontrados}= ZustandGeneralUsuario();
+  const { usuariosEncontrados } = ZustandGeneralUsuario();
 
   return (
-    <>
-      <OcultarTable accion={accion}>
-        <MedidoresTable idToma={usuariosEncontrados[0].tomas[0].id} /> {/* Pasar el idToma */}
-      </OcultarTable>
-    </>
+    <div className='min-w-[30%]'>
+      <MedidoresTable idToma={usuariosEncontrados[0].tomas[0].id} /> {/* Pasar el idToma */}
+    </div>
   )
 };
 
@@ -82,11 +63,11 @@ const MedidorFormEdit = () => {
   return (
     <>
       {accion == "editar" ? (
-        <div className='w-full rounded-md border border-primary h-[66vh] p-4 overflow-auto'>
+        <div className='w-full rounded-md border border-primary h-[60vh] p-4 overflow-auto '>
           <MedidorForm />
         </div>
       ) : (
-        <div className='w-full rounded-md border border-border h-[66vh] p-4 overflow-auto '>
+        <div className=' rounded-md  h-[60vh] p-4 overflow-auto '>
           <MedidorForm />
         </div>
       )}
