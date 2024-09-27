@@ -157,7 +157,13 @@ const ModalAgregarLectura = ({open, setOpen }) => {
       <AlertDialogContent className="max-w-screen-2xl max-h-screen overflow-auto">
       {
             !buscarTomaAgregarLecturaMonitor  ? 
-            <BuscarUsuarioForm/>
+            <>
+              <BuscarUsuarioForm/>
+            <AlertDialogAction className="mt-10">Cerrar</AlertDialogAction>
+          
+            
+            </>
+          
             :
 <>
 <AlertDialogHeader>
