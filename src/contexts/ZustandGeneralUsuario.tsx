@@ -84,6 +84,17 @@ interface GeneralUsuario {
   mostrarUsuarioCambioPropietario: boolean
   setMostrarUsuarioCambioPropietario: (mostrarUsuarioCambioPropietario: boolean) => void;
 
+  buscarTomaAgregarLecturaMonitor: boolean
+  setBuscarTomaAgregarLecturaMonitor: (buscarTomaAgregarLecturaMonitor: boolean) => void;
+
+  agregarPeriodoFacturacion: []
+  setAgregarPeriodoFacturacion: (agregarPeriodoFacturacion: []) => void;
+
+  
+  agregarAnomalia: []
+  setAgregarAnomalia: (agregarAnomalia: []) => void;
+
+  
 }
 
 export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
@@ -144,6 +155,14 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
  setAbrirModalInformativo:(abrirModalInformativo) => set({abrirModalInformativo}),
  mostrarUsuarioCambioPropietario: false,
  setMostrarUsuarioCambioPropietario:(mostrarUsuarioCambioPropietario) => set({mostrarUsuarioCambioPropietario}),
+ buscarTomaAgregarLecturaMonitor: false,
+ setBuscarTomaAgregarLecturaMonitor: (value) => set({ buscarTomaAgregarLecturaMonitor: value }),
+
+ agregarPeriodoFacturacion:[],
+ setAgregarPeriodoFacturacion:(agregarPeriodoFacturacion) => set({agregarPeriodoFacturacion}),
+
+ agregarAnomalia:[],
+ setAgregarAnomalia:(agregarAnomalia) => set({agregarAnomalia}),
 
 }));
 

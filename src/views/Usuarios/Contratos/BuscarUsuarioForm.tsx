@@ -52,7 +52,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
         nombreSeleccionado, setNombreSeleccionado,
         usuariosEncontrados, setUsuariosEncontrados,
         accion, setAccion, setFindUserOrToma, findUserOrToma, setToma, setBooleanCodigoDeToma, toma,setMostrarUsuarioCambioPropietario,
-
+        setBuscarTomaAgregarLecturaMonitor
     } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
 
     console.log("este es la accion pare " + accion);
