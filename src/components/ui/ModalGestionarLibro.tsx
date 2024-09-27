@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SiMicrosoftexcel } from "react-icons/si";
 // Cherrypick default plugins
 import Sortable, { AutoScroll } from 'sortablejs/modular/sortable.core.esm.js';
-import { useSortable, useSortable2, click, useGetCenterMap, useFormatCoords } from '../../lib/Services/ModalGestionarLibroService';
+import { useSortable, useSortable2, click, useGetCenterMap, useFormatCoords, updateSecuencia } from '../../lib/Services/ModalGestionarLibroService';
 import { RiFileDownloadFill } from "react-icons/ri";
 import { FaFileImport } from "react-icons/fa6";
 import {
@@ -27,6 +27,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MdMoreHoriz } from "react-icons/md";
 import { GoogleMap, LoadScript, Polygon } from "@react-google-maps/api";
+import { CheckCircledIcon, Pencil1Icon, Pencil2Icon } from '@radix-ui/react-icons';
+import IconButton from './IconButton';
+import { Check } from 'lucide-react';
+import Loader from './Loader';
 
 interface ModalProps {
   trigger: React.ReactNode;
@@ -43,29 +47,33 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
   const tomasSecuenciaRef = useRef<HTMLUListElement>(null);//REF DE SEUCUENCIA 
   const tomasSinSecuenciaRef = useRef<HTMLUListElement>(null);//REF DE TOMAS SIN SECUENCIA
   const [secuencia, setSecuencia] = useState([]);
+  const [secuenciaPrincipal, setSecuenciaPrincipal] = useState([]);
+  const [libroCoords, setLibroCoords] = useState([]);
+  const [editandoSecuencia, setEditandoSecuencia] = useState(false);
+  const [loadingUpdateSecuencia, setLoadingUpdateSecuencia] = useState(false);
 
   useEffect(() => {
     setSecuencia(libro?.secuencias[0]?.ordenes_secuencia);
+    const { newCoords } = useFormatCoords(libro?.polygon?.coordinates)//COORDENADAS DEL LIBRO
+    setLibroCoords(newCoords);
   }, [triggerClick])
 
-  useSortable(tomasSecuenciaRef, (evt) => {
-    console.log(secuencia);
-    console.log('Orden actualizado:', evt.oldIndex + 1, evt.newIndex + 1); // Mostrar los índices como si empezaran en 1
+  useEffect(() => {
+    setSecuencia(libro?.secuencias[0]?.ordenes_secuencia);
+    setSecuenciaPrincipal(libro?.secuencias[0])
+    console.log(secuenciaPrincipal)
+  }, [changeTab])
 
-    // Actualizar el estado sin mutar el arreglo original
+  useSortable(tomasSecuenciaRef, (evt) => {
     setSecuencia(prev => {
-      // Crear una copia del arreglo anterior
       const nuevaSecuencia = [...prev];
 
-      // Convertir los índices de 0-based a 1-based
       const oldIndex = evt.oldIndex + 1;
       const newIndex = evt.newIndex + 1;
 
-      // Encontrar el elemento que se movió
       const elementoMovido = nuevaSecuencia.find(orden => orden.numero_secuencia === oldIndex);
 
       if (elementoMovido) {
-        // Actualizar el numero_secuencia del elemento movido
         nuevaSecuencia.forEach(orden => {
           if (orden.numero_secuencia === oldIndex) {
             orden.numero_secuencia = newIndex;
@@ -74,14 +82,12 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
             orden.numero_secuencia > oldIndex &&
             orden.numero_secuencia <= newIndex
           ) {
-            // Ajustar las secuencias intermedias si el elemento se movió hacia adelante
             orden.numero_secuencia -= 1;
           } else if (
             oldIndex > newIndex &&
             orden.numero_secuencia < oldIndex &&
             orden.numero_secuencia >= newIndex
           ) {
-            // Ajustar las secuencias intermedias si el elemento se movió hacia atrás
             orden.numero_secuencia += 1;
           }
         });
@@ -90,11 +96,6 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
       return nuevaSecuencia;
     });
   });
-
-  useEffect(() => {
-    console.log(secuencia)
-  }, [secuencia])
-
 
   useSortable2(tomasSinSecuenciaRef, (evt) => {
     console.log('Orden actualizado:', evt.oldIndex, evt.newIndex); //SORTABLE SIN SECUENICA
@@ -105,9 +106,6 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
   const { center } = useGetCenterMap(libro?.polygon?.coordinates) //CENTRO DEL MAPA
 
   const zoom = 16; //ZOOM DEL MAPA
-
-  const { newCoords } = useFormatCoords(libro?.polygon?.coordinates)//COORDENADAS DEL LIBRO
-
 
   return (
     <div>
@@ -137,7 +135,43 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                       <div className='w-[50%] max-h-[70vh] overflow-auto'>
                         <div className='flex justify-between items-center'>
                           <div className='h-10 flex items-center justify-between w-full px-3'>
-                            <p>Secuencia</p>
+                            <div className='flex gap-2 items-center ml-7'>
+                              <p>Secuencia</p>
+                              <div>
+                                {
+                                  editandoSecuencia ?
+                                    <>
+                                      <div onClick={() => {
+                                        updateSecuencia(secuenciaPrincipal, secuencia, setLoadingUpdateSecuencia, setEditandoSecuencia);
+                                      }}>
+                                        <IconButton>
+                                          <div className={`flex gap-2 items-center underline ${loadingUpdateSecuencia == true ? "pointer-events-none" : ""}`}>
+                                            {
+                                              loadingUpdateSecuencia &&
+                                              <div className='h-6 w-6 flex '>
+                                                <div class="loader"></div>
+                                              </div>
+                                            }
+                                            <p>Aplicar Cambios</p>
+                                            <CheckCircledIcon className='text-green-500' />
+                                          </div>
+                                        </IconButton>
+                                      </div>
+                                    </>
+                                    :
+                                    <>
+                                      <div onClick={() => { setEditandoSecuencia(!editandoSecuencia) }}>
+                                        <IconButton>
+                                          <div className='flex gap-2 items-center underline'>
+                                            <p>editar</p>
+                                            <Pencil2Icon />
+                                          </div>
+                                        </IconButton>
+                                      </div>
+                                    </>
+                                }
+                              </div>
+                            </div>
                             <DropdownMenu>
                               <DropdownMenuTrigger><MdMoreHoriz className='h-7 w-7 hover:bg-muted rounded-md' /></DropdownMenuTrigger>
                               <DropdownMenuContent>
@@ -151,19 +185,38 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                           </div>
                         </div>
                         <div className='max-h-[60vh] overflow-auto w-full px-3 no-scrollbar'>
-                          <ul ref={tomasSecuenciaRef} id='secuencia'>
-                            {
-                              <>
-                                {libro?.secuencias[0]?.ordenes_secuencia?.map(orden => (
-                                  <li className='shadow-md gap-4 select-none my-3 border py-4 rounded-md flex items-center px-3 cursor-pointer relative'>
-                                    <p className='bg-orange-500 text-white rounded-full px-3 py-1'>{orden?.numero_secuencia}</p>
-                                    <p>{orden?.toma?.codigo_toma}</p>
-                                    <input defaultValue={orden?.numero_secuencia} type="number" className='bg-background border rounded-md w-[20%] outline-none p-2 absolute right-2' placeholder='Posicion' />
-                                  </li>
-                                ))}
-                              </>
-                            }
-                          </ul>
+                          <div className='flex w-full gap-3'>
+                            <div className='flex flex-col'>
+                              {
+                                secuencia?.map((orden, index) => (
+                                  <>
+                                    <div className=' h-20 flex items-center justify-center'>
+                                      <p>{index + 1}</p>
+                                    </div>
+                                  </>
+                                ))
+                              }
+                            </div>
+
+                            <ul ref={tomasSecuenciaRef} id='secuencia' className={`w-full ${editandoSecuencia == true ? "" : "pointer-events-none"}`} >
+                              {
+                                <>
+                                  {secuencia?.map((orden, index) => (
+                                    <>
+                                      <li className={`shadow-md gap-4 select-none my-3 border py-4 rounded-md flex items-center px-3 cursor-pointer relative
+                                          ${editandoSecuencia == true ? "border-green-500" : ""}
+                                        `}>
+                                        <p className={`bg-orange-500 text-white rounded-full px-3 py-1`}>{orden?.numero_secuencia}</p>
+                                        <p>{orden?.toma?.codigo_toma}</p>
+                                        <input value={orden?.numero_secuencia} defaultValue={orden?.numero_secuencia} type="number" className='bg-background border rounded-md w-[20%] outline-none p-2 absolute right-2' placeholder='Posicion' />
+                                      </li>
+                                    </>
+                                  ))}
+                                </>
+                              }
+                            </ul>
+                          </div>
+
                         </div>
                       </div>
 
@@ -177,10 +230,12 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                           <ul ref={tomasSinSecuenciaRef} id='sinSecuencia'>
                             {
                               <>
-                                {secuencia.map(orden => (
-                                  <li className='select-none my-3 border py-4 rounded-md flex items-center px-3 cursor-pointer'>
-                                    {orden?.toma?.codigo_toma}
-                                  </li>
+                                {secuencia.map((orden, index) => (
+                                  <>
+                                    <li className='select-none my-3 border py-4 rounded-md flex items-center px-3 cursor-pointer'>
+                                      {orden?.toma?.codigo_toma}
+                                    </li>
+                                  </>
                                 ))}
                               </>
                             }
@@ -197,24 +252,26 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                 </Tabs>
               </div>
               <div className='w-[50%]'>
-                <GoogleMap
-                  mapContainerStyle={mapContainerStyles}
-                  center={center}
-                  zoom={zoom}
-                >
+                {libroCoords.length > 0 && (
+                  <GoogleMap
+                    mapContainerStyle={mapContainerStyles}
+                    center={center}
+                    zoom={zoom}
+                  >
+                    <p>d</p>
+                    <Polygon
+                      paths={libroCoords}
+                      options={{
+                        fillColor: "lightblue",
+                        fillOpacity: 0.2,
+                        strokeColor: "blue",
+                        strokeOpacity: 0,
+                        strokeWeight: 2,
+                      }}
+                    />
 
-                  <Polygon
-                    paths={newCoords}
-                    options={{
-                      fillColor: "lightblue",
-                      fillOpacity: 1,
-                      strokeColor: "blue",
-                      strokeOpacity: 1,
-                      strokeWeight: 2
-                    }}
-                  />
-
-                </GoogleMap>
+                  </GoogleMap>
+                )}
               </div>
             </div>
 
