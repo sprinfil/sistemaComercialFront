@@ -21,14 +21,14 @@ import {
 import ConceptosService from "../../lib/Conceptos"
 import ZustandConvenios from "../../contexts/ZustandConvenios"
 import { useToast } from "./use-toast"
-import { useTaskManagement } from "../../lib/Services/AnomaliaService"
+import { useTaskManagement } from "../../lib/Services/PeriodoService"
 import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario"
-export function ComboBoxAnomalia({ set, selected_conceptos }) {
+export function ComboBoxPeriodoFacturacion({ set, selected_conceptos }) {
   const { toast } = useToast()
 
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState(0)
-  const { agregarAnomalia, setAgregarAnomalia } = ZustandGeneralUsuario();
+  const { convenio_conceptos, setAgregarPeriodoFacturacion } = ZustandGeneralUsuario();
   const { conceptos, loading } = useTaskManagement();
 
   React.useEffect(() => {
@@ -58,7 +58,7 @@ export function ComboBoxAnomalia({ set, selected_conceptos }) {
         >
           {value
             ? conceptos.find((framework) => framework.id === value)?.nombre
-            : "Selecciona una anomalía"}
+            : "Selecciona un periodo"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -66,7 +66,7 @@ export function ComboBoxAnomalia({ set, selected_conceptos }) {
         <Command>
           <CommandInput placeholder="Buscar Concepto" />
           <CommandList className="h-[300px] w-full">
-            <CommandEmpty>No se encontraron anomalías.</CommandEmpty>
+            <CommandEmpty>No se encontraron periodos.</CommandEmpty>
             <CommandGroup>
               {conceptos.map((framework) => (
                 <CommandItem
@@ -80,7 +80,7 @@ export function ComboBoxAnomalia({ set, selected_conceptos }) {
                     if (!validar_concepto(framework)) {
                       let conceptos = [...selected_conceptos, framework];
                       set(conceptos);
-                      setAgregarAnomalia(conceptos);
+                      setAgregarPeriodoFacturacion(conceptos);
                     }
                   }}
                 >

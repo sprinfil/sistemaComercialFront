@@ -52,7 +52,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
         nombreSeleccionado, setNombreSeleccionado,
         usuariosEncontrados, setUsuariosEncontrados,
         accion, setAccion, setFindUserOrToma, findUserOrToma, setToma, setBooleanCodigoDeToma, toma,setMostrarUsuarioCambioPropietario,
-
+        setBuscarTomaAgregarLecturaMonitor
     } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
 
     console.log("este es la accion pare " + accion);
@@ -149,11 +149,13 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                         results = response.data.data;
                         console.log(response.data.data);
                         setUsuariosEncontrados(response.data.data);
+                        setBuscarTomaAgregarLecturaMonitor(true);
                         if (results.length > 0) {
                             setNombreBuscado(values.nombre);
                             setUsuariosEncontrados(results);
                             if (results.length === 1) {
                                 setMostrarUsuarioCambioPropietario(true);
+                                setBuscarTomaAgregarLecturaMonitor(true);
                                 if (tipoAccion === "verUsuarioDetalle") {
                                     navigate("/usuario/toma", { state: { contratoBuscarUsuario: results[0] } });
                                 } else if (tipoAccion === "crearContratacionUsuario") {
