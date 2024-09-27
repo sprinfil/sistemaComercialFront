@@ -71,10 +71,10 @@ export function LecturaMonitorDataTable<TData, TValue>({
 
   return (
     <>
+    
       <div className="px-2 flex gap-4">
 
         <div className=" flex flex-col gap-2 py-4 max-h-[70vh] no-scrollbar overflow-auto text-muted-foreground w-[15%]">
-
           Filtros
           <div className="px-2">
             <p>Folio</p>

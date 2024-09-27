@@ -66,7 +66,7 @@ export const LecturaMonitorColumns: ColumnDef<Lectura>[] = [
   {
     id: "periodo",
     header: "Periodo",
-    accessorFn: (row) => row.periodo.periodo, // Custom accessor function
+    accessorFn: (row) => row?.periodo?.periodo, // Custom accessor function
   },
   {
     accessorKey: "fecha_creacion",

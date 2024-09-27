@@ -8,6 +8,9 @@ import { Skeleton } from '../../components/ui/skeleton';
 import Loader from '../../../components/ui/Loader';
 import ModalVerAjusteMonitor from '../../../components/ui/ModalVerAjusteMonitor';
 import ZustandMonitorLectura from '../../../contexts/ZustandMonitorLectura';
+import { IoMdAdd } from "react-icons/io";
+import IconButton from '../../../components/ui/IconButton';
+import ModalAgregarLectura from '../../../components/ui/ModalAgregarLectura';
 
 
 export const LecturasMonitor = () => {
@@ -15,6 +18,7 @@ export const LecturasMonitor = () => {
   const [loadingLecturas, setLoadingLecturas] = useState(false);
   const { set_lecturas, lecturas } = ZustandMonitorLectura();
   const [lecturas_temp, set_lecturas_temp] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     fetchFact();
@@ -31,6 +35,11 @@ export const LecturasMonitor = () => {
     set_lecturas_temp(lecturas)
   }, [lecturas])
 
+  const handleAbrirModalLectura = () => 
+  {
+    setOpenModal(true);
+  }
+
   return (
     <div className='flex gap-2 px-2'>
       {/* <OcultarTableFactibilidadMonitor accion={""}>
@@ -46,7 +55,23 @@ export const LecturasMonitor = () => {
 
             </>
             :
-            <LecturaMonitorDataTable columns={LecturaMonitorColumns} data={lecturas_temp} />
+            <>
+          <div className='w-full flex justify-end mb-4 mt-2'>
+          <div className='flex justify-end mr-10 mt-2'>
+            <IconButton onClick={handleAbrirModalLectura}>
+              <IoMdAdd className='mr-1' />Agregar lectura
+            </IconButton>
+          </div>
+        </div>
+  
+
+                        <LecturaMonitorDataTable columns={LecturaMonitorColumns} data={lecturas_temp} />
+
+                        <ModalAgregarLectura
+                        open={openModal}
+                        setOpen={setOpenModal}/>
+
+            </>
         }
       </div>
     </div>
