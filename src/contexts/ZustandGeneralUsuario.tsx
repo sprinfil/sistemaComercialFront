@@ -93,6 +93,8 @@ interface GeneralUsuario {
   
   agregarAnomalia: []
   setAgregarAnomalia: (agregarAnomalia: []) => void;
+
+  
 }
 
 export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
@@ -154,7 +156,7 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
  mostrarUsuarioCambioPropietario: false,
  setMostrarUsuarioCambioPropietario:(mostrarUsuarioCambioPropietario) => set({mostrarUsuarioCambioPropietario}),
  buscarTomaAgregarLecturaMonitor: false,
- setBuscarTomaAgregarLecturaMonitor:(buscarTomaAgregarLecturaMonitor) => set({buscarTomaAgregarLecturaMonitor}),
+ setBuscarTomaAgregarLecturaMonitor: (value) => set({ buscarTomaAgregarLecturaMonitor: value }),
 
  agregarPeriodoFacturacion:[],
  setAgregarPeriodoFacturacion:(agregarPeriodoFacturacion) => set({agregarPeriodoFacturacion}),

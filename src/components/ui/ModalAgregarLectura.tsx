@@ -105,6 +105,7 @@ const ModalAgregarLectura = ({open, setOpen }) => {
     })
     fetchFact();
     setOpen(false);
+
     }
     catch(response)
     {
@@ -119,6 +120,10 @@ const ModalAgregarLectura = ({open, setOpen }) => {
   }
 
   
+  useEffect(() => {
+    console.log( buscarTomaAgregarLecturaMonitor);
+  }, [buscarTomaAgregarLecturaMonitor]);
+
 
   const handleSeleccionarAnomalia = () => 
     {
@@ -134,17 +139,18 @@ const ModalAgregarLectura = ({open, setOpen }) => {
     }
 
 
-    const handleCambiarUsuario = () => 
-    {
-      console.log("Cambiando a buscar otro usuario");
-      setBuscarTomaAgregarLecturaMonitor(false);
-      setMostrarForm(true);
-    }
+    const handleCambiarUsuario = () => {
+    console.log("Cambiando a buscar otro usuario. Valor anterior:", buscarTomaAgregarLecturaMonitor);
+    setBuscarTomaAgregarLecturaMonitor(false);
+    setMostrarForm(true);
+  };
 
     console.log(buscarTomaAgregarLecturaMonitor);
     console.log(mostrarForm);
 
     console.log(agregarPeriodoFacturacion[0]?.id);
+
+    
   return (
 
 <AlertDialog open={open} onOpenChange={setOpen}>
@@ -174,8 +180,8 @@ const ModalAgregarLectura = ({open, setOpen }) => {
          </AlertDialogTitle>
          <AlertDialogDescription> 
          <div className="flex flex-col">
-        <span>Nombre del usuario: {usuariosEncontrados[0]?.nombre}</span>
-        <span>Toma: {usuariosEncontrados[0]?.tomas[0]?.codigo_toma}</span>
+        <div className="text-xl">Nombre del usuario: {usuariosEncontrados[0]?.nombre_completo}</div>
+        <span className="text-xl">Toma: {usuariosEncontrados[0]?.tomas[0]?.codigo_toma}</span>
       </div>
                 <div className="flex justify-end">
            <div className="w-[20vh] bg-muted rounded-s-lg">
@@ -187,7 +193,8 @@ const ModalAgregarLectura = ({open, setOpen }) => {
            </div>
       {
        !seleccionarAnomalia &&
-       <Input 
+       <>
+        <Input 
        value={lecturaValue} 
        onChange={(e) => setLecturaValue(e.target.value)} 
        placeholder="Ingresa la lectura." 
@@ -195,19 +202,24 @@ const ModalAgregarLectura = ({open, setOpen }) => {
        type="number"
 
        />
+       <div className="mt-2 ml-2">Ingresa una lectura.</div>
+
+       </>
+      
       }
 
       {
        seleccionarAnomalia &&
        <div className="mt-5">
        <ComboBoxAnomalia selected_conceptos={agregarAnomalia} set={setAgregarAnomalia} />
-
+          <div className="mt-2 ml-2">Selecciona la anomalía</div>
          </div>
       }
 
 
       <div className="mt-5">
       <ComboBoxPeriodoFacturacion selected_conceptos={agregarPeriodoFacturacion} set={setAgregarPeriodoFacturacion} />
+      <div className="mt-2 ml-2">Selecciona el periodo de facturación</div>
 
       </div>
 
@@ -218,6 +230,8 @@ const ModalAgregarLectura = ({open, setOpen }) => {
        placeholder="Escribe un comentario." 
        className="mt-5"
        />
+             <div className="mt-2 ml-2">Escribe un comentario. (opcional)</div>
+
          </AlertDialogDescription>
        </AlertDialogHeader>
        <AlertDialogFooter>

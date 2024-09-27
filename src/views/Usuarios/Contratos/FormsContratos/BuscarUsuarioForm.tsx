@@ -279,8 +279,8 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
         if (numObject > 1) {
             setmostrarTablaUsuario(true);
         } else if (numObject === 1) {
-            setBuscarTomaAgregarLecturaMonitor(true);
             setmostrarTablaUsuario(false);
+
         } else {
             setmostrarTablaUsuario(false);
         }
