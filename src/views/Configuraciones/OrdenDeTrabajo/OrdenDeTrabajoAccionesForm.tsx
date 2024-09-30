@@ -92,14 +92,6 @@ const OrdenDeTrabajoAccionesForm = () => {
 
     })
   }
-  function successToastRestaurado() {
-    toast({
-      title: "¡Éxito!",
-      description: "Las acciones se han restaurado correctamente",
-      variant: "success",
-
-    })
-  }
 
    //Funcion de errores para el Toast
    function errorToast() {
@@ -113,15 +105,7 @@ const OrdenDeTrabajoAccionesForm = () => {
 
 
   }
-  function errorYaExisteToast() {
 
-    toast({
-      variant: "destructive",
-      title: "Oh, no. Error",
-      description: "La anomalía ya existe.",
-      action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-    })
-  }
 
 
   //#endregion
@@ -194,18 +178,14 @@ const OrdenDeTrabajoAccionesForm = () => {
             nombre: "",
             descripcion: "ninguna",
           });
-          setAccionGeneradaEntreTabs("ver");
-          form.reset({
-            orden_trabajo_accion: totalAccionesComponente.map(item => ({
-              id: item.id,
-              accion: item.accion,
-              modelo: item.modelo,
-              campo: item.campo,
-              valor: item.valor,
+          setAccionGeneradaEntreTabs("");
+         
 
-            })),
-          });
-          setAccionGeneradaEntreTabs("creado");
+   
+
+      //una vez recorrido reseteamos el formulario. que viene siendo el objeto orden_trabajo_accion
+      //con sus propiedades.
+          
           getAnomalias();
           successToastCreado();
         }
@@ -252,27 +232,7 @@ const OrdenDeTrabajoAccionesForm = () => {
     }
   };
 
-  const restaurarDato = async (IdParaRestaurar: number) => {
-    try {
-      await axiosClient.put(`/TipoToma/restore/${IdParaRestaurar}`);
-      setLoading(false);
-      setAbrirInput(false);
-      setAccion("crear");
-      setOrdenDeTrabajo({
-        id: 0,
-        nombre: "",
-        descripcion: "ninguna",
-        estado: "activo"
-      });
-      getAnomalias();
-      setAccion("creado");
-      successToastRestaurado();
-      setModalReactivacionOpen(false);
-    } catch (err) {
-      errorToast();
-      setLoading(false);
-    }
-  };
+ 
 
   //#endregion
   
@@ -287,16 +247,24 @@ const OrdenDeTrabajoAccionesForm = () => {
       setControl2(false);
       setAbrirInput(true);
       setErrors({});
-      form.reset({
-        orden_trabajo_accion: totalAccionesComponente.map(item => ({
-          id: item.id,
-          accion: item.accion,
-          modelo: item.modelo,
-          campo: item.campo,
-          valor: item.valor,
+    
+      // Suponiendo que ya tienes `ordenDeTrabajo.orden_trabajo_accion` pero quieres cambiar uno de sus valores manualmente
+      const ordenTrabajoAcciones = Array.isArray(ordenDeTrabajo.orden_trabajo_accion)
+        ? ordenDeTrabajo.orden_trabajo_accion.map(item => ({
+            id: item.id,
+            accion: item.accion,
+            modelo: item.modelo,
+            campo: item.campo,
+            valor: item.campo === 'tipo_contratacion' ? 'baja definitiva' : item.valor,  // Cambia el valor de este campo manualmente
+          }))
+        : [];
+    
+      console.log("Acciones después de la creación:", ordenTrabajoAcciones);
+    
+      // Reseteamos el formulario con los datos actualizados
 
-        })),
-      });
+      // Actualiza `totalAccionesComponente` para reflejar los cambios
+      setTotalAccionesComponente(ordenTrabajoAcciones);
     }
     if (accionGeneradaEntreTabs === "ver") {
       setControl2(false);
@@ -517,17 +485,29 @@ const handleEntidadChange = (index, value) => {
 // Actualiza el campo y sus valores
 const handleCampoChange = (index, value) => {
   const nuevasAcciones = [...totalAccionesComponente];
+
+  // Actualiza solo el campo de la acción específica
   nuevasAcciones[index].campo = value;
+
+  // Si el campo cambia, reseteamos el valor de esa acción a un string vacío
   nuevasAcciones[index].valor = ''; 
+
+  // Actualiza el estado con las acciones modificadas
   setTotalAccionesComponente(nuevasAcciones);
 
-  // Actualiza opciones de valores
-  setOpcionesValores(opcionesPorEntidad[nuevasAcciones[index].modelo]?.[value] || []);
+  // Asocia las opciones de valores a cada acción individualmente
+  const opcionesActualizadas = opcionesPorEntidad[nuevasAcciones[index].modelo]?.[value] || [];
+
+  // Maneja las opciones de valor por acción
+  const nuevasOpcionesValores = [...opcionesValores];
+  nuevasOpcionesValores[index] = opcionesActualizadas;
+
+  setOpcionesValores(nuevasOpcionesValores);
 };
+
 
 const [prueba, setPrueba] = useState(['lectura', 'promedio'])
 
-console.log(opcionesValores);
 
   const formatearClave = (clave: string) => {
     return clave
@@ -541,9 +521,7 @@ console.log(opcionesValores);
           <div className='h-[20px] w-full flex items-center justify-end '>
             <div className="mb-[10px] h-full w-full mx-4">
               {ordenDeTrabajo.nombre && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
-              {opcionesValores.map((valor, index) => (
-                           <div> {valor}</div>
-                         ))}
+             
             </div>
             {ordenDeTrabajo.nombre && (
               <>
@@ -836,13 +814,7 @@ console.log(opcionesValores);
           </form>
         </div>
 
-        {ModalReactivacionOpen && (
-          <ModalReactivacion
-            isOpen={ModalReactivacionOpen}
-            onClose={() => setModalReactivacionOpen(false)}
-            onConfirm={() => restaurarDato(IdParaRestaurar!)}
-          />
-        )}
+       
         {errors && <Error errors={errors} />}
       </div>
     </div>
