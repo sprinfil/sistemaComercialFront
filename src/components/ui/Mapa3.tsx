@@ -70,7 +70,7 @@ export const Mapa3 = () => {
     setPolygons([]);
     setOverlays([]);
 
-    const newPolygons = rutas.map((ruta) => {
+    const newPolygons = rutas?.map((ruta) => {
 
       class CustomLabel extends google.maps.OverlayView {
 
