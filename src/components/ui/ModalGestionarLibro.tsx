@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SiMicrosoftexcel } from "react-icons/si";
 // Cherrypick default plugins
 import Sortable, { AutoScroll } from 'sortablejs/modular/sortable.core.esm.js';
-import { useSortable, useSortable2, click, useGetCenterMap, useFormatCoords, updateSecuencia, moverPosicionLibro } from '../../lib/Services/ModalGestionarLibroService';
+import { useSortable, useSortable2, click, useGetCenterMap, useFormatCoords, updateSecuencia, moverPosicionLibro, initMapa } from '../../lib/Services/ModalGestionarLibroService';
 import { RiFileDownloadFill } from "react-icons/ri";
 import { FaFileImport } from "react-icons/fa6";
 import {
@@ -26,7 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { MdMoreHoriz } from "react-icons/md";
-import { GoogleMap, LoadScript, Polygon } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Polygon, Marker } from "@react-google-maps/api";
 import { CheckCircledIcon, Pencil1Icon, Pencil2Icon } from '@radix-ui/react-icons';
 import IconButton from './IconButton';
 import { Check } from 'lucide-react';
@@ -52,7 +52,8 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
   const [libroCoords, setLibroCoords] = useState([]);
   const [editandoSecuencia, setEditandoSecuencia] = useState(false);
   const [loadingUpdateSecuencia, setLoadingUpdateSecuencia] = useState(false);
-
+  const mapRef = useRef(null);
+  const { center } = useGetCenterMap(libro?.polygon?.coordinates) //CENTRO DEL MAPA
   useEffect(() => {
     if (libro?.secuencias[0] != null) {
       setSecuencia(libro?.secuencias[0]?.ordenes_secuencia);
@@ -62,8 +63,12 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
   }, [triggerClick])
 
   useEffect(() => {
-    //const secuenciaOrdenada = libro?.secuencias[0]?.ordenes_secuencia.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
-    //setSecuencia(secuenciaOrdenada);
+    if (mapRef.current) {
+      initMapa(libroCoords, center, libro?.secuencias[0]?.ordenes_secuencia);
+    }
+  }, [mapRef.current])
+
+  useEffect(() => {
     setSecuenciaPrincipal(libro?.secuencias[0])
   }, [changeTab])
 
@@ -105,12 +110,6 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
     console.log('Orden actualizado:', evt.oldIndex, evt.newIndex); //SORTABLE SIN SECUENICA
   });
 
-  const mapContainerStyles = { width: '100%', height: '100%' };//ESTILOS DEL MAPA
-
-  const { center } = useGetCenterMap(libro?.polygon?.coordinates) //CENTRO DEL MAPA
-
-  const zoom = 16; //ZOOM DEL MAPA
-
   return (
     <div>
       <AlertDialog>
@@ -118,9 +117,9 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
         <AlertDialogContent className="min-w-[98vw] min-h-[98vh] max-h-[98vh] flex">
           <div className='flex-grow relative'>
             <p className='font-medium text-[25px]'>{title}</p>
-            <div className='flex gap-3'>
-              <div className='w-[50%] min-h-[73vh]'>
-                <Tabs defaultValue="general" className="w-full" onClick={() => { setChangeTab(!changeTab) }}>
+            <div className='gap-3'>
+              <div className='min-h-[73vh]'>
+                <Tabs defaultValue="general" className="w-full" onClick={() => { setChangeTab(!changeTab); }}>
                   <TabsList>
                     <TabsTrigger value="general">General</TabsTrigger>
                     <TabsTrigger value="secuencia">Secuencia</TabsTrigger>
@@ -147,9 +146,11 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                                     <>
                                       <div onClick={() => {
                                         updateSecuencia(secuenciaPrincipal, secuencia, setLoadingUpdateSecuencia, setEditandoSecuencia, setRutas, setSecuencia);
+                                        initMapa(libroCoords, center, libro?.secuencias[0]?.ordenes_secuencia);
+
                                       }}>
                                         <IconButton>
-                                          <div className={`select-none flex gap-2 items-center underline ${loadingUpdateSecuencia == true ? "pointer-events-none" : ""}`}>
+                                          <div className={`text-green-500 select-none flex gap-2 items-center underline ${loadingUpdateSecuencia == true ? "pointer-events-none" : ""}`}>
                                             {
                                               loadingUpdateSecuencia &&
                                               <div className='h-6 w-6 flex '>
@@ -166,7 +167,7 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                                     <>
                                       <div onClick={() => { setEditandoSecuencia(!editandoSecuencia) }}>
                                         <IconButton>
-                                          <div className='flex gap-2 items-center underline select-none '>
+                                          <div className='text-blue-500 flex gap-2 items-center underline select-none '>
                                             <p>editar</p>
                                             <Pencil2Icon />
                                           </div>
@@ -223,7 +224,12 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                                                 onKeyDown={(e) => {
                                                   if (e.key === 'Enter') {
                                                     const nuevaPosicion = e.target.value;
-                                                    moverPosicionLibro(nuevaPosicion, secuencia, setSecuencia, orden?.numero_secuencia, setLoadingUpdateSecuencia, setRutas, libro?.id);
+                                                    if (nuevaPosicion > secuencia.length || nuevaPosicion < 0) {
+
+                                                    } else {
+                                                      moverPosicionLibro(nuevaPosicion, secuencia, setSecuencia, orden?.numero_secuencia, setLoadingUpdateSecuencia, setRutas, libro?.id);
+
+                                                    }
                                                   }
                                                 }}
                                               />
@@ -268,7 +274,9 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                           </ul>
                         </div>
                       </div>
-
+                      <div className='w-[100%]'>
+                        <div ref={mapRef} id='mapa_google' className='w-full h-[70vh]'></div>
+                      </div>
                     </div>
                     <div className='absolute right-2 bottom-2 flex gap-2'>
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
@@ -277,28 +285,7 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                   </TabsContent>
                 </Tabs>
               </div>
-              <div className='w-[50%]'>
-                {libroCoords.length > 0 && (
-                  <GoogleMap
-                    mapContainerStyle={mapContainerStyles}
-                    center={center}
-                    zoom={zoom}
-                  >
-                    <p>d</p>
-                    <Polygon
-                      paths={libroCoords}
-                      options={{
-                        fillColor: "lightblue",
-                        fillOpacity: 0.2,
-                        strokeColor: "blue",
-                        strokeOpacity: 0,
-                        strokeWeight: 2,
-                      }}
-                    />
 
-                  </GoogleMap>
-                )}
-              </div>
             </div>
 
           </div>
