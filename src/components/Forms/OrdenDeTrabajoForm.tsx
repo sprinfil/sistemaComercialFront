@@ -47,7 +47,6 @@ type OrdenDeTrabajo = {
     aplicacion: string;
     // Otras propiedades relevantes
 };
-import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx";
 
 const OrdenDeTrabajoForm = () => {
     const { toast } = useToast()
