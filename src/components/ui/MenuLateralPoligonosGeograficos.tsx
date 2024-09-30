@@ -48,8 +48,8 @@ const MenuLateralPoligonosGeograficos = () => {
 
   useEffect(() => {
     let new_visibility = {};
-    rutas.forEach(ruta => {
-      ruta.libros.forEach(libro => {
+    rutas?.forEach(ruta => {
+      ruta?.libros?.forEach(libro => {
         new_visibility[libro.id] = true;
       });
     });
@@ -57,7 +57,7 @@ const MenuLateralPoligonosGeograficos = () => {
 
     new_visibility = {};
 
-    rutas.forEach(ruta => {
+    rutas?.forEach(ruta => {
       new_visibility[ruta.id] = true;
     });
     set_ruta_visibility(new_visibility);
@@ -104,7 +104,7 @@ const MenuLateralPoligonosGeograficos = () => {
     set_ruta_visibility(new_visibility);
 
     new_visibility = { ...libro_visibility };
-    ruta.libros.forEach(libro => {
+    ruta?.libros?.forEach(libro => {
       new_visibility[libro.id] = ruta_visibility[ruta.id] == true ? false : true;
     });
 
