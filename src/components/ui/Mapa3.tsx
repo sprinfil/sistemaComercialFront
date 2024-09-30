@@ -118,7 +118,7 @@ export const Mapa3 = () => {
 
       return ruta.libros.map((libro) => {
 
-        if (libro.polygon && libro_visibility[libro.id] && libro.polygon.coordinates[0].length > 0 && !loading_rutas) {
+        if (libro.polygon && libro_visibility[libro.id] && libro.polygon.coordinates[0]?.length > 0 && !loading_rutas) {
 
           let polygonCoordinates = libro.polygon.coordinates[0].map((punto) => (
             {
@@ -192,7 +192,7 @@ export const Mapa3 = () => {
           */
 
 
-          if (libro.tomas.length > 0) {
+          if (libro.tomas?.length > 0) {
             libro.tomas.map((toma, index) => {
               if (toma.posicion) {
 

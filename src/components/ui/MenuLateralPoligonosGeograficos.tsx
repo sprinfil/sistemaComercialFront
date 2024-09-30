@@ -194,11 +194,11 @@ const MenuLateralPoligonosGeograficos = () => {
             <p className='p-2 bg-blue-500 text-white sticky top-0 z-50'> Cargando Importación ... </p>
           }
           {
-            rutas.length == 0 && !loading_import && !loading_rutas &&
+            rutas?.length == 0 && !loading_import && !loading_rutas &&
             <p className='p-2 text-red-500 sticky top-0 z-50'> Sin Polígonos. </p>
           }
 
-          {rutas.length > 0 &&
+          {rutas?.length > 0 &&
             <div className=' h-full'>
               {/*contenedor rutas y libros*/}
               {rutas.map((ruta, index) => {
