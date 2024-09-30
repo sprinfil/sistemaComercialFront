@@ -180,6 +180,7 @@ const OrdenDeTrabajoAccionesForm = () => {
           });
           setAccionGeneradaEntreTabs("");
          
+          setCampoDisabled(true);
 
    
 
@@ -302,7 +303,7 @@ const OrdenDeTrabajoAccionesForm = () => {
       });
 
 
-
+      setCampoDisabled(true);
       console.log("Formulario reseteado con:", form.getValues());
 
       setIsDataLoaded(true); // Marca los datos como cargados
@@ -322,6 +323,8 @@ const OrdenDeTrabajoAccionesForm = () => {
       setAbrirInput(true);
       setControl2(true);
       setErrors({});
+      setCampoDisabled(false);
+
     }
 
   }, [accionGeneradaEntreTabs, reset, idSeleccionadoConfiguracionOrdenDeTrabajo]);
@@ -599,8 +602,10 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                                 handleAccionChange(index, value);
                               }}
                               value={field.value || ''} 
-                              disabled
-                            >
+                              disabled={campoDisabled}
+
+
+                              >
                               <SelectTrigger>
                                 <SelectValue placeholder="Selecciona una acción" />
                               </SelectTrigger>
@@ -623,6 +628,7 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                                 handleAccionChange(index, value);
                               }}
                               value={field.value || ''} 
+                              disabled={campoDisabled}
                               >
                               <SelectTrigger>
                                 <SelectValue placeholder="Selecciona una acción" />
@@ -633,9 +639,14 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                                 <SelectItem value="quitar">Quitar</SelectItem>
                               </SelectContent>
                             </Select>
+                            
                           )}
                         />
+                        
                       )}
+                      <div className="text-sm mt-2 ">
+                      Asegúrate de que la opción seleccionada refleje lo que la orden de trabajo realizara en el proceso.
+                    </div>
                     </div>
 
                 <div className="w-full flex space-x-2">
@@ -649,7 +660,7 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                       control={control}
                       render={({ field }) => (
                         <Select
-                          disabled={accionGeneradaEntreTabs === "ver"}
+                        disabled={campoDisabled}
                           onValueChange={(value) => {
                             field.onChange(value);
                             handleEntidadChange(index, value);
@@ -669,6 +680,9 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                         </Select>
                       )}
                     />
+                      <div className="text-sm mt-2 ">
+                      Entidades que pueden ser afectadas por la orden de trabajo. (Ejemplo: Toma o medidor de la toma son entidades).
+                    </div>
                   </div>
                 </div>
 
@@ -698,7 +712,6 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                          handleCampoChange(index, value);
                        }}
                        value={field.value}
-                       disabled
                      >
                        <SelectTrigger>
                          <SelectValue placeholder="Selecciona un campo" />
@@ -742,6 +755,9 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                     )}
                   />
                 }
+                  <div className="text-sm mt-2 ">
+                      Características relacionadas a la entidad que deseas afectar. (Ejemplo: el estatus de la toma o el tipo de contratación de la toma).
+                    </div>
                   
                 </div>
                 
@@ -760,7 +776,6 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                         console.log('Valor seleccionado:', value); // Debugging
                         field.onChange(value)}}
                        value={field.value}
-                       disabled
                      >
                        <SelectTrigger>
                          <SelectValue placeholder="Selecciona un valor" />
@@ -802,8 +817,14 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
               }
                  
                 </div>
+                <div className="text-sm mt-2 ">
+                Valores válidos que se pueden asignar al campo.
+
+                    </div>
               </div>
+              
             ))}
+            
             <div className="flex justify-end">
               {accionGeneradaEntreTabs == "editar" &&
                           <Button type= "submit">Actualizar</Button>
