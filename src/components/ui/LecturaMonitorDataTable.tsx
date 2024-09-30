@@ -36,6 +36,9 @@ import ModalVerFactibilidadMonitor from "./ModalVerFactibilidadMonitor"
 // import ModalVerAjusteMonitor from "./ModalVerAjusteMonitor"
 import { ExternalLinkIcon } from "lucide-react"
 import IconButton from "./IconButton"
+import * as XLSX from "xlsx";
+import axiosClient from "../../axios-client"
+import ModalImportarExcelMonitorLectura from "./ModalImportarExcelMonitorLectura"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -50,10 +53,13 @@ export function LecturaMonitorDataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
 
   const [selected_ajuste, set_selected_ajuste] = useState<TData | undefined>(undefined);
-//   const [modal_ver_fact, set_modal_ver_fact] = useState(false);
-
+  //const [modal_ver_fact, set_modal_ver_fact] = useState(false);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [rowSelection, setRowSelection] = React.useState({})
+  // Aquí inicializamos el estado de `selectedFile` para almacenar el archivo Excel
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  //para el modal de importar excel
+  const [openModal, setOpenModal] = React.useState(false)
 
   const table = useReactTable({
     data,
@@ -69,13 +75,50 @@ export function LecturaMonitorDataTable<TData, TValue>({
     },
   })
 
+  // Función para manejar el archivo seleccionado
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setSelectedFile(event.target.files[0]);
+    }
+  };
+
+  // Función para leer el archivo Excel y convertirlo a JSON
+  const handleImportExcel = async () => {
+    if (!selectedFile) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const data = new Uint8Array(event.target?.result as ArrayBuffer);
+      const workbook = XLSX.read(data, { type: "array" });
+
+      // Asumiendo que los datos están en la primera hoja
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+      // Enviar los datos al backend
+      try {
+        const response = await axiosClient.post("/lectura/import", {
+          lecturas: jsonData,
+        });
+        console.log("Importación exitosa", response.data);
+      } catch (error) {
+        console.error("Error al importar el archivo", error);
+      }
+    };
+    reader.readAsArrayBuffer(selectedFile);
+  };
+
+  const handleAbrirModal = () => {
+    setOpenModal(true);
+  }
+
   return (
     <>
     
       <div className="px-2 flex gap-4">
 
         <div className=" flex flex-col gap-2 py-4 max-h-[70vh] no-scrollbar overflow-auto text-muted-foreground w-[15%]">
-          Filtros
+         <b>Filtros</b>
           <div className="px-2">
             <p>Folio</p>
             <Input
@@ -88,8 +131,6 @@ export function LecturaMonitorDataTable<TData, TValue>({
             />
           </div>
 
-
-
           <div className="px-2">
             <p>Estatus</p>
             <Select onValueChange={(value) => { table.getColumn("estatus")?.setFilterValue(value === "cualquiera" ? "" : value) }}>
@@ -101,14 +142,14 @@ export function LecturaMonitorDataTable<TData, TValue>({
                   <SelectLabel>Estatus</SelectLabel>
                   <SelectItem value="activo">Activo</SelectItem>
                   <SelectItem value="cancelado">Cancelado</SelectItem>
-                  <SelectItem value="incumplido">incumplido</SelectItem>
+                  <SelectItem value="incumplido">Incumplido</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
           </div>
 
           <div className="px-1">
-            <p>Fecha de creacion</p>
+            <p>Fecha de creación</p>
             <input type="date"
               name="fecha_creacion"
               className=" border border-border  w-full  rounded-md p-[8px] bg-background"
@@ -120,7 +161,6 @@ export function LecturaMonitorDataTable<TData, TValue>({
         </div>
          
          
-
         <div className="w-[85%] p-4">
           <div className="rounded-md border max-h-[55vh] overflow-auto">
             <Table>
@@ -191,13 +231,21 @@ export function LecturaMonitorDataTable<TData, TValue>({
           </div>
           <div className=" flex items-center justify-between space-x-2 py-4">
           <div className="flex space-x-2">
-              <Button className="w-full">Exportar a PDF</Button>
-              <Button className="w-full">Exportar a Excel</Button>
+              <Button className="w-full">Importar PDF</Button>
+              <input type="file" accept=".xlsx" onChange={handleFileChange} /> {/* Input para subir el archivo */}
+              <Button onClick={handleAbrirModal}>Importar Excel</Button> {/* Botón para iniciar la importación */}
+                
             </div>
           </div>
 
         </div>
       </div>
+
+      {/**modal */}
+      <ModalImportarExcelMonitorLectura
+        open={openModal} 
+        setOpen={setOpenModal}
+      />
 
       {/* {selected_ajuste && (
         <ModalVerAjusteMonitor

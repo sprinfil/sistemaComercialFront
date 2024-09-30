@@ -64,7 +64,6 @@ export const LecturasMonitor = () => {
           </div>
         </div>
   
-
                         <LecturaMonitorDataTable columns={LecturaMonitorColumns} data={lecturas_temp} />
 
                         <ModalAgregarLectura

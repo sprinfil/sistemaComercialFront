@@ -136,7 +136,7 @@ const ModalCerrarOT = () => {
       <AlertDialogHeader>
         <AlertDialogTitle>
           <div className="flex space-x-2">
-            Cerrar orden de trabajo con accion de crear(prueba)
+            Cerrar orden de trabajo con acción de crear(prueba)
           </div>
         </AlertDialogTitle>
 

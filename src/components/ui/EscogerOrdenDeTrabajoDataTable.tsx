@@ -98,7 +98,7 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
           className="w-full"
         />
         <Input
-          placeholder="Buscar descripcion..."
+          placeholder="Buscar descripción..."
           type="text"
           value={(table.getColumn('descripcion')?.getFilterValue() as string) ?? ""}
           onChange={(event) =>

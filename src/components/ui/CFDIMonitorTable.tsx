@@ -87,7 +87,7 @@ export function CFDIMonitorTable<TData, TValue>({
           </div>
 
           <div className="px-2">
-            <p>Timbro</p>
+            <p>Timbró</p>
             <Input
               placeholder="Timbro"
               value={(table.getColumn("timbro")?.getFilterValue() as string) ?? ""}
@@ -189,7 +189,7 @@ export function CFDIMonitorTable<TData, TValue>({
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Accion</SelectLabel>
-                  <SelectItem value="timbrar">Mandar Correo</SelectItem>
+                  <SelectItem value="timbrar">Enviar Correo</SelectItem>
                   <SelectItem value="cancelacion">Imprimir Timbre</SelectItem>
                 </SelectGroup>
               </SelectContent>

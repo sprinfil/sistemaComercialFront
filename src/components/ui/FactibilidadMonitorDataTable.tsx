@@ -74,9 +74,9 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
 
           {/* Filtros */}
           <div className="px-2">
-            <p>Codigo de toma</p>
+            <p>Código de toma</p>
             <Input
-              placeholder="Codigo de toma"
+              placeholder="Código de toma"
               value={(table.getColumn("codigo_toma")?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
                 table.getColumn("codigo_toma")?.setFilterValue(event.target.value)
@@ -188,7 +188,7 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
-              Previous
+              Anterior
             </Button>
             <Button
               variant="outline"
@@ -196,7 +196,7 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
-              Next
+              Siguiente
             </Button>
           </div>
         </div>

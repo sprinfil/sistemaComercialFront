@@ -52,7 +52,7 @@ import { RiUserSearchFill } from "react-icons/ri";
 import { ComboBoxPeriodoFacturacion } from "./ComboBoxPeriodoFacturacion.tsx";
 import lecturasService from "../../lib/LecturaService.ts";
 import ZustandMonitorLectura from "../../contexts/ZustandMonitorLectura.tsx";
-const ModalAgregarLectura = ({open, setOpen }) => {
+const ModalImportarExcelMonitorLectura = ({open, setOpen }) => {
   const { toast } = useToast();
   const [selected_conceptos, set_selected_conceptos] = useState();
   const [selected_periodo, set_selected_periodo] = useState();
@@ -126,12 +126,10 @@ const ModalAgregarLectura = ({open, setOpen }) => {
     {
       if(seleccionarAnomalia){
         setSeleccionarAnomalia(false);
-  
       }
       else
       {
         setSeleccionarAnomalia(true);
-  
       }
     }
 
@@ -147,7 +145,6 @@ const ModalAgregarLectura = ({open, setOpen }) => {
 
     console.log(agregarPeriodoFacturacion[0]?.id);
 
-    
   return (
 
 <AlertDialog open={open} onOpenChange={setOpen}>
@@ -204,7 +201,6 @@ const ModalAgregarLectura = ({open, setOpen }) => {
 
        />
        <div className="mt-2 ml-2">Ingresa una lectura.</div>
-
        </>
       
       }
@@ -251,4 +247,4 @@ const ModalAgregarLectura = ({open, setOpen }) => {
   );
 };
 
-export default ModalAgregarLectura;
+export default ModalImportarExcelMonitorLectura;
