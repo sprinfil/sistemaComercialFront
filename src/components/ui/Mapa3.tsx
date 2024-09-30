@@ -193,7 +193,7 @@ export const Mapa3 = () => {
 
 
           if (libro.tomas?.length > 0) {
-            libro.tomas.map((toma, index) => {
+            libro?.tomas?.map((toma, index) => {
               if (toma.posicion) {
 
                 /* TOMA INFO */
