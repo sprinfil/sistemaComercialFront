@@ -11,12 +11,34 @@ export function BreadCrumbDetalleUsuario() {
   
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [tomaSeleccionada, setTomaSeleccionada] = useState<BuscarTomaUsuario | null>(null);
+  const [consultaNombreToma, setConsultaNombreToma] = useState<Usuario| null>(null);
+
+  type Usuario = {
+    id: number
+    nombre: string
+    apellido_paterno: string
+    apellido_materno: string
+    telefono: string
+    correo: string
+    curp: string
+    tomas: tomas;
+  }
+
+  type tomas = {
+    id: number
+    calle: string
+    
+  }
 
 
+
+  
+    //console.log("esto llego al breadcrumb jeje",usuariosEncontrados);
 
   useEffect(() => {
     if (usuariosEncontrados.length > 0) {
       setUsuario(usuariosEncontrados[0]);
+      setConsultaNombreToma(usuariosEncontrados[0]);
     }
   }, [usuariosEncontrados]);
 
@@ -25,6 +47,7 @@ export function BreadCrumbDetalleUsuario() {
       setTomaSeleccionada(toma);
     } else if (Array.isArray(tomaUsuariosEncontrados) && tomaUsuariosEncontrados.length > 0) {
       setTomaSeleccionada(tomaUsuariosEncontrados[0]);
+      setConsultaNombreToma(tomaUsuariosEncontrados[0]);
     }
   }, [toma, tomaUsuariosEncontrados]);
 
@@ -32,13 +55,15 @@ export function BreadCrumbDetalleUsuario() {
     setMostrarSiguiente(false);
   };
 
+  //console.log(consultaNombreToma?.tomas[0]?.calle);
+
   return (
-    <nav className="ml-5 mt-5">
+    <nav className="ml-3 my-1">
       {findUserOrToma ? (
         <ol style={{ listStyle: 'none', display: 'flex', padding: 0 }}>
           <li>
             <Link to="/usuario" onClick={handleClick}>
-              <p className="text-[15px] font-medium">
+              <p className="transition-all hover:text-[18px]  duration-200">
                 {tomaSeleccionada?.usuario?.nombre || 'Nombre no disponible'}
               </p>
             </Link>
@@ -48,7 +73,7 @@ export function BreadCrumbDetalleUsuario() {
               <li className="w-[8px] h-[8px]"><ChevronRight /></li>
               <li>
                 <Link to="/usuario/toma">
-                  <p className="text-[15px] font-medium ml-4">
+                  <p className="transition-all hover:text-[18px] duration-200 ml-4">
                     {findUserMapaGeo
                       ? tomaSeleccionada?.calle || 'Nombre no disponible'
                       : tomaSeleccionada?.calle || 'Nombre no disponible'}
@@ -62,8 +87,8 @@ export function BreadCrumbDetalleUsuario() {
         <ol style={{ listStyle: 'none', display: 'flex', padding: 0 }}>
           <li>
             <Link to="/usuario" onClick={handleClick}>
-              <p className="text-[15px] font-medium">
-                {usuario?.nombre || 'Nombre no disponible'}
+              <p className="transition-all hover:text-[18px] duration-200">
+                {consultaNombreToma?.nombre || 'Nombre no disponible'}
               </p>
             </Link>
           </li>
@@ -72,8 +97,8 @@ export function BreadCrumbDetalleUsuario() {
               <li className="w-[8px] h-[8px]"><ChevronRight /></li>
               <li>
                 <Link to="/usuario/toma">
-                  <p className="text-[15px] font-medium ml-4">
-                    Toma: {tomaSeleccionada?.calle || 'Nombre no disponible'}
+                  <p className="transition-all hover:text-[18px] duration-200 ml-4">
+                    Toma: {toma?.codigo_toma|| 'Nombre no disponible'}
                   </p>
                 </Link>
               </li>

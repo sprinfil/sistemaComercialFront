@@ -52,7 +52,6 @@ type OrdenDeTrabajo = {
 const OrdenDeTrabajoEncadenadasSchema = z.object({
     orden_trabajo_encadenadas: z.array(
         z.object({
-            id: z.number(),
             id_OT_Catalogo_encadenada: z.number().min(1, "La OT es requerida"),
         })
     ),
@@ -77,15 +76,29 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_OT_Catalogo_encadenada:number}[]>([{ id: 0, id_OT_Catalogo_encadenada: 0}]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
+    const [control, setControl] = useState(false);
+
+    const [nombreConcepto, setNombreConcepto] = useState([]);
+
+
+    console.log(control);
+
+
+
+
+
+
+
 
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0 
             ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1 
             : 1;
     
+        // Asegúrate de que el nuevo objeto tenga la estructura adecuada
         setTotalAccionesComponente(prevAcciones => [
             ...prevAcciones,
-            { id: newId, id_OT_Catalogo_encadenada: 0 }
+            { id: newId, id_OT_Catalogo_encadenada: '' } // Usa '' si necesitas un string vacío
         ]);
     };
 
@@ -152,7 +165,6 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     resolver: zodResolver(OrdenDeTrabajoEncadenadasSchema),
     defaultValues: {
         orden_trabajo_encadenadas: totalAccionesComponente.map(item => ({
-        id: item.id,
         id_OT_Catalogo_encadenada: 0,
       })),
     },
@@ -160,15 +172,23 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
 
   useEffect(() => {
     if (accionGeneradaEntreTabs === "editar") {
-        form.reset({
-            orden_trabajo_encadenadas: totalAccionesComponente.map(item => ({
-                id: item.id,
-                id_OT_Catalogo_encadenada: 0, // O el valor predeterminado adecuado
-            })),
-        });
-    }
-}, [totalAccionesComponente, accion]);
+        const valoresActuales = form.getValues('orden_trabajo_encadenadas');
 
+        
+        const nuevosValores = totalAccionesComponente.map(item => ({
+            id_OT_Catalogo_encadenada: 0, 
+        }));
+
+        const todosLosValores = [...valoresActuales, ...nuevosValores];
+
+        const valoresFiltrados = todosLosValores.filter(cargo => cargo.id_OT_Catalogo_encadenada !== 0);
+
+        form.reset({ orden_trabajo_encadenadas: valoresFiltrados });
+    }
+}, [totalAccionesComponente, accionGeneradaEntreTabs]);
+
+
+console.log(form.getValues());
     const onSubmit = async (values: OrdenDeTrabajoEncadenadas) => {
         console.log(values);
 
@@ -262,50 +282,63 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
 
     
     
-      useEffect(() => {
+    useEffect(() => {
         if (accionGeneradaEntreTabs === "eliminar") {
-          setAbrirInput(false);
+            setAbrirInput(false);
         }
+    
         if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
-          setAbrirInput(true);
-          setErrors({});
-          setOrdenDeTrabajo({
-            id: 0,
-            nombre: "",
-            descripcion: "ninguna",
-          });
+            setAbrirInput(true);
+            setErrors({});
+            setOrdenDeTrabajo({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+            });
         }
-        if (accionGeneradaEntreTabs === "ver") {
-          setAbrirInput(false);
-          setErrors({});
-          setAccion("");
-        
-          // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
-          //SUS PROPIEDADDES
-          // Transformación de datos
-                const ordenTrabajoEncadenadas = Array.isArray(ordenDeTrabajo.ordenes_trabajo_encadenadas) ?
+    
+        if (accionGeneradaEntreTabs === "ver" || accionGeneradaEntreTabs === "editar") {
+            setAbrirInput(true);
+            setErrors({});
+    
+            // Transformación de datos para el formulario
+            const ordenTrabajoEncadenadas = Array.isArray(ordenDeTrabajo.ordenes_trabajo_encadenadas) ?
                 ordenDeTrabajo.ordenes_trabajo_encadenadas.map(item => ({
-                id: item.id,
-                id_OT_Catalogo_encadenada: item.id_OT_Catalogo_encadenada,
+                    id: item.id,
+                    id_OT_Catalogo_encadenada: item.id_OT_Catalogo_encadenada,
+                    OT_Encadenada: item.OT_Encadenada.nombre
                 })) : [];
+    
+              // Obtener nombres de conceptos
+                    const nombresConceptos = ordenTrabajoEncadenadas.map(encadenada => encadenada.OT_Encadenada || 'Nombre no disponible');
 
-                // Reseteo del formulario
+                    setNombreConcepto(nombresConceptos);
+
+            // Manejo de la acción "ver"
+            if (accionGeneradaEntreTabs === "ver") {
+                setControl(true);
                 form.reset({
                     orden_trabajo_encadenadas: ordenTrabajoEncadenadas,
                 });
-
-                // Actualización del estado y depuración
-                setTotalAccionesComponente(ordenTrabajoEncadenadas);
-                console.log("Valores del cargo:", ordenTrabajoEncadenadas);
-                console.log("Valores del formulario después del reset:", form.getValues());
-        }
-        
+            }
     
-        if (accion === "editar") {
-          setAbrirInput(true);
-          setErrors({});
+            // Manejo de la acción "editar"
+            if (accionGeneradaEntreTabs === "editar") {
+                setControl(false);
+                form.reset({
+                    orden_trabajo_encadenadas: ordenTrabajoEncadenadas,
+                });
+            }
+    
+            // Actualización del estado si los datos cambiaron
+            if (JSON.stringify(ordenTrabajoEncadenadas) !== JSON.stringify(totalAccionesComponente)) {
+                setTotalAccionesComponente(ordenTrabajoEncadenadas);
+            }
+    
+            console.log("Valores del cargo:", ordenTrabajoEncadenadas);
+            console.log("Valores del formulario después del reset:", form.getValues());
         }
-      }, [accion, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
+    }, [accionGeneradaEntreTabs, ordenDeTrabajo, idSeleccionadoConfiguracionOrdenDeTrabajo]);
 
 
     const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
@@ -356,8 +389,8 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                 {totalAccionesComponente.length < 1 
                 && 
                 <div className="flex justify-center mt-[20vh]">
-                     {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o mas operadores.</p> : 
-              <p className="text-muted-foreground text-[20px]">Sin operadores</p>
+                     {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o mas ordenes de trabajo.</p> : 
+              <p className="text-muted-foreground text-[20px]">Sin ordenes de trabajo encadenadas.</p>
              }
 
                     </div>
@@ -368,8 +401,6 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {totalAccionesComponente.map((accion, index) => {
-                            console.log(index);
-                            console.log(index.id);
                             return (
                                 <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
                                      <div className="text-sm font-medium mb-3">
@@ -378,21 +409,57 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                                     <div className="flex items-center space-x-2">
                                         <div className="w-full">
                                          
+                                          
+
+
+
+
+
+                                        {
+                                            accionGeneradaEntreTabs == "editar" ? 
                                             <Controller
-                                                name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`}
-                                                control={form.control}
-                                                render={({ field }) => (
+                                            name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`}
+                                            control={form.control}
+                                            render={({ field }) => (
+                                                <DisparaOtraOTComboBox form={form} field={field} name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`} 
+                                                setCargoSeleccionado={setConceptoSeleccionado} 
+                                                disabled={control}
+                                                defaultValue={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`} />
 
-                                                    
-                                                    <DisparaOtraOTComboBox form={form} field={field} name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`} setCargoSeleccionado={setConceptoSeleccionado}/>
+                                            )}
+                                        />
 
-                                                )}
-                                            />
+                                            :
+
+                                            <Controller
+                                            name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`}
+                                            control={form.control}
+                                            render={({ field: { value, ...rest } }) => ( // Desestructuramos field
+                                                <Input
+                                                readOnly
+                                                placeholder=""
+                                                value={nombreConcepto[index] || ""} // Usa el nombre del concepto aquí
+                                                {...rest} // Pasa el resto de las props sin incluir value
+                                              />
+                                            )}
+                                        />
+                                            
+
+                                        }
+
+
+
+
+
+
+
+
                                         </div>
                                         <FormMessage />
-                                        <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
+                                        {accionGeneradaEntreTabs == "editar" &&  <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
                                             <TrashIcon className="w-4 h-4" />
-                                        </Button>
+                                        </Button>}
+                                       
                                     </div>
                                 </div>
                             )

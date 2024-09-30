@@ -25,6 +25,12 @@ import { BuscarUsuarioComboBox } from "../../../../components/ui/BuscarUsuarioCo
 import { Import } from "lucide-react";
 import { ZustandGeneralUsuario } from "../../../../contexts/ZustandGeneralUsuario.tsx";
 import ContratoConsultaTomaTable from "../../../../components/Tables/Components/ContratoConsultaTomaTable.tsx";
+import { Pencil2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { TbFilterPlus } from "react-icons/tb";
+import { TiUserAdd } from "react-icons/ti";
+import IconButton from "../../../../components/ui/IconButton.tsx";
+import { ZustandFiltrosContratacion } from "../../../../contexts/ZustandFiltrosContratacion.tsx";
+
 interface BuscarUsuarioProps {
     navegacion: string;
     botonCrearUsuario: boolean;
@@ -40,14 +46,12 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     const [mostrarTablaTomaUsuario, setMostrarTablaTomaUsuario] = useState(false);
 
     const [filtroSeleccionado, setFiltroSeleccionado] = useState("");
-
+    const {setContratoLocalStorage} = ZustandFiltrosContratacion();
     //variables globales del zustand
     const { nombreBuscado, setNombreBuscado,
         nombreSeleccionado, setNombreSeleccionado,
         usuariosEncontrados, setUsuariosEncontrados,
-        accion, setAccion, setFindUserOrToma, findUserOrToma, setToma, setBooleanCodigoDeToma, toma, setDataCajaUser,
-        setBooleanCerrarModalFiltros
-
+        accion, setAccion, setFindUserOrToma, findUserOrToma, setToma, setBooleanCodigoDeToma, toma, setBuscarTomaAgregarLecturaMonitor,
 
     } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
 
@@ -90,7 +94,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
         console.log(values);
         setLoading(true);
         setUsuariosEncontrados([]);
-
+        setContratoLocalStorage(false);
         const criterio = values.nombre.trim();
 
         let endpoint = "";
@@ -145,11 +149,10 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                         if (results.length > 0) {
                             setNombreBuscado(values.nombre);
                             setUsuariosEncontrados(results);
-                            setDataCajaUser(results);
                             if (results.length === 1) {
-                                setBooleanCerrarModalFiltros(false);
+                                setBuscarTomaAgregarLecturaMonitor(true);
                                 if (tipoAccion === "verUsuarioDetalle") {
-                                    navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
+                                    navigate("/usuario/toma", { state: { contratoBuscarUsuario: results[0] } });
                                 } else if (tipoAccion === "crearContratacionUsuario") {
                                     navigate("/Crear/Contrato/Usuario", { state: { contratoBuscarUsuario: results[0] } });
                                 }
@@ -165,12 +168,8 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                         const result = response.data;
                         if (result) {
                             setNombreBuscado(values.nombre);
-                            console.log("este es el result", result);
                             setUsuariosEncontrados([result]);
-                            setDataCajaUser([result]);
-
                             if (usuariosEncontrados.length == 1) {
-                                setBooleanCerrarModalFiltros(false);
                                 if (tipoAccion === "verUsuarioDetalle") {
                                     navigate("/usuario", { state: { contratoBuscarUsuario: result } });
                                 } else if (tipoAccion === "crearContratacionUsuario") {
@@ -188,12 +187,10 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                         results = response.data.data;
                         console.log(response.data.data);
                         setUsuariosEncontrados(response.data.data);
-                        setDataCajaUser(results);
                         if (results.length > 0) {
                             setNombreBuscado(values.nombre);
                             setUsuariosEncontrados(results);
                             if (results.length === 1) {
-                                setBooleanCerrarModalFiltros(false);
                                 if (tipoAccion === "verUsuarioDetalle") {
                                     navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
                                 } else if (tipoAccion === "crearContratacionUsuario") {
@@ -211,13 +208,11 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                     case "4":
                         results = response.data.data;
                         console.log(response.data.data);
-                        setDataCajaUser(results);
                         setUsuariosEncontrados(response.data.data);
                         if (results.length > 0) {
                             setNombreBuscado(values.nombre);
                             setUsuariosEncontrados(results);
                             if (results.length === 1) {
-                                setBooleanCerrarModalFiltros(false);
                                 if (tipoAccion === "verUsuarioDetalle") {
                                     navigate("/usuario", { state: { contratoBuscarUsuario: results[0] } });
                                 } else if (tipoAccion === "crearContratacionUsuario") {
@@ -238,13 +233,11 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                         results = response.data;
                         console.log("a esta enpoint entro", endpoint);
                         setToma(response.data);
-                        setDataCajaUser(results);
                         setBooleanCodigoDeToma(true);
                         if (results.length > 0) {
                             setNombreBuscado(values.nombre);
                             setUsuariosEncontrados(results);
                             if (results.length === 1) {
-                                setBooleanCerrarModalFiltros(false);
                                 if (tipoAccion === "verUsuarioDetalle") {
                                     navigate("/usuario/toma", { state: { contratoBuscarUsuario: results[0] } });
                                 } else if (tipoAccion === "crearContratacionUsuario") {
@@ -287,6 +280,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
             setmostrarTablaUsuario(true);
         } else if (numObject === 1) {
             setmostrarTablaUsuario(false);
+
         } else {
             setmostrarTablaUsuario(false);
         }
@@ -303,65 +297,80 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     return (
         <ContextProvider>
             <div>
-                <div className=' w-full rounded-md border border-border  shadow-inherit p-10 h-[55vh]'>
+                <div className='mt-5 ml-[5vh] w-[100vh] rounded-md border border-border  shadow-inherit p-6 h-[25vh] overflow-auto'>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                            <div className="text-muted-foreground text-[20px]">Consultar al usuario</div>
+                        <div className="justify-center items-center">
 
-                            <FormField
-                                control={form.control}
-                                name="filtro"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Filtrar por:</FormLabel>
-                                        <BuscarUsuarioComboBox form={form} field={field} name="filtro" setCargoSeleccionado={setNombreSeleccionado} />
-                                        <FormDescription>
-                                            {/* AQUI PUEDE IR DESCRIPCIÓN DEBAJO DEL INPUT EN EL FORM */}
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="nombre"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>
-                                            {nombreSeleccionado === "Nombre" && "Escribe el nombre del usuario"}
-                                            {nombreSeleccionado === "Codigo usuario" && "Escribe el código del usuario"}
-                                            {nombreSeleccionado === "Correo" && "Escribe el correo del usuario"}
-                                            {nombreSeleccionado === "Dirección" && "Escribe la dirección de la toma"}
-                                            {nombreSeleccionado === "Codigo toma" && "Escribe el código de la toma"}
-
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Escribe la información requerida" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            {/* AQUI PUEDE IR DESCRIPCIÓN DEBAJO DEL INPUT EN EL FORM */}
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <div className="flex justify-end items-end gap-2 mt-10px">
-                                <Button type="submit">Aceptar</Button>
+                            <div className="flex space-x-2">
+                                <div className="w-[200vh] mr-[180]">
+                                    <div className="text-muted-foreground text-[20px] mb-5">Consultar al usuario </div>
+                                </div>
                                 {
-                                    botonCrearUsuario && <Button type="button" onClick={handleNavigationCrearUsuario}>Crear usuario</Button>
+                                    botonCrearUsuario &&
+                                    <div className="flex items-center mb-5 w-[3.5] h-[3.5vh]" onClick={handleNavigationCrearUsuario}>
+                                        <IconButton><TiUserAdd className="w-[3.5] h-[3.5vh]" /></IconButton>
+                                    </div>
                                 }
                             </div>
+
+                        </div>
+
+
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                            <div className="flex space-x-2">
+                                <div className="w-[50vh]">
+                                    <p className="ml-1 mb-3 text-[13px]">Filtrar Por</p>
+                                    <FormField
+                                        control={form.control}
+                                        name="filtro"
+                                        render={({ field }) => (
+                                            <FormItem>
+
+                                                <BuscarUsuarioComboBox form={form} field={field} name="filtro" setCargoSeleccionado={setNombreSeleccionado} />
+                                                <FormDescription>
+                                                    {/* AQUI PUEDE IR DESCRIPCIÓN DEBAJO DEL INPUT EN EL FORM */}
+                                                </FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+
+                                <div className="w-[50vh] text-[13px] mt-6">
+                                    <FormField
+                                        control={form.control}
+                                        name="nombre"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>
+
+
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Escribe la información requerida" {...field} />
+                                                </FormControl>
+                                                <FormDescription>
+                                                    {/* AQUI PUEDE IR DESCRIPCIÓN DEBAJO DEL INPUT EN EL FORM */}
+                                                </FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                </div>
+                                <div className="mt-8">
+                                    <Button type="submit" className=""><MagnifyingGlassIcon /></Button>
+
+
+                                </div>
+                            </div>
+
+
+
+
                         </form>
                     </Form>
                 </div>
-
-                {mostrarTablaUsuario && filtroSeleccionado == "1" && <h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona un usuario.</h1>}
-                {mostrarTablaUsuario && filtroSeleccionado == "2" && <h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona un usuario.</h1>}
-                {mostrarTablaUsuario && filtroSeleccionado == "3" && <h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona un usuario.</h1>}
-                {mostrarTablaTomaUsuario && filtroSeleccionado == "4" && <h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona la toma del usuario.</h1>}
-                {mostrarTablaTomaUsuario && filtroSeleccionado == "5" && <h1 className="mt-10 ml-11 text-muted-foreground text-[20px]">Selecciona la toma del usuario.</h1>}
-
                 {
 
                     mostrarTablaUsuario && filtroSeleccionado == "1" && <ContratoConsultaUsuarioTable accion2={tipoAccion} nombreBuscado={nombreBuscado} filtroSeleccionado={filtroSeleccionado} />

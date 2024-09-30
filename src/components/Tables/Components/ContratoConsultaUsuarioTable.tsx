@@ -22,7 +22,10 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
     setUsuariosEncontrados, usuariosEncontrados, 
     setLoadingTable, loadingTable, setAccion, 
     setUsuario, usuario, setUsuariosRecuperado, 
-    setToma, handleClickRowUsuario, setBooleanCerrarModalFiltros} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+    setControlTablaOperadorOTIndividual,
+    setToma, handleClickRowUsuario, setBooleanCerrarModalFiltros,setIdSeleccionadoTomaAsignacionOT, 
+    idSeleccionadoTomaAsignacionOT,setMostrarUsuarioCambioPropietario, setBuscarTomaAgregarLecturaMonitor
+  } = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
 
   const tableRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -75,11 +78,16 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
     setUsuariosEncontrados([contratobuscarUsuario]);
     setDataCajaUser([contratobuscarUsuario]);
     setBooleanCerrarModalFiltros(false);
-  
+    setIdSeleccionadoTomaAsignacionOT(contratobuscarUsuario?.tomas[0]?.id)
+    setControlTablaOperadorOTIndividual(true);
+    setMostrarUsuarioCambioPropietario(true);
+    setBuscarTomaAgregarLecturaMonitor(true);
     console.log("ESTO RECIBIRA CAJAAA DESDE SELECCION DE FILA" + JSON.stringify(dataCajaUser)); 
+  
+    
     if(accion2 == "verUsuarioDetalle")
     {
-      navigate("/usuario");
+      navigate("/usuario/toma");
     }
     
     if(accion2 == "crearContratacionUsuario")
@@ -87,7 +95,6 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
         navigate("/Crear/Contrato/Usuario");
       }
   };
-
   if (loadingTable) {
     return <div><Loader /></div>;
   }
@@ -95,7 +102,9 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
   return (
     <ContextProvider>
     <div ref={tableRef}>
-        <DataTableUsuarios columns={columns} data={usuariosEncontrados} onRowClick={handleRowClick} />
+    <div className="min-w-full">        
+    <DataTableUsuarios columns={columns} data={usuariosEncontrados} onRowClick={handleRowClick} />
+      </div>
       </div>
     </ContextProvider>
   

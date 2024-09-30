@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DataTable } from '../../../components/ui/DataTable';
-import { columns, OrdenDeTrabajo } from "../Columns/OrdenDeTrabajoColumns.tsx";
+import { columns, OrdenDeTrabajo } from "../Columns/OrdenDeTrabajoOtCatalogoColumns .tsx";
 import axiosClient from '../../../axios-client.ts';
 import { useStateContext } from '../../../contexts/ContextOrdenDeTrabajo.tsx';
 import Loader from '../../ui/Loader.tsx';
@@ -29,7 +29,8 @@ export default function OrdenDeTrabajoTable() {
       console.error("Failed to fetch Orden de trabajo:", error);
     }
   };
-
+  
+console.log(ordenDeTrabajos);
 const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
     {
     setOrdenDeTrabajo(tipoDeToma);
@@ -41,6 +42,7 @@ const HandleClickRow = (tipoDeToma: OrdenDeTrabajo) =>
   if (loadingTable) {
     return <div><Loader /></div>;
   }
+  console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
 
   return (
 

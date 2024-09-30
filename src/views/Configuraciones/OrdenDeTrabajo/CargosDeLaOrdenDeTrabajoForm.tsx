@@ -42,24 +42,24 @@ import {
 import { ConceptosComboBox } from "../../../components/ui/ConceptosComboBox.tsx";
 import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario.tsx";
 import { ConceptosOrdenDeTrabajoComboBox } from "../../../components/ui/ConceptosOrdenDeTrabajoComboBox.tsx";
+import { DisparaOtraOTComboBox } from "../../../components/ui/DisparaOtraOTComboBox.tsx";
 
 type OrdenDeTrabajo = {
     nombre: string;
     aplicacion: string;
 };
 
-const OrdenDeTrabajoCargosSchema = z.object({
+const OrdenTrabajoCargosSchema = z.object({
     orden_trabajo_cargos: z.array(
         z.object({
-            id: z.number(),
-            id_concepto_catalogo: z.number().min(1, "El concepto es requerido"),
+            id_concepto_catalogo: z.number(),
         })
     ),
 });
 
-type OrdenDeTrabajoCargos = z.infer<typeof OrdenDeTrabajoCargosSchema>;
+type OrdenTrabajoCargo = z.infer<typeof OrdenTrabajoCargosSchema>;
 
-const CargosDeLaOrdenDeTrabajoForm = () => {
+const CargosDeLaOrdenTrabajoForm = () => {
     const { toast } = useToast();
     const { ordenDeTrabajo, setOrdenDeTrabajo, loadingTable, setLoadingTable, setOrdenDeTrabajos, setAccion, accion } = useStateContext();
     const [loading, setLoading] = useState(false);
@@ -73,32 +73,56 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
     const [aplicacionSeleccionada, setAplicacionSeleccionada] = useState<string | null>(null);
     const [cargosAgregados, setCargosAgregados] = useState<OrdenDeTrabajo[]>([]);
     const [aumentarAcciones, setAumentarAcciones] = useState(1);
-    const [totalAccionesComponente, setTotalAccionesComponente] = useState<{id:number, id_concepto_catalogo:number}[]>([{ id: 0, id_concepto_catalogo: 0}]);
+    const [totalAccionesComponente, setTotalAccionesComponente] = useState<{ id: number, id_concepto_catalogo: number }[]>([{ id: 0, id_concepto_catalogo: 0 }]);
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
-    const { idSeleccionadoConfiguracionOrdenDeTrabajo,accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
+    const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
     const [control, setControl] = useState(false);
-    const [selectedValue, setSelectedValue] = useState("");
+    const [nombreConcepto, setNombreConcepto] = useState([]);
+    const [valoresPrevios, setValoresPrevios] = useState({});
+    const [quitarEdicion, setQuitarEdicion] = useState('');
 
-
+    console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
 
     const handleAddComponent = () => {
+        const newId = totalAccionesComponente.length > 0
+            ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1
+            : 1;
+
         setTotalAccionesComponente(prevAcciones => [
             ...prevAcciones,
-            { id: aumentarAcciones, id_concepto_catalogo: "0" }
+            { id: newId, id_concepto_catalogo: 0 }
         ]);
-        setAumentarAcciones(aumentarAcciones + 1);
     };
-
     const handleRemoveComponent = (idToRemove: number) => {
-        setTotalAccionesComponente(prevAcciones =>
-            prevAcciones.filter(({ id }) => id !== idToRemove)
-        );
+        console.log("Eliminar cargo con ID:", idToRemove); // Verifica el ID
+        setTotalAccionesComponente(prevAcciones => {
+            const nuevasAcciones = prevAcciones.filter(({ id }) => id !== idToRemove);
+            
+            // Obtener los valores actuales del formulario
+            const currentValues = form.getValues('orden_trabajo_cargos');
+    
+            // Filtrar y mapear solo los valores que no han sido eliminados
+            const updatedValues = nuevasAcciones.map(item => {
+                const existingValue = currentValues.find(value => value.id === item.id);
+                return {
+                    id: item.id,
+                    id_concepto_catalogo: existingValue ? existingValue.id_concepto_catalogo : 0, // Mantiene el valor existente o establece 0
+                };
+            });
+    
+            // Resetea el formulario después de eliminar el componente
+            form.setValue('orden_trabajo_cargos', updatedValues);
+    
+            return nuevasAcciones; // Devuelve el nuevo estado
+        });
     };
+    
+    
 
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "Los cargos se han agregado correctamente",
+            description: "El cargo o los cargos de la orden de trabajo se han creado correctamente",
             variant: "success",
         });
     }
@@ -106,7 +130,7 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "Los cargos se han editado correctamente",
+            description: "La orden de trabajo encadenada se ha editado correctamente",
             variant: "success",
         });
     }
@@ -114,7 +138,7 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "Los cargos se han se ha eliminado correctamente",
+            description: "La orden de trabajo encadenada se ha eliminado correctamente",
             variant: "success",
         });
     }
@@ -122,7 +146,7 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "Los cargos se han se ha restaurado correctamente",
+            description: "La orden de trabajo encadenada se ha restaurado correctamente",
             variant: "success",
         });
     }
@@ -145,41 +169,61 @@ const CargosDeLaOrdenDeTrabajoForm = () => {
         });
     }
 
-   
 
-    
-  const form = useForm<OrdenDeTrabajoCargos>({
-    resolver: zodResolver(OrdenDeTrabajoCargosSchema),
-    defaultValues: {
-        orden_trabajo_cargos: totalAccionesComponente.map(item => ({
-        id: item.id,
-        id_concepto_catalogo: "",
-      })),
-    },
-  });
 
-  useEffect(() => {
-    if (accion === "editar") {
-        form.reset({
+
+    const form = useForm<OrdenTrabajoCargo>({
+        resolver: zodResolver(OrdenTrabajoCargosSchema),
+        defaultValues: {
             orden_trabajo_cargos: totalAccionesComponente.map(item => ({
-                id: item.id,
-                id_concepto_catalogo: "", // O el valor predeterminado adecuado
+                id_concepto_catalogo: 0,
             })),
-        });
-    }
-}, [totalAccionesComponente, accion]);
+        },
+    });
+    const [isInitialized, setIsInitialized] = useState(false); // Estado para verificar si ya se inicializó
 
-console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
+    useEffect(() => {
+        if (accionGeneradaEntreTabs === "editar") {
+            const valoresActuales = form.getValues('orden_trabajo_cargos');
+    
+            const nuevosValores = totalAccionesComponente.map((item, index) => ({
+                id: item.id,
+                id_concepto_catalogo: 0,
+            }));
+    
+            // Combina los valores existentes con los nuevos
+            const todosLosValores = [...valoresActuales, ...nuevosValores];
+    
+            // Resetea el formulario con todos los valores
+            form.reset({ orden_trabajo_cargos: todosLosValores });
+        }
+    }, [totalAccionesComponente, accionGeneradaEntreTabs]);
+    
 
-    const onSubmit = async (values: OrdenDeTrabajoCargos) => {
+    const onSubmit = async (values: OrdenTrabajoCargo) => {
         console.log(values);
 
-        const cargos = values.orden_trabajo_cargos.map((item) => ({
-            id: item.id,
-            id_concepto_catalogo: item.id_concepto_catalogo,
-            id_orden_trabajo_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo
+        // Filtrar los cargos para eliminar aquellos con id_concepto_catalogo igual a 0
+        const filteredCargos = values.orden_trabajo_cargos.filter(
+            (cargo) => cargo.id_concepto_catalogo !== 0
+        );
+    
+        console.log(filteredCargos);
+    
+        // Crear un nuevo array en el formato deseado
+        const cargos = filteredCargos.map((cargo) => ({
+            id:0,
+            id_orden_trabajo_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo,
+            id_concepto_catalogo: cargo.id_concepto_catalogo // Solo guardar el id_concepto_catalogo
         }));
-        console.log("Cargos:", cargos);
+    
+        // Formar el objeto final que deseas enviar
+        const payload = {
+            orden_trabajo_cargos: cargos
+        };
+    
+        console.log("Cargos:", payload);
+    
 
 
         const orden_trabajo_cargos = {
@@ -201,26 +245,28 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
                     setLoading(false);
                 } else {
                     setLoading(false);
-                    setOrdenDeTrabajo({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    form.reset({
-                        orden_trabajo_cargos: totalAccionesComponente,
-                    });
-                    setAccion("creado");
+                   
+                    setValoresPrevios(values);
+             
+                    console.log(response);
+                    setAccionGeneradaEntreTabs("recargar");
+                    setQuitarEdicion("quitar")
                     getAnomalias();
                     successToastCreado();
                 }
-            } catch (response) {
-                errorToast();
-                console.log(response);
+            } catch (err) {
+                const message = err.response.data.message;
+                toast({
+                    variant: "destructive",
+                    title: "Oh, no. Error",
+                    description: message,
+                    action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+                });
                 setLoading(false);
             }
         }
 
-        
+
     };
 
     const getAnomalias = async () => {
@@ -261,60 +307,68 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
             });
     };
 
-    
-    
-      useEffect(() => {
-        if (accionGeneradaEntreTabs === "eliminar") {
-          setAbrirInput(false);
-          setControl(false);
-        }
-        if (accionGeneradaEntreTabs === "crear" || accionGeneradaEntreTabs === "creado") {
-          setAbrirInput(true);
-          setControl(true);
-          setErrors({});
-          setOrdenDeTrabajo({
-            id: 0,
-            nombre: "",
-            descripcion: "ninguna",
-          });
-        }
-        if (accionGeneradaEntreTabs === "ver") {
-          setAbrirInput(false);
-          setErrors({});
-          setAccion("");
-          setControl(false);
-          // COMO ES OBJECTO LO PASAMOS A UN ARRAY Y ACCEDEMOS AL OBJETO DENTRO DEL OBJETO PARA QUE NOS MUESTRE
-          //SUS PROPIEDADDES
-          // Transformación de datos
-                const ordenTrabajoCargos = Array.isArray(ordenDeTrabajo.ordenes_trabajo_cargos) ?
-                ordenDeTrabajo.ordenes_trabajo_cargos.map(item => ({
-                id: item.id,
-                id_concepto_catalogo: item.id_concepto_catalogo,
-                })) : [];
 
-                // Reseteo del formulario
+
+
+    useEffect(() => {
+   
+        if (accionGeneradaEntreTabs && ordenDeTrabajo) {
+            const ordenTrabajoCargos = Array.isArray(ordenDeTrabajo.ordenes_trabajo_cargos)
+                ? ordenDeTrabajo.ordenes_trabajo_cargos.map(item => ({
+                    id: item.id,
+                    id_concepto_catalogo: item.id_concepto_catalogo,
+                    conceptos: item.conceptos 
+
+                }))
+                : [];
+
+                const nombresConceptos = ordenTrabajoCargos.map(cargo => cargo.conceptos?.nombre);
+                setNombreConcepto(nombresConceptos);
+                console.log(nombresConceptos);
+
+               
+    
+            if (accionGeneradaEntreTabs === "ver") {
                 form.reset({
-                orden_trabajo_cargos: ordenTrabajoCargos,
+                    orden_trabajo_cargos: ordenTrabajoCargos,
                 });
-                
-                // Actualización del estado y depuración
-                setTotalAccionesComponente(ordenTrabajoCargos);
-                console.log("Valores del cargo:", ordenTrabajoCargos);
-                console.log("Valores del formulario después del reset:", form.getValues());
-        }
-        
+                setControl(true);
+                setAbrirInput(true);
+            }
     
-        if (accion === "editar") {
-          setAbrirInput(true);
-          setControl(true);
-          setErrors({});
+            if (accionGeneradaEntreTabs === "editar") {
+                form.reset({
+                    orden_trabajo_cargos: ordenTrabajoCargos,
+                });
+                setControl(false);
+                setAbrirInput(true);
+            }
+    
+          
+            if (JSON.stringify(ordenTrabajoCargos) !== JSON.stringify(totalAccionesComponente)) {
+                setTotalAccionesComponente(ordenTrabajoCargos);
+            }
+    
+            console.log("Valores del cargo:", ordenTrabajoCargos);
+            console.log("Valores del formulario después del reset:", form.getValues());
         }
-      }, [accion, form.reset, totalAccionesComponente,idSeleccionadoConfiguracionOrdenDeTrabajo]);
+    }, [accionGeneradaEntreTabs, ordenDeTrabajo]);
 
+    useEffect(() => {
+ 
+    
+            setControl(false);
+            setAbrirInput(true);
+    
 
+       
+    }, [accionGeneradaEntreTabs, ordenDeTrabajo]);
+ 
+
+    console.log(form.getValues());
     const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
-
-    //console.log("a ver que datos manda el form", form.getValues());
+    console.log(accionGeneradaEntreTabs);
+    console.log(nombreConcepto);
 
     return (
         <div>
@@ -347,7 +401,7 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
                                 }
 
                                 <div onClick={() => setAccionGeneradaEntreTabs("editar")}>
-                                    <a title="Modificar cargos">
+                                    <a title="Modificar ordenes">
                                         <IconButton>
                                             <Pencil2Icon className="w-[20px] h-[20px]" />
                                         </IconButton>
@@ -357,54 +411,74 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
                         )}
                     </div>
                 </div>
-                {totalAccionesComponente.length < 1 
-                && 
-                <div className="flex justify-center mt-[20vh]">
-                    {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega una o mas cargos.</p> : 
-              <p className="text-muted-foreground text-[20px]">Sin cargos.</p>
-             }
+                {totalAccionesComponente.length < 1
+                    &&
+                    <div className="flex justify-center mt-[20vh]">
+                        {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o mas ordenes de trabajo.</p> :
+                            <p className="text-muted-foreground text-[20px]">Sin cargos.</p>
+                        }
 
                     </div>
                 }
 
 
+
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {totalAccionesComponente.map((accion, index) => {
-                           
+                            console.log(accion.id);
                             return (
                                 <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
-                                        <div className="text-sm font-medium mb-3">
-                                        Selecciona un concepto.
-                                        </div>
+                                    <div className="text-sm font-medium mb-3">
+                                        Selecciona una orden de trabajo.
+                                    </div>
                                     <div className="flex items-center space-x-2">
-                                
                                         <div className="w-full">
-                                       
+                                        
+                                        {
+                                            accionGeneradaEntreTabs == "editar" ? 
                                             <Controller
-                                                name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`}
-                                                control={form.control}
-                                                render={({ field }) => (
+                                            name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`}
+                                            control={form.control}
+                                            render={({ field }) => (
+                                       <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control} />
 
-                                                    
-                                                    <ConceptosOrdenDeTrabajoComboBox form={form} field={field} name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`} setCargoSeleccionado={setConceptoSeleccionado}/>
+                                            )}
+                                        />
+                                            :
+                                            <Controller
+                                            name={`orden_trabajo_cargos.${index}.id_concepto_catalogo`}
+                                            control={form.control}
+                                            render={({ field: { value, ...rest } }) => ( // Desestructuramos field
+                                              <Input
+                                                readOnly
+                                                placeholder=""
+                                                value={nombreConcepto[index] || ""} // Usa el nombre del concepto aquí
+                                                {...rest} // Pasa el resto de las props sin incluir value
+                                              />
+                                            )}
+                                          />
 
-                                                )}
-                                            />
+                                        }
+                                          
                                         </div>
                                         <FormMessage />
-                                        <div className="flex justify-end">
-                                        <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
-                                            <TrashIcon className="w-4 h-4" />
-                                        </Button>
-                                        </div>
-                                      
+                                        {
+                                         accionGeneradaEntreTabs == "editar" &&
+                                         <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
+                                           
+                                         <a title="Eliminar">
+                                         <TrashIcon className="w-4 h-4" />
+                                         </a>
+                                     </Button>
+                                        }
+                                       
                                     </div>
                                 </div>
                             )
                         })}
                         <div className="flex justify-end">
-                            {accionGeneradaEntreTabs == "editar" &&  <Button type="submit">Guardar</Button>}
+                            {accionGeneradaEntreTabs == "editar" && <Button type="submit">Guardar</Button>}
 
                         </div>
                     </form>
@@ -427,4 +501,4 @@ console.log(idSeleccionadoConfiguracionOrdenDeTrabajo);
     );
 };
 
-export default CargosDeLaOrdenDeTrabajoForm;
+export default CargosDeLaOrdenTrabajoForm;

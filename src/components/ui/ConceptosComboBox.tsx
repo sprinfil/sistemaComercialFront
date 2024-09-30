@@ -94,7 +94,7 @@ export const ConceptosComboBox = ({ field, form, name = "id_concepto", setCargoS
                                         key={language.value}
                                         onSelect={() => {
                                             form.setValue(name, language.value);
-                                            setCargoSeleccionado(language.label);
+                                            setCargoSeleccionado(language.value);
                                         }}
                                     >
                                         <Check

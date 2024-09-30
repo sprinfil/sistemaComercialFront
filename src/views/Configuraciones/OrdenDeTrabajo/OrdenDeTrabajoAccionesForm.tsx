@@ -30,10 +30,11 @@ import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario.t
 const OrdenDeTrabajoAccionesSchema = z.object({
   orden_trabajo_accion: z.array(
     z.object({
-      id: z.number().min(0),
-      accion: z.string().nonempty("Acción es requerida"),
-      modelo: z.string().nonempty("Modelo es requerido"),
-      campo: z.string().nonempty("Campo es requerido"),
+      accion: z.string().min(1,"Acción es requerida"),
+      modelo: z.string().min(1,"Modelo es requerido"),
+      campo: z.string(),
+      valor: z.string()
+
     })
   ),
 });
@@ -49,14 +50,22 @@ const OrdenDeTrabajoAccionesForm = () => {
   const [abrirInput, setAbrirInput] = useState(false);
   const [IdParaRestaurar, setIdParaRestaurar] = useState<number | null>(null);
   const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
-  const [totalAccionesComponente, setTotalAccionesComponente] = useState<{ id: number, accion: string, campo: string, modelo: string }[]>([{ id: 0, accion: "", campo: "", modelo: "" }]);
+  const [totalAccionesComponente, setTotalAccionesComponente] = useState<{ id: number, accion: string, campo: string, modelo: string, valor: string}[]>([{ id: 0, accion: "", campo: "", modelo: "", valor:"" }]);
   const [aumentarAcciones, setAumentarAcciones] = useState(1);
   const [control2, setControl2] = useState(false);
   const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs } = ZustandGeneralUsuario();
   const [longitudAcciones, setLongitudAcciones] = useState<number>(0);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-  console.log("esta es la accion generada", accionGeneradaEntreTabs);
+  const [accionControl, setAccionControl] = useState('');
+  
+  const [opcionesEntidades, setOpcionesEntidades] = useState<string[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(null);
+
+  const handleSelect = (index: any) => {
+    setCurrentIndex(index);
+  };
+  
 
   //#region SUCCESSTOAST
   function successToastCreado() {
@@ -91,11 +100,9 @@ const OrdenDeTrabajoAccionesForm = () => {
 
     })
   }
-  //#endregion
 
-
-  //Funcion de errores para el Toast
-  function errorToast() {
+   //Funcion de errores para el Toast
+   function errorToast() {
 
     toast({
       variant: "destructive",
@@ -117,6 +124,11 @@ const OrdenDeTrabajoAccionesForm = () => {
   }
 
 
+  //#endregion
+
+
+ 
+
 
 
 
@@ -129,26 +141,31 @@ const OrdenDeTrabajoAccionesForm = () => {
     resolver: zodResolver(OrdenDeTrabajoAccionesSchema),
     defaultValues: {
       orden_trabajo_accion: totalAccionesComponente.map(item => ({
-        id: item.id,
-        accion: "",
-        modelo: "",
-        campo: "",
+        accion: item.accion || "", // Manejo de valores vacíos
+        modelo: item.modelo || "", // Manejo de valores vacíos
+        campo: item.campo || "", // Manejo de valores vacíos
+        valor: item.valor || "", // Manejo de valores vacíos
       })),
     },
   });
 
-  const { control, handleSubmit, reset } = form;
+  const { control, handleSubmit, reset, getValues} = form;
 
+
+  
   const onSubmit = async (values: OrdenDeTrabajoAcciones) => {
 
+    console.log(values);
     // COMO OCUPO MANDARLE EL OBJETO orden_trabajo_accion
     //Agarramos los valores del form, lo recorremos, y accedemos a sus propiedades
     //COMO ES UN ARREGLO PUEDE SER 1 O MAS, y le metemos el id del catalogo(que es aparte del form)
     const valoresAcciones = values.orden_trabajo_accion.map(accion => ({
-      id: accion.id,
-      accion: accion.accion,
-      modelo: accion.modelo,
-      campo: accion.campo,
+      id: 0,
+      accion: accion.accion || "", // Manejo de valores vacíos
+      modelo: accion.modelo || "", // Manejo de valores vacíos
+      campo: accion.campo || "", // Manejo de valores vacíos
+      valor: accion.valor || "", // Manejo de valores vacíos
+
       id_orden_trabajo_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo
     }));
 
@@ -163,6 +180,7 @@ const OrdenDeTrabajoAccionesForm = () => {
       try {
         const response = await axiosClient.put(`/OrdenTrabajoCatalogo/create/acciones`, orden_trabajo_accion);
         const data = response.data;
+        console.log(response);
         if (data.restore) {
           setIdParaRestaurar(data.tipoToma_id);
           setModalReactivacionOpen(true);
@@ -176,27 +194,39 @@ const OrdenDeTrabajoAccionesForm = () => {
             nombre: "",
             descripcion: "ninguna",
           });
-          reset({
+          setAccionGeneradaEntreTabs("ver");
+          form.reset({
             orden_trabajo_accion: totalAccionesComponente.map(item => ({
               id: item.id,
               accion: item.accion,
               modelo: item.modelo,
-              campo: item.modelo,
+              campo: item.campo,
+              valor: item.valor,
+
             })),
           });
-          setAccion("creado");
+          setAccionGeneradaEntreTabs("creado");
           getAnomalias();
           successToastCreado();
         }
-      } catch (response) {
+      } catch (err) {
         errorToast();
-        console.log(response);
+        console.log(err);
+        const message = err.response.data.message;
+        toast({
+          variant: "destructive",
+          title: "Oh, no. Error",
+          description: message,
+          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+    
         setLoading(false);
       }
     }
 
   };
 
+  //#region metodos no usados
   const getAnomalias = async () => {
     setLoadingTable(true);
     try {
@@ -244,6 +274,8 @@ const OrdenDeTrabajoAccionesForm = () => {
     }
   };
 
+  //#endregion
+  
   
 
   useEffect(() => {
@@ -255,10 +287,15 @@ const OrdenDeTrabajoAccionesForm = () => {
       setControl2(false);
       setAbrirInput(true);
       setErrors({});
-      setOrdenDeTrabajo({
-        id: 0,
-        nombre: "",
-        descripcion: "ninguna",
+      form.reset({
+        orden_trabajo_accion: totalAccionesComponente.map(item => ({
+          id: item.id,
+          accion: item.accion,
+          modelo: item.modelo,
+          campo: item.campo,
+          valor: item.valor,
+
+        })),
       });
     }
     if (accionGeneradaEntreTabs === "ver") {
@@ -282,17 +319,29 @@ const OrdenDeTrabajoAccionesForm = () => {
           accion: item.accion,
           modelo: item.modelo,
           campo: item.campo,
+          valor: item.valor,
         })) : [];
+        console.log(ordenTrabajoAcciones);
+
+
+   
 
       //una vez recorrido reseteamos el formulario. que viene siendo el objeto orden_trabajo_accion
       //con sus propiedades.
-      reset({
+      form.reset({
         orden_trabajo_accion: ordenTrabajoAcciones,
 
       });
 
-      setIsDataLoaded(true); // Marca los datos como cargados
 
+
+      console.log("Formulario reseteado con:", form.getValues());
+
+      setIsDataLoaded(true); // Marca los datos como cargados
+      // Asegúrate de que el estado también se esté limpiando aquí si es necesario
+      setModelo(ordenTrabajoAcciones[0]?.modelo || '');
+      setCampo(ordenTrabajoAcciones[0]?.campo || '');
+      setValorSeleccionado(ordenTrabajoAcciones[0]?.valor || '');
 
       setTotalAccionesComponente(ordenTrabajoAcciones)
       setLongitudAcciones(ordenTrabajoAcciones.length);
@@ -313,36 +362,188 @@ const OrdenDeTrabajoAccionesForm = () => {
 
 
   const handleAddComponent = () => {
-    setTotalAccionesComponente(prevAcciones => [
-      ...prevAcciones,
-      { id: aumentarAcciones }
-    ]);
-    setAumentarAcciones(aumentarAcciones + 1);
+    const nuevaAccion = { id: Date.now(), modelo: '', campo: '', valor: '', accion: '' };
+    setTotalAccionesComponente((prev) => [...prev, nuevaAccion]);
   };
 
   const handleRemoveComponent = (idToRemove: number) => {
-    setTotalAccionesComponente(prevAcciones =>
-      prevAcciones.filter(({ id }) => id !== idToRemove)
-    );
-  };
+    console.log("Eliminar acción con ID:", idToRemove); // Verifica el ID
+    setTotalAccionesComponente(prevAcciones => {
+        const nuevasAcciones = prevAcciones.filter(({ id }) => id !== idToRemove);
+        
+        // Obtener los valores actuales del formulario
+        const currentValues = form.getValues('orden_trabajo_accion');
+
+        // Filtrar y mapear solo los valores que no han sido eliminados
+        const updatedValues = nuevasAcciones.map(item => {
+            const existingValue = currentValues.find(value => value.id === item.id);
+            return {
+                id: item.id,
+                accion: existingValue ? existingValue.accion : '', 
+                modelo: existingValue ? existingValue.modelo : '', 
+                campo: existingValue ? existingValue.campo : '',
+                valor: existingValue ? existingValue.valor : '', 
+            };
+        });
+
+        // Resetea el formulario después de eliminar el componente
+        form.setValue('orden_trabajo_accion', updatedValues);
+
+        return nuevasAcciones; // Devuelve el nuevo estado
+    });
+};
+
 
   const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-gray-200';
-  console.log("esto se le mete al objeto total acciones", JSON.stringify(totalAccionesComponente));
-  console.log("esto es lo que recibe al final", form.getValues());
 
+
+
+ 
+  // AQUI DEFINIMOS LAS ENTIDADES Y SUS OPCIONES DISPONIBLES
+  //ESTE OBJETO MAPEA LAS ENTIDADES a un conjunto de propiedades, cada una de las cuales tiene un array de opciones.
+  const opcionesPorEntidad = {
+    medidores: {
+      estatus: ["activa", "inactivo"],
+    },
+    toma: {
+      estatus: ["pendiente confirmación inspección", "pendiente de inspeccion", "pendiente de instalacion", "activa", "baja definitiva", "baja temporal", "en proceso", "limitado"],
+      tipo_contratacion: ["normal", "condicionado", "desarrollador"],
+      tipo_servicio: ["lectura", "promedio"],
+      contrato_agua: ["activa", "de baja"], 
+      contrato_alcantarillado: ["activa", "de baja"], 
+      contrato_saneamiento: ["activa", "de baja"],
+    },
+    servicios: {
+      servicio_contratado: ["agua", "alcantarillado", "saneamiento"],
+      estatus: ["activa", "de baja"],
+    },
+  };
+  const [modelo, setModelo] = useState('');
+  const [campo, setCampo] = useState('');
+  const [opcionesCampos, setOpcionesCampos] = useState([]);
+  const [opcionesValores, setOpcionesValores] = useState([]);
+  const [campoDisabled, setCampoDisabled] = useState(false);
+  const [acciongg, setAcciongg] = useState('');
+  const [valorSeleccionado, setValorSeleccionado] = useState('');
+  const [accionSeleccionada, setAccionSeleccionada] = useState('');
+
+  
+
+  //Si hay un modelo seleccionado, obtiene las claves (campos) de las opciones correspondientes y las asigna a opcionesCampos.
+  //Resetea el campo y los valores seleccionados.
   useEffect(() => {
-    if (totalAccionesComponente.length > 0) {
-      reset({ orden_trabajo_accion: totalAccionesComponente });
+    if (modelo) {
+      // Obtén las claves de las opciones correspondientes
+      setOpcionesCampos(Object.keys(opcionesPorEntidad[modelo] || {}));
     }
-  }, [totalAccionesComponente, reset]);
+    
+  }, [modelo, accionGeneradaEntreTabs]);
 
+
+useEffect(() => {
+  if(accionGeneradaEntreTabs == "crear")
+  {
+    totalAccionesComponente.forEach((item, index) => {
+      form.setValue(`orden_trabajo_accion.${index}.accion`, ''); 
+      form.setValue(`orden_trabajo_accion.${index}.modelo`, ''); 
+      form.setValue(`orden_trabajo_accion.${index}.campo`, ''); 
+      form.setValue(`orden_trabajo_accion.${index}.valor`, ''); 
+
+  });
+  }
+  if(accionGeneradaEntreTabs == "editar")
+  {
+    if(totalAccionesComponente.length < 1)
+      {
+        totalAccionesComponente.forEach((item, index) => {
+          form.setValue(`orden_trabajo_accion.${index}.accion`, ''); 
+          form.setValue(`orden_trabajo_accion.${index}.modelo`, ''); 
+          form.setValue(`orden_trabajo_accion.${index}.campo`, ''); 
+          form.setValue(`orden_trabajo_accion.${index}.valor`, ''); 
+    
+      });
+      }
+  }
+
+ 
+}, [acciongg, accionGeneradaEntreTabs]);
+
+
+useEffect(() => {
+  // Si la acción es "ver", no limpia nada
+  if (accionGeneradaEntreTabs === 'ver') {
+    setOpcionesEntidades(acciongg === 'registrar' ? ['medidores'] : ['toma', 'medidores', 'servicios']);
+    
+    return; 
+  }
+
+ 
+ 
+}, [acciongg, accionGeneradaEntreTabs]);
+
+  
+useEffect(() => {
+  if (modelo && campo) {
+    const nuevasOpcionesValores = opcionesPorEntidad[modelo]?.[campo] || [];
+    
+    // Asegúrate de que totalAccionesComponente está actualizado y no vacío
+    if (totalAccionesComponente.length > 0) {
+      const nuevasAcciones = [...totalAccionesComponente];
+      // Si tienes un índice específico que deseas actualizar, podrías definirlo aquí
+      // Por ejemplo, podrías usar el primer índice (0) para demostración
+      const index = 0; // Cambia esto según tu lógica
+
+      nuevasAcciones[index].valor = ''; // Limpia el valor anterior
+      setTotalAccionesComponente(nuevasAcciones);
+    }
+
+    setOpcionesValores(nuevasOpcionesValores);
+  }
+}, [modelo, campo]);
+
+
+
+const handleEntidadChange = (index, value) => {
+  const nuevasAcciones = [...totalAccionesComponente];
+  nuevasAcciones[index] = { ...nuevasAcciones[index], modelo: value, campo: '', valor: '' };
+  setTotalAccionesComponente(nuevasAcciones);
+  
+  // Limpia opciones y actualiza campos
+  setOpcionesCampos(value === 'medidores' ? ['estatus'] : value === 'toma' ? ['tipo_contratacion', 'tipo_servicio', 'estatus', 'contrato_agua', 'contrato_alcantarillado', 'contrato_saneamiento'] : ['servicio_contratado', 'estatus']);
+};
+
+
+
+// Actualiza el campo y sus valores
+const handleCampoChange = (index, value) => {
+  const nuevasAcciones = [...totalAccionesComponente];
+  nuevasAcciones[index].campo = value;
+  nuevasAcciones[index].valor = ''; 
+  setTotalAccionesComponente(nuevasAcciones);
+
+  // Actualiza opciones de valores
+  setOpcionesValores(opcionesPorEntidad[nuevasAcciones[index].modelo]?.[value] || []);
+};
+
+const [prueba, setPrueba] = useState(['lectura', 'promedio'])
+
+console.log(opcionesValores);
+
+  const formatearClave = (clave: string) => {
+    return clave
+      .replace(/_/g, " ") // Reemplaza guion bajo con espacio
+      .replace(/\b\w/g, (letra) => letra.toUpperCase()); // Capitaliza la primera letra de cada palabra
+  };
   return (
     <div>
-      <div className="overflow-auto">
+      <div className="">
         <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
           <div className='h-[20px] w-full flex items-center justify-end '>
             <div className="mb-[10px] h-full w-full mx-4">
               {ordenDeTrabajo.nombre && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
+              {opcionesValores.map((valor, index) => (
+                           <div> {valor}</div>
+                         ))}
             </div>
             {ordenDeTrabajo.nombre && (
               <>
@@ -350,6 +551,7 @@ const OrdenDeTrabajoAccionesForm = () => {
                   method={onDelete}
                   button={
                     <a title="Eliminar">
+                      
                       <IconButton>
                         <TrashIcon className="w-[20px] h-[20px]" />
                       </IconButton>
@@ -382,117 +584,255 @@ const OrdenDeTrabajoAccionesForm = () => {
           {totalAccionesComponente.length < 1
             &&
             <div className="flex justify-center mt-[20vh]">
-             {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega una o mas acciones.</p> : 
+             {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega una o más acciones.</p> : 
               <p className="text-muted-foreground text-[20px]">Sin acciones.</p>
              }
 
             </div>
           }
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+           <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
             {totalAccionesComponente.map((item, index) => (
-
               <div key={item.id} className={`p-4 border ${borderColor} rounded-md`}>
-
+                <p>Acción {index + 1}</p>
                 <div className="flex justify-end mb-5">
                   <button type="button" onClick={() => handleRemoveComponent(item.id)}>
-                    <a title="Borrar acción">
+                    {
+                      accionGeneradaEntreTabs == "editar"
+                      &&
+                      <a title="Borrar acción">
                       <TrashIcon className="w-[2.5vh] h-[2.5vh]" />
                     </a>
+                    }
+                  
                   </button>
-
                 </div>
-      
-                <div className="w-full flex space-x-2" >
-                  <div>
-                  <div className="text-sm font-medium mb-2">
-                  Selecciona una acción.
-                </div>
-                  <div className="w-[65vh]">
-                    <Controller
-                      name={`orden_trabajo_accion.${index}.accion`}
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          onValueChange={(value) => field.onChange((value))}
-                          value={(field.value)}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecciona una acción" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="registrar">Registrar</SelectItem>
-                            <SelectItem value="modificar">Modificar</SelectItem>
-                            <SelectItem value="quitar">Quitar</SelectItem>
-                          </SelectContent>
-                        </Select>
+                <div className="text-sm font-medium mb-2">
+                      Selecciona una acción.
+                    </div>
+                    <div className="w-full">
+                      {accionGeneradaEntreTabs === "ver" ? (
+                        <Controller
+                          name={`orden_trabajo_accion.${index}.accion`}
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                handleAccionChange(index, value);
+                              }}
+                              value={field.value || ''} 
+                              disabled
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecciona una acción" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="registrar">Registrar</SelectItem>
+                                <SelectItem value="modificar">Modificar</SelectItem>
+                                <SelectItem value="quitar">Quitar</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
+                      ) : (
+                        <Controller
+                          name={`orden_trabajo_accion.${index}.accion`}
+                          control={control}
+                          render={({ field }) => (
+                            <Select
+                              onValueChange={(value) => {
+                                field.onChange(value);
+                                handleAccionChange(index, value);
+                              }}
+                              value={field.value || ''} 
+                              >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecciona una acción" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="registrar">Registrar</SelectItem>
+                                <SelectItem value="modificar">Modificar</SelectItem>
+                                <SelectItem value="quitar">Quitar</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
                       )}
-                    />
-                  </div>
-                  </div>
-              
+                    </div>
 
-
-                  <div className="w-full">
+                <div className="w-full flex space-x-2">
+                  
+                <div className="w-full mt-4">
                     <div className="text-sm font-medium mb-2">
-                      Selecciona un modelo.
+                      Selecciona una entidad.
                     </div>
                     <Controller
                       name={`orden_trabajo_accion.${index}.modelo`}
                       control={control}
                       render={({ field }) => (
                         <Select
-                          onValueChange={(value) => field.onChange((value))}
-                          value={(field.value)}
+                          disabled={accionGeneradaEntreTabs === "ver"}
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            handleEntidadChange(index, value);
+                          }}
+                          value={field.value || ''}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Selecciona un modelo" />
+                            <SelectValue placeholder="Selecciona una entidad" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="toma">Tomas</SelectItem>
-                            <SelectItem value="medidor">Medidor</SelectItem>
-                            <SelectItem value="contratos">Contratos</SelectItem>
-                            <SelectItem value="usuario">Usuario</SelectItem>
-
+                            {opcionesEntidades.map((entidad) => (
+                              <SelectItem key={entidad} value={entidad}>
+                                {entidad.charAt(0).toUpperCase() + entidad.slice(1)}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       )}
                     />
                   </div>
-
                 </div>
+
+                
+                  <div>
+
+            
+                 
+                  </div>
+
+                 
+
                 <div className="w-full mt-5">
                   <div className="text-sm font-medium mb-2">
                     Selecciona un campo.
                   </div>
-                  <Controller
+                  {accionGeneradaEntreTabs === "ver" ?
+                 <Controller
+                 name={`orden_trabajo_accion.${index}.campo`}
+                 control={control}
+                 render={({ field }) => {
+                   return (
+                     <Select
+                       disabled={campoDisabled}
+                       onValueChange={(value) => {
+                         field.onChange(value);
+                         handleCampoChange(index, value);
+                       }}
+                       value={field.value}
+                       disabled
+                     >
+                       <SelectTrigger>
+                         <SelectValue placeholder="Selecciona un campo" />
+                       </SelectTrigger>
+                       <SelectContent>
+                         {opcionesCampos.map((campo, index) => (
+                           <SelectItem key={index} value={campo}>
+                             {campo.charAt(0).toUpperCase() + campo.slice(1)}
+                           </SelectItem>
+                         ))}
+                       </SelectContent>
+                     </Select>
+                   );
+                 }}
+               />
+                :
+                <Controller
                     name={`orden_trabajo_accion.${index}.campo`}
                     control={control}
                     render={({ field }) => (
+                      
                       <Select
-                        onValueChange={(value) => field.onChange((value))}
-                        value={(field.value)}
+                        disabled={campoDisabled}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          handleCampoChange(index, value);
+                        }}
+                        value={field.value}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Selecciona un campo" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="estatus">Estatus</SelectItem>
-                          <SelectItem value="tipo_contratacion">Tipo de contratación</SelectItem>
+                          {opcionesCampos.map((campo) => (
+                            <SelectItem key={campo} value={campo}>
+                              {formatearClave(campo)}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     )}
                   />
+                }
+                  
+                </div>
+                
+                <div className="w-full mt-5">
+                  <div className="text-sm font-medium mb-2">
+                    Selecciona un valor.
+                  </div>
+                  {accionGeneradaEntreTabs === "ver" ?
+                   <Controller
+                   name={`orden_trabajo_accion.${index}.valor`}
+                   control={control}
+                   render={({ field }) => (
+                     <Select
+                       disabled={campoDisabled}
+                       onValueChange={(value) => {
+                        console.log('Valor seleccionado:', value); // Debugging
+                        field.onChange(value)}}
+                       value={field.value}
+                       disabled
+                     >
+                       <SelectTrigger>
+                         <SelectValue placeholder="Selecciona un valor" />
+                       </SelectTrigger>
+                       <SelectContent>
+                         {opcionesValores.map((valor) => (
+                           <SelectItem value={valor}>
+                             {valor}
+                           </SelectItem>
+                         ))}
+                       </SelectContent>
+                     </Select>
+                   )}
+                 />
+                :
+                <Controller
+                name={`orden_trabajo_accion.${index}.valor`}
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    disabled={campoDisabled}
+                    onValueChange={(value) =>{
+                      field.onChange(value)}}
+                    value={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona un valor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {opcionesValores.map((valor, index) => (
+                        <SelectItem key={index} value={valor}>
+                          {valor}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              }
+                 
                 </div>
               </div>
             ))}
-            <div className="col-span-full flex justify-end">
+            <div className="flex justify-end">
               {accionGeneradaEntreTabs == "editar" &&
-                <Button type="submit" isLoading={loading}>
-                  {accionGeneradaEntreTabs === "crear" ? "Crear" : "Actualizar"}
-                </Button>}
+                          <Button type= "submit">Actualizar</Button>
+
+              }
 
             </div>
-
           </form>
         </div>
 

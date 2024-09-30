@@ -12,9 +12,7 @@ import TipoDeToma from './TipoDeToma'
 import { useStateContext } from '../../../contexts/ContextProvider'
 import { Colonia } from './Colonias-Calles/Colonia'
 import OrdenDeTrabajo from './OrdenDeTrabajo'
-import notFound from "../../../img/notFound.svg"
 import Caja from './Caja'
-
 const Catalogos = () => {
 
   const { permissions, user } = useStateContext();

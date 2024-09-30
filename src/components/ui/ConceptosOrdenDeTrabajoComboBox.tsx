@@ -24,6 +24,8 @@ import Loader from './Loader.tsx';
 type Status = {
     value: string;
     label: string;
+    disabled?: boolean; // Añadido parámetro disabled
+
 };
 
 type ConceptosComboBoxNewProps = {
@@ -31,7 +33,7 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void;
 };
 
-export const ConceptosOrdenDeTrabajoComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado }: ConceptosComboBoxNewProps) => {
+export const ConceptosOrdenDeTrabajoComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado, disabled = false}: ConceptosComboBoxNewProps) => {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([]);
     const [open, setOpen] = React.useState(false);
@@ -60,7 +62,7 @@ export const ConceptosOrdenDeTrabajoComboBox = ({ field, form, name = "id_concep
 
     return (
         <div>
-            <Popover>
+            <Popover disabled = {disabled}>
                 <PopoverTrigger asChild>
                     <FormControl>
                         <Button
@@ -70,6 +72,7 @@ export const ConceptosOrdenDeTrabajoComboBox = ({ field, form, name = "id_concep
                                 "w-full justify-between",
                                 !field.value && "text-muted-foreground"
                             )}
+                            disabled={disabled} 
                         >
                             {field.value
                                 ? languages.find(
@@ -88,6 +91,7 @@ export const ConceptosOrdenDeTrabajoComboBox = ({ field, form, name = "id_concep
                             <CommandGroup>
                                 {loading && <Loader />}
                                 {!loading && languages.map((language) => (
+                                    
                                     <CommandItem
                                         value={language.label}
                                         key={language.value}
@@ -95,6 +99,7 @@ export const ConceptosOrdenDeTrabajoComboBox = ({ field, form, name = "id_concep
                                             form.setValue(name, language.value);
                                             setCargoSeleccionado(language.value);
                                         }}
+                                        
                                     >
                                         <Check
                                             className={cn(

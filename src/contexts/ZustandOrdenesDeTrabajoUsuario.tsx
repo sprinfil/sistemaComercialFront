@@ -10,6 +10,9 @@ interface OrdenTrabajoUsuarios {
   setOrdenDeTrabajos: (ordenDeTrabajos: OrdenDeTrabajo[]) => void;
   setAccion: (accion: string) => void;
   setLoadingTable: (loading: boolean) => void;
+  tipoDeOrdenDeTrabajo: string;
+  setTipoDeOrdenDeTrabajo: (tipoDeOrdenDeTrabajo: string) => void;
+
 }
 
 export const zustandOrdenTrabajoStore = create<OrdenTrabajoUsuarios>((set) => ({
@@ -21,5 +24,7 @@ export const zustandOrdenTrabajoStore = create<OrdenTrabajoUsuarios>((set) => ({
   setOrdenDeTrabajos: (ordenDeTrabajos) => set({ ordenDeTrabajos }),
   setAccion: (accion) => set({ accion }),
   setLoadingTable: (loading) => set({ loadingTable: loading }),
+  tipoDeOrdenDeTrabajo:"",
+  setTipoDeOrdenDeTrabajo:(tipoDeOrdenDeTrabajo) => set({ tipoDeOrdenDeTrabajo })
 }));
 

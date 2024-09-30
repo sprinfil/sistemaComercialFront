@@ -33,6 +33,8 @@ interface GeneralUsuario {
   setUsuario: (usuario: BuscarUsuario) => void;
   usuariosEncontrados: BuscarUsuario[];
   setUsuariosEncontrados: (usuarios: BuscarUsuario[]) => void;
+  usuariosEncontradosMonitorContratacion: BuscarUsuario[];
+  setUsuariosEncontradosMonitorContratacion: (usuariosEncontradosMonitorContratacion: BuscarUsuario[]) => void;
   dataCajaUser: BuscarUsuario[];
   setDataCajaUser: (dataCajaUser: BuscarUsuario[]) => void;
   clearUsuariosEncontrados: () => void;
@@ -68,7 +70,31 @@ interface GeneralUsuario {
  setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo: number) => void;
  accionGeneradaEntreTabs: string,
   setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs: string) => void;
+  idSeleccionadoGenerarOrdenDETrabajoToma: number | null;
+  setIdSeleccionadoGenerarOrdenDETrabajoToma: (idSeleccionadoGenerarOrdenDETrabajoToma: number) => void;
+  idSeleccionadoTomaAsignacionOT: number | null;
+  setIdSeleccionadoTomaAsignacionOT: (idSeleccionadoTomaAsignacionOT: number) => void;
+  controlTablaOperadorOTIndividual: boolean;
+  setControlTablaOperadorOTIndividual:(controlTablaOperadorOTIndividual: boolean) => void;
+  idSeleccionadoAsignarOrdenDeTrabajoToma: number | null;
+  setIdSeleccionadoAsignarOrdenDeTrabajoToma: (idSeleccionadoAsignarOrdenDeTrabajoToma: number) => void;
+  abrirModalInformativo: boolean
+  setAbrirModalInformativo: (abrirModalInformativo: boolean) => void;
 
+  mostrarUsuarioCambioPropietario: boolean
+  setMostrarUsuarioCambioPropietario: (mostrarUsuarioCambioPropietario: boolean) => void;
+
+  buscarTomaAgregarLecturaMonitor: boolean
+  setBuscarTomaAgregarLecturaMonitor: (buscarTomaAgregarLecturaMonitor: boolean) => void;
+
+  agregarPeriodoFacturacion: []
+  setAgregarPeriodoFacturacion: (agregarPeriodoFacturacion: []) => void;
+
+  
+  agregarAnomalia: []
+  setAgregarAnomalia: (agregarAnomalia: []) => void;
+
+  
 }
 
 export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
@@ -84,6 +110,8 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
   setTomas: (tomas) => set({ tomas }),
   usuariosEncontrados: [],
   setUsuariosEncontrados: (usuarios) => set({ usuariosEncontrados: usuarios }),
+  usuariosEncontradosMonitorContratacion: [],
+  setUsuariosEncontradosMonitorContratacion: (usuarios) => set({ usuariosEncontradosMonitorContratacion: usuarios }),
   tomaUsuariosEncontrados: [],
   setTomaUsuariosEncontrados: (usuarios) => set({ tomaUsuariosEncontrados: usuarios }),
   usuariosRecuperado: [],
@@ -115,5 +143,26 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
  setIdSeleccionadoConfiguracionOrdenDeTrabajo: (idSeleccionadoConfiguracionOrdenDeTrabajo) => set({idSeleccionadoConfiguracionOrdenDeTrabajo}),
  accionGeneradaEntreTabs: '',
  setAccionGeneradaEntreTabs: (accionGeneradaEntreTabs) => set({accionGeneradaEntreTabs}),
+ idSeleccionadoGenerarOrdenDETrabajoToma: null,
+ setIdSeleccionadoGenerarOrdenDETrabajoToma: (idSeleccionadoGenerarOrdenDETrabajoToma: number) => set({idSeleccionadoGenerarOrdenDETrabajoToma}),
+ idSeleccionadoTomaAsignacionOT: null,
+ setIdSeleccionadoTomaAsignacionOT: (idSeleccionadoTomaAsignacionOT: number) => set({idSeleccionadoTomaAsignacionOT}),
+ controlTablaOperadorOTIndividual: false,
+ setControlTablaOperadorOTIndividual:(controlTablaOperadorOTIndividual) => set({controlTablaOperadorOTIndividual}),
+ idSeleccionadoAsignarOrdenDeTrabajoToma: null,
+ setIdSeleccionadoAsignarOrdenDeTrabajoToma: (idSeleccionadoAsignarOrdenDeTrabajoToma: number) => set({idSeleccionadoAsignarOrdenDeTrabajoToma}),
+ abrirModalInformativo: false,
+ setAbrirModalInformativo:(abrirModalInformativo) => set({abrirModalInformativo}),
+ mostrarUsuarioCambioPropietario: false,
+ setMostrarUsuarioCambioPropietario:(mostrarUsuarioCambioPropietario) => set({mostrarUsuarioCambioPropietario}),
+ buscarTomaAgregarLecturaMonitor: false,
+ setBuscarTomaAgregarLecturaMonitor: (value) => set({ buscarTomaAgregarLecturaMonitor: value }),
+
+ agregarPeriodoFacturacion:[],
+ setAgregarPeriodoFacturacion:(agregarPeriodoFacturacion) => set({agregarPeriodoFacturacion}),
+
+ agregarAnomalia:[],
+ setAgregarAnomalia:(agregarAnomalia) => set({agregarAnomalia}),
+
 }));
 

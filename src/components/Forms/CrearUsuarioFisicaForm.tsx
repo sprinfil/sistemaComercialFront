@@ -42,7 +42,7 @@ const CrearUsuarioFisicaForm = () => {
    function successToastCreado() {
     toast({
         title: "¡Éxito!",
-        description: "La anomalía se ha creado correctamente",
+        description: "El usuario se ha creado correctamente",
         variant: "success",
 
     })
@@ -84,18 +84,31 @@ const CrearUsuarioFisicaForm = () => {
             const response = await axiosClient.post('/usuarios/create', values);
             console.log('Usuario creado:', response.data);
             successToastCreado();
-        } catch (error) {
-            if (error.response && error.response.data) {
-                errorToast();
-                console.error('Errores de validación:', error.response.data);
-                setErrors(error.response.data);
+        } catch (response) {
+            console.log(response.response.data.message);
+            if(response.response.data.message === "The curp has already been taken.")
+                toast({
+                    title: "Error",
+                    description: "La CURP ya existe.",
+                    variant: "destructive",
+                    action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                })
+                if(response.response.data.message === "The rfc has already been taken.")
+                    toast({
+                        title: "Error",
+                        description: "El RFC ya existe.",
+                        variant: "destructive",
+                        action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                    })
+                    if(response.response.data.message === "The correo has already been taken.")
+                        toast({
+                            title: "Error",
+                            description: "El correo ya existe.",
+                            variant: "destructive",
+                            action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                        })
               
-            } else {
-                errorToast();
-                console.error('Error general:', error);
-                setErrors({ general: 'Ocurrió un error al crear el usuario' });
-               
-            }
+
         } finally {
             setLoading(false);
         }
@@ -103,7 +116,7 @@ const CrearUsuarioFisicaForm = () => {
 
     return (
         
-        <div className="overflow-auto">
+        <div className="overflow-auto ">
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
@@ -115,10 +128,10 @@ const CrearUsuarioFisicaForm = () => {
                 {errors.general && <Error errors={errors.general} />}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <div className="border p-9">
+                        <div className="border p-9 overflow-auto">
                            
                             <div className="">
-                            <div className="flex space-x-5 w-[100%] items-center justify-normal">
+                            <div className="flex space-x-5 w-[100%]  items-center justify-normal">
                                 <div className="w-[68vh]">
                                 <FormField
                                     control={form.control}
@@ -226,7 +239,7 @@ const CrearUsuarioFisicaForm = () => {
                                         </FormItem>
                                     )}
                                 /> 
-                                <div className="flex space-x-20 w-[202vh]">
+                                <div className="flex space-x-5 w-[120vh]">
                                     <div className="w-[200vh]">
                                         <FormField
                                     control={form.control}
@@ -268,7 +281,7 @@ const CrearUsuarioFisicaForm = () => {
                                 
                             </div>
                             {loading && <Loader />}
-                            <Button type="submit" className="mt-[5vh] w-[20vh] ml-[182vh]">Guardar</Button>
+                            <Button type="submit" className="mt-[5vh] w-[20vh]">Guardar</Button>
                         </div>
                 
                     </form>

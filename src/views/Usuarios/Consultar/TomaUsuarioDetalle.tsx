@@ -8,9 +8,12 @@ import PantallaDetalleUsuario from './VistasDetalleUsuario/PantallaDetalleUsuari
 import InformaciónGeneral from './VistasDetalleUsuario/InformaciónGeneral';
 import InformacionFiscal from './VistasDetalleUsuario/InformacionFiscal';
 import CrearOrdenDeTrabajo from './VistasDetalleUsuario/CrearOrdenDeTrabajo';
+import { GestionMedidores } from './VistasDetalleUsuario/GestionMedidores.tsx';
+import CargosUsuario from './VistasDetalleUsuario/CargosUsuario.tsx';
 import TomasUsuario from './VistasDetalleUsuario/TomasUsuario';
 import { BreadCrumbDetalleTomaUsuario } from '../../../components/ui/breadCrumbDetalleTomaUsuario.tsx';
 import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
+import { GestionDescuentos } from './VistasDetalleUsuario/GestionDescuentos.tsx';
 export const TomaUsuarioDetalle = () => {
 
   const {toma, setToma,tomasRuta, usuariosEncontrados, setUsuariosRecuperado, usuariosRecuperado, setTomaUsuariosEncontrados, tomaUsuariosEncontrados}= ZustandGeneralUsuario()
@@ -18,7 +21,7 @@ export const TomaUsuarioDetalle = () => {
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
   useEffect(() => {
-    console.log("ESTE USUARIO LLEGA A LA TOMA DETALLE:", tomaUsuariosEncontrados);
+    //console.log("ESTE USUARIO LLEGA A LA TOMA DETALLE:", tomaUsuariosEncontrados[0]?.usuario);
 
     if (usuariosEncontrados.length > 0) {
       // Establece el estado global solo si hay usuarios encontrados
@@ -29,10 +32,10 @@ export const TomaUsuarioDetalle = () => {
     {
       console.log("no hay longitud");
     }
-  }, [usuariosEncontrados, setUsuariosRecuperado, tomaUsuariosEncontrados,]);
+  }, [usuariosEncontrados, setUsuariosRecuperado, tomaUsuariosEncontrados]);
 
-  console.log("ESTE ES EL USUARIO RECUPERADO " + JSON.stringify(usuariosRecuperado));
-
+  //console.log("ESTE ES EL USUARIO RECUPERADO " + JSON.stringify(usuariosRecuperado));
+  console.log(usuariosEncontrados[0])
   const options = [
     {
       titulo: "Principal",
@@ -49,7 +52,18 @@ export const TomaUsuarioDetalle = () => {
           nombre: "Ordenes de trabajo",
           pantalla: <CrearOrdenDeTrabajo/>
         },
-       
+        {
+          nombre: "Medidores",
+          pantalla: <GestionMedidores/>
+        },
+        {
+          nombre: "Cargos",
+          pantalla: <CargosUsuario/>
+        },
+        {
+          nombre: "Descuentos",
+          pantalla: <GestionDescuentos/>
+        },
       ]
     }
   ];

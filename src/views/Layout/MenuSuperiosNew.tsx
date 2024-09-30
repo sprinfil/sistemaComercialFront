@@ -30,7 +30,7 @@ import  logo_menu  from "../../img/logosapamenusuperiornew.png"
 export const MenuSuperiosNew = () => {
     const { setToken, setUser, user, permissions, setPermissions, setServerStatus } = useStateContext();
     const { set_titulo, set_icono, titulo } = subMenuZustand();
-    const [loading_permissions, set_loading_permissions] = useState(false);
+    const [loading_permissions, set_loading_permissions] = useState(true);
 
     const logout = (e: MouseEvent<SVGSVGElement>): void => {
         e.preventDefault();
@@ -50,7 +50,7 @@ export const MenuSuperiosNew = () => {
 
     useEffect(() => {
         getPermissions();
-    }, [user]);
+    }, []);
 
 
     //obtener los permisos del usuario
@@ -136,13 +136,13 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Generar Ordenes de Trabajo",
                     descripcion: "Genera ordenes para operadores de campo",
-                    route: "/proximamente",
+                    route: "/crear/orden/masiva",
                     permission: ""
                 },
                 {
                     titulo: "Asignar Ordenes de Trabajo",
                     descripcion: "Asigna Ordenes de trabajo para operadores de campo",
-                    route: "/proximamente",
+                    route: "/asignar/orden/masiva",
                     permission: ""
                 },
             ]
@@ -155,7 +155,7 @@ export const MenuSuperiosNew = () => {
                 {
                     titulo: "Monitores",
                     descripcion: "Haz consultas de cualquier entidad que necesites.",
-                    route: "/proximamente",
+                    route: "/monitores",
                     permission: ""
                 },
             ]
@@ -250,7 +250,7 @@ export const MenuSuperiosNew = () => {
     return (
         <>
             <p className='relative xl:hidden text-sm text-red-500 p-1 h-[9vh] flex items-center justify-center'>La resolucion no es compatible</p>
-            <div className='relative hidden xl:block '>
+            <div className='relative hidden xl:block'>
                 <Menubar>
                     {
                         loading_permissions &&
@@ -262,13 +262,13 @@ export const MenuSuperiosNew = () => {
                     {
                         !loading_permissions &&
                         <>
-                        <img src={logo_menu} className='w-[40px] rounded-md shadow-md' alt=""/>
+                        {/* <img src={logo_menu} className='w-[3vw] rounded-md shadow-md' alt=""/> */}
                             {opciones.map((opcionPadre, index) => {
                                 if (permissions.includes(opcionPadre.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
                                     return (
                                         
                                         <MenubarMenu>
-                                            <MenubarTrigger ><div className='flex gap-2 items-center'> <span className='text-primary'> {opcionPadre.icon}</span>{opcionPadre.titulo}</div></MenubarTrigger>
+                                            <MenubarTrigger  className="h-full"><div className='flex gap-2 items-center'> <span className='text-primary '> {opcionPadre.icon}</span>{opcionPadre.titulo}</div></MenubarTrigger>
                                             <MenubarContent>
                                                 {opcionPadre.opciones.map((opcion, key) => {
                                                     if (permissions.includes(opcion.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
@@ -276,7 +276,7 @@ export const MenuSuperiosNew = () => {
                                                             <>
                                                                 <Link to={opcion.route} key={index}>
                                                                     <MenubarItem onClick={() => { handle_menu_trigger_click(opcion, opcionPadre.icon) }}>
-                                                                        <div key={key} className='hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
+                                                                        <div key={key} className=' hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
                                                                             <div key={key} className="mb-1 text-[12px] font-medium">
                                                                                 {opcion.titulo}
                                                                             </div>

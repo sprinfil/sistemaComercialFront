@@ -133,9 +133,16 @@ const OrdenDeTrabajoForm = () => {
             id: 0,
             nombre: "",
             descripcion: "",
+            servicio: "",
             vigencias: "",
             momento_cargo: "0",
-            genera_masiva: false
+            genera_masiva: false,
+            asigna_masiva: false,
+            cancela_masiva: false,
+            cierra_masiva: false,
+            limite_ordenes: "",
+            publico_general: false,
+
         },
     })
   
@@ -146,18 +153,30 @@ const OrdenDeTrabajoForm = () => {
          type Orden_trabajo_catalogo = {
             nombre: string;
             descripcion: string;
+            servicio: string;
             vigencias: string;
             momento_cargo: string;
             genera_masiva: boolean;
+            asigna_masiva: boolean,
+            cancela_masiva: boolean,
+            cierra_masiva: boolean,
+            limite_ordenes:string,
+            publico_general: boolean,
         };
     
         // Creación del objeto orden_trabajo_catalogo
         let orden_trabajo_catalogo: Orden_trabajo_catalogo = {
             nombre: values.nombre,
             descripcion: values.descripcion,
+            servicio:values.servicio,
             vigencias: values.vigencias,
             momento_cargo: values.momento_cargo,
-            genera_masiva: values.genera_masiva
+            genera_masiva: values.genera_masiva,
+            asigna_masiva: values.asigna_masiva,
+            cancela_masiva: values.cancela_masiva,
+            cierra_masiva: values.cierra_masiva,
+            limite_ordenes:values.limite_ordenes,
+            publico_general: values.publico_general,
         };
 
         let data = {orden_trabajo_catalogo};
@@ -182,17 +201,29 @@ const OrdenDeTrabajoForm = () => {
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            servicio: "",
                             vigencias: "",
-                            momento_cargo: "",
-                            genera_masiva: false
+                            momento_cargo: "0",
+                            genera_masiva: false,
+                            asigna_masiva: false,
+                            cancela_masiva: false,
+                            cierra_masiva: false,
+                            limite_ordenes: "",
+                            publico_general: false,
                         });
                         form.reset({
                             id: 0,
                             nombre: "",
                             descripcion: "ninguna",
+                            servicio: "",
                             vigencias: "",
-                            momento_cargo: "",
-                            genera_masiva: false
+                            momento_cargo: "0",
+                            genera_masiva: false,
+                            asigna_masiva: false,
+                            cancela_masiva: false,
+                            cierra_masiva: false,
+                            limite_ordenes: "",
+                            publico_general: false,
                         });
                         setAccionGeneradaEntreTabs("creado");
                         getAnomalias();
@@ -216,9 +247,28 @@ const OrdenDeTrabajoForm = () => {
         // Acción de editar
         if (accionGeneradaEntreTabs === "editar") {
 
-          
+        
+            const values2 = {
+                    id: ordenDeTrabajo.id,
+                    nombre: values.nombre,
+                    descripcion: values.descripcion,
+                    servicio:values.servicio,
+                    vigencias: values.vigencias,
+                    momento_cargo: values.momento_cargo,
+                    genera_masiva: values.genera_masiva,
+                    asigna_masiva: values.asigna_masiva,
+                    cancela_masiva: values.cancela_masiva,
+                    cierra_masiva: values.cierra_masiva,
+                    limite_ordenes:values.limite_ordenes,
+                    publico_general: values.publico_general,
+            }
 
-            axiosClient.put(`/TipoToma/update/${ordenDeTrabajo.id}`, values)
+            const enviar = {
+                orden_trabajo_catalogo: values2
+            }
+
+            console.log(enviar);
+            axiosClient.put(`/OrdenTrabajoCatalogo/update`, enviar)
                 .then((data) => {
                     setLoading(false);
                     setAbrirInput(false);
@@ -230,7 +280,7 @@ const OrdenDeTrabajoForm = () => {
                 .catch((err) => {
                     const response = err.response;
                     errorToast();
-    
+                    console.log(response);
                     if (response && response.status === 422) {
                         setErrors(response.data.errors);
                     }
@@ -240,7 +290,7 @@ const OrdenDeTrabajoForm = () => {
         }
     }
     
-    
+
 
     //con este metodo obtienes las anomalias de la bd
     const getAnomalias = async () => {
@@ -280,9 +330,15 @@ const OrdenDeTrabajoForm = () => {
                     id: 0,
                     nombre: "",
                     descripcion: "ninguna",
+                    servicio: "",
                     vigencias: "",
-                    momento_cargo: "",
-                    genera_masiva: false
+                    momento_cargo: "0",
+                    genera_masiva: false,
+                    asigna_masiva: false,
+                    cancela_masiva: false,
+                    cierra_masiva: false,
+                    limite_ordenes: "",
+                    publico_general: false,
                 });
                 getAnomalias();
                 setAccionGeneradaEntreTabs("creado");
@@ -323,9 +379,15 @@ const OrdenDeTrabajoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                servicio: "",
                 vigencias: "",
-                momento_cargo: "",
-                genera_masiva: false
+                momento_cargo: "0",
+                genera_masiva: false,
+                asigna_masiva: false,
+                cancela_masiva: false,
+                cierra_masiva: false,
+                limite_ordenes: "",
+                publico_general: false,
             })
         }
         if (accionGeneradaEntreTabs == "creado") {
@@ -336,24 +398,33 @@ const OrdenDeTrabajoForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                servicio: "",
                 vigencias: "",
-                momento_cargo: "",
-                genera_masiva: false
+                momento_cargo: "0",
+                genera_masiva: false,
+                asigna_masiva: false,
+                cancela_masiva: false,
+                cierra_masiva: false,
+                limite_ordenes: "",
+                publico_general: false,
             });
             setOrdenDeTrabajo({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                servicio: "",
                 vigencias: "",
-                momento_cargo: "",
-                genera_masiva: false
+                momento_cargo: "0",
+                genera_masiva: false,
+                asigna_masiva: false,
+                cancela_masiva: false,
+                cierra_masiva: false,
+                limite_ordenes: "",
+                publico_general: false,
             })
         }
         if (accionGeneradaEntreTabs == "ver") {
             setBloquear(false);
-
-            
-
 
             setAbrirInput(false);
             setErrors({});
@@ -361,10 +432,19 @@ const OrdenDeTrabajoForm = () => {
             form.reset({
                 id: ordenDeTrabajo.id,
                 nombre: ordenDeTrabajo.nombre,
+                servicio: ordenDeTrabajo.servicio,
                 descripcion: ordenDeTrabajo.descripcion,
-                vigencias: String(ordenDeTrabajo.vigencias),
+                vigencias: ordenDeTrabajo.vigencias,
                 momento_cargo: ordenDeTrabajo.momento_cargo,
-                genera_masiva: ordenDeTrabajo.genera_masiva
+                genera_masiva: ordenDeTrabajo.genera_masiva,
+                asigna_masiva: ordenDeTrabajo.asigna_masiva,
+                cancela_masiva: ordenDeTrabajo.cancela_masiva,
+                cierra_masiva: ordenDeTrabajo.cierra_masiva,
+                limite_ordenes: ordenDeTrabajo.limite_ordenes,
+                publico_general: ordenDeTrabajo.publico_general
+    
+    
+              
               
             });
         }
@@ -372,23 +452,76 @@ const OrdenDeTrabajoForm = () => {
             setAbrirInput(true);
             setBloquear(true);
             setErrors({});
+            form.reset({
+                id: ordenDeTrabajo.id,
+                nombre: ordenDeTrabajo.nombre,
+                servicio: ordenDeTrabajo.servicio,
+                descripcion: ordenDeTrabajo.descripcion,
+                vigencias: ordenDeTrabajo.vigencias,
+                momento_cargo: ordenDeTrabajo.momento_cargo,
+                genera_masiva: ordenDeTrabajo.genera_masiva,
+                asigna_masiva: ordenDeTrabajo.asigna_masiva,
+                cancela_masiva: ordenDeTrabajo.cancela_masiva,
+                cierra_masiva: ordenDeTrabajo.cierra_masiva,
+                limite_ordenes: ordenDeTrabajo.limite_ordenes,
+                publico_general: ordenDeTrabajo.publico_general
+              
+            });
         }
-    }, [accionGeneradaEntreTabs]);
+    }, [accionGeneradaEntreTabs, ordenDeTrabajo.nombre]);
 
 
 
 
     useEffect(() => {
-        form.reset({
-            id: ordenDeTrabajo.id,
-            nombre: ordenDeTrabajo.nombre,
-            descripcion: ordenDeTrabajo.descripcion,
-            vigencias: ordenDeTrabajo.vigencias,
-            momento_cargo: ordenDeTrabajo.momento_cargo,
-            genera_masiva: ordenDeTrabajo.genera_masiva
-          
-        });
+      
+        if (accionGeneradaEntreTabs == "editar") {
+            setAbrirInput(true);
+            setBloquear(true);
+            setErrors({});
+            form.reset({
+                id: ordenDeTrabajo.id,
+                nombre: ordenDeTrabajo.nombre,
+                servicio: ordenDeTrabajo.servicio,
+                descripcion: ordenDeTrabajo.descripcion,
+                vigencias: ordenDeTrabajo.vigencias,
+                momento_cargo: ordenDeTrabajo.momento_cargo,
+                genera_masiva: ordenDeTrabajo.genera_masiva,
+                asigna_masiva: ordenDeTrabajo.asigna_masiva,
+                cancela_masiva: ordenDeTrabajo.cancela_masiva,
+                cierra_masiva: ordenDeTrabajo.cierra_masiva,
+                limite_ordenes: ordenDeTrabajo.limite_ordenes,
+                publico_general: ordenDeTrabajo.publico_general
+              
+            });
+        }
+            
+
+       
     },[ordenDeTrabajo.id])
+
+
+    useEffect(() => {
+        if(accionGeneradaEntreTabs == "editar")
+        {
+            form.reset({
+                id: ordenDeTrabajo.id,
+                nombre: ordenDeTrabajo.nombre,
+                servicio: ordenDeTrabajo.servicio,
+                descripcion: ordenDeTrabajo.descripcion,
+                vigencias: String(ordenDeTrabajo.vigencias),
+                momento_cargo: ordenDeTrabajo.momento_cargo,
+                genera_masiva:  Boolean(ordenDeTrabajo.genera_masiva),
+                asigna_masiva:  Boolean(ordenDeTrabajo.asigna_masiva),
+                cancela_masiva:  Boolean(ordenDeTrabajo.cancela_masiva),
+                cierra_masiva: Boolean(ordenDeTrabajo.cierra_masiva),
+                limite_ordenes: String(ordenDeTrabajo.limite_ordenes),
+                publico_general: Boolean(ordenDeTrabajo.publico_general)
+              
+            });
+        }
+       
+    },[accionGeneradaEntreTabs])
 
 
     const handleAgregarCargo = () => {
@@ -412,7 +545,7 @@ const OrdenDeTrabajoForm = () => {
                 <div className='flex h-[40px] items-center bg-muted rounded-sm '>
                     <div className='h-[20px] w-full flex items-center justify-end'>
                         <div className="mb-[10px] h-full w-full mx-4">
-                            {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
+                            {accionGeneradaEntreTabs == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva orden de trabajo</p>}
                             {ordenDeTrabajo.nombre != "" && <p className="text-muted-foreground text-[20px]">{ordenDeTrabajo.nombre}</p>}
                         </div>
                         {(ordenDeTrabajo.nombre != null && ordenDeTrabajo.nombre != "") &&
@@ -487,6 +620,57 @@ const OrdenDeTrabajoForm = () => {
                                     </FormItem>
                                 )}
                             />
+                            
+                            <FormField
+                                control={form.control}
+                                name="servicio"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Servicio</FormLabel>
+                                        {
+                                            accionGeneradaEntreTabs == "ver" ?
+                                            <Select
+                                            disabled
+                                            onValueChange={(value) => field.onChange(String(value))}
+                                            value={String(field.value)}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Selecciona el servicio" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="CONSUMO DE AGUA POTABLE">CONSUMO DE AGUA POTABLE</SelectItem>
+                                                <SelectItem value="SERV. ALCANTARILLADO">SERV. ALCANTARILLADO</SelectItem>
+                                                <SelectItem value="TRAT. Y SANEAMIENTO">TRAT. Y SANEAMIENTO</SelectItem>
+                                                <SelectItem value="OTRO">OTRO</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        :
+                                        <Select
+                                        onValueChange={(value) => field.onChange(String(value))}
+                                        value={String(field.value)}
+                                    >
+                                        <FormControl>
+                                        <SelectTrigger>
+                                                    <SelectValue placeholder="Selecciona el servicio" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="CONSUMO DE AGUA POTABLE">CONSUMO DE AGUA POTABLE</SelectItem>
+                                                <SelectItem value="SERV. ALCANTARILLADO">SERV. ALCANTARILLADO</SelectItem>
+                                                <SelectItem value="TRAT. Y SANEAMIENTO">TRAT. Y SANEAMIENTO</SelectItem>
+                                                <SelectItem value="OTRO">OTRO</SelectItem>
+                                            </SelectContent>
+                                    </Select>
+                                        }
+                                        <FormDescription>
+                                            La descripción del servicio
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                             <FormField
                                 control={form.control}
                                 name="vigencias"
@@ -501,7 +685,27 @@ const OrdenDeTrabajoForm = () => {
                                                 {...field} />
                                         </FormControl>
                                         <FormDescription>
-                                            La vigencia de la orden de trabajo.
+                                        Escribe la vigencia en dias de la orden de trabajo.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="limite_ordenes"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Limite de ordenes</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                readOnly={!abrirInput}
+                                                placeholder="Escribe el limite de ordenes"
+                                                type="number"
+                                                {...field} />
+                                        </FormControl>
+                                        <FormDescription>
+                                            Escribe el limite de ordenes.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -513,7 +717,10 @@ const OrdenDeTrabajoForm = () => {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Momento del cargo</FormLabel>
-                                        <Select
+                                        {
+                                            accionGeneradaEntreTabs == "ver" ?
+                                            <Select
+                                            disabled
                                             onValueChange={(value) => field.onChange(String(value))}
                                             value={String(field.value)}
                                         >
@@ -523,12 +730,31 @@ const OrdenDeTrabajoForm = () => {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="generar">Generar</SelectItem>
-                                                <SelectItem value="asignar">Asignar</SelectItem>
-                                                <SelectItem value="concluir">Concluir</SelectItem>
-                                                <SelectItem value="no genera">No genera</SelectItem>
+                                            <SelectItem value="generar">Al Generar</SelectItem>
+                                            <SelectItem value="asignar">Al Asignar</SelectItem>
+                                            <SelectItem value="concluir">Al Concluir</SelectItem>
+                                            <SelectItem value="No genera">No genera cargo</SelectItem>
                                             </SelectContent>
                                         </Select>
+                                        :
+                                        <Select
+                                        onValueChange={(value) => field.onChange(String(value))}
+                                        value={String(field.value)}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Selecciona el momento del cargo" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="generar">Al Generar</SelectItem>
+                                            <SelectItem value="asignar">Al Asignar</SelectItem>
+                                            <SelectItem value="concluir">Al Concluir</SelectItem>
+                                            <SelectItem value="No genera">No genera cargo</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                        }
+                                       
                                         <FormDescription>
                                             Selecciona el momento del cargo.
                                         </FormDescription>
@@ -572,6 +798,142 @@ const OrdenDeTrabajoForm = () => {
                                     </FormItem>
                                 )}
                             />
+                              <FormField
+                                control={form.control}
+                                name="asigna_masiva"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="items-center">¿Asigna masivamente?</FormLabel>
+                                        <FormControl className="ml-4">
+                                            {
+                                                bloquear ? <Switch
+                                                    checked={field.value}
+                                                    onCheckedChange={(checked) => field.onChange(checked)
+
+                                                    }
+                                                    
+                                                /> :
+                                                    <Switch
+                                                    disabled
+                                                        checked={field.value}
+                                                        onCheckedChange={(checked) => field.onChange(checked)
+
+                                                        }
+
+                                                    />
+                                            }
+
+                                        </FormControl>
+                                        <FormDescription>
+                                            Aquí puedes activar si asigna masivamente.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                               <FormField
+                                control={form.control}
+                                name="cancela_masiva"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="items-center">¿Cancela masivamente?</FormLabel>
+                                        <FormControl className="ml-4">
+                                            {
+                                                bloquear ? <Switch
+                                                    checked={field.value}
+                                                    onCheckedChange={(checked) => field.onChange(checked)
+
+                                                    }
+                                                    
+                                                /> :
+                                                    <Switch
+                                                    disabled
+                                                        checked={field.value}
+                                                        onCheckedChange={(checked) => field.onChange(checked)
+
+                                                        }
+
+                                                    />
+                                            }
+
+                                        </FormControl>
+                                        <FormDescription>
+                                            Aquí puedes activar si cancela masivamanete.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="cierra_masiva"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="items-center">¿Cierra masiva?</FormLabel>
+                                        <FormControl className="ml-4">
+                                            {
+                                                bloquear ? <Switch
+                                                    checked={field.value}
+                                                    onCheckedChange={(checked) => field.onChange(checked)
+
+                                                    }
+                                                    
+                                                /> :
+                                                    <Switch
+                                                    disabled
+                                                        checked={field.value}
+                                                        onCheckedChange={(checked) => field.onChange(checked)
+
+                                                        }
+
+                                                    />
+                                            }
+
+                                        </FormControl>
+                                        <FormDescription>
+                                            Aquí puedes activar si tiene cierre masivo.
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                              
+
+                            <FormField
+                                control={form.control}
+                                name="publico_general"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="items-center">¿Va para público en general?</FormLabel>
+                                        <FormControl className="ml-4">
+                                            {
+                                                bloquear ? <Switch
+                                                    checked={field.value}
+                                                    onCheckedChange={(checked) => field.onChange(checked)
+
+                                                    }
+                                                    
+                                                /> :
+                                                    <Switch
+                                                    disabled
+                                                        checked={field.value}
+                                                        onCheckedChange={(checked) => field.onChange(checked)
+
+                                                        }
+
+                                                    />
+                                            }
+
+                                        </FormControl>
+                                        <FormDescription>
+                                            Aquí puedes activar si va para público en general
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                           
 
                            
 

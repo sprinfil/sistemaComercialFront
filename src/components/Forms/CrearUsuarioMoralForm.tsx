@@ -14,7 +14,7 @@ import {
     FormMessage,
 } from "../ui/form.tsx";
 import { Input } from '../ui/input.tsx';
-import { crearusuarionuevoSchema } from './crearusuarioValidaciones.ts';
+import { crearUsuarioMoralSchema } from './crearusuarioValidaciones.ts';
 import { ModeToggle } from '../ui/mode-toggle.tsx';
 import axiosClient from '../../axios-client.ts';
 import Loader from "../ui/Loader.tsx";
@@ -25,51 +25,62 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 import IconButton from "../ui/IconButton.tsx";
 import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
-
+import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
+import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 const CrearUsuarioMoralForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
+    const { toast } = useToast()
 
-    const form = useForm<z.infer<typeof crearusuarionuevoSchema>>({
-        resolver: zodResolver(crearusuarionuevoSchema),
+    const form = useForm<z.infer<typeof crearUsuarioMoralSchema>>({
+        resolver: zodResolver(crearUsuarioMoralSchema),
         defaultValues: {
             id: 0,
             nombre: "",
-            apellido_paterno:"",
-            apellido_materno:"",
-            telefono:"",
-            curp: "",
+            nombre_contacto: "",
+            telefono: "",
             rfc: "",
             correo: "",
         },
     });
 
-    async function onSubmit(values: z.infer<typeof crearusuarionuevoSchema>) {
+    async function onSubmit(values: z.infer<typeof crearUsuarioMoralSchema>) {
         setLoading(true);
         setErrors({});
         console.log('Valores enviados:', values);
-    
+
         try {
-            const response = await axiosClient.post('/usuarios/create', values);
+            const response = await axiosClient.post('/usuarios/createmoral', values);
             console.log('Usuario creado:', response.data);
             form.reset(); // Limpiar el formulario
             // Aquí puedes realizar alguna acción adicional, como redirigir al usuario o mostrar un mensaje de éxito
-        } catch (error) {
-            if (error.response && error.response.data) {
-                console.error('Errores de validación:', error.response.data);
-                setErrors(error.response.data);
-            } else {
-                console.error('Error general:', error);
-                setErrors({ general: 'Ocurrió un error al crear el usuario' });
+        } catch (response) {
+            console.log(response.response.data.message);
+
+            if (response.response.data.message == "The rfc has already been taken.") {
+                toast({
+                    title: "Error",
+                    description: "La RFC ya existe.",
+                    variant: "destructive",
+                    action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                })
             }
+            if (response.response.data.message === "The correo has already been taken.")
+                toast({
+                    title: "Error",
+                    description: "El correo ya existe.",
+                    variant: "destructive",
+                    action: <ToastAction altText="Try again">Aceptar</ToastAction>,
+                })
+
         } finally {
             setLoading(false);
         }
     }
 
     return (
-        
+
         <div className="overflow-auto">
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end '>
@@ -94,15 +105,31 @@ const CrearUsuarioMoralForm = () => {
                                                 <Input placeholder="Escribe el nombre del usuario" {...field} />
                                             </FormControl>
                                             <FormDescription>
-                                                
+
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                            
-                               
-                               
+                                <FormField
+                                    control={form.control}
+                                    name="nombre_contacto"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Nombre de contacto</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Escribe el nombre de contacto" {...field} />
+                                            </FormControl>
+                                            <FormDescription>
+
+                                            </FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+
+
                                 <FormField
                                     control={form.control}
                                     name="rfc"
@@ -110,16 +137,16 @@ const CrearUsuarioMoralForm = () => {
                                         <FormItem>
                                             <FormLabel>RFC</FormLabel>
                                             <FormControl>
-                                                <Input  placeholder="Escribe el RFC" {...field} />
+                                                <Input placeholder="Escribe el RFC" {...field} />
                                             </FormControl>
                                             <FormDescription>
-                                                
+
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                 <FormField
+                                <FormField
                                     control={form.control}
                                     name="telefono"
                                     render={({ field }) => (
@@ -129,7 +156,7 @@ const CrearUsuarioMoralForm = () => {
                                                 <Input placeholder="Escribe telefono del usuario" {...field} type='number' />
                                             </FormControl>
                                             <FormDescription>
-                                                
+
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
@@ -142,24 +169,24 @@ const CrearUsuarioMoralForm = () => {
                                         <FormItem>
                                             <FormLabel>Correo electronico</FormLabel>
                                             <FormControl>
-                                                <Input  placeholder="Escribe el correo electronico" {...field} type='email'/>
+                                                <Input placeholder="Escribe el correo electronico" {...field} type='email' />
                                             </FormControl>
                                             <FormDescription>
-                                               
+
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
 
-                         </div>
+                            </div>
 
                             {loading && <Loader />}
-                            <Button type="submit" className="ml-[187vh] w-[20vh]">Guardar</Button>
+                            <Button type="submit" className="ml-[2vh] w-[20vh]">Guardar</Button>
 
                         </div>
                         <div className=" w-full flex justify-normal mt-4">
-                        </div>   
+                        </div>
                     </form>
                 </Form>
             </div>

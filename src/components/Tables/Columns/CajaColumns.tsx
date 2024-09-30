@@ -2,12 +2,13 @@ import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import IconButton from "../../ui/IconButton"
-import { EyeOpenIcon } from '@radix-ui/react-icons';
-import { Checkbox } from "@/components/ui/checkbox"
+import { TrashIcon, Pencil2Icon, PlusCircledIcon, EyeOpenIcon } from '@radix-ui/react-icons';
+import { useState } from "react"
 import { useStateContext } from "../../../contexts/ContextCaja"
-import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario';
-
-// Define the type for Caja
+import { Checkbox } from "@/components/ui/checkbox"
+import { ZustandGeneralUsuario } from "../../../contexts/ZustandGeneralUsuario"
+// This type is used to define the shape of our data.
+// You can use a Zod schema here if you want.
 export type Caja = {
   id: number
   id_cuenta_contable: number
@@ -65,13 +66,9 @@ export const columns: ColumnDef<Caja>[] = [
     cell: ({ row }) => {
       const caja = row.original
       const { setCaja, setAccion } = useStateContext();
-      const { setAccionGeneradaEntreTabs } = ZustandGeneralUsuario(); // Usar el hook aquí
-      
+      const {accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
       return (
-        <div onClick={() => {
-          setCaja(caja);
-          setAccionGeneradaEntreTabs("ver");
-        }}>
+        <div onClick={()=>{setCaja(caja);}}>
           <IconButton>
             <EyeOpenIcon className="w-[20px] h-[20px]" />
           </IconButton>
