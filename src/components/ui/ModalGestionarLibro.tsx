@@ -124,7 +124,8 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
 
       nuevaSecuencia.map(secuenciaTemp => {
         if (newIndex <= secuenciaTemp.numero_secuencia) {
-          secuenciaTemp.numero_secuencia += 1;
+          let secuencia = parseFloat(secuenciaTemp.numero_secuencia) + 1;
+          secuenciaTemp.numero_secuencia = secuencia;
         }
       })
 
@@ -230,7 +231,7 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                                 <>
                                   <div className='flex flex-col'>
                                     {
-                                      secuencia?.map((orden, index) => (
+                                      secuenciaReal?.map((orden, index) => (
                                         <>
                                           <div className=' h-20 flex items-center justify-center'>
                                             <p>{index + 1}</p>
