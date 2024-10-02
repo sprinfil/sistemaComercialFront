@@ -60,6 +60,10 @@ export const LecturaMonitorColumns: ColumnDef<Lectura>[] = [
     header: "Folio",
   }, 
   {
+    accessorKey: "id_toma",
+    header: "Toma",
+  }, 
+  {
     accessorKey: "lectura",
     header: "Lectura",
   },
@@ -72,24 +76,5 @@ export const LecturaMonitorColumns: ColumnDef<Lectura>[] = [
     accessorKey: "fecha_creacion",
     header: "Fecha de creación",
   },
-//   {
-//     id: "actions",
-//     cell: ({ row }) => {
-//       const [modal_ver_ajuste, set_modal_ver_ajuste] = useState(false);
 
-//       return (
-//         <>
-//           <IconButton  onClick={() => { set_modal_ver_ajuste(true) }} >
-//             <EyeIcon className='w-[15px] h-[15px]' />
-//           </IconButton>
-//           <ModalVerAjusteMonitor
-//             selected_ajuste={row?.original}
-//             open={modal_ver_ajuste}
-//             set_open={set_modal_ver_ajuste}
-//           />
-//         </>
-//       )
-//     },
-//   },
-  
 ]
