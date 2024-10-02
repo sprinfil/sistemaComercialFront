@@ -216,17 +216,11 @@ const CajaOperadoresForm = () => {
                     setLoading(false);
                 } else {
                     setLoading(false);
-                    setCaja({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    form.reset({
-                        operadores_asignados: totalAccionesComponente,
-                    });
+                 
                     console.log(response);
-                    setAccion("creado");
                     getAnomalias();
+                   
+                    setAccionGeneradaEntreTabs("ver");
                     successToastCreado();
                 }
             } catch (response) {
@@ -305,12 +299,9 @@ const CajaOperadoresForm = () => {
             setAbrirInput(true);
             setControl(false);
             setErrors({});
-            setCaja({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            });
-            return;
+           
+
+
         }
     
         if (accionGeneradaEntreTabs === "ver" || accionGeneradaEntreTabs === "editar") {
@@ -399,7 +390,7 @@ const CajaOperadoresForm = () => {
                         )}
                     </div>
                 </div>
-                {totalAccionesComponente.length < 1 
+                {totalAccionesComponente?.length < 1 
                 && 
                 <div className="flex justify-center mt-[20vh]">
                      {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o más operadores.</p> : 
