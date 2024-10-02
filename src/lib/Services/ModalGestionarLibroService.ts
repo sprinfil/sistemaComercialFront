@@ -21,6 +21,7 @@ export const useSortable = (ref: RefObject<HTMLUListElement>, onEnd: (evt: any) 
           //console.log(evt);
           onEnd(evt);
         },
+
       });
       return () => {
         sortable.destroy();
@@ -36,7 +37,11 @@ export const useSortable2 = (ref: RefObject<HTMLUListElement>, onEnd: (evt: any)
       const sortable = Sortable.create(ref.current, {
         animation: 150,
         ghostClass: 'sortable-ghost',
-        group: "secuencia",
+        group: {
+          name: "secuencia",   // Nombre del grupo
+          pull: true,        // Permite arrastrar fuera a la otra lista
+          put: false,            // Permite soltar elementos de la otra lista aquí
+        },
         onEnd: (evt) => {
           console.log(evt.to.id);
           onEnd(evt);
@@ -204,7 +209,7 @@ export async function moverPosicionLibro(nuevaPosicion, secuencia, setSecuencia,
 
 //INICIALIZAR MAPA DE SECUENCIAS
 export function initMapa(libroCoords, center, tomas) {
-  const path : any = [];
+  const path: any = [];
   const google = (window as any).google;
   let map = new google.maps.Map(document.getElementById("mapa_google") as HTMLElement, {
     center: center,
@@ -247,10 +252,10 @@ export function initMapa(libroCoords, center, tomas) {
       }
     });
   })
-  
+
   // Dibuja la primera línea en azul
   if (path.length > 1) {
-     let polyTemp = new window.google.maps.Polyline({
+    let polyTemp = new window.google.maps.Polyline({
       path: [path[0], path[1]], // Solo conecta el primer y segundo punto
       geodesic: true,
       strokeColor: 'blue', // Color de la primera línea

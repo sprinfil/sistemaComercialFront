@@ -71,16 +71,25 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
   }, [mapRef.current])
 
   useEffect(() => {
+    if (mapRef.current) {
+      initMapa(libroCoords, center, libro?.secuencias[0]?.ordenes_secuencia);
+    }
+  }, [libro?.secuencias[0]?.ordenes_secuencia])
+
+  useEffect(() => {
     setSecuenciaPrincipal(libro?.secuencias[0])
   }, [changeTab])
 
   useSortable(tomasSecuenciaRef, (evt) => {
     console.log(evt)
-    setSecuencia(prev => {
+    setSecuenciaReal(prev => {
       const nuevaSecuencia = [...prev];
 
       const oldIndex = evt.oldIndex + 1;
       const newIndex = evt.newIndex + 1;
+
+      console.log(oldIndex)
+      console.log(newIndex)
 
       const elementoMovido = nuevaSecuencia.find(orden => orden.numero_secuencia === oldIndex);
 
@@ -115,35 +124,28 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
 
     const nuevaOrdenId = evt.item.id;
     const newIndex = evt.newIndex + 1;
+    if (evt.to.id == "secuencia") {
+      let nuevaTomaSecuencia = secuenciaCero.find(secuencia => secuencia?.id == nuevaOrdenId);
+      nuevaTomaSecuencia = { ...nuevaTomaSecuencia, numero_secuencia: newIndex };
+      setSecuenciaReal(prev => {
+        let nuevaSecuencia = [...prev];
 
-    let nuevaTomaSecuencia = secuenciaCero.find(secuencia => secuencia?.id == nuevaOrdenId);
-    nuevaTomaSecuencia = { ...nuevaTomaSecuencia, numero_secuencia: newIndex };
-
-    setSecuenciaReal(prev => {
-      let nuevaSecuencia = [...prev];
-
-      nuevaSecuencia.map(secuenciaTemp => {
-        if (newIndex <= secuenciaTemp.numero_secuencia) {
-          let secuencia = parseFloat(secuenciaTemp.numero_secuencia) + 1;
-          secuenciaTemp.numero_secuencia = secuencia;
-        }
+        nuevaSecuencia.map(secuenciaTemp => {
+          if (newIndex <= secuenciaTemp.numero_secuencia) {
+            let secuencia = parseFloat(secuenciaTemp.numero_secuencia) + 1;
+            secuenciaTemp.numero_secuencia = secuencia;
+          }
+        })
+        nuevaSecuencia.push(nuevaTomaSecuencia);
+        return nuevaSecuencia;
       })
-
-      nuevaSecuencia.push(nuevaTomaSecuencia);
-
-      return nuevaSecuencia;
-    })
-
+    }
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     setSecuenciaReal(secuencia);
     console.log(secuenciaReal);
-  },[secuencia])
-
-  useEffect(()=>{
-    console.log(secuenciaReal);
-  },[secuenciaReal])
+  }, [secuencia])
 
   return (
     <div>
@@ -179,10 +181,9 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                                 {
                                   editandoSecuencia ?
                                     <>
-                                      <div onClick={() => {
+                                      <div onClick={async () => {
                                         updateSecuencia(secuenciaPrincipal, secuenciaReal, setLoadingUpdateSecuencia, setEditandoSecuencia, setRutas, setSecuencia);
-                                        initMapa(libroCoords, center, libro?.secuencias[0]?.ordenes_secuencia);
-
+                                        //initMapa(libroCoords, center, libro?.secuencias[0]?.ordenes_secuencia);
                                       }}>
                                         <IconButton>
                                           <div className={`text-green-500 select-none flex gap-2 items-center underline ${loadingUpdateSecuencia == true ? "pointer-events-none" : ""}`}>
