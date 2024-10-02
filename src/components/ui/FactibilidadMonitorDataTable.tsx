@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select"
 import ModalVerPago from "./ModalVerPago"
 import ModalVerFactibilidadMonitor from "./ModalVerFactibilidadMonitor"
+import ModalVerFactibilidadMonitorAgua from "./ModalVerFactibilidadMonitorAgua"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -203,7 +204,7 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
       </div>
 
       {selected_fact && (
-        <ModalVerFactibilidadMonitor
+        <ModalVerFactibilidadMonitorAgua
           selected_fact={selected_fact}
           open={modal_ver_fact}
           set_open={set_modal_ver_fact}
