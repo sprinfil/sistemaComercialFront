@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react"; 
+import { ColumnDef } from "@tanstack/react-table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,20 +21,24 @@ import IconButton from "./IconButton.tsx";
 import lecturasService from "../../lib/LecturaService.ts";
 import * as XLSX from "xlsx";
 import axiosClient from "../../axios-client";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 
 const ModalImportarExcelMonitorLectura = ({ open, setOpen }) => {
   const { toast } = useToast();
-  const [lecturaValue, setLecturaValue] = useState('');
-  const [comentarioValue, setComentarioValue] = useState('');
-  const [seleccionarAnomalia, setSeleccionarAnomalia] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [importedData, setImportedData] = useState([]);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const {
     usuariosEncontrados,
     agregarPeriodoFacturacion,
-    setAgregarPeriodoFacturacion,
-    agregarAnomalia,
-    setAgregarAnomalia,
   } = ZustandGeneralUsuario();
 
   const { set_lecturas } = ZustandMonitorLectura();
@@ -59,14 +64,15 @@ const ModalImportarExcelMonitorLectura = ({ open, setOpen }) => {
     reader.onload = async (event) => {
       const data = new Uint8Array(event.target?.result as ArrayBuffer);
       const workbook = XLSX.read(data, { type: "array" });
-
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
       const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
+      console.log(jsonData);
+
+      setImportedData(jsonData);
+
       try {
-        const response = await axiosClient.post("/lectura/import", {
-          lecturas: jsonData,
-        });
+        await axiosClient.post("/lectura/import", { lecturas: jsonData });
         toast({
           title: "¡Éxito!",
           description: "Importación de lecturas realizada correctamente.",
@@ -85,127 +91,137 @@ const ModalImportarExcelMonitorLectura = ({ open, setOpen }) => {
   };
 
   const handleGuardarLectura = async () => {
-    const values = {
-      id_operador: 1,
-      id_toma: usuariosEncontrados[0]?.tomas[0]?.id,
-      id_periodo: agregarPeriodoFacturacion[0]?.id,
-      id_origen: 1,
-      modelo_origen: "toma",
-      id_anomalia: agregarAnomalia[0]?.id,
-      lectura: lecturaValue,
-      comentario: comentarioValue,
-    };
+    if (importedData.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No hay datos importados para guardar.",
+      });
+      return;
+    }
+
+    const promises = importedData.map(async (item) => {
+      const values = {
+        id_operador: 1,
+        id_toma: item.id_toma,
+        id_periodo: agregarPeriodoFacturacion[0]?.id,
+        id_origen: 1,
+        modelo_origen: "toma",
+        id_anomalia: item.id_anomalia,
+        lectura: item.lectura,
+        comentario: item.comentario,
+      };
+
+      console.log("Valores a enviar:", values);
+
+      return axiosClient.post("/lectura/store", values);
+    });
 
     try {
-      await axiosClient.post("/lectura/store", values);
+      await Promise.all(promises);
       toast({
         title: "¡Éxito!",
-        description: "Lectura ingresada correctamente.",
+        description: "Todas las lecturas fueron ingresadas correctamente.",
         variant: "success",
       });
       fetchFact();
       setOpen(false);
     } catch (error) {
+      console.error("Error al guardar las lecturas", error);
       toast({
         variant: "destructive",
         title: "Oh, no. Error",
-        description: "Error al ingresar la lectura.",
+        description: "Error al ingresar las lecturas.",
       });
     }
   };
 
-  const handleSeleccionarAnomalia = () => {
-    setSeleccionarAnomalia(!seleccionarAnomalia);
+  const handleClearFile = () => {
+    setSelectedFile(null);
+    setImportedData([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleCloseModal = () => {
+    // Limpiar los estados al cerrar el modal
+    setOpen(false);
+    handleClearFile();
   };
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <AlertDialog open={open} onOpenChange={handleCloseModal}>
       <AlertDialogContent className="max-w-screen-2xl max-h-screen overflow-auto">
         <AlertDialogHeader>
           <AlertDialogTitle>
             <div className="text-xl">
               <b>Importar archivo Excel (.xlsx)</b>
             </div>
-  
-            {/* Contenedor para alinear los botones de "Seleccionar archivo" y "Importar Excel" */}
-            <div className="flex mt-4 space-x-4 items-center">
-              <input
-                type="file"
-                accept=".xlsx"
-                onChange={handleFileChange}
-                className="block"
-              />
-              <IconButton onClick={handleImportExcel}>
-                Importar Excel
-              </IconButton>
-            </div>
+            <div className="text-xl mt-5">Columnas en el archivo Excel (.xlsx) id_toma, id_anomalia, lectura, comentario</div>
           </AlertDialogTitle>
-  
+
           <AlertDialogDescription>
             <div className="flex flex-col">
               <div className="text-xl">
-                Nombre del usuario: {usuariosEncontrados[0]?.nombre_completo}
+                <div className="flex mt-8 items-center justify-between">
+                  <input
+                    type="file"
+                    accept=".xlsx"
+                    onChange={handleFileChange}
+                    className="block"
+                    ref={fileInputRef}
+                  />
+                  <div className="flex justify-end space-x-4">
+                    <div className="w-[20vh] bg-muted rounded-s-lg">
+                      <IconButton onClick={handleImportExcel}>
+                        Importar Excel
+                      </IconButton>
+                    </div>
+                    <div className="w-[20vh] bg-muted rounded-s-lg">
+                      <IconButton onClick={handleClearFile}>
+                        Borrar selección
+                      </IconButton>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <span className="text-xl">
-                Toma: {usuariosEncontrados[0]?.tomas[0]?.codigo_toma}
-              </span>
             </div>
-  
-            <div className="flex justify-end">
-              <div className="w-[20vh] bg-muted rounded-s-lg">
-                <IconButton onClick={handleSeleccionarAnomalia}>
-                  {!seleccionarAnomalia
-                    ? "Seleccionar anomalía"
-                    : "Ingresar lectura"}
-                </IconButton>
-              </div>
-            </div>
-  
-            {!seleccionarAnomalia ? (
-              <>
-                <Input
-                  value={lecturaValue}
-                  onChange={(e) => setLecturaValue(e.target.value)}
-                  placeholder="Ingresa la lectura."
-                  className="mt-5"
-                  type="number"
-                />
-                <div className="mt-2 ml-2">Ingresa una lectura.</div>
-              </>
-            ) : (
-              <div className="mt-5">
-                <ComboBoxAnomalia
-                  selected_conceptos={agregarAnomalia}
-                  set={setAgregarAnomalia}
-                />
-                <div className="mt-2 ml-2">Selecciona la anomalía</div>
-              </div>
-            )}
-  
+
+            <div className="text-xl mt-5">Vista previa de los datos</div>
+
             <div className="mt-5">
-              <ComboBoxPeriodoFacturacion
-                selected_conceptos={agregarPeriodoFacturacion}
-                set={setAgregarPeriodoFacturacion}
-              />
-              <div className="mt-2 ml-2">Selecciona el periodo de facturación</div>
+              {importedData.length > 0 && (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Toma</TableHead>
+                      <TableHead>Anomalia</TableHead>
+                      <TableHead>Lectura</TableHead>
+                      <TableHead>Comentario</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {importedData.map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{item.id_toma}</TableCell>
+                        <TableCell>{item.id_anomalia}</TableCell>
+                        <TableCell>{item.lectura}</TableCell>
+                        <TableCell>{item.comentario}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </div>
-  
-            <Input
-              value={comentarioValue}
-              onChange={(e) => setComentarioValue(e.target.value)}
-              placeholder="Escribe un comentario."
-              className="mt-5"
-            />
-            <div className="mt-2 ml-2">Escribe un comentario. (Opcional)</div>
           </AlertDialogDescription>
         </AlertDialogHeader>
-  
+
         <AlertDialogFooter>
-          <AlertDialogAction onClick={() => setOpen(false)}>Cancelar</AlertDialogAction>
-          <AlertDialogAction onClick={handleGuardarLectura}>
-            {!seleccionarAnomalia ? "Ingresar lectura" : "Agregar anomalía"}
-          </AlertDialogAction>
+          <AlertDialogAction onClick={handleCloseModal}>Cancelar</AlertDialogAction>
+          <AlertDialogAction onClick={handleGuardarLectura}>Aceptar y cerrar</AlertDialogAction>
         </AlertDialogFooter>
+        
       </AlertDialogContent>
     </AlertDialog>
   );

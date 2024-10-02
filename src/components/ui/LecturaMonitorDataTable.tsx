@@ -174,8 +174,6 @@ export function LecturaMonitorDataTable<TData, TValue>({
           </div>
 
           <div className=" flex items-center justify-between space-x-2 py-4">
-            
-            
             <div className="flex space-x-2 ml-auto">
               <Button
                 variant="outline"
@@ -193,10 +191,10 @@ export function LecturaMonitorDataTable<TData, TValue>({
               </Button>
             </div>
           </div>
+
           <div className=" flex items-center justify-between space-x-2 py-4">
           <div className="flex space-x-2">
-              <Button className="w-full">Importar PDF</Button>
-              {/*<input type="file" accept=".xlsx" onChange={handleFileChange} /> {/* Input para subir el archivo */}
+              <Button className="w-full">Exportar PDF ?</Button>
               <Button onClick={handleAbrirModal}>Importar Excel</Button> {/* Botón para iniciar la importación */}
                 
             </div>
