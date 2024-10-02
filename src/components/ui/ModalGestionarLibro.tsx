@@ -27,12 +27,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MdMoreHoriz } from "react-icons/md";
 import { GoogleMap, LoadScript, Polygon, Marker } from "@react-google-maps/api";
-import { CheckCircledIcon, Pencil1Icon, Pencil2Icon } from '@radix-ui/react-icons';
+import { CheckCircledIcon, Cross2Icon, Pencil1Icon, Pencil2Icon } from '@radix-ui/react-icons';
 import IconButton from './IconButton';
 import { Check } from 'lucide-react';
 import Loader from './Loader';
 import { Skeleton } from './skeleton';
-
+import { useToast } from './use-toast';
+import { Toast, ToastAction } from '@radix-ui/react-toast';
 interface ModalProps {
   trigger: React.ReactNode;
   title: string;
@@ -42,6 +43,7 @@ interface ModalProps {
 }
 
 const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description, children, onConfirm, libro, setRutas, rutas }) => {
+  const { toast } = useToast();
   const [changeTab, setChangeTab] = useState(false)//SIRVE PARA REFRESCAR EL COMPONENTE
   const [triggerClick, setTriggerClick] = useState(false);
   const tomasSecuenciaRef = useRef<HTMLUListElement>(null);//REF DE SEUCUENCIA 
@@ -55,10 +57,15 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
   const [loadingUpdateSecuencia, setLoadingUpdateSecuencia] = useState(false);
   const mapRef = useRef(null);
   const { center } = useGetCenterMap(libro?.polygon?.coordinates) //CENTRO DEL MAPA
+
+  const [secuenciaTemp, setSecuenciaTemp] = useState([]);
+  const [secuenciaCeroTemp, setSecuenciaCeroTemp] = useState([]);
   useEffect(() => {
     if (libro?.secuencias[0] != null) {
       setSecuencia(libro?.secuencias[0]?.ordenes_secuencia);
       setSecuenciaCero(libro?.secuencias[0]?.ordenes_secuencia_cero)
+      setSecuenciaTemp(libro?.secuencias[0]?.ordenes_secuencia);
+      setSecuenciaCeroTemp(libro?.secuencias[0]?.ordenes_secuencia_cero);
       const { newCoords } = useFormatCoords(libro?.polygon?.coordinates)//COORDENADAS DEL LIBRO
       setLibroCoords(newCoords);
     }
@@ -74,9 +81,11 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
     if (mapRef.current) {
       initMapa(libroCoords, center, libro?.secuencias[0]?.ordenes_secuencia);
     }
+
   }, [libro?.secuencias[0]?.ordenes_secuencia])
 
   useEffect(() => {
+    //localStorage.setItem("secuenciaTemp", JSON.stringify(libro?.secuencias[0]?.ordenes_secuencia));
     setSecuenciaPrincipal(libro?.secuencias[0])
   }, [changeTab])
 
@@ -144,7 +153,6 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
 
   useEffect(() => {
     setSecuenciaReal(secuencia);
-    console.log(secuenciaReal);
   }, [secuencia])
 
   return (
@@ -181,22 +189,53 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                                 {
                                   editandoSecuencia ?
                                     <>
-                                      <div onClick={async () => {
-                                        updateSecuencia(secuenciaPrincipal, secuenciaReal, setLoadingUpdateSecuencia, setEditandoSecuencia, setRutas, setSecuencia);
-                                        //initMapa(libroCoords, center, libro?.secuencias[0]?.ordenes_secuencia);
-                                      }}>
-                                        <IconButton>
-                                          <div className={`text-green-500 select-none flex gap-2 items-center underline ${loadingUpdateSecuencia == true ? "pointer-events-none" : ""}`}>
-                                            {
-                                              loadingUpdateSecuencia &&
-                                              <div className='h-6 w-6 flex '>
-                                                <div class="loader"></div>
-                                              </div>
-                                            }
-                                            <p>Aplicar Cambios</p>
-                                            <CheckCircledIcon className='text-green-500' />
+                                      <div className='flex gap-3 '>
+                                        <div onClick={async () => {
+                                          try {
+                                            await updateSecuencia(secuenciaPrincipal, secuenciaReal, setLoadingUpdateSecuencia, setEditandoSecuencia, setRutas, setSecuencia);
+                                          } catch (e) {
+                                            console.log(e)
+                                            toast({
+                                              title: "Algo salió mal",
+                                              description: "Hubo un error al actualiza la secuencia",
+                                              action: <ToastAction altText='Aceptar'></ToastAction>
+                                            })
+                                          }
+                                          //initMapa(libroCoords, center, libro?.secuencias[0]?.ordenes_secuencia);
+                                        }}>
+                                          <IconButton>
+                                            <div className={`text-green-500 select-none flex gap-2 items-center underline ${loadingUpdateSecuencia == true ? "pointer-events-none" : ""}`}>
+                                              {
+                                                loadingUpdateSecuencia &&
+                                                <div className='h-6 w-6 flex '>
+                                                  <div class="loader"></div>
+                                                </div>
+                                              }
+                                              <p>Aplicar</p>
+                                              <CheckCircledIcon className='text-green-500' />
+                                            </div>
+                                          </IconButton>
+                                        </div>
+
+
+                                        {/* <IconButton>
+                                          <div
+                                            className='flex gap-2 items-center underline text-red-500'
+                                            onClick={async () => {
+                                              setLoadingUpdateSecuencia(true);
+                                              await new Promise(resolve => setTimeout(resolve, 5));
+                                              setSecuencia(JSON.parse(localStorage.getItem("secuenciaTemp")));
+                                              setSecuenciaReal(JSON.parse(localStorage.getItem("secuenciaTemp")));
+                                              setSecuenciaCero(libro?.secuencias[0]?.ordenes_secuencia_cero);
+                                              setEditandoSecuencia(false);
+                                              setLoadingUpdateSecuencia(false);
+                                            }}
+                                          >
+                                            <p>Cancelar</p>
+                                            <Cross2Icon />
                                           </div>
-                                        </IconButton>
+                                        </IconButton> */}
+                                        
                                       </div>
                                     </>
                                     :
@@ -230,11 +269,11 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                             {
                               !loadingUpdateSecuencia ?
                                 <>
-                                  <div className='flex flex-col'>
+                                  <div className='flex flex-col  mt-3'>
                                     {
                                       secuenciaReal?.map((orden, index) => (
                                         <>
-                                          <div className=' h-20 flex items-center justify-center'>
+                                          <div className=' h-[84.5px] mb-[10px] flex items-center justify-center'>
                                             <p>{index + 1}</p>
                                           </div>
                                         </>
@@ -251,7 +290,11 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                                           ${editandoSecuencia == true ? "border-green-500" : ""}
                                         `}>
                                               <p className={`bg-orange-500 text-white rounded-full px-3 py-1`}>{orden?.numero_secuencia}</p>
-                                              <p>{orden?.toma?.codigo_toma}</p>
+                                              <div className='flex flex-col'>
+                                                <p>{orden?.toma?.codigo_toma}</p>
+                                                <p>{orden?.toma?.clave_catastral}</p>
+                                              </div>
+
                                               <input
                                                 defaultValue={orden?.numero_secuencia}
                                                 type="number"
@@ -261,6 +304,11 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                                                   if (e.key === 'Enter') {
                                                     const nuevaPosicion = e.target.value;
                                                     if (nuevaPosicion > secuencia.length || nuevaPosicion < 0) {
+                                                      toast({
+                                                        title: "Fuera del tango de posiciones",
+                                                        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+                                                      })
+
                                                     } else {
                                                       moverPosicionLibro(nuevaPosicion, secuencia, setSecuencia, orden?.numero_secuencia, setLoadingUpdateSecuencia, setRutas, libro?.id);
                                                     }
@@ -293,13 +341,17 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                           </div>
                         </div>
                         <div className='max-h-[60vh] overflow-auto w-full px-3  no-scrollbar'>
-                          <ul ref={tomasSinSecuenciaRef} id='sinSecuencia'>
+                          <ul ref={tomasSinSecuenciaRef} id='sinSecuencia' className={`w-full ${editandoSecuencia == true ? "" : "pointer-events-none"}`} >
                             {
                               <>
                                 {secuenciaCero?.map((orden, index) => (
                                   <>
-                                    <li id={orden?.id} className='select-none my-3 border py-4 rounded-md flex items-center px-3 cursor-pointer'>
-                                      {orden?.toma?.codigo_toma}
+                                    <li id={orden?.id}
+                                      className={`shadow-md select-none my-3 border py-4 rounded-md flex flex-col px-3 cursor-pointer relative
+                                          ${editandoSecuencia == true ? "border-green-500" : ""}
+                                        `}>
+                                      <p>{orden?.toma?.codigo_toma}</p>
+                                      <p>{orden?.toma?.clave_catastral}</p>
                                     </li>
                                   </>
                                 ))}
@@ -310,6 +362,20 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                       </div>
                       <div className='w-[100%]'>
                         <div ref={mapRef} id='mapa_google' className='w-full h-[70vh]'></div>
+                      </div>
+                    </div>
+                    <div className='w-[50%] absolute right-0 flex justify-end py-2'>
+                      <div className='flex gap-2'>
+
+                        <div className='flex items-center  gap-3'>
+                          <div className='bg-green-500 w-5 h-5'></div>
+                          <p>Primero</p>
+                        </div>
+
+                        <div className='flex items-center  gap-3'>
+                          <div className='bg-blue-950 w-5 h-5'></div>
+                          <p>Ultimo</p>
+                        </div>
                       </div>
                     </div>
                     <div className='absolute right-2 bottom-2 flex gap-2'>
