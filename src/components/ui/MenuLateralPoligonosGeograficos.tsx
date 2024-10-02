@@ -48,8 +48,8 @@ const MenuLateralPoligonosGeograficos = () => {
 
   useEffect(() => {
     let new_visibility = {};
-    rutas.forEach(ruta => {
-      ruta.libros.forEach(libro => {
+    rutas?.forEach(ruta => {
+      ruta?.libros?.forEach(libro => {
         new_visibility[libro.id] = true;
       });
     });
@@ -57,11 +57,10 @@ const MenuLateralPoligonosGeograficos = () => {
 
     new_visibility = {};
 
-    rutas.forEach(ruta => {
+    rutas?.forEach(ruta => {
       new_visibility[ruta.id] = true;
     });
     set_ruta_visibility(new_visibility);
-
   }, [rutas]);
 
   //useEffect((()=>{console.log(libro_visibility)}),[libro_visibility])
@@ -105,7 +104,7 @@ const MenuLateralPoligonosGeograficos = () => {
     set_ruta_visibility(new_visibility);
 
     new_visibility = { ...libro_visibility };
-    ruta.libros.forEach(libro => {
+    ruta?.libros?.forEach(libro => {
       new_visibility[libro.id] = ruta_visibility[ruta.id] == true ? false : true;
     });
 
@@ -195,11 +194,11 @@ const MenuLateralPoligonosGeograficos = () => {
             <p className='p-2 bg-blue-500 text-white sticky top-0 z-50'> Cargando Importación ... </p>
           }
           {
-            rutas.length == 0 && !loading_import && !loading_rutas &&
+            rutas?.length == 0 && !loading_import && !loading_rutas &&
             <p className='p-2 text-red-500 sticky top-0 z-50'> Sin Polígonos. </p>
           }
 
-          {rutas.length > 0 &&
+          {rutas?.length > 0 &&
             <div className=' h-full'>
               {/*contenedor rutas y libros*/}
               {rutas.map((ruta, index) => {
@@ -306,6 +305,7 @@ const MenuLateralPoligonosGeograficos = () => {
                                   description='Opciones del libro'
                                   libro={libro}
                                   setRutas = {setRutas}
+                                  rutas = {rutas}
                                 />
 
                                 {/*
