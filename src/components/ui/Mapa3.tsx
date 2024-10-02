@@ -116,11 +116,11 @@ export const Mapa3 = () => {
         }
       }
 
-      return ruta.libros.map((libro) => {
+      return ruta?.libros?.map((libro) => {
 
         if (libro.polygon && libro_visibility[libro.id] && libro.polygon.coordinates[0]?.length > 0 && !loading_rutas) {
 
-          let polygonCoordinates = libro.polygon.coordinates[0].map((punto) => (
+          let polygonCoordinates = libro?.polygon?.coordinates[0]?.map((punto) => (
             {
               lat: punto[1],
               lng: punto[0]
@@ -252,8 +252,8 @@ export const Mapa3 = () => {
         return null;
       }).filter(polygon => polygon !== null);
     }).flat();
-    setPolygons(newPolygons.map(p => p.polygon));
-    setOverlays(newPolygons.map(p => p.labelOverlay));
+    setPolygons(newPolygons?.map(p => p.polygon));
+    setOverlays(newPolygons?.map(p => p.labelOverlay));
     setTomasMarkers(newTomasMarkers);
 
   }, [libro_visibility, ruta_visibility, hide_all_tomas]);
@@ -294,7 +294,7 @@ export const Mapa3 = () => {
                 anchor: new google.maps.Point(25, 25)
               }
             });
-            map.setZoom(20);
+            map?.setZoom(20);
             // Crear una etiqueta utilizando InfoWindow
             const infoWindow = new google.maps.InfoWindow({
               content: `<div class="text-black">
@@ -330,7 +330,7 @@ export const Mapa3 = () => {
     if (foundToma) {
       // Centrar el mapa en la posición de la toma
       search_input.current.value = "";
-      map.setCenter(new google.maps.LatLng(foundToma.posicion.coordinates[1], foundToma.posicion.coordinates[0]));
+      map?.setCenter(new google.maps.LatLng(foundToma.posicion.coordinates[1], foundToma.posicion.coordinates[0]));
 
     } else {
       alert("Toma no encontrada");

@@ -39,7 +39,7 @@ export const useSortable2 = (ref: RefObject<HTMLUListElement>, onEnd: (evt: any)
         group: "secuencia",
         onEnd: (evt) => {
           console.log(evt.to.id);
-          //onEnd(evt);
+          onEnd(evt);
         },
       });
       return () => {
@@ -82,7 +82,7 @@ export function useFormatCoords(coords) {
   return { newCoords };
 }
 // Custom Hook for Task Management
-export async function updateSecuencia(secuenciaTemp, secuenciaOrden, setLoading, setEditandando, setRutas) {
+export async function updateSecuencia(secuenciaTemp, secuenciaOrden, setLoading, setEditandando, setRutas, setSecuencia) {
   setLoading(true);
 
   let secuencia =
@@ -135,6 +135,7 @@ export async function updateSecuencia(secuenciaTemp, secuenciaOrden, setLoading,
   finally {
     setLoading(false);
     setEditandando(false);
+    setSecuencia(secuenciaOrden)
   }
 }
 
