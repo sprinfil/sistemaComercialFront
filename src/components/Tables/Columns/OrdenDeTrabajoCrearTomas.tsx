@@ -24,6 +24,10 @@ export type OrdenDeTrabajoCrearTomas = {
   facturable: string
   estado: boolean
   saldo: string
+  usuario: 
+  {
+    nombre_completo: string
+  }
 }
 
 
@@ -99,13 +103,17 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
     ),
   },
   {
-    accessorKey: "usuario.nombre",
+    accessorFn: (row) => {
+      // Verifica la estructura de los datos en la consola
+      return row.usuario?.nombre_completo;
+    },
+    id: "usuario.nombre_completo",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Nombre del usuario
+        Usuario
       </Button>
     ),
   },

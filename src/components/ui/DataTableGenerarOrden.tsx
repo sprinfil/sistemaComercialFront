@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-
+import { ZustandFiltrosOrdenTrabajo } from "../../contexts/ZustandFiltrosOt";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -39,13 +39,13 @@ export function DataTableGenerarOrden<TData, TValue>({
     []
   );
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null); // Estado para la fila seleccionada
-
+ const  {setAbrirModalOrdenTrabajo, abrirModalOrdenTrabajo} = ZustandFiltrosOrdenTrabajo();
   const table = useReactTable({
     data,
     columns,
     sorter,
     getCoreRowModel: getCoreRowModel(),
-
+    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -63,19 +63,78 @@ export function DataTableGenerarOrden<TData, TValue>({
 
   return (
     <div className="">
-      <div className="flex items-center py-4">
-        
-        <Input
-          placeholder="Buscar..."
+      <div className="mb-5">
+        {
+          abrirModalOrdenTrabajo && 
+          <>
+          <div className="flex space-x-2 mt-5">
+            <Input
+          placeholder="Buscar codigo de toma..."
           type="text"
-          value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn(`codigo_toma`)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
+            table.getColumn(`codigo_toma`)?.setFilterValue(event.target.value)
+          }
+        className="flex-grow"
+        />
+      
+      <Input
+          placeholder="Buscar nombre del usuario..."
+          type="text"
+          value={(table.getColumn(`usuario.nombre_completo`)?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn(`usuario.nombre_completo`)?.setFilterValue(event.target.value)
+          }
+          className="flex-grow"
+          />
+       
+          </div>
+            
+            <div className="flex space-x-2 mt-5 mb-5">
+            <Input
+          placeholder="Buscar tipo..."
+          type="text"
+          value={(table.getColumn(`usuario.nombre_completo`)?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn(`usuario.nombre_completo`)?.setFilterValue(event.target.value)
+          }
+             className="flex-grow"
+        />
+        
+            <Input
+          placeholder="Buscar saldo..."
+          type="text"
+          value={(table.getColumn(`usuario.nombre_completo`)?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn(`usuario.nombre_completo`)?.setFilterValue(event.target.value)
+          }
+            className="flex-grow"
+        />
+              </div>
+            
+
+            <div className="mb-5">
+            <Input
+          placeholder="Buscar dirección..."
+          type="text"
+          value={(table.getColumn(`usuario.nombre_completo`)?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn(`usuario.nombre_completo`)?.setFilterValue(event.target.value)
           }
           className="w-full"
         />
+            </div>
+
+          </>
+        
+        
+
+        }
+      
         
       </div>
+      
+       
       <div className="rounded-md border h-[50vh] overflow-auto">
         <Table>
           <TableHeader>
@@ -123,8 +182,35 @@ export function DataTableGenerarOrden<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </div>
+
     
+      </div>
+      <div className=" flex-1 text-sm text-muted-foreground mt-1">
+              {table.getFilteredSelectedRowModel().rows.length} of{" "}
+              {table.getFilteredRowModel().rows.length} filas(s) seleccionadas.
+            </div>
+              <div className="flex justify-end ">
+              <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Anterior
+            </Button>
+            <div className="ml-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              Siguiente
+            </Button>
+            </div>
+           
+              </div>
+            
     </div>
   );
 }

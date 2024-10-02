@@ -8,6 +8,7 @@ import {
   useReactTable,
   getFilteredRowModel,
   getSortedRowModel,
+  getPaginationRowModel,
 } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,11 +21,25 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import IconButton from "./IconButton";
-import { MdContentPasteSearch } from "react-icons/md";
+import { MdContentPasteSearch, MdOutlineCancel } from "react-icons/md";
 import { FaSearch } from "react-icons/fa";
 import { TbFilterPlus } from "react-icons/tb";
 import { ZustandFiltrosOrdenTrabajo } from "../../contexts/ZustandFiltrosOt";
 import axiosClient from "../../axios-client";
+import { TrashIcon } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { FaCheckCircle } from "react-icons/fa";
+
+import { TiCancel } from "react-icons/ti";
+import ModalEstasSeguroCancelarMasivamenteOT from "./ModalEstasSeguroCancelarMasivamenteOT";
+import ModalEstasSeguroCancelarOTSSS from "./ModalEstasSeguroCancelarOTSSS";
+import { RiUserSearchLine } from "react-icons/ri";
+import ModalAsignarOperadorMasivamente from "./ModalAsignarOperadorMasivamente";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -42,7 +57,12 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [selectedRow, setSelectedRow] = React.useState<string | null>(null);
+  const [abrirModal, setAbrirModal] =  React.useState(false);
+  const [abrirModal2, setAbrirModal2] =  React.useState(false);
+
   const [control, setControl] = React.useState(false);
+  const [abrirModalOperador, setAbrirModalOperador] = React.useState(false);
+
   const { isAsignadaChecked, setIsAsignadaChecked, 
     isNoAsignadaChecked, setIsNoAsignadaChecked,
     setInformacionRecibidaPorFiltros, informacionRecibidaPorFiltros, arregloOrdenesDeTrabajoParaAsignarAOperador, boolUsoFiltros,
@@ -62,7 +82,7 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
     isDesdeFecha,
     setIsDesdeFecha,
     isCodigoDeTomaFiltro,
-    setIsCodigoDeTomaFiltro} = ZustandFiltrosOrdenTrabajo();
+    setIsCodigoDeTomaFiltro, } = ZustandFiltrosOrdenTrabajo();
   
   const table = useReactTable({
     data,
@@ -70,6 +90,7 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
     sorter,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
+    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
@@ -88,59 +109,54 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
     setBoolUsoFiltros(!boolUsoFiltros);
   }
 
-  const getOrdenesDeTrabajo = async () => {
-    setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
-    const values = {
-      asignada: isAsignadaChecked,
-      no_asignada: isNoAsignadaChecked,
-      concluida: isConcluidaChecked,
-      cancelada: isCanceladaChecked,
-      domestica: isDomesticaChecked,
-      comercial: isComercialChecked,
-      industrial: isIndustrialChecked,
-      especial: isEspecialChecked,
-      ruta_id: idRutaFiltro,
-      libro_id: idLibroFiltro,
-      saldo_min: saldoMinFiltro,
-      saldo_max: saldoMaxFiltro,
-      fecha_tipo:  isFechaTipo,
-      fecha_inicio :isDesdeFecha ,
-      fecha_fin:isHastaFecha,
-      codigo_toma:isCodigoDeTomaFiltro
-    };
-    console.log("VALORES ENVIADOS", values);
-    try {
-      const response = await axiosClient.post("OrdenTrabajo/filtros", values);
-      console.log(response);
-      setvalorParaSaberSiUsaLaTablaDeFiltros(true);
-      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
-      if (Array.isArray(response.data.ordenes_trabajo)) {
-        const tomas = response.data.ordenes_trabajo.map((item: any) => item);
-        console.log("Tomas extraídas", tomas);
-        setInformacionRecibidaPorFiltrosMonitorOrdenDeTrabajo(tomas);
-        setIdLibroFiltro("");
-        setIdRutaFiltro("");
-      } else {
-        console.log("No jala", response.data.ordenes_trabajo);
-      }
-    } catch (error) {
-      setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
-      console.error("Failed to fetch anomalias:", error);
-    }
+  const abrirModalGG = () => {
+    //setAnomalia(anomalia);
+    //setAccion("ver");
+    setAbrirModal(true);
   };
+  const abrirModalGG2 = () => {
+    //setAnomalia(anomalia);
+    //setAccion("ver");
+    setAbrirModal2(true);
+  };
+
+
+const handleSeleccionarOperador = () => 
+{
+  setAbrirModalOperador(true);
+}
 
   console.log(informacionRecibidaPorFiltrosMonitorOrdenDeTrabajo);
   console.log(informacionCerrarOtMasivamente);
 
   return (
     <div className="p-4">
-      <div className="flex items-center space-x-4 mb-4 bg-muted w-[12vh] rounded-xl mkl">
-        <IconButton title="Buscar" onClick={getOrdenesDeTrabajo}>
-          <FaSearch className="ml-2"/>
-        </IconButton>
+      <div className="flex items-center space-x-2 mb-4 bg-muted w-[full] rounded-xl ">
+        <div className="flex justify-center">
+         
         <IconButton title="Ver más filtros" onClick={handleControl}>
-          <TbFilterPlus className="w-[2.5vh] h-[2.5vh]" />
+          <TbFilterPlus className="w-[3.5vh] h-[3.5vh] ml-2" />
         </IconButton>
+        {informacionCerrarOtMasivamente.length > 1 && 
+         <IconButton title="Seleccionar operador" onClick={handleSeleccionarOperador}
+          >       
+         <RiUserSearchLine  className="ml-2 w-[3.5vh] h-[3.5vh]"/>
+         <ModalAsignarOperadorMasivamente
+         isOpen={abrirModalOperador}
+         setIsOpen={setAbrirModalOperador}/>
+         
+      </IconButton>
+
+      }
+        
+        <div className='flex justify-end ' title='Cerrar ordenes de trabajo'>
+            <IconButton onClick={abrirModalGG}>
+              <FaCheckCircle className="ml-2 w-[3.0vh] h-[3.0vh]"/>
+            </IconButton>
+            <IconButton title="Cancelar ordenes de trabajo" onClick={abrirModalGG2}>  <TiCancel className='w-[5vh] h-[4.3vh]' /></IconButton>
+          </div>
+        </div>
+        
       </div>
 
       {boolUsoFiltros && (
@@ -236,7 +252,45 @@ export function DataTableMonitorOrdenDeTrabajo<TData, TValue>({
             )}
           </TableBody>
         </Table>
+        <ModalEstasSeguroCancelarMasivamenteOT
+        isOpen={abrirModal}
+        setIsOpen={setAbrirModal}
+        method={""}
+      />
+       <ModalEstasSeguroCancelarOTSSS
+        isOpen={abrirModal2}
+        setIsOpen={setAbrirModal2}
+        method={""}
+      />
+
       </div>
+      <div className=" flex-1 text-sm text-muted-foreground mt-1">
+              {table.getFilteredSelectedRowModel().rows.length} of{" "}
+              {table.getFilteredRowModel().rows.length} filas(s) seleccionadas.
+            </div>
+              <div className="flex justify-end ">
+              <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Anterior
+            </Button>
+            <div className="ml-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              Siguiente
+            </Button>
+            </div>
+           
+              </div>
+            
+            
     </div>
   );
 }
