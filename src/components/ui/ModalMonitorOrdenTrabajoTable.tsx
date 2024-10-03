@@ -23,7 +23,18 @@ import ModalCerrarOT from "./ModalCerrarOT";
 import ModalCerrarOT2 from "./ModalCerrarOT2";
 import MarcoForm from "./MarcoForm";
 import MarcoFormDetalleOtMonitor from "./MarcoFormDetalleOtMonitor";
-
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { FaCheckCircle } from "react-icons/fa";
+import { TiCancel } from "react-icons/ti";
 
 const ModalMonitorOrdenTrabajoTable = () => {
   const { toast } = useToast();
@@ -176,169 +187,193 @@ const ModalMonitorOrdenTrabajoTable = () => {
   };
 
   console.log(detalleOrdenDeTrabajoTomaMonitor2.id_empleado_asigno);
+  console.log(detalleOrdenDeTrabajoTomaMonitor2);
 
   return (
     <AlertDialog open={isOpenPadreModalDetalleMonitorOT} onOpenChange={setIsOpenPadreModalDetalleMonitorOT}>
-    <AlertDialogContent className="max-w-[90vw] max-h-[90vh] overflow-auto p-4">
+    <AlertDialogContent className="max-w-[100vw] max-h-[100vh] overflow-auto p-4">
     <AlertDialogHeader>
           <AlertDialogTitle>
             <div className="flex space-x-2">
-              Información de la orden de trabajo
-              <div
-                className="flex justify-end ml-[18vh]"
-                title="Cancelar orden de trabajo"
-              ></div>
-              <div>
-
-              </div>
+              Detalle de la orden de trabajo
+              
+             
             </div>
           </AlertDialogTitle>
 
           <AlertDialogDescription>
-            <div className="flex items-center space-x-2 ml-[180vh] bg-muted w-[10vh] rounded-xl">
+            <div className="flex items-center justify-center space-x-2 bg-muted mt-2">
              
               {detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.modelo == "medidores" &&
               detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.accion == "registrar" &&
                 <div className="">
-                  <IconButton title="Cerrar orden de trabajo" onClick={abrirModalGG}><MdOutlineCancel className="" /></IconButton>
+                  <IconButton title="Cerrar orden de trabajo" onClick={abrirModalGG}><FaCheckCircle className="w-[3.0vh] h-[3.0vh]"/></IconButton>
                   <ModalCerrarOT/>
                 </div>
 
               }
               {
                 detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.orden_trabajo_accion[0]?.modelo != "medidores" &&
-                <div className="w-[10vh]" >
-                  <IconButton title="Cerrar orden de trabajo" onClick={abrirModalGG2}><MdOutlineCancel className="w-[2vh] h-[3vh]" /></IconButton>
+                <div className="" >
+                  <IconButton title="Cerrar orden de trabajo" onClick={abrirModalGG2}><FaCheckCircle className="w-[3.0vh] h-[3.0vh]" /></IconButton>
                   <ModalCerrarOT2 />
                 </div>
 
 
               }
                 <IconButton onClick={cancelarOrdenDeTrabajo} title="Cancelar orden de trabajo">
-                                <TrashIcon className="w-[2vh] h-[2vh] ml-2" />
+                                <TiCancel className="w-[5vh] h-[4.3vh]" />
                               </IconButton>
 
 
 
             </div>
-            <div className="p-4 space-y-7">
+            <div className="p-4 space-y-7 mt-5">
             {/* Información de la toma */}
-            <MarcoFormDetalleOtMonitor title="Información de la toma">
-                <div className="grid grid-cols-1 gap-y-2">
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">Código de toma:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.codigo_toma}
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">Nombre del usuario:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.usuario?.nombre_completo}
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">Clave catastral:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.clave_catastral}
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">Calle:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.calle}
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">Número de casa:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.numero_casa}
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">Colonia:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.colonia}
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">Ruta:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.libro?.nombre}
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">Tipo de toma:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.tipo_toma?.nombre}
-                        </div>
-                    </div>
-                </div>
-            </MarcoFormDetalleOtMonitor>
+            <h1 className="text-xl mb-[2vh] text-black dark:text-white">
+                                Información de la toma
+                            </h1>
+            <Table>
+      <TableCaption></TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead >Nombre del usuario</TableHead>
+          <TableHead>Código de toma</TableHead>
+          <TableHead>Clave catastral</TableHead>
+          <TableHead >Dirección</TableHead>
+          <TableHead >Ruta y Libro</TableHead>
+          <TableHead >Tipo de toma</TableHead>
 
-            {/* Información de la orden de trabajo */}
-            <MarcoFormDetalleOtMonitor title="Información de la orden de trabajo">
-                <div className="grid grid-cols-1 gap-y-4">
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">Tipo de OT:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.descripcion}
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">Estado de la OT:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.estado}
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">Creación de la OT:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.created_at}
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">Fecha finalizada:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.fecha_finalizada}
-                        </div>
-                    </div>
-                </div>
-            </MarcoFormDetalleOtMonitor>
-            <MarcoFormDetalleOtMonitor title="Operadores">
-                <div className="grid grid-cols-1 gap-y-4 m2">
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">La creo:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.empleado_genero?.nombre_completo}
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">La asigno:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                            {detalleOrdenDeTrabajoTomaMonitor2?.empleadoAsigno?.nombre_completo}
-                        </div>
-                    </div>
-                    <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">El encargado de hacerla:</p>
-                        <div className="mt-1 md:mt-0 w-2/3">
-                        {detalleOrdenDeTrabajoTomaMonitor2?.empleadoEncargado?.nombre_completo}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+          <TableRow >
+            <TableCell >
+            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.usuario?.nombre_completo}
 
-                        </div>
-                    </div>
-                   
-                </div>
-            </MarcoFormDetalleOtMonitor>
+            </TableCell>
+            <TableCell>
+            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.codigo_toma}
+
+            </TableCell>
+            <TableCell>
+            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.clave_catastral}
+
+            </TableCell>
+            <TableCell >
+            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.direccion_completa}
+
+            </TableCell>
+            <TableCell >
+            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.ruta?.nombre + " "}
+            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.libro?.nombre}
+
+            </TableCell>
+            <TableCell >
+            {detalleOrdenDeTrabajoTomaMonitor2?.toma?.tipo_toma?.nombre}
+
+            </TableCell>
+          </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+        
+        </TableRow>
+      </TableFooter>
+    </Table>
+        
+                 {/* Información de la orden de trabajo */}
+                 <h1 className="text-xl mb-[2vh] text-black dark:text-white">
+                 Información de la orden de trabajo
+                            </h1>
+            <Table>
+      <TableCaption></TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead >Tipo de OT</TableHead>
+          <TableHead>Estado de la OT</TableHead>
+          <TableHead>Creación de la OT</TableHead>
+          <TableHead >Fecha finalizada</TableHead>
+
+
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+          <TableRow >
+            <TableCell >
+            {detalleOrdenDeTrabajoTomaMonitor2?.orden_trabajo_catalogo?.descripcion}
+
+            </TableCell>
+            <TableCell>
+            {detalleOrdenDeTrabajoTomaMonitor2?.estado}
+
+            </TableCell>
+            <TableCell>
+            {detalleOrdenDeTrabajoTomaMonitor2?.created_at}
+
+            </TableCell>
+            <TableCell >
+            {detalleOrdenDeTrabajoTomaMonitor2?.fecha_finalizada}
+
+            </TableCell>
+        
+          </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+        
+        </TableRow>
+      </TableFooter>
+    </Table>
+
+                    {/* Información de la orden de trabajo */}
+                    <h1 className="text-xl mb-[2vh] text-black dark:text-white">
+                    Operadores
+                            </h1>
+            <Table>
+      <TableCaption></TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead>La creo</TableHead>
+          <TableHead>La asigno</TableHead>
+          <TableHead>Encargado de hacerla</TableHead>
+
+
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+          <TableRow >
+            <TableCell >
+            {detalleOrdenDeTrabajoTomaMonitor2?.empleado_genero?.nombre_completo}
+
+            </TableCell>
+            <TableCell>
+            {detalleOrdenDeTrabajoTomaMonitor2?.empleadoAsigno?.nombre_completo}
+
+            </TableCell>
+            <TableCell>
+            {detalleOrdenDeTrabajoTomaMonitor2?.empleadoEncargado?.nombre_completo}
+
+            </TableCell>
+           
+        
+          </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+        
+        </TableRow>
+      </TableFooter>
+    </Table>
+            
+           
         </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setIsOpenPadreModalDetalleMonitorOT(false)}>
-            Cancelar
-          </AlertDialogCancel>
-
-          <AlertDialogAction onClick={() => setIsOpenPadreModalDetalleMonitorOT(false)}>
-            Aceptar
+       
+          <AlertDialogAction onClick={() => setIsOpenPadreModalDetalleMonitorOT(false)} className="mt-3 w-[15vh] mr-4 mb-3" >
+            Salir
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

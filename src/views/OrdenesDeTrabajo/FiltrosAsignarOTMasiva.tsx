@@ -271,8 +271,8 @@ const FiltrosAsignarOTMasiva = () => {
       {!isOrdenesTrabajoRoute ?
        <div className="">
        {/** ESTE ES EL BUSCAR DE EL MONITOR DE ORDENES DE TRABAJO */}
-     <IconButton title="Buscar" onClick={getOrdenesDeTrabajoFiltrosMonitor} >
-       <FaSearch className="" />
+     <IconButton title="Filtrar" onClick={getOrdenesDeTrabajoFiltrosMonitor} >
+       <FaSearch className="w-[2.5vh] h-[2.5vh]" />
      </IconButton>
    </div>
    :

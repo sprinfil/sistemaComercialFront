@@ -61,6 +61,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ModalEstasSeguroEliminarContrato from "./ModalEstasSeguroEliminarContrato.tsx";
 import { CotizacionContrato } from "../../views/Usuarios/Contratos/FormsContratos/CotizacionContrato.tsx";
 import ModalMonitorContratacionConsultarFactibilidad from "./ModalMonitorContratacionConsultarFactibilidad.tsx";
+import { MonitorContratoMapa } from "../../views/Usuarios/Contratos/MonitorContratoMapa.tsx";
 
 
 
@@ -94,7 +95,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
       },
       {
         titulo: "Contrato",
-        componente: ""
+        componente: <MonitorContratoMapa/>
       },
     ]
   
@@ -252,8 +253,8 @@ console.log(tarifaDeContratoActual);
 
   return (
     <AlertDialog open={open} onOpenChange={set_open}>
-    <AlertDialogContent className="w-full max-w-full max-h-full p-6 overflow-auto">
-    <AlertDialogHeader>
+  <AlertDialogContent className="w-full max-w-[100vw] max-h-[100vh] p-6 overflow-auto">
+  <AlertDialogHeader>
         <span className="font-bold text-lg">Detalle del contrato</span>
         <div className="bg-muted h-[6vh]">
            
@@ -427,7 +428,7 @@ console.log(tarifaDeContratoActual);
 
      
           {/*Formulario*/}
-          <div className='w-full rounded-md border border-border h-[80vh] p-4 overflow-auto'>
+          <div className='border border-border shadow-md  rounded-lg p-4 min-h-[80vh]'>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList>
                 {opciones.map((opcion, index) => (
@@ -442,15 +443,16 @@ console.log(tarifaDeContratoActual);
                 </>
               ))}
             </Tabs>
+            
           </div>
 
        
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => {setBoolModalContratacionMonitor(false); setAccion("")}} className="w-[10vh] bg-red-500 border  border-black mb-10">
+        <AlertDialogAction onClick={() => {setBoolModalContratacionMonitor(false); setAccion("")}} className="mt-5 w-[15vh]" >
             Salir
-          </AlertDialogCancel>
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
