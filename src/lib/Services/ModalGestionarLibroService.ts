@@ -272,6 +272,113 @@ export function initMapa(libroCoords, center, tomas) {
   });
 }
 
+//INICIALIZAR MAPA 2
+export function initMapaIndicaciones(libroCoords, center, tomas) {
+  const google = (window as any).google;
+  const map = new google.maps.Map(document.getElementById("mapa_google") as HTMLElement, {
+    center: center,
+    zoom: 17,
+  });
+
+  new google.maps.Polygon({
+    paths: libroCoords,
+    fillColor: "lightBlue",
+    fillOpacity: 0.5,
+    strokeColor: "blue",
+    strokeOpacity: 0.4,
+    strokeWeight: 2,
+    map: map
+  });
+
+  tomas.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
+
+  // Usar DirectionsService y DirectionsRenderer
+  const directionsService = new google.maps.DirectionsService();
+  const directionsRenderer = new google.maps.DirectionsRenderer({
+    polylineOptions: {
+      strokeColor: 'red',
+      strokeOpacity: 0.8,
+      strokeWeight: 3,
+    },
+    map: map,
+  });
+
+  const path = [];
+  const markers = []; // Para almacenar los marcadores
+
+
+  tomas.forEach((secuencia, index) => {
+    const latLng = {
+      lat: secuencia.toma.posicion.coordinates[1],
+      lng: secuencia.toma.posicion.coordinates[0],
+    };
+
+    path.push(latLng); // Agregar la posición al camino
+
+    // Crear un marcador para cada toma
+    const marker = new google.maps.Marker({
+      position: latLng,
+      map: map,
+      label: {
+        text: `Pos: ${secuencia.numero_secuencia} Toma: ${secuencia.toma.codigo_toma}`,
+        color: 'black',
+        fontSize: '16px',
+      },
+      icon: {
+        url: getIconUrl(tomas, index), // Función para obtener la URL del icono
+        scaledSize: new google.maps.Size(35, 35),
+        anchor: new google.maps.Point(25, 25),
+      }
+    });
+
+    markers.push(marker); // Almacenar el marcador
+  });
+
+  // Dibujar caminos entre las tomas
+  for (let i = 0; i < path.length - 1; i++) {
+    drawRoute(directionsService, path[i], path[i + 1]);
+  }
+}
+
+// Función para dibujar la ruta entre dos puntos
+function drawRoute(directionsService, origin, destination) {
+  console.log(origin)
+  console.log(destination)
+  directionsService.route(
+    {
+      origin: origin,
+      destination: destination,
+      travelMode: google.maps.TravelMode.DRIVING, // Puedes cambiar a WALKING, BICYCLING, etc.
+    },
+    (response, status) => {
+      if (status === google.maps.DirectionsStatus.OK) {
+     
+        // Agregar la dirección a la representación
+        const directionsRenderer = new google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(window.google.maps.Map);
+        directionsRenderer.setDirections(response);
+      } else {
+        console.error("Error al obtener la dirección: " + status);
+      }
+    }
+  );
+}
+
+// Función para obtener la URL del icono según la posición
+function getIconUrl(tomas, index) {
+  if (tomas.length === 1) {
+    return grifo; // URL para un solo marcador
+  }
+  if (index === 0) {
+    return grifoPrimero; // URL para el primer marcador
+  }
+  if (index === tomas.length - 1) {
+    return grifoUltimo; // URL para el último marcador
+  }
+  return grifo; // URL para los marcadores intermedios
+}
+
+
 // Custom Hook for Task Management
 export function useTaskManagement() {
   const [tasks, setTasks] = useState([]);
