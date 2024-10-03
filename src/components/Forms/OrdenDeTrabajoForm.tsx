@@ -792,7 +792,7 @@ const OrdenDeTrabajoForm = () => {
 
                                         </FormControl>
                                         <FormDescription>
-                                            Aquí puedes activar si tiene carga masiva.
+                                            Permite que la orden de trabajo se cree masivamente.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -825,7 +825,8 @@ const OrdenDeTrabajoForm = () => {
 
                                         </FormControl>
                                         <FormDescription>
-                                            Aquí puedes activar si asigna masivamente.
+                                        Permite que la orden de trabajo se asigne masivamente a un operador.
+
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -858,7 +859,8 @@ const OrdenDeTrabajoForm = () => {
 
                                         </FormControl>
                                         <FormDescription>
-                                            Aquí puedes activar si cancela masivamanete.
+                                        Permite que la orden de trabajo se cancele masivamente.
+
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -892,7 +894,8 @@ const OrdenDeTrabajoForm = () => {
 
                                         </FormControl>
                                         <FormDescription>
-                                            Aquí puedes activar si tiene cierre masivo.
+                                        Permite que la orden de trabajo se cierra masivamente.
+
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -927,7 +930,7 @@ const OrdenDeTrabajoForm = () => {
 
                                         </FormControl>
                                         <FormDescription>
-                                            Aquí puedes activar si va para público en general
+                                        Permite que la orden de trabajo vaya a público en general.
                                         </FormDescription>
                                         <FormMessage />
                                     </FormItem>
