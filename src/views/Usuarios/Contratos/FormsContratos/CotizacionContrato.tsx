@@ -72,8 +72,8 @@ export const CotizacionContrato = ({ selected_contrato }) => {
 
     return (
         <div className='w-full'>
-            <div className='flex justify-end w-[5vh] ml-[204vh]'>
-                <IconButton onClick={EliminarCotizacion}><Trash2Icon /></IconButton>
+    <div className='flex justify-end mb-4'>
+    <IconButton onClick={EliminarCotizacion}><Trash2Icon /></IconButton>
             </div>
             <div className="flex justify-center w-full">
                 <Table className="w-full max-h-[50vh]">

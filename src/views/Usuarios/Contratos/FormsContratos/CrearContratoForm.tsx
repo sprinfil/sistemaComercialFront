@@ -54,8 +54,11 @@ export const CrearContratoForm = () => {
     const { latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial,
         setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
         setServicioContratado, setGiroComercial, setTipoDeToma, tipoDeToma, tomaPreContratada, isCheckInspeccion, boolPeticionContratacion,
-        setServicioContratado2, selectedLocation, getCoordenadaString, setNombreGiroComercial, esPreContratado,getCoordenadaString2, 
-        puntoTomaLatitudLongitudAPI,contratoLocalStorage} = ZustandFiltrosContratacion();
+        setServicioContratado2, selectedLocation, getCoordenadaString, esPreContratado,getCoordenadaString2, 
+        puntoTomaLatitudLongitudAPI,contratoLocalStorage,
+        nombreCalle, setNombreCalle, nombreEntreCalle1, setNombreEntreCalle1, nombreEntreCalle2, setNombreEntreCalle2, nombreColonia, setNombreColonia
+        ,setNombreGiroComercial, nombreGiroComercial, setNombreGiroComercial2, seTipoTomaNombre, setServicioAlcSan, setServicioAguaNombre
+    } = ZustandFiltrosContratacion();
 
 
     const { usuariosEncontrados,setUsuariosEncontrados } = ZustandGeneralUsuario();
@@ -103,10 +106,6 @@ export const CrearContratoForm = () => {
 
     //ID CONVERTIDOS A NOMBRE PARA CARGARLOS EN LOS INPUTS
     const [nombreCompletoUsuario, setNombreCompletoUsuario] = useState('');
-    const [nombreCalle, setNombreCalle] = useState('');
-    const [nombreEntreCalle1, setNombreEntreCalle1] = useState('');
-    const [nombreEntreCalle2, setNombreEntreCalle2] = useState('');
-    const [nombreColonia, setNombreColonia] = useState('');
 
     useEffect(() => {
 
@@ -115,8 +114,13 @@ export const CrearContratoForm = () => {
         setNombreEntreCalle2(tomaPreContratada?.entre_calle2?.nombre);
         setNombreColonia(tomaPreContratada?.colonia1?.nombre);
         setNombreCompletoUsuario(usuariosEncontrados[0]?.nombre_completo);
-
+        setNombreGiroComercial2(tomaPreContratada?.giro_comercial?.nombre);
+        seTipoTomaNombre(tomaPreContratada?.tipo_toma?.nombre);
+        setServicioAguaNombre(tomaPreContratada.c_agua);
+        setServicioAlcSan(tomaPreContratada.c_alc)
     }, []); 
+
+    console.log(tomaPreContratada);
 
     const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
 
@@ -278,7 +282,6 @@ export const CrearContratoForm = () => {
     const [campoAgua, setCampoAgua] = useState(false);
     const [contrato2, setContrato2] = useState(false);
 
-
     const [campoAguaTomaPropia, setCampoAguaTomaPropia] = useState(false);
     const [contrato2TomaPropia, setContrato2TomaPropia] = useState(false);
 
@@ -322,25 +325,36 @@ export const CrearContratoForm = () => {
             }
             else
             {
+
+                let activo = false;
+                let activo2 = false;
+                if(tomaPreContratada?.c_agua == null) 
+                {
+                    activo=true;
+                }
+                if(tomaPreContratada?.c_alc == null) 
+                    {
+                        activo2=true;
+                    }
                 form.reset({
                     clave_catastral: tomaPreContratada?.clave_catastral || '',
                     tipo_toma: tomaPreContratada?.id_tipo_toma || '',
                     diametro_de_la_toma: tomaPreContratada?.diametro_de_la_toma || '',
-                    calle: tomaPreContratada?.calle || '',
+                    calle: tomaPreContratada?.calle || 0,
                     num_casa: String(tomaPreContratada?.numero_casa) || 0,
-                    colonia: tomaPreContratada?.colonia || '',
+                    colonia: tomaPreContratada?.colonia || 0,
                     codigo_postal: tomaPreContratada?.codigo_postal || '',
-                    entre_calle_1: Number(tomaPreContratada?.entre_calle_1) || '',
-                    entre_calle_2: Number(tomaPreContratada?.entre_calle_2) || '',
+                    entre_calle_1: Number(tomaPreContratada?.entre_calle_1) || 0,
+                    entre_calle_2: Number(tomaPreContratada?.entre_calle_2) || 0,
                     localidad: tomaPreContratada?.localidad || '',
                     municipio: tomaPreContratada?.municipio || 'La Paz',
-                    c_agua: Boolean(tomaPreContratada?.c_agua) || false,
-                    c_alc: Boolean(tomaPreContratada?.c_alc) || false,
-                    c_san: Boolean(tomaPreContratada?.c_san) || false,
+                    c_agua: activo || false,
+                    c_alc: activo2 || false,
+                    c_san: activo2 || false,
                     tipo_contratacion: tomaPreContratada?.tipo_contratacion || '',
                     id_giro_comercial: tomaPreContratada?.id_giro_comercial || 0,
-    
                 });
+                console.log(form.getValues());
 
                 if (tomaPreContratada.c_agua != null) {
                     setCampoAguaTomaPropia(true);
@@ -700,13 +714,22 @@ export const CrearContratoForm = () => {
                                                                 </SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                <SelectItem value="La Paz">La Paz</SelectItem>
+                                                            <SelectItem value="La Paz">La Paz</SelectItem>
                                                                 <SelectItem value="Todos santos">Todos Santos</SelectItem>
                                                                 <SelectItem value="Chametla">Chametla</SelectItem>
                                                                 <SelectItem value="El Centenario">El Centenario</SelectItem>
                                                                 <SelectItem value="El Pescadero">El Pescadero</SelectItem>
-                                                                <SelectItem value="Los Barriles">Los Barriles</SelectItem>
+                                                                <SelectItem value="Colonia Calafia">Colonia Calafia</SelectItem>
+                                                                <SelectItem value="El Sargento">El Sargento</SelectItem>
+                                                                <SelectItem value="El Carrizal">El Carrizal</SelectItem>
+                                                                <SelectItem value="San Pedro">San Pedro</SelectItem>
                                                                 <SelectItem value="Agua Amarga">Agua Amarga</SelectItem>
+                                                                <SelectItem value="Los Barriles">Los Barriles</SelectItem>
+                                                                <SelectItem value="Buena Vista">Buena Vista</SelectItem>
+                                                                <SelectItem value="San Bartolo">San Bartolo</SelectItem>
+                                                                <SelectItem value="San Juan de los Planes">San Juan de los Planes</SelectItem>
+                                                                <SelectItem value="La Matanza">La Matanza</SelectItem>
+                                                                <SelectItem value="Puerto Chale">Puerto Chale</SelectItem>
 
 
                                                             </SelectContent>
@@ -730,8 +753,17 @@ export const CrearContratoForm = () => {
                                                                 <SelectItem value="Chametla">Chametla</SelectItem>
                                                                 <SelectItem value="El Centenario">El Centenario</SelectItem>
                                                                 <SelectItem value="El Pescadero">El Pescadero</SelectItem>
-                                                                <SelectItem value="Los Barriles">Los Barriles</SelectItem>
+                                                                <SelectItem value="Colonia Calafia">Colonia Calafia</SelectItem>
+                                                                <SelectItem value="El Sargento">El Sargento</SelectItem>
+                                                                <SelectItem value="El Carrizal">El Carrizal</SelectItem>
+                                                                <SelectItem value="San Pedro">San Pedro</SelectItem>
                                                                 <SelectItem value="Agua Amarga">Agua Amarga</SelectItem>
+                                                                <SelectItem value="Los Barriles">Los Barriles</SelectItem>
+                                                                <SelectItem value="Buena Vista">Buena Vista</SelectItem>
+                                                                <SelectItem value="San Bartolo">San Bartolo</SelectItem>
+                                                                <SelectItem value="San Juan de los Planes">San Juan de los Planes</SelectItem>
+                                                                <SelectItem value="La Matanza">La Matanza</SelectItem>
+                                                                <SelectItem value="Puerto Chale">Puerto Chale</SelectItem>
 
 
                                                             </SelectContent>

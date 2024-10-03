@@ -50,8 +50,7 @@ import { CajaComboBox } from "../ui/CajaComboBox.tsx";
 const CajaOperadoresSchema = z.object({
     operadores_asignados: z.array(
         z.object({
-            id: z.number(),
-            id_operador: z.number().min(1, "El operador es requetido"),
+            id_operador: z.number(),
         })
     ),
 });
@@ -76,23 +75,10 @@ const CajaOperadoresForm = () => {
     const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
     const [control, setControl] = useState(false);
+    const [nombreOperador, setNombreOperador] = useState([]);
 
 
 
-    console.log(caja);
-    console.log(accionGeneradaEntreTabs);
-
-
-
-
-
-
-
-
-    console.log(caja);
-   
-
-    console.log(accionGeneradaEntreTabs);
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0 
             ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1 
@@ -100,16 +86,33 @@ const CajaOperadoresForm = () => {
     
         setTotalAccionesComponente(prevAcciones => [
             ...prevAcciones,
-            { id: newId, id_OT_Catalogo_encadenada: 0 }
+            { id: newId, id_operador: 0 }
         ]);
     };
-
     const handleRemoveComponent = (idToRemove: number) => {
-        setTotalAccionesComponente(prevAcciones =>
-            prevAcciones.filter(({ id }) => id !== idToRemove)
-        );
+        console.log("Eliminar cargo con ID:", idToRemove); // Verifica el ID
+        setTotalAccionesComponente(prevAcciones => {
+            const nuevasAcciones = prevAcciones.filter(({ id }) => id !== idToRemove);
+            
+            // Obtener los valores actuales del formulario
+            const currentValues = form.getValues('operadores_asignados');
+    
+            // Filtrar y mapear solo los valores que no han sido eliminados
+            const updatedValues = nuevasAcciones.map(item => {
+                const existingValue = currentValues.find(value => value.id === item.id);
+                return {
+                    id: item.id,
+                    id_operador: existingValue ? existingValue.id_operador : 0, // Mantiene el valor existente o establece 0
+                };
+            });
+    
+            // Resetea el formulario después de eliminar el componente
+            form.setValue('operadores_asignados', updatedValues);
+    
+            return nuevasAcciones; // Devuelve el nuevo estado
+        });
     };
-
+    
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
@@ -118,13 +121,7 @@ const CajaOperadoresForm = () => {
         });
     }
 
-    function successToastEditado() {
-        toast({
-            title: "¡Éxito!",
-            description: "La orden de trabajo encadenada se ha editado correctamente",
-            variant: "success",
-        });
-    }
+   
 
     function successToastEliminado() {
         toast({
@@ -151,14 +148,6 @@ const CajaOperadoresForm = () => {
         });
     }
 
-    function errorYaExisteToast() {
-        toast({
-            variant: "destructive",
-            title: "Oh, no. Error",
-            description: "El tipo de toma ya existe.",
-            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-        });
-    }
 
    
 
@@ -167,37 +156,50 @@ const CajaOperadoresForm = () => {
     resolver: zodResolver(CajaOperadoresSchema),
     defaultValues: {
         operadores_asignados: totalAccionesComponente.map(item => ({
-        id: item.id,
-        id_operador: 0,
+        id_operador: item.id_operador || 0,
       })),
     },
   });
-
   useEffect(() => {
     if (accionGeneradaEntreTabs === "editar") {
-        form.reset({
-            operadores_asignados: totalAccionesComponente.map(item => ({
-                id: item.id,
-                id_operador: 0, // O el valor predeterminado adecuado
-            })),
-        });
+        const valoresActuales = form.getValues('operadores_asignados');
+
+        const nuevosValores = totalAccionesComponente.map(item => ({
+            id_operador: item.id_operador || 0, // O el valor predeterminado adecuado
+        }));
+
+
+
+        // Combina los valores existentes con los nuevos
+        const todosLosValores = [...valoresActuales, ...nuevosValores];
+
+        console.log(todosLosValores);
+
+        // Resetea el formulario con todos los valores
+        form.reset({ operadores_asignados: todosLosValores });
     }
 }, [totalAccionesComponente, accionGeneradaEntreTabs]);
+
+
 
     const onSubmit = async (values: CajaOperadores) => {
         console.log(values);
 
-        const operadoresaEnviar = values.operadores_asignados.map((item) => ({
-            id: item.id,
+        
+        const operadoresaEnviar = values.operadores_asignados.filter(item => item.id_operador !== 0).map(item => ({
             id_caja_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo,
             id_operador: item.id_operador
         }));
+
+  
         console.log("Cargos:", operadoresaEnviar);
 
 
         const operadores_asignados = {
             operadores_asignados: operadoresaEnviar
         }
+
+        
 
         console.log("valores enviados objeto", operadores_asignados);
 
@@ -214,17 +216,11 @@ const CajaOperadoresForm = () => {
                     setLoading(false);
                 } else {
                     setLoading(false);
-                    setCaja({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    form.reset({
-                        operadores_asignados: totalAccionesComponente,
-                    });
+                 
                     console.log(response);
-                    setAccion("creado");
                     getAnomalias();
+                   
+                    setAccionGeneradaEntreTabs("ver");
                     successToastCreado();
                 }
             } catch (response) {
@@ -278,9 +274,24 @@ const CajaOperadoresForm = () => {
     
     
     useEffect(() => {
+
+        const verOperadores = Array.isArray(caja.operadorAsignado)
+        ? caja?.operadorAsignado?.map(item => ({
+            id: item.id,
+            id_operador: item.id_operador,
+        }))
+        : [];
+        
+        console.log(verOperadores);
+ 
+        const nombreOperadores = caja?.operadorAsignado?.map(operador => operador?.operador?.nombre);
+
+        console.log(nombreOperadores);
+            setNombreOperador(nombreOperadores);
         if (accionGeneradaEntreTabs === "eliminar") {
             setAbrirInput(false);
             setControl(false);
+
             return;
         }
     
@@ -288,12 +299,9 @@ const CajaOperadoresForm = () => {
             setAbrirInput(true);
             setControl(false);
             setErrors({});
-            setCaja({
-                id: 0,
-                nombre: "",
-                descripcion: "ninguna",
-            });
-            return;
+           
+
+
         }
     
         if (accionGeneradaEntreTabs === "ver" || accionGeneradaEntreTabs === "editar") {
@@ -338,7 +346,8 @@ const CajaOperadoresForm = () => {
 
     const borderColor = accionGeneradaEntreTabs == "editar" ? 'border-green-500' : 'border-border';
 
-    //console.log("a ver que datos manda el form", form.getValues());
+    console.log("a ver que datos manda el form", form.getValues());
+    console.log(totalAccionesComponente);
 
     return (
         <div>
@@ -381,7 +390,7 @@ const CajaOperadoresForm = () => {
                         )}
                     </div>
                 </div>
-                {totalAccionesComponente.length < 1 
+                {totalAccionesComponente?.length < 1 
                 && 
                 <div className="flex justify-center mt-[20vh]">
                      {accionGeneradaEntreTabs == "editar" ? <p className="text-muted-foreground text-[20px]">Agrega uno o más operadores.</p> : 
@@ -396,7 +405,7 @@ const CajaOperadoresForm = () => {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {totalAccionesComponente.map((accion, index) => {
-                    
+                                console.log(totalAccionesComponente);
                             return (
                                 <div key={accion.id} className={`p-4 border ${borderColor} rounded-md`}>
                                      <div className="text-sm font-medium mb-3">
@@ -404,21 +413,43 @@ const CajaOperadoresForm = () => {
                                         </div>
                                     <div className="flex items-center space-x-2">
                                         <div className="w-full">
-                                         
-                                            <Controller
-                                                name={`operadores_asignados.${index}.id_operador`}
-                                                control={form.control}
-                                                render={({ field }) => (
+                                         {accionGeneradaEntreTabs == "editar" ? 
+                                           <Controller
+                                           name={`operadores_asignados.${index}.id_operador`}
+                                           control={form.control}
+                                           render={({ field }) => (
 
-                                            
-                                                    <CajaComboBox form={form} field={field} name={`operadores_asignados.${index}.id_operador`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control}/>
-                                                )}
-                                            />
+                                       
+                                               <CajaComboBox form={form} field={field} name={`operadores_asignados.${index}.id_operador`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control}/>
+                                           )}
+                                       />
+                                        
+                                        :
+                                        
+                                        <Controller
+                                        name={`operadores_asignados.${index}.id_operador`}
+                                        control={form.control}
+                                        render={({ field: { value, ...rest } }) => ( // Desestructuramos field
+                                          <Input
+                                            readOnly
+                                            placeholder=""
+                                            value={nombreOperador[index] || ""} // Usa el nombre del concepto aquí
+                                            {...rest} // Pasa el resto de las props sin incluir value
+                                          />
+                                        )}
+                                      />
+
+                                        }
+                                          
                                         </div>
                                         <FormMessage />
+                                        {accionGeneradaEntreTabs == "editar"
+                                        &&
                                         <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
-                                            <TrashIcon className="w-4 h-4" />
-                                        </Button>
+                                        <TrashIcon className="w-4 h-4" />
+                                    </Button>
+                                    }
+                                      
                                     </div>
                                 </div>
                             )
