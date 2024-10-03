@@ -82,7 +82,7 @@ const CrearUsuarioFisicaForm = () => {
     
         try {
             const response = await axiosClient.post('/usuarios/create', values);
-            console.log('Usuario creado:', response.data);
+            console.log('Usuario creado:', response);
             successToastCreado();
         } catch (response) {
             console.log(response.response.data.message);
@@ -117,19 +117,20 @@ const CrearUsuarioFisicaForm = () => {
     return (
         
         <div className="overflow-auto ">
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-                <div className='h-[20px] w-full flex items-center justify-end'>
-                    <div className="mb-[10px] h-full w-full mx-4">
-                        <p className="text-[20px] font-medium">Crear nuevo usuario fisico</p>
-                    </div>
+            <div className=''>
+                <div className=''>
+                  
                 </div>
             </div>
             <div className="py-[20px] px-[10px] ">
                 {errors.general && <Error errors={errors.general} />}
                 <Form {...form}>
+                    
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <div className="border p-9 overflow-auto">
-                           
+                        <h1 className="text-3xl mb-[7vh]">
+                                Crear nuevo usuario fisico
+                            </h1>
                             <div className="">
                             <div className="flex space-x-5 w-[100%]  items-center justify-normal">
                                 <div className="w-[68vh]">
@@ -187,8 +188,8 @@ const CrearUsuarioFisicaForm = () => {
                                 />
                                 </div>
                             </div>
-                               
-                                <FormField
+                               <div className="mt-5">
+                               <FormField
                                     control={form.control}
                                     name="nombre_contacto"
                                     render={({ field }) => (
@@ -204,9 +205,11 @@ const CrearUsuarioFisicaForm = () => {
                                         </FormItem>
                                     )}
                                 />
+                               </div>
+                               
                                
                             </div>
-                            <div className="w-full">
+                            <div className="w-full mt-5">
                                 <FormField
                                     control={form.control}
                                     name="curp"
@@ -223,6 +226,7 @@ const CrearUsuarioFisicaForm = () => {
                                         </FormItem>
                                     )}
                                 />
+                                <div className="mt-5">
                                 <FormField
                                     control={form.control}
                                     name="rfc"
@@ -239,8 +243,10 @@ const CrearUsuarioFisicaForm = () => {
                                         </FormItem>
                                     )}
                                 /> 
+                                </div>
+                               
                                 <div className="flex space-x-5 w-[120vh]">
-                                    <div className="w-[200vh]">
+                                    <div className="flex-1 mt-5">
                                         <FormField
                                     control={form.control}
                                     name="telefono"
@@ -248,7 +254,8 @@ const CrearUsuarioFisicaForm = () => {
                                         <FormItem>
                                             <FormLabel>Telefono</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Escribe telefono del usuario" {...field} type='number' />
+                                                <Input placeholder="Escribe telefono del usuario" {...field} type='number' 
+                                                 className="w-[103vh]" />
                                             </FormControl>
                                             <FormDescription>
                                                 
@@ -258,7 +265,7 @@ const CrearUsuarioFisicaForm = () => {
                                     )}
                                 />
                                     </div>
-                                <div className="w-full">
+                                <div className="flex-1 mt-5">
                                 <FormField
                                     control={form.control}
                                     name="correo"
@@ -266,7 +273,8 @@ const CrearUsuarioFisicaForm = () => {
                                         <FormItem>
                                             <FormLabel>Correo electronico</FormLabel>
                                             <FormControl>
-                                                <Input  placeholder="Escribe el correo electronico" {...field} type='email'/>
+                                                <Input  placeholder="Escribe el correo electronico" {...field} type='email'
+                                                 className="w-[102vh]" />
                                             </FormControl>
                                             <FormDescription>
                                     
@@ -281,7 +289,10 @@ const CrearUsuarioFisicaForm = () => {
                                 
                             </div>
                             {loading && <Loader />}
+                            <div className="flex justify-end">
                             <Button type="submit" className="mt-[5vh] w-[20vh]">Guardar</Button>
+
+                            </div>
                         </div>
                 
                     </form>

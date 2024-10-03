@@ -54,6 +54,12 @@ const CrearUsuarioMoralForm = () => {
             const response = await axiosClient.post('/usuarios/createmoral', values);
             console.log('Usuario creado:', response.data);
             form.reset(); // Limpiar el formulario
+            toast({
+                title: "¡Éxito!",
+                description: "El usuario se ha creado correctamente",
+                variant: "success",
+        
+            })
             // Aquí puedes realizar alguna acción adicional, como redirigir al usuario o mostrar un mensaje de éxito
         } catch (response) {
             console.log(response.response.data.message);
@@ -82,19 +88,22 @@ const CrearUsuarioMoralForm = () => {
     return (
 
         <div className="overflow-auto">
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-                <div className='h-[20px] w-full flex items-center justify-end '>
-                    <div className="mb-[10px] h-full w-full mx-4">
-                        <p className="text-[20px] font-medium">Crear nuevo usuario moral</p>
-                    </div>
+            <div className=''>
+                <div className=''>
+                  
                 </div>
             </div>
             <div className="py-[20px] px-[10px] ">
                 {errors.general && <Error errors={errors.general} />}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <div className="py-[40px] px-[10px]  w-full mb-5 rounded-md border border-border  relative">
-                            <div className="w-full p-5">
+                        
+                    <div className="border p-9 overflow-auto">
+                    <h1 className="text-3xl mb-[7vh]">
+                                Crear nuevo usuario moral
+                            </h1>
+                            <div className="w-full">
+                                <div className="">
                                 <FormField
                                     control={form.control}
                                     name="nombre"
@@ -111,6 +120,8 @@ const CrearUsuarioMoralForm = () => {
                                         </FormItem>
                                     )}
                                 />
+                                </div>
+                                <div className="mt-5">
                                 <FormField
                                     control={form.control}
                                     name="nombre_contacto"
@@ -127,9 +138,10 @@ const CrearUsuarioMoralForm = () => {
                                         </FormItem>
                                     )}
                                 />
+                                </div>
+                          
 
-
-
+                                <div className="mt-5">
                                 <FormField
                                     control={form.control}
                                     name="rfc"
@@ -146,7 +158,10 @@ const CrearUsuarioMoralForm = () => {
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
+                                </div>
+
+                               <div className="mt-5">
+                               <FormField
                                     control={form.control}
                                     name="telefono"
                                     render={({ field }) => (
@@ -162,7 +177,9 @@ const CrearUsuarioMoralForm = () => {
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
+                               </div>
+                          <div className="mt-5">
+                          <FormField
                                     control={form.control}
                                     name="correo"
                                     render={({ field }) => (
@@ -178,11 +195,16 @@ const CrearUsuarioMoralForm = () => {
                                         </FormItem>
                                     )}
                                 />
+                          </div>
+                          
 
                             </div>
 
                             {loading && <Loader />}
-                            <Button type="submit" className="ml-[2vh] w-[20vh]">Guardar</Button>
+                            <div className="flex justify-end mt-10">
+                            <Button type="submit" className="w-[20vh]">Guardar</Button>
+
+                                </div>
 
                         </div>
                         <div className=" w-full flex justify-normal mt-4">

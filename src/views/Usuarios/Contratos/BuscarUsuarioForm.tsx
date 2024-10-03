@@ -52,7 +52,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
         nombreSeleccionado, setNombreSeleccionado,
         usuariosEncontrados, setUsuariosEncontrados,
         accion, setAccion, setFindUserOrToma, findUserOrToma, setToma, setBooleanCodigoDeToma, toma,setMostrarUsuarioCambioPropietario,
-        setBuscarTomaAgregarLecturaMonitor
+        setBuscarTomaAgregarLecturaMonitor, setCrearNuevoUsuario
     } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
 
     console.log("este es la accion pare " + accion);
@@ -294,6 +294,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     function handleNavigationCrearUsuario() {
 
         navigate('/CrearUsuario');
+        setCrearNuevoUsuario(true);
     }
 
     return (
@@ -310,7 +311,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                                 {
                                     botonCrearUsuario &&
                                     <div className="flex items-center mb-5 w-[3.5] h-[3.5vh]" onClick={handleNavigationCrearUsuario}>
-                                    <IconButton><TiUserAdd className="w-[3.5] h-[3.5vh]" /></IconButton>
+                                    <IconButton ><TiUserAdd className="w-[3.5] h-[3.5vh]" /></IconButton>
                                     </div>
                                 }
                             </div>

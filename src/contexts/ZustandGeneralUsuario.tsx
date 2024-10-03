@@ -94,6 +94,8 @@ interface GeneralUsuario {
   agregarAnomalia: []
   setAgregarAnomalia: (agregarAnomalia: []) => void;
 
+  crearNuevoUsuario: boolean;
+  setCrearNuevoUsuario: (crearNuevoUsuario: boolean) => void;
   
 }
 
@@ -163,6 +165,9 @@ export const ZustandGeneralUsuario = create<GeneralUsuario>((set) => ({
 
  agregarAnomalia:[],
  setAgregarAnomalia:(agregarAnomalia) => set({agregarAnomalia}),
+
+ crearNuevoUsuario: false,
+ setCrearNuevoUsuario: (value) => set({ crearNuevoUsuario: value }),
 
 }));
 
