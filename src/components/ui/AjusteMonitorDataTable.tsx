@@ -74,8 +74,7 @@ export function AjusteMonitorDataTable<TData, TValue>({
       <div className="px-2 flex gap-4">
 
         <div className=" flex flex-col gap-2 py-4 max-h-[70vh] no-scrollbar overflow-auto text-muted-foreground w-[15%]">
-
-          Filtros
+        <b>Filtros</b>
           <div className="px-2">
             <p>Folio</p>
             <Input
@@ -101,7 +100,7 @@ export function AjusteMonitorDataTable<TData, TValue>({
                   <SelectLabel>Estatus</SelectLabel>
                   <SelectItem value="activo">Activo</SelectItem>
                   <SelectItem value="cancelado">Cancelado</SelectItem>
-                  <SelectItem value="incumplido">incumplido</SelectItem>
+                  <SelectItem value="incumplido">Incumplido</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -177,7 +176,7 @@ export function AjusteMonitorDataTable<TData, TValue>({
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
               >
-                Previous
+                Anterior
               </Button>
               <Button
                 variant="outline"
@@ -185,7 +184,7 @@ export function AjusteMonitorDataTable<TData, TValue>({
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
               >
-                Next
+                Siguiente
               </Button>
             </div>
           </div>

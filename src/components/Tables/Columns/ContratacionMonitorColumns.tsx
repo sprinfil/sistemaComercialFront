@@ -70,7 +70,7 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Codigo toma
+        Código toma
       </Button>
     ),
   },

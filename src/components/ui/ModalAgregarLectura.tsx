@@ -54,7 +54,6 @@ import lecturasService from "../../lib/LecturaService.ts";
 import ZustandMonitorLectura from "../../contexts/ZustandMonitorLectura.tsx";
 const ModalAgregarLectura = ({open, setOpen }) => {
   const { toast } = useToast();
-  
   const [selected_conceptos, set_selected_conceptos] = useState();
   const [selected_periodo, set_selected_periodo] = useState();
   const [comentarioValue, setComentarioValue] = useState('');
@@ -64,8 +63,6 @@ const ModalAgregarLectura = ({open, setOpen }) => {
   const {usuariosEncontrados, buscarTomaAgregarLecturaMonitor, setBuscarTomaAgregarLecturaMonitor, setAgregarPeriodoFacturacion, 
     agregarPeriodoFacturacion, agregarAnomalia, setAgregarAnomalia} = ZustandGeneralUsuario();
     const { set_lecturas, lecturas } = ZustandMonitorLectura();
-
-    
     const [loadingLecturas, setLoadingLecturas] = useState(false);
     const [lecturas_temp, set_lecturas_temp] = useState([]);
 
@@ -180,8 +177,6 @@ const ModalAgregarLectura = ({open, setOpen }) => {
          
           </div>
         </div>
-        
-         
 
          </AlertDialogTitle>
          <AlertDialogDescription> 

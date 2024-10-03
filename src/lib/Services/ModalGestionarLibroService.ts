@@ -5,7 +5,8 @@ import Sortable, { AutoScroll } from 'sortablejs/modular/sortable.core.esm.js';
 import { GoogleMap, LoadScript, Polygon, Polyline } from "@react-google-maps/api";
 import axiosClient from '../../axios-client';
 import grifo from "../../img/grifo-de-agua.png"
-
+import grifoPrimero from "../../img/grifo-de-agua-primero.png"
+import grifoUltimo from "../../img/grifo-de-agua-ultimo.png"
 //Sortable.mount(new AutoScroll());
 
 //INICIALIZAR SORTABLEJS
@@ -21,6 +22,7 @@ export const useSortable = (ref: RefObject<HTMLUListElement>, onEnd: (evt: any) 
           //console.log(evt);
           onEnd(evt);
         },
+
       });
       return () => {
         sortable.destroy();
@@ -36,7 +38,11 @@ export const useSortable2 = (ref: RefObject<HTMLUListElement>, onEnd: (evt: any)
       const sortable = Sortable.create(ref.current, {
         animation: 150,
         ghostClass: 'sortable-ghost',
-        group: "secuencia",
+        group: {
+          name: "secuencia",   // Nombre del grupo
+          pull: true,        // Permite arrastrar fuera a la otra lista
+          put: false,            // Permite soltar elementos de la otra lista aquí
+        },
         onEnd: (evt) => {
           console.log(evt.to.id);
           onEnd(evt);
@@ -83,8 +89,8 @@ export function useFormatCoords(coords) {
 }
 // Custom Hook for Task Management
 export async function updateSecuencia(secuenciaTemp, secuenciaOrden, setLoading, setEditandando, setRutas, setSecuencia) {
-  setLoading(true);
 
+  setLoading(true);
   let secuencia =
   {
     id: secuenciaTemp?.id,
@@ -128,13 +134,13 @@ export async function updateSecuencia(secuenciaTemp, secuenciaOrden, setLoading,
         };
       });
     });
-
+    setEditandando(false);
+    //localStorage.setItem("secuenciaTemp", JSON.stringify(secuenciaOrden));
   } catch (e) {
-    console.log(e);
+    throw e;
   }
   finally {
     setLoading(false);
-    setEditandando(false);
     setSecuencia(secuenciaOrden)
   }
 }
@@ -204,7 +210,7 @@ export async function moverPosicionLibro(nuevaPosicion, secuencia, setSecuencia,
 
 //INICIALIZAR MAPA DE SECUENCIAS
 export function initMapa(libroCoords, center, tomas) {
-  const path : any = [];
+  const path: any = [];
   const google = (window as any).google;
   let map = new google.maps.Map(document.getElementById("mapa_google") as HTMLElement, {
     center: center,
@@ -214,75 +220,56 @@ export function initMapa(libroCoords, center, tomas) {
   new window.google.maps.Polygon({
     paths: libroCoords,
     fillColor: "lightBlue",
-    fillOpacity: 0.3,
+    fillOpacity: 0.5,
     strokeColor: "blue",
-    strokeOpacity: 0.0,
+    strokeOpacity: 0.4,
     strokeWeight: 2,
     map: map
   });
 
-  console.log(tomas);
   tomas.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
 
-  tomas.map(secuencia => {
+  tomas.map((secuencia, index) => {
+    let urlTemp = "";
+    if (tomas.length == 1) {
+      urlTemp = grifo;
+    }
+    if (tomas.length > 1 && index < tomas.length && index > 0) {
+      urlTemp = grifo;
+    }
+    if (tomas[0] == secuencia && tomas.length > 1) {
+      urlTemp = grifoPrimero;
+    }
+    if (tomas[tomas.length - 1] == secuencia && tomas.length > 1) {
+      urlTemp = grifoUltimo;
+    }
 
     const latLng = { lat: secuencia?.toma.posicion?.coordinates[1], lng: secuencia?.toma.posicion?.coordinates[0] };
     path.push(latLng);
     new window.google.maps.Marker({
       position: { lat: secuencia?.toma.posicion?.coordinates[1], lng: secuencia?.toma.posicion?.coordinates[0] },
       map: map,
-      // icon: {
-      //   url: 'URL_DE_TU_ICONO', // Reemplaza esto con la URL de tu ícono
-      //   scaledSize: new window.google.maps.Size(32, 32) // Ajusta el tamaño si es necesario
-      // }
       label: {
         text: `Pos: ${secuencia?.numero_secuencia} Toma: ${secuencia?.toma.codigo_toma}`, // Puedes usar el índice o un valor específico de `toma`
-        color: 'black', // Color del texto
-        fontSize: '16px' // Tamaño de la fuente
+        color: 'black',
+        fontSize: '16px'
       },
       icon: {
-        url: `${grifo}`,
+        url: `${urlTemp}`,
         scaledSize: new google.maps.Size(35, 35),
         anchor: new google.maps.Point(25, 25)
       }
     });
   })
-  
-  // Dibuja la primera línea en azul
-  if (path.length > 1) {
-     let polyTemp = new window.google.maps.Polyline({
-      path: [path[0], path[1]], // Solo conecta el primer y segundo punto
-      geodesic: true,
-      strokeColor: 'blue', // Color de la primera línea
-      strokeOpacity: 0.8,
-      strokeWeight: 3,
-      map: map
-    });
-  }
 
-  // Dibuja la última línea en verde
-  if (path.length > 1) {
-    let polyTemp = new window.google.maps.Polyline({
-      path: [path[path.length - 2], path[path.length - 1]], // Solo conecta el penúltimo y último punto
-      geodesic: true,
-      strokeColor: 'green', // Color de la última línea
-      strokeOpacity: 0.8,
-      strokeWeight: 3,
-      map: map
-    });
-  }
-
-  // Dibuja las líneas intermedias (si las hay) en rojo
-  if (path.length > 2) {
-    let polyTemp = new window.google.maps.Polyline({
-      path: path.slice(1, path.length - 1), // Conecta los puntos intermedios
-      geodesic: true,
-      strokeColor: 'red', // Color de las líneas intermedias
-      strokeOpacity: 0.5,
-      strokeWeight: 3,
-      map: map
-    });
-  }
+  let polyTemp = new window.google.maps.Polyline({
+    path: path,
+    geodesic: true,
+    strokeColor: 'red',
+    strokeOpacity: 0.8,
+    strokeWeight: 3,
+    map: map
+  });
 }
 
 // Custom Hook for Task Management
