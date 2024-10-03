@@ -252,8 +252,8 @@ console.log(tarifaDeContratoActual);
 
   return (
     <AlertDialog open={open} onOpenChange={set_open}>
-<AlertDialogContent className="w-full max-w-full max-h-[full] p-9 overflow-hidden ">
-<AlertDialogHeader>
+    <AlertDialogContent className="w-full max-w-full max-h-full p-6 overflow-auto">
+    <AlertDialogHeader>
         <span className="font-bold text-lg">Detalle del contrato</span>
         <div className="bg-muted h-[6vh]">
            
