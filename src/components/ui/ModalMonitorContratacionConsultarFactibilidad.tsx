@@ -160,22 +160,15 @@ const handleDownload = async (url) => {
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogContent className="max-w-screen-2xl max-h-screen overflow-auto">
         <AlertDialogHeader>
-          <div className="flex justify-between items-center">
-            {/* Título al principio */}
-            <div className="flex">
-              <span className="text-lg">Factibilidad</span>
-            </div>
-            
-            
-         </div>
-          <AlertDialogTitle></AlertDialogTitle>
+         
+          <AlertDialogTitle>Factibilidad</AlertDialogTitle>
           <AlertDialogDescription> 
       
-       <Table>
+       <Table className="mt-5">
   <TableCaption></TableCaption>
   <TableHeader>
     <TableRow>
-      <TableHead className="w-[100px]">URL</TableHead>
+      <TableHead >Archivo</TableHead>
       <TableHead>Tipo</TableHead>
       <TableHead>Fecha de Creación</TableHead>
       <TableHead>Descargar</TableHead>
@@ -186,10 +179,10 @@ const handleDownload = async (url) => {
     {verArchivos.map((item, index) => (
       item.archivos.map((archivo) => (
         <TableRow key={archivo.id}>
-          <TableCell className="font-medium">{archivo.url}</TableCell>
-          <TableCell className="font-medium">{archivo.tipo}</TableCell>
-          <TableCell className="font-medium">{archivo.fecha_creacion}</TableCell>
-          <TableCell className="font-medium"><div className="w-[5vh] h-[5vh] flex items-center justify-center">
+          <TableCell className="text-sm">{archivo.url}</TableCell>
+          <TableCell  className="text-sm">{archivo.tipo}</TableCell>
+          <TableCell  className="text-sm">{archivo.fecha_creacion}</TableCell>
+          <TableCell  className="text-sm"><div className="w-[5vh] h-[5vh] flex items-center justify-center">
             <IconButton onClick={() => handleDownload(archivo.url)}>
               <LiaFileDownloadSolid className="w-[4vh] h-[4vh]" /> 
             </IconButton>

@@ -12,6 +12,7 @@ import { Button } from "../../../components/ui/button";
 import { useToast } from "../../../components/ui/use-toast";
 import { ZustandFiltrosContratacion } from "../../../contexts/ZustandFiltrosContratacion";
 import { useNavigate } from "react-router-dom";
+import { OcultarTablePuntoTomaMapa } from "../../../components/Tables/Components/OcultarTablePuntoTomaMapa";
 
 const mapContainerStyle = {
   width: "100%",
@@ -40,21 +41,22 @@ const PuntoTomaMapa = () => {
     setEsPreContratado,
     setPuntoTomaLatitudLongitudAPI,
     puntoTomaLatitudLongitudAPI,
-    setBoolPeticionContratacion
+    setBoolPeticionContratacion, tomasFiltradas, setTomasFiltradas
   } = ZustandFiltrosContratacion();
 
   const { toast } = useToast();
   const [poligonos, setPoligonos] = useState([]);
-  const [tomasFiltradas, setTomasFiltradas] = useState([]);
   const [map, setMap] = useState(null);
   const markerRefs = useRef([]);
 
   const navigate = useNavigate();
 
+  //AQUI ESTA LA API KEY, SE LE METE UNA VARIABLE PARA USARLA Y QUE CARGUE MEDIANTE ESTA API KEY
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyARlsiPBIt9Cv5EiSNKTZVENYMZwJo-KJ0",
   });
 
+  //AQUI HACE UNA PETICIÓN AL MONTAR EL COMPONENTE, GUARDA LOS POLIFONOS
   useEffect(() => {
     const fetchPoligonos = async () => {
       try {
@@ -66,7 +68,7 @@ const PuntoTomaMapa = () => {
     };
     fetchPoligonos();
   }, []);
-
+//SE USA UNA PROMESA PARA AL USAR LOS FILTROS, PUEDA OBTENER LOS DATOS QUE SE HAN CONSULTADO
   useEffect(() => {
     if (puntosFiltradosParaElMapa instanceof Promise) {
       puntosFiltradosParaElMapa
@@ -77,13 +79,19 @@ const PuntoTomaMapa = () => {
     }
   }, [puntosFiltradosParaElMapa]);
 
+
+//CUANDO SE DESMONTA EL COMPONENTE SE CONVIERTE EN FALSE, ES DECIR YA NO HAY PUNTO
   useEffect(() => {
     return () => setSeleccionoPuntoEnMapa(false);
   }, [setSeleccionoPuntoEnMapa]);
 
+
+  //ESTE METODO ES LO QUE SE EJECUTA CUANDO LE DAMOS CLICK AL MAPA
   const handleMapClick = useCallback((event) => {
+
+
     console.log("Map clicked", event);
-    const lat = event.latLng.lat();
+    const lat = event.latLng.lat(); //se obtiene la latitud y longidut
     const lng = event.latLng.lng();
 
     if (selectedLocation) {
@@ -92,6 +100,7 @@ const PuntoTomaMapa = () => {
       setSeleccionoPuntoEnMapa(false);
     }
 
+    //variable para obtener la locación clickeada
     const clickedLocation = new google.maps.LatLng(lat, lng);
     setSelectedLocation({ lat, lng });
     setPuntoTomaLatitudLongitudAPI([lat, lng]);
@@ -99,6 +108,8 @@ const PuntoTomaMapa = () => {
 
     let isInsidePolygon = false;
 
+    //VALIDAR LOS POLIGONOS y ver si hago click dentro del POLIGONO 
+    //PARA VER SI HAY FACTIBILIDAD O NO
     poligonos.forEach((polygon) => {
       polygon.libros.forEach((libro) => {
         if (
@@ -152,6 +163,8 @@ console.log(selectedLocation);
     setBoolPeticionContratacion(false);
   }, [navigate, setEsPreContratado]);
 
+
+  //PARA QUE SE ACTUALICE EL MAPA SI ES QUE ESTOY FILTRANDO
   useEffect(() => {
     if (map) {
       markerRefs.current.forEach(marker => marker.setMap(null));
@@ -213,13 +226,11 @@ console.log(selectedLocation);
   
 
   return (
-    <div>
-      <div className="flex space-x-2">
-        <div className="">
-          <OcultarTable accion={""}>
+    <div className="mt-2">
+      <div className="flex space-x-2 ">
+          <OcultarTablePuntoTomaMapa accion={""}>
             <FiltrosContratacionPuntoToma />
-          </OcultarTable>
-        </div>
+          </OcultarTablePuntoTomaMapa>
 
         <div style={{ flex: 1 }}>
           <GoogleMap

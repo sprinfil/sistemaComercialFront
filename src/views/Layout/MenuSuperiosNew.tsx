@@ -139,12 +139,12 @@ export const MenuSuperiosNew = () => {
                     route: "/crear/orden/masiva",
                     permission: ""
                 },
-                {
+              /*   {
                     titulo: "Asignar Ordenes de Trabajo",
                     descripcion: "Asigna Ordenes de trabajo para operadores de campo",
                     route: "/asignar/orden/masiva",
                     permission: ""
-                },
+                }, */
             ]
         },
         {

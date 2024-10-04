@@ -8,6 +8,7 @@ import { FaSearch } from 'react-icons/fa'
 import { SiGooglesearchconsole } from "react-icons/si";
 import { ZustandFiltrosOrdenTrabajo } from '../../contexts/ZustandFiltrosOt'
 import axiosClient from '../../axios-client'
+import { TbFilterPlus } from 'react-icons/tb'
 export const OtMasivaForm = () => {
 
 
@@ -35,8 +36,7 @@ export const OtMasivaForm = () => {
       isDesdeFecha,
       setIsDesdeFecha,
       isCodigoDeTomaFiltro,
-      setIsCodigoDeTomaFiltro} = ZustandFiltrosOrdenTrabajo();
-
+      setIsCodigoDeTomaFiltro, setAbrirModalOrdenTrabajo, abrirModalOrdenTrabajo, arregloCrearOrdenesDeTrabajo} = ZustandFiltrosOrdenTrabajo();
 
   const [abrirModal, setAbrirModal] = useState(false);
 
@@ -97,35 +97,58 @@ export const OtMasivaForm = () => {
     }
   };
 
+  const abrirFiltros = () =>
+  {
+    if(abrirModalOrdenTrabajo)
+    {
+      setAbrirModalOrdenTrabajo(false);
+
+    }
+    else
+    {
+      setAbrirModalOrdenTrabajo(true);
+
+    }
+  }
+
+  
+
   return (
     <div className='w-full'>
 
       <div className='border border-border rounded p-5 h-[78vh] overflow-auto mr-10 shadow-sm '>
         <div className='flex space-x-2  relative'>
-          <p className="text-xl text-[20px] font-medium">Generar ordenes de trabajo masivas</p>
-          <div className='flex items-center ml-[2vh] absolute right-2' title='Seleccionar orden de trabajo'>
-            <IconButton onClick={handleGenerarOrdenDeTrabajo}><SiGooglesearchconsole className='w-[4vh] h-[4vh]' /></IconButton>
-          </div>
+          <p className="text-xl text-[20px] font-medium">Generar ordenes de trabajo</p>
+       
         </div>
 
-        <div className=''>
-          <p className="text-[20px] mt-5 ">
-            <div className='flex space-x-2'>
               
-              <div className='w-[5vh] bg-muted rounded-lg' onClick={getOrdenesDeTrabajo}>
-                <IconButton title="Buscar">
-                  <FaSearch />
+              <div className='w-full bg-muted rounded-lg mt-5' >
+                
+                <div className='flex justify-start'>
+                <IconButton title="Ver más filtros" onClick={abrirFiltros}>
+                  <TbFilterPlus className="w-[3.5vh] h-[3.5vh] ml-2 mr-2" />
                 </IconButton>
-              </div>
+                {informacionRecibidaPorFiltrosGenerarOtMasiva.length > 0  && arregloCrearOrdenesDeTrabajo.length > 0 
+                &&
+                <IconButton onClick={handleGenerarOrdenDeTrabajo} title='Seleccionar orden de trabajo'><SiGooglesearchconsole className='w-[3.5vh] h-[3.5vh]' /></IconButton>
+
+                }
+
+                </div>
+
 
             </div>
 
-          </p>
 
-        </div>
 
 
         <div>
+          {informacionRecibidaPorFiltrosGenerarOtMasiva.length > 0 && arregloCrearOrdenesDeTrabajo.length == 0
+          &&
+                    <div className='mt-5 text-2xl text-green-700'>Selecciona una o más tomas</div>
+
+          }
           <OrdenDeTrabajoCrearTomasTable />
         </div>
 

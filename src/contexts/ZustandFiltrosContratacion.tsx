@@ -233,6 +233,10 @@ interface FiltrosContratacion {
 
   servicioAlcSan: string;
   setServicioAlcSan:(servicioAlcSan: string) => void;
+
+  
+  tomasFiltradas:[];
+  setTomasFiltradas:(tomasFiltradas: []) => void
 }
 
 export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => ({
@@ -477,6 +481,9 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
 
   servicioAlcSan: "",
   setServicioAlcSan:(servicioAlcSan) => set({ servicioAlcSan }),
+
+  tomasFiltradas:[],
+  setTomasFiltradas: (tomasFiltradas) => set({ tomasFiltradas }),
 
 
  

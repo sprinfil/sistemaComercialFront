@@ -14,6 +14,7 @@ import IconButton from '../../../../components/ui/IconButton';
 import { Trash2Icon } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { MdDeleteOutline } from 'react-icons/md';
 
 export const CotizacionContrato = ({ selected_contrato }) => {
     const { toast } = useToast();
@@ -73,15 +74,15 @@ export const CotizacionContrato = ({ selected_contrato }) => {
     return (
         <div className='w-full'>
     <div className='flex justify-end mb-4'>
-    <IconButton onClick={EliminarCotizacion}><Trash2Icon /></IconButton>
+    <IconButton onClick={EliminarCotizacion} title='Eliminar cotización'><MdDeleteOutline className='w-[5vh] h-[3vh] text-red-500' /></IconButton>
             </div>
-            <div className="flex justify-center w-full">
+            <div className="flex justify-center w-full mt-5">
                 <Table className="w-full max-h-[50vh]">
                     <TableCaption></TableCaption>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-full text-xl">Concepto</TableHead>
-                            <TableHead className="w-full text-xl">Monto</TableHead>
+                            <TableHead className="w-full text-xl text-black dark:text-white">Concepto</TableHead>
+                            <TableHead className="w-full text-xl text-black dark:text-white">Monto</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -92,12 +93,20 @@ export const CotizacionContrato = ({ selected_contrato }) => {
                             </TableRow>
                         ))}
                     </TableBody>
-                    <TableFooter>
-                        <TableRow>
-                            <TableCell colSpan={2} className="text-xl">Total</TableCell>
-                            <TableCell className="text-xl"> ${informacionCotizacion.reduce((acc, item) => acc + parseFloat(item.monto), 0).toFixed(2)}</TableCell>
-                        </TableRow>
+                    <TableFooter className="bg-white w-full dark:bg-transparent">
+                        <div className='flex space-x-2 mt-5'>
+                        <div className='text-xl text-black dark:text-white'>
+                        Total:
+                        </div>
+                        <div className='text-lg'>
+                        ${informacionCotizacion.reduce((acc, item) => acc + parseFloat(item.monto), 0).toFixed(2)}
+
+                        </div>
+                        </div>
+                       
+
                     </TableFooter>
+
                 </Table>
             </div>
         </div>

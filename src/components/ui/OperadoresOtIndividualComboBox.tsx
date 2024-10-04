@@ -89,7 +89,7 @@ export const OperadoresOtIndividualComboBox = ({ field, form, name = "id_concept
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0 h-[300px]">
+                <PopoverContent className="w-full p-0 h-[300px] overflow-auto">
                     <Command>
                         <CommandInput placeholder="Buscar operador... " />
                         <CommandList>

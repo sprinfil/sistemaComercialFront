@@ -46,7 +46,16 @@ import { RiUserSearchFill } from "react-icons/ri";
 
 import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario";
 import { Input } from "./input.tsx";
-
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 const ModalMonitorContratacionCambioDePropietario = ({ selected_contrato }) => {
   const { toast } = useToast();
   
@@ -180,45 +189,41 @@ console.log(usuariosEncontrados.length);
               <div className="min-w-full">
                 {mostrarUsuarioCambioPropietario  ?
                 <>
-                <div className="mt-2 ">
-                <MarcoForm title={"Datos del usuario seleccionado"}>
-                <div>
-            <p className="">Nombre completo:</p>
-            <div>{usuariosEncontrados[0]?.nombre + " " + usuariosEncontrados[0]?.apellido_paterno + " " + usuariosEncontrados[0]?.apellido_materno}</div>
-            
-            </div>
+                <Table className="mt-5">
+      <TableCaption></TableCaption>
+      <TableHeader>
+        <TableRow>
+        <TableHead >Codigo de usuario</TableHead>
+          <TableHead >Nombre</TableHead>
+          <TableHead>Telefono</TableHead>
+          <TableHead>Correo</TableHead>
+          <TableHead>CURP</TableHead>
+          <TableHead>RFC</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+      
+          <TableRow >
+            <TableCell>{usuariosEncontrados[0]?.codigo_usuario}</TableCell>
+            <TableCell>{usuariosEncontrados[0]?.nombre_completo}</TableCell>
+            <TableCell>{usuariosEncontrados[0]?.telefono}</TableCell>
+            <TableCell >{usuariosEncontrados[0]?.correo}</TableCell>
+            <TableCell>{usuariosEncontrados[0]?.curp}</TableCell>
 
-          <div>
-            <p className="">Telefono:</p>
-            <div>{usuariosEncontrados[0]?.telefono}</div>
-          </div>
+            <TableCell>{usuariosEncontrados[0]?.rfc}</TableCell>
 
-          <div>
-            <p className="">Telefono:</p>
-            <div>{usuariosEncontrados[0]?.apellido_materno}</div>
-          </div>
-
-          <div>
-            <p className="">Correo:</p>
-            <div>{usuariosEncontrados[0]?.correo}</div>
-          </div>
-
-          <div>
-            <p className="">CURP:</p>
-            <div>{usuariosEncontrados[0]?.curp}</div>
-          </div>
-
-          <div>
-            <p className="">RFC:</p>
-            <div>{usuariosEncontrados[0]?.rfc}</div>
-          </div>
-
-
-                </MarcoForm>
-                </div>
+          </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+  
+        </TableRow>
+      </TableFooter>
+    </Table>
+              
                 <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                  <div className="ml-2 max-w-[188vh]">
+                  <div className="ml-2 max-w-[188vh] mt-5">
                   <FormField
                                 control={form.control}
                                 name="nombre_contrato"

@@ -29,19 +29,8 @@ const MostrarFiltros = () => {
 
 
 export const OrdenDeTrabajoMonitor = () => {
-  const [abrirModal, setAbrirModal] = useState(false);
-  const [abrirModal2, setAbrirModal2] = useState(false);
 
-  const abrirModalGG = () => {
-    //setAnomalia(anomalia);
-    //setAccion("ver");
-    setAbrirModal(true);
-  };
-  const abrirModalGG2 = () => {
-    //setAnomalia(anomalia);
-    //setAccion("ver");
-    setAbrirModal2(true);
-  };
+
 
 
   return (
@@ -49,26 +38,12 @@ export const OrdenDeTrabajoMonitor = () => {
       <div className='flex space-x-2'>
         <MostrarFiltros />
         <div className='w-full p-5 border rounded-sm overflow-auto h-[76vh]'>
-          <div className='flex justify-end mr-2 w' title='Cerrar ordenes de trabajo'>
-            <IconButton onClick={abrirModalGG}>
-            <MdOutlineCancel />
-            </IconButton>
-            <IconButton title="Cancelar ordenes de trabajo" onClick={abrirModalGG2}>  <TrashIcon className='w-[2vh] h-[2vh]' /></IconButton>
-          </div>
+          
           <MonitorOrdenDeTrabajoTable />
         </div>
       </div>
 
-      <ModalEstasSeguroCancelarMasivamenteOT
-        isOpen={abrirModal}
-        setIsOpen={setAbrirModal}
-        method={""}
-      />
-       <ModalEstasSeguroCancelarOTSSS
-        isOpen={abrirModal2}
-        setIsOpen={setAbrirModal2}
-        method={""}
-      />
+      
 
 
     </div>

@@ -29,6 +29,7 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
     id: "select",
     header: ({ table }) => (
       <Checkbox
+      className="w-[2.7vh] h-[2.7vh]"
         checked={table.getIsAllRowsSelected()}
         onCheckedChange={(value) => {
           table.toggleAllRowsSelected(!!value);
@@ -38,6 +39,7 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
     ),
     cell: ({ row }) => (
       <Checkbox
+      className="w-[2.7vh] h-[2.7vh]"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
@@ -47,18 +49,6 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
   {
     accessorKey: "folio_solicitud",
     header: "Folio",
-  },
-  {
-    accessorKey: "nombre_contrato",
-    header: "Nombre del contrato",
-  },
-  {
-    accessorKey: "clave_catastral",
-    header: "Clave catastral",
-  },
-  {
-    accessorKey: "estatus",
-    header: "Estatus",
   },
   {
     accessorFn: (row) => {
@@ -74,6 +64,19 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
       </Button>
     ),
   },
+  {
+    accessorKey: "nombre_contrato",
+    header: "Nombre del contrato",
+  },
+  {
+    accessorKey: "clave_catastral",
+    header: "Clave catastral",
+  },
+  {
+    accessorKey: "estatus",
+    header: "Estatus",
+  },
+ 
   {
     id: "actions",
     cell: ({ row }) => {
