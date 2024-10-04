@@ -160,52 +160,69 @@ const handleSeleccionarOperador = () =>
       </div>
 
       {boolUsoFiltros && (
-        <div className="flex space-x-10 border shadow-transparent- p-6 w-full h-[10vh] justify-center mb-[3vh]">
-          <Input
-            placeholder="Buscar codigo de toma"
+        <div className="flex space-x-10 border border-border shadow-md rounded-lg p-6 w-full h-[15vh] justify-center mb-[3vh]">
+          <div className="flex flex-col flex-1">
+          <p className="mb-1">Código de toma</p>
+        
+            <Input
+            placeholder="Buscar codigo de toma..."
             type="text"
             value={(table.getColumn(`toma.codigo_toma`)?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn(`toma.codigo_toma`)?.setFilterValue(event.target.value)
             }
-            className="w-[22vh] border border-gray-300 rounded-md p-2"
+  
           />
+            </div>
+          <div className="flex flex-col flex-1">
+          <p className="mb-1">Tipo de orden de trabajo</p>
+        
           <Input
-            placeholder="Buscar tipo de OT"
+            placeholder="Buscar tipo de OT..."
             type="text"
             value={(table.getColumn(`orden_trabajo_catalogo.descripcion`)?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn(`orden_trabajo_catalogo.descripcion`)?.setFilterValue(event.target.value)
             }
-            className="w-[22vh] border border-gray-300 rounded-md p-2"
           />
-          <Input
-            placeholder="Buscar estado"
+            </div>
+         
+         <div className="flex flex-col flex-1">
+         <p className="mb-1">Estado</p>
+         
+         <Input
+            placeholder="Buscar estado..."
             type="text"
             value={(table.getColumn(`estado`)?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn(`estado`)?.setFilterValue(event.target.value)
             }
-            className="w-[22vh] border border-gray-300 rounded-md p-2"
           />
+          </div>
+          <div className="flex flex-col flex-1">
+          <p className="mb-1">Creación</p>
           <Input
-            placeholder="Buscar creacion"
+            placeholder="Buscar creacion..."
             type="text"
             value={(table.getColumn(`created_at`)?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn(`created_at`)?.setFilterValue(event.target.value)
             }
-            className="w-[22vh] border border-gray-300 rounded-md p-2"
           />
-          <Input
-            placeholder="Buscar concluida"
+            </div>
+          
+            <div className="flex flex-col flex-1">
+              <p className="mb-1">Concluida</p>
+            <Input
+            placeholder="Buscar concluida..."
             type="text"
             value={(table.getColumn(`fecha_finalizada`)?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
               table.getColumn(`fecha_finalizada`)?.setFilterValue(event.target.value)
             }
-            className="w-[22vh] border border-gray-300 rounded-md p-2"
           />
+            </div>
+        
         </div>
       )}
 

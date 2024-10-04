@@ -150,11 +150,11 @@ export const registroMedidotOtSchema = z.object({
   id: z.number(),
   numero_serie: z.string().min(1, "El numero de serie es requerido."),
   marca: z.string(),
-  diametro: z.string(),
-  tipo: z.string(),
+  diametro: z.string().min(1, "El diametro es requerido."),
+  tipo: z.string().min(1, "El tipo de medidor es requerido."),
   estatus: z.boolean(),
-  fecha_instalacion: z.string(),
-  lectura_inicial: z.string(),
+  fecha_instalacion: z.string().min(1, "La fecha de instalación es requerida."),
+  lectura_inicial: z.string().min(1, "La lectura inicial es requerida."),
 })
 
 

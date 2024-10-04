@@ -67,7 +67,9 @@ export function DataTableGenerarOrden<TData, TValue>({
         {
           abrirModalOrdenTrabajo && 
           <>
-          <div className="flex space-x-2 mt-5">
+
+          <div className="flex space-x-2 mt-5 border border-border shadow-md h-[10vh] p-5">
+            <div className="flex-1">
             <Input
           placeholder="Buscar codigo de toma..."
           type="text"
@@ -78,7 +80,9 @@ export function DataTableGenerarOrden<TData, TValue>({
         className="flex-grow"
         />
       
-      <Input
+            </div>
+       <div className="flex-1">
+       <Input
           placeholder="Buscar nombre del usuario..."
           type="text"
           value={(table.getColumn(`usuario.nombre_completo`)?.getFilterValue() as string) ?? ""}
@@ -88,42 +92,52 @@ export function DataTableGenerarOrden<TData, TValue>({
           className="flex-grow"
           />
        
-          </div>
-            
-            <div className="flex space-x-2 mt-5 mb-5">
-            <Input
+        </div>
+
+
+
+          <div className="flex-1">
+          <Input
           placeholder="Buscar tipo..."
           type="text"
-          value={(table.getColumn(`usuario.nombre_completo`)?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn(`tipo_toma.nombre`)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn(`usuario.nombre_completo`)?.setFilterValue(event.target.value)
+            table.getColumn(`tipo_toma.nombre`)?.setFilterValue(event.target.value)
           }
              className="flex-grow"
         />
-        
-            <Input
+
+          </div>
+
+          <div className="flex-1">
+
+          <Input
           placeholder="Buscar saldo..."
           type="text"
-          value={(table.getColumn(`usuario.nombre_completo`)?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn(`saldo`)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn(`usuario.nombre_completo`)?.setFilterValue(event.target.value)
+            table.getColumn(`saldo`)?.setFilterValue(event.target.value)
           }
             className="flex-grow"
         />
-              </div>
-            
-
-            <div className="mb-5">
+          </div>
+   
+          <div className="flex-1">
             <Input
           placeholder="Buscar dirección..."
           type="text"
-          value={(table.getColumn(`usuario.nombre_completo`)?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn(`direccion_completa`)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn(`usuario.nombre_completo`)?.setFilterValue(event.target.value)
+            table.getColumn(`direccion_completa`)?.setFilterValue(event.target.value)
           }
           className="w-full"
         />
             </div>
+          </div>
+            
+        
+
+            
 
           </>
         

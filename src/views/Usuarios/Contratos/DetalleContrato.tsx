@@ -50,6 +50,8 @@ export const DetalleContrato = ({ selected_contrato }) => {
 
   });
 
+  console.log(selected_contrato);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
@@ -167,8 +169,8 @@ export const DetalleContrato = ({ selected_contrato }) => {
 
             <TableRow>
               <TableCell className="text-base">{formData.direccion_completa}</TableCell>
-              <TableCell className="text-base">{formData.clave_catastral}</TableCell>
-              <TableCell className="text-base">{formData.tipo_toma}</TableCell>
+              <TableCell className="text-base">{formData.localidad}</TableCell>
+              <TableCell className="text-base">{formData.municipio}</TableCell>
 
             </TableRow>
           </TableBody>
@@ -206,8 +208,9 @@ export const DetalleContrato = ({ selected_contrato }) => {
             <TableRow>
               <TableCell className="text-base" >{formData.tipo_contratacion}</TableCell>
               <TableCell className="text-base">{formData.tipo_servicio}</TableCell>
+              <TableCell className="text-base"></TableCell>
               <TableCell className="text-base">{formData.estatus}</TableCell>
-              <TableCell className="text-base">{formData.direccion_notificaciones}</TableCell>
+              <TableCell className="text-base"></TableCell>
 
             </TableRow>
           </TableBody>

@@ -95,7 +95,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
       },
       {
         titulo: "Contrato",
-        componente: <MonitorContratoMapa/>
+        componente: <MonitorContratoMapa selected_contrato={selected_contrato}/>
       },
     ]
   
@@ -223,13 +223,13 @@ console.log(tarifaDeContratoActual);
         toast({
           variant: "destructive",
           title: "Error",
-          description: "No se pudo abrir el documento en una nueva pestaña. Verifica la configuración del navegador.",
+          description: "No se pudo abrir el documento en una nueva pestaña.",
         });
       }
     
       toast({
         title: "¡Éxito!",
-        description: "El contrato se abrió en una nueva pestaña.",
+        description: "El contrato se abrió correctamente.",
         variant: "success",
       });
     })

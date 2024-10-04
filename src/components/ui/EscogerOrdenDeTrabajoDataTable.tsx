@@ -79,7 +79,7 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
 
   return (
     <div className="">
-   <div className="flex flex-col items-start space-y-2">
+   <div className="flex flex-col space-y-2">
         <div className="flex items-center space-x-4 ">
           <IconButton title="Ver más filtros" onClick={handleControl}>
             <TbFilterPlus className="w-[2.5vh] h-[2.5vh]" />
@@ -88,6 +88,7 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
 
         {control && (
           <div className="flex space-x-5">
+            <div className="flex-1">
             <Input
           placeholder="Buscar tipo..."
           type="text"
@@ -95,8 +96,11 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn('nombre')?.setFilterValue(event.target.value)
           }
-          className="w-full"
+      
         />
+              </div>
+       
+        <div className="flex-1">
         <Input
           placeholder="Buscar descripción..."
           type="text"
@@ -104,8 +108,9 @@ export function EscogerOrdenDeTrabajoDataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn('descripcion')?.setFilterValue(event.target.value)
           }
-          className="w-full"
         />
+          </div>
+       
            
           </div>
         )}

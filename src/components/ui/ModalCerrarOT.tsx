@@ -99,13 +99,16 @@ const ModalCerrarOT = () => {
 
   function onSubmit(values: z.infer<typeof cerrarOtSchema>) {
     console.log("valores ingresados", values);
+
     setDataRegistroMedidorModalCerrarOT(values);
     setIsOpenHijoFormularioModalMonitorOT(true);
-    setAbrirModal(true);
+    setTimeout(() => 
+    {    setIsOpenHijoFormularioModalDetalleMonitorOT(true);
 
-    
+
+    }, 200)
+   
   }
-
   console.log(dataRegistroMedidorModalCerrarOT);
 
   const form = useForm<z.infer<typeof cerrarOtSchema>>({
@@ -136,7 +139,7 @@ const ModalCerrarOT = () => {
       <AlertDialogHeader>
         <AlertDialogTitle>
           <div className="flex space-x-2">
-            Cerrar orden de trabajo con acción de crear(prueba)
+            Cerrar orden de trabajo
           </div>
         </AlertDialogTitle>
 
@@ -177,14 +180,17 @@ const ModalCerrarOT = () => {
               />
               <div className="flex justify-end">
                   <div className="flex space-x-5">
-                <Button onClick={() => setIsOpenHijoFormularioModalDetalleMonitorOT(false)}>Cancelar </Button>
+                <AlertDialogCancel onClick={() => setIsOpenHijoFormularioModalDetalleMonitorOT(false)}>Cancelar </AlertDialogCancel>
                 <Button type="submit">Guardar</Button>
                 </div>
        
               </div>
             </form>
           </Form>
+          {/**AQUI ESTA EL MODAL PARA EL REGISTRO DE MEDIDORES*/}
           <ModalRegistroOT />
+
+
         </AlertDialogDescription>
       </AlertDialogHeader>
     </AlertDialogContent>

@@ -40,6 +40,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import IconButton from "./IconButton"
+import { TbFilterPlus } from "react-icons/tb"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
@@ -75,92 +77,105 @@ export function ContratosMonitorDataTable<TData, TValue>({
   })
 
   const handleAbrirFiltros  = () => {
+    if(abrirFiltro)
+    {
+      setAbrirFiltro(false);
+    }
+    else
+    {
+      setAbrirFiltro(true);
 
+    }
   }
-
+console.log(abrirFiltro);
   return (
     <>
-
-      <FiFilter className="w-[2vh] h-[2vh]" />
+      <div className="w-[5vh] h-[5vh] mb-5" onClick={handleAbrirFiltros}>
+      <IconButton >
+      <TbFilterPlus className="w-[3.5vh] h-[3.5vh]" />
+      </IconButton>
     
-      <div className="px-2 flex gap-4">
+      </div>
 
-        <div className=" flex flex-col gap-2 py-4 max-h-[70vh] no-scrollbar overflow-auto text-muted-foreground w-[15%]">
-        <div className="px-2">
-            <p>Codigo de toma</p>
-            <Input
-              placeholder="Codigo de toma"
-              value={(table.getColumn("toma.codigo_toma")?.getFilterValue() as string) ?? ""}
-              onChange={(event) =>
-                table.getColumn("toma.codigo_toma")?.setFilterValue(event.target.value)
-              }
-              className="w-full"
-            />
-          </div>
-          <div className="px-2">
-            <p>Folio</p>
-            <Input
-              placeholder="Folio"
-              value={(table.getColumn("folio_solicitud")?.getFilterValue() as string) ?? ""}
-              onChange={(event) =>
-                table.getColumn("folio_solicitud")?.setFilterValue(event.target.value)
-              }
-              className="w-full"
-            />
-          </div>
+      <div className="">
+        {abrirFiltro && 
+        <div className="flex space-x-10 border border-border shadow-md rounded-lg p-6 w-full h-[15vh] justify-center mb-[3vh] mt-5">
+           <div className="flex-1">
+               <p>Codigo de toma</p>
+               <Input
+                 placeholder="Buscar código de toma..."
+                 value={(table.getColumn("toma.codigo_toma")?.getFilterValue() as string) ?? ""}
+                 onChange={(event) =>
+                   table.getColumn("toma.codigo_toma")?.setFilterValue(event.target.value)
+                 }
+                 className="w-full"
+               />
+             </div>
+             <div className="flex-1">
+               <p>Folio</p>
+               <Input
+                 placeholder="Buscar folio..."
+                 value={(table.getColumn("folio_solicitud")?.getFilterValue() as string) ?? ""}
+                 onChange={(event) =>
+                   table.getColumn("folio_solicitud")?.setFilterValue(event.target.value)
+                 }
+                 className="w-full"
+               />
+             </div>
+   
+             <div className="flex-1">
+               <p>Nombre del contrato</p>
+               <Input
+                 placeholder="Buscar nombre del contrato..."
+                 value={(table.getColumn("nombre_contrato")?.getFilterValue() as string) ?? ""}
+                 onChange={(event) =>
+                   table.getColumn("nombre_contrato")?.setFilterValue(event.target.value)
+                 }
+                 className="w-full"
+               />
+             </div>
+   
+             <div className="flex-1">
+               <p>Clave catastral</p>
+               <Input
+                 placeholder="Buscar clave catastral..."
+                 value={(table.getColumn("clave_catastral")?.getFilterValue() as string) ?? ""}
+                 onChange={(event) =>
+                   table.getColumn("clave_catastral")?.setFilterValue(event.target.value)
+                 }
+                 className="w-full"
+               />
+             </div>
+   
+             <div className="flex-1">
+               <p>Estatus</p>
+               <Select onValueChange={(value) => { table.getColumn("estatus")?.setFilterValue(value == "cualquiera" ? "" : value) }}>
+                 <SelectTrigger className="w-full">
+                   <SelectValue placeholder="Sin filtro" />
+                 </SelectTrigger>
+                 <SelectContent>
+                   <SelectGroup>
+                     <SelectLabel>Estatus</SelectLabel>
+                     <SelectItem value="pendiente de pago">Pendiente de pago</SelectItem>
+                     <SelectItem value="contrato no factible">No factible</SelectItem>
+                     <SelectItem value="pendiente de inspeccion">Pendiente de inspección</SelectItem>
+                     <SelectItem value="cancelado">Cancelado</SelectItem>
+                     <SelectItem value="terminado">Terminado</SelectItem>
+                     <SelectItem value=" ">Sin filtro</SelectItem>
+                   </SelectGroup>
+                 </SelectContent>
+               </Select>
+             </div>
+   
+          
+   
+           </div>
+        }
+     
 
-          <div className="px-2">
-            <p>Nombre del contrato</p>
-            <Input
-              placeholder="Nombre del contrato"
-              value={(table.getColumn("nombre_contrato")?.getFilterValue() as string) ?? ""}
-              onChange={(event) =>
-                table.getColumn("nombre_contrato")?.setFilterValue(event.target.value)
-              }
-              className="w-full"
-            />
-          </div>
 
-          <div className="px-2">
-            <p>Clave catastral</p>
-            <Input
-              placeholder="Clave catastral"
-              value={(table.getColumn("clave_catastral")?.getFilterValue() as string) ?? ""}
-              onChange={(event) =>
-                table.getColumn("clave_catastral")?.setFilterValue(event.target.value)
-              }
-              className="w-full"
-            />
-          </div>
-
-          <div className="px-2">
-            <p>Estatus</p>
-            <Select onValueChange={(value) => { table.getColumn("estatus")?.setFilterValue(value == "cualquiera" ? "" : value) }}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Sin filtro" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Estatus</SelectLabel>
-                  <SelectItem value="pendiente de pago">Pendiente de pago</SelectItem>
-                  <SelectItem value="contrato no factible">No factible</SelectItem>
-                  <SelectItem value="pendiente de inspeccion">Pendiente de inspección</SelectItem>
-                  <SelectItem value="cancelado">Cancelado</SelectItem>
-                  <SelectItem value="terminado">Terminado</SelectItem>
-                  <SelectItem value=" ">Sin filtro</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-
-       
-
-        </div>
-
-        <div className="w-[85%] p-4">
-
-          <div className="rounded-md border max-h-[55vh] overflow-auto">
-            <Table>
+     <div className="rounded-md border h-full overflow-auto max-h-[70vh]">
+     <Table className="mt-5">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
@@ -198,7 +213,7 @@ export function ContratosMonitorDataTable<TData, TValue>({
                 ) : (
                   <TableRow>
                     <TableCell colSpan={columns.length} className="h-24 text-center">
-                      No results.
+                      No resultados.
                     </TableCell>
                   </TableRow>
                 )}
@@ -232,7 +247,6 @@ export function ContratosMonitorDataTable<TData, TValue>({
             </Button>
           </div>
         </div>
-      </div>
 
      
 

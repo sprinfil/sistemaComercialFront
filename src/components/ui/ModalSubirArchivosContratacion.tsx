@@ -164,15 +164,10 @@ console.log(idContrato);
       open={booleanModalSubirArchivosContratacion}
       onOpenChange={setBooleanModalSubirArchivosContratacion}
     >
-      <AlertDialogContent className="max-w-[70vh] max-h-screen overflow-auto">
+      <AlertDialogContent className="max-w-[90vh] max-h-screen overflow-auto">
         <AlertDialogHeader>
-          <div className="flex justify-between items-center">
-            {/* Título al principio */}
-            <div className="flex">
-              <span className="text-lg">Selecciona los archivos a subir</span>
-            </div>
-          </div>
-          <AlertDialogTitle></AlertDialogTitle>
+       
+          <AlertDialogTitle>Selecciona los archivos a subir</AlertDialogTitle>
           <AlertDialogDescription>
             <div className="overflow-x-auto">
               <div className="min-w-full">
@@ -199,17 +194,20 @@ console.log(idContrato);
                     onChange={handleFileChange}
                     className="hidden"
                   />
-                  <div className="ml-[20vh] border border-green-900 rounded-lg">
-                    <IconButton onClick={subirArchivos}>
-                      <p className="text-base">Subir archivos</p>{" "}
-                      <GoUpload className="ml-2" />
-                    </IconButton>
-                  </div>
+
+                  {files.length > 0 && 
+                      <div className="border border-green-900 rounded-2xl ml-60">
+                      <IconButton onClick={subirArchivos}>
+                        <p className="text-base">Subir archivos</p>{" "}
+                        <GoUpload className="ml-2" />
+                      </IconButton>
+                    </div>}
+              
                 </div>
                 {/* Display selected files */}
                 {files.length > 0 && (
-                  <div className="file-list mt-4">
-                    <h3 className="text-base">Archivos seleccionados:</h3>
+                  <div className="file-list mt-4 max-h-[20vh]">
+                    <h3 className="text-lg">Archivos seleccionados:</h3>
                     <ul>
                       {files.map((file, index) => (
                         <li
@@ -222,7 +220,7 @@ console.log(idContrato);
                             onClick={() => handleRemoveFile(file)}
                             className="btn-remove"
                           >
-                            <MdOutlineDeleteForever />
+                            <MdOutlineDeleteForever className="text-red-500"/>
                           </IconButton>
                         </li>
                       ))}
@@ -234,7 +232,7 @@ console.log(idContrato);
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={handleCloseModal}>
+          <AlertDialogCancel onClick={() => setBooleanModalSubirArchivosContratacion(false)}>
             Cerrar
           </AlertDialogCancel>
         </AlertDialogFooter>

@@ -35,7 +35,12 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
 import axiosClient from "../../axios-client";
-
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 const FiltrosAsignarOTMasiva = () => {
   //#regionVARIABLES PARA OBTENER EL VALOR DE LOS FILTROS
   const {
@@ -191,6 +196,7 @@ const FiltrosAsignarOTMasiva = () => {
       console.log(response);
       setvalorParaSaberSiUsaLaTablaDeFiltros(true);
       setLoadingTableFiltrarOrdenDeTrabajoMasivas(false);
+      limpiar();
       if (Array.isArray(response.data.ordenes_trabajo)) {
         const tomas = response.data.ordenes_trabajo.map((item: any) => item);
         console.log("Tomas extraídas", tomas);
@@ -237,8 +243,8 @@ const FiltrosAsignarOTMasiva = () => {
 
         console.log("Tomas extraídas", tomas);
         setLoadingTableMonitor(false);
-
         setInformacionRecibidaPorFiltrosGenerarOtMasiva(tomas);
+        limpiar();
       } else {
         console.log("No jala", response.data.ordenes_trabajo);
       }
@@ -256,46 +262,41 @@ const FiltrosAsignarOTMasiva = () => {
 
 
   return (
-    <div className="overflow-auto min-h-[20vh]">
-  
-      <ContextMenu>
+    <ContextMenu>
       <ContextMenuTrigger className="">
-      <div className="ml-5 mt-5 h-full">
-      <div className="bg-muted p-2">
-      <div className="flex justify-between items-center">
-      <div className="flex items-center space-x-2">
+    <div className="overflow-auto min-h-[90vh]">
+  
+    
+      <div>
+        
+      <div className='w-full p-4 bg-muted shadow-md mb-2 flex items-center'>
       <FiFilter className="w-[4vh] h-[4vh]" />
-      <div className="text-sm font-medium">Filtros</div>
-      </div>
-
-      {!isOrdenesTrabajoRoute ?
-       <div className="">
+        <p>Filtros</p>
+        
+        {!isOrdenesTrabajoRoute ?
+       <div className="ml-auto">
        {/** ESTE ES EL BUSCAR DE EL MONITOR DE ORDENES DE TRABAJO */}
      <IconButton title="Filtrar" onClick={getOrdenesDeTrabajoFiltrosMonitor} >
        <FaSearch className="w-[2.5vh] h-[2.5vh]" />
      </IconButton>
    </div>
    :
-   <div className="">
+   <div className="ml-auto">
         {/** ESTE ES EL BUSCAR DE GENERAR ORDEN DE TRABAJO MASIVAS*/}
       <IconButton title="Buscar" >
-        <FaSearch className="" onClick={getOrdenesDeTrabajoGenerarOrdenDeTrabajoMasivas}/>
+        <FaSearch className="w-[2.5vh] h-[2.5vh]" onClick={getOrdenesDeTrabajoGenerarOrdenDeTrabajoMasivas}/>
       </IconButton>
       </div>
       }
-         
-        </div>
-      
       </div>
-
-        {!isOrdenesTrabajoRoute && (
+      <div className='p-4'>
+        <Accordion collapsible className="w-full" type="multiple" defaultValue={["item-1", "item-2"]}>
+          <AccordionItem value="item-1">
+            <AccordionTrigger>Estado de la orden de trabajo</AccordionTrigger>
+            <AccordionContent>
+            {!isOrdenesTrabajoRoute && (
           <div>
             <div className="flex flex-col mt-6 w-full">
-              <div className="text-lg font-semibold- mt-4 mb-3">
-                Estado de la orden de trabajo
-              </div>
-              <hr className="border-t border-border my-1" />
-
               <div className="grid grid-cols-2 gap-x-[10vh] mb-2">
                 <div className="flex items-center space-x-2">
                   <div className="text-base font-medium mb-2 mt-2">Asignada</div>
@@ -347,11 +348,12 @@ const FiltrosAsignarOTMasiva = () => {
             </div>
           </div>
         )}
-
-        <div className="text-lg font-semibold- mt-4 mb-3">Tipo de toma</div>
-        <hr className="border-t border-border my-1" />
-        <div className="mt-2">
-        <div className="grid grid-cols-2 gap-x-[10vh] mb-2">
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger>Tipo de toma</AccordionTrigger>
+            <AccordionContent>
+            <div className="grid grid-cols-2 gap-x-[10vh] mb-2">
         <div className="flex items-center">
               <div className="text-sm font-medium mb-2 mt-2">Doméstica</div>
               <div className="ml-2">
@@ -397,28 +399,24 @@ const FiltrosAsignarOTMasiva = () => {
               </div>
             </div>
           </div>
-        </div>
+            </AccordionContent>
+          </AccordionItem>
 
-        <div className="text-lg font-semibold- mt-5 mb-3">Codigo de toma</div>
-        <hr className="border-t border-border my-1" />
-        <div className="mt-5">
-          <div className="flex items-center space-x-2">
-            <div className="text-sm font-medium mb-2 mt-2">Toma</div>
-            <div className="ml-2">
-              <Input
+          <AccordionItem value="item-3">
+            <AccordionTrigger>Código de toma</AccordionTrigger>
+            <AccordionContent>
+            <Input
                 value={isCodigoDeTomaFiltro}
                 onChange={handleChangeCodigoDeToma}
                 placeholder="Escribe el código de toma..."
                 className="w-[43vh]"
               />
-            </div>
-          </div>
-
-        </div>
-
-        <div className="text-lg font-semibold- mt-5 mb-3">Ruta y libro</div>
-        <hr className="border-t border-border my-1" />
-        <div className="mt-5">
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-4">
+            <AccordionTrigger>Ruta y Libro</AccordionTrigger>
+            <AccordionContent>
+            <div className="mt-5">
           <div className="flex items-center space-x-2">
             <div className="text-sm font-medium mb-2 mt-2">Ruta</div>
             <div className="ml-2">
@@ -441,10 +439,12 @@ const FiltrosAsignarOTMasiva = () => {
             </div>
           </div>
         </div>
-
-        <div className="text-lg font-semibold- mt-5 mb-3">Saldo</div>
-        <hr className="border-t border-border my-1" />
-        <div className="flex space-x-5 items-center mt-5">
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-5">
+            <AccordionTrigger>Saldo</AccordionTrigger>
+            <AccordionContent>
+            <div className="flex space-x-5 items-center mt-5">
           <div className="text-sm font-medium mb-2">Minimo</div>
           <div className="mb-5">
             <Input
@@ -466,73 +466,84 @@ const FiltrosAsignarOTMasiva = () => {
 
 
         </div>
-        {!isOrdenesTrabajoRoute && (
+            </AccordionContent>
+          </AccordionItem>
+          {!isOrdenesTrabajoRoute && (
           <>
-            <div className="text-lg font-semibold- mt-5 mb-3">Fechas de ordenes de trabajo</div>
-            <hr className="border-t border-border my-1" />
-            <div className="">
-              <div className="text-sm font-medium mb-2 mt-5">Tipo de fecha</div>
-              <div>
-                <Select
-                  onValueChange={(value) => setIsFechaTipo(value)}
-                  value={isFechaTipo}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el tipo de fecha" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="fecha de generación">Fecha de generación</SelectItem>
-                    <SelectItem value="fecha_asignacion">Fecha de asignación</SelectItem>
-                    <SelectItem value="fecha_finalizada ">Fecha de finalización</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="text-sm font-medium mb-2 mt-5">Fecha de inicio</div>
-              <div>
-                <input
-                  type="datetime-local"
-                  value={isDesdeFecha}
-                  onChange={handleChangeDesdeFecha}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-
-                />
-              </div>
-              <div className="text-sm font-medium mb-2 mt-5">Fecha de fin</div>
-              <div>
-                <input
-                  type="datetime-local"
-                  value={isHastaFecha}
-                  onChange={handleChangeHastaFecha}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-
-                />
-              </div>
-              <hr className="border-t border-border my-1 mt-5 mb-5" />
-
+             <AccordionItem value="item-6">
+          
+          <AccordionTrigger>Fechas de las ordenes de trabajo</AccordionTrigger>
+          <AccordionContent>
+          <div className="">
+            <div className="text-sm font-medium mb-2 mt-5">Tipo de fecha</div>
+            <div>
+              <Select
+                onValueChange={(value) => setIsFechaTipo(value)}
+                value={isFechaTipo}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona el tipo de fecha" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="fecha de generación">Fecha de generación</SelectItem>
+                  <SelectItem value="fecha_asignacion">Fecha de asignación</SelectItem>
+                  <SelectItem value="fecha_finalizada ">Fecha de finalización</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+            <div className="text-sm font-medium mb-2 mt-5">Fecha de inicio</div>
+            <div>
+              <input
+                type="datetime-local"
+                value={isDesdeFecha}
+                onChange={handleChangeDesdeFecha}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+              />
+            </div>
+            <div className="text-sm font-medium mb-2 mt-5">Fecha de fin</div>
+            <div>
+              <input
+                type="datetime-local"
+                value={isHastaFecha}
+                onChange={handleChangeHastaFecha}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+              />
+            </div>
+
+          </div>
+          </AccordionContent>
+        </AccordionItem>
+          
           </>
 
         )}
-
+         
+        </Accordion>
       </div>
-      </ContextMenuTrigger>
+    </div>
+      
       <ContextMenuContent className="w-64">
         {!isOrdenesTrabajoRoute ?
-         <ContextMenuItem inset>
-         <div onClick={getOrdenesDeTrabajoFiltrosMonitor}>Buscar</div>
+         <ContextMenuItem onClick={getOrdenesDeTrabajoFiltrosMonitor}>
+         <IconButton >Buscar</IconButton>
        </ContextMenuItem>
        :
-       <ContextMenuItem inset>
-       <div onClick={getOrdenesDeTrabajoGenerarOrdenDeTrabajoMasivas}>Buscar</div>
+       <ContextMenuItem onClick={getOrdenesDeTrabajoGenerarOrdenDeTrabajoMasivas}>
+       <IconButton >Buscar</IconButton>
      </ContextMenuItem>
         }
      
-        <ContextMenuItem inset>
-          <div onClick={limpiar}>Limpiar filtros</div>
+        <ContextMenuItem onClick={limpiar}>
+          <IconButton >Limpiar filtros</IconButton>
         </ContextMenuItem>
       </ContextMenuContent>
-    </ContextMenu>
     </div>
+    </ContextMenuTrigger>
+
+    </ContextMenu>
+
   );
 }
 export default FiltrosAsignarOTMasiva;

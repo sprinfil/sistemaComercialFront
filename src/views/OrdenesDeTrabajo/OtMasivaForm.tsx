@@ -36,8 +36,7 @@ export const OtMasivaForm = () => {
       isDesdeFecha,
       setIsDesdeFecha,
       isCodigoDeTomaFiltro,
-      setIsCodigoDeTomaFiltro, setAbrirModalOrdenTrabajo, abrirModalOrdenTrabajo} = ZustandFiltrosOrdenTrabajo();
-
+      setIsCodigoDeTomaFiltro, setAbrirModalOrdenTrabajo, abrirModalOrdenTrabajo, arregloCrearOrdenesDeTrabajo} = ZustandFiltrosOrdenTrabajo();
 
   const [abrirModal, setAbrirModal] = useState(false);
 
@@ -130,7 +129,11 @@ export const OtMasivaForm = () => {
                 <IconButton title="Ver más filtros" onClick={abrirFiltros}>
                   <TbFilterPlus className="w-[3.5vh] h-[3.5vh] ml-2 mr-2" />
                 </IconButton>
+                {informacionRecibidaPorFiltrosGenerarOtMasiva.length > 0  && arregloCrearOrdenesDeTrabajo.length > 0 
+                &&
                 <IconButton onClick={handleGenerarOrdenDeTrabajo} title='Seleccionar orden de trabajo'><SiGooglesearchconsole className='w-[3.5vh] h-[3.5vh]' /></IconButton>
+
+                }
 
                 </div>
 
@@ -141,6 +144,11 @@ export const OtMasivaForm = () => {
 
 
         <div>
+          {informacionRecibidaPorFiltrosGenerarOtMasiva.length > 0 && arregloCrearOrdenesDeTrabajo.length == 0
+          &&
+                    <div className='mt-5 text-2xl text-green-700'>Selecciona una o más tomas</div>
+
+          }
           <OrdenDeTrabajoCrearTomasTable />
         </div>
 

@@ -28,6 +28,10 @@ export type OrdenDeTrabajoCrearTomas = {
   {
     nombre_completo: string
   }
+  tipo_toma:
+  {
+    nombre: string
+  }
 }
 
 
@@ -38,14 +42,13 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
         const {setArregloCrearOrdenesDeTrabajo} = ZustandFiltrosOrdenTrabajo();
       return(
         <Checkbox
+        className="w-[2.7vh] h-[2.7vh]"
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
+          table.getIsAllRowsSelected()}
         
         onCheckedChange={(value) => {
           // Actualizar la selección de todas las filas
-          table.toggleAllPageRowsSelected(!!value);
+          table.toggleAllRowsSelected(!!value);
 
           // Esperar hasta que se complete la actualización y luego obtener las filas seleccionadas
           setTimeout(() => {
@@ -68,6 +71,8 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
 
       return(
         <Checkbox
+        className="w-[2.7vh] h-[2.7vh]"
+
         checked={row.getIsSelected()}
         onCheckedChange={(value) => {
           row.toggleSelected(!!value);
@@ -128,16 +133,18 @@ export const columns: ColumnDef<OrdenDeTrabajoCrearTomas>[] = [
       </Button>
     ),
   },
- 
-  
   {
-    accessorKey: "tipo_toma.nombre",
+    accessorFn: (row) => {
+      // Verifica la estructura de los datos en la consola
+      return row.tipo_toma?.nombre;
+    },
+    id: "tipo_toma.nombre",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Tipo
+        Usuario
       </Button>
     ),
   },

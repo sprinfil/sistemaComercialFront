@@ -451,7 +451,7 @@ export const CrearContratoForm = () => {
                             <h1 className="text-3xl mb-[7vh]">
                                 Crear contrato
                             </h1>
-                            <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Nombre del contrato</h3>
+                            <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10 dark:text-white">Nombre del contrato</h3>
                             <div className="w-[full]">
                                 <FormField
                                     control={form.control}
@@ -480,7 +480,7 @@ export const CrearContratoForm = () => {
 
 
                             <div>
-                                <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Datos de la toma</h3>
+                                <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10 dark:text-white">Datos de la toma</h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 
                                 </div>
@@ -534,7 +534,7 @@ export const CrearContratoForm = () => {
                                 </div>
                             </div>
 
-                            <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Dirección de la toma</h3>
+                            <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10 dark:text-white">Dirección de la toma</h3>
 
                             <div className='flex space-x-2'>
                                 <div className='w-[160vh]'>
@@ -837,7 +837,7 @@ export const CrearContratoForm = () => {
 
                             </div>
 
-                            <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-5">Servicios a contratar</h3>
+                            <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-5 dark:text-white">Servicios a contratar</h3>
                             <div className='flex items-center space-x-8 mt-5'>
                                 <div className='flex flex-col items-center'>
                                     {campoAgua && tomaPreContratada?.tipo_contratacion == "pre-contrato" && 
@@ -997,7 +997,7 @@ export const CrearContratoForm = () => {
 
 
 
-                            <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10">Tipo de Contratación y Giro de Negocio</h3>
+                            <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10 dark:text-white">Tipo de Contratación y Giro de Negocio</h3>
 
                             <div className='flex space-x-4 mt-2'>
 
@@ -1109,7 +1109,7 @@ export const CrearContratoForm = () => {
                             </div>
 
                             <div className='flex justify-end'>
-                                <Button type="submit" className='mt-10'>Guardar</Button>
+                                <Button type="submit" className='mt-10'>Siguiente</Button>
                             </div>
 
 

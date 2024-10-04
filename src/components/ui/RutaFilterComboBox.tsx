@@ -50,8 +50,8 @@ export const RutaFilterComboBox = ({ field, name = "id_concepto", setCargoSelecc
             }));
             // Añadir una opción vacía al principio
             setLanguages([{ value: '', label: 'Limpiar selección' }, ...conceptos]);
-        } catch (error) {
-            console.error("Failed to fetch concepto:", error);
+        } catch (response) {
+            console.log("Failed to fetch ruta:", response);
         } finally {
             setLoading(false);
         }

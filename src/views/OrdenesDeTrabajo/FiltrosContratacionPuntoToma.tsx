@@ -33,6 +33,28 @@ import {
 import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import IconButtonContratos from "../../components/ui/IconButtonContratos";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu"
+import { FaChevronCircleRight } from "react-icons/fa";
 
 const FiltrosContratacionPuntoToma = () => {
 
@@ -50,7 +72,10 @@ const FiltrosContratacionPuntoToma = () => {
 
   const {setIsCheckedPreContratadas, isCheckedPreContratadas, setPuntosFiltradosParaElMapa, 
     tomaPreContratada, setTomaPreContratada, 
-    setBoolPeticionContratacion, seleccionoPuntoEnMapa, codigoToma, setCodigoToma, setEsPreContratado} = ZustandFiltrosContratacion();
+    setBoolPeticionContratacion, seleccionoPuntoEnMapa, 
+    codigoToma, setCodigoToma, 
+    setEsPreContratado, setSeleccionoPuntoEnMapa,
+    setSelectedLocation, setTomasFiltradas} = ZustandFiltrosContratacion();
  
     const {usuariosEncontrados} = ZustandGeneralUsuario();
 //console.log(isCheckedPreContratadas);
@@ -59,6 +84,9 @@ const handleLimpiarFiltros = () => {
   setCodigoToma("");
   setIsCheckedPreContratadas(false);
   setEsPreContratado(false);
+  setSeleccionoPuntoEnMapa(false);
+  setSelectedLocation(null);
+  setTomasFiltradas([]);
 }
 
   const handleBuscarTomas = () => 
@@ -96,89 +124,101 @@ console.log(usuariosEncontrados);
 
   console.log(codigoToma);
   return (
-    <div className="overflow-auto min-h-[20vh]">
-      <div className="mt-[1vh]">
-        <div className="flex space-x-2 ">
-        <div className="mb-5 text-xl">
-          Usuario:
+    <ContextMenu>
+   <ContextMenuTrigger className="">
+    <div className="">
+
+    <div className="overflow-auto min-h-[80vh]">
+  
+      <div>
+      <div className='w-full p-4 bg-muted shadow-md mb-2 flex justify-between items-center'>
+        <div className="text-lg mr-1">
+          Usuario: 
         </div>
-        <div className="text-lg truncate flex-grow min-w-[20vh]">
+      <div className="text-lg truncate flex-grow min-w-[20vh]">
         {usuariosEncontrados[0]?.nombre_completo}
         </div>
-        <div className="flex justify-end w-[20vh]">
-        {seleccionoPuntoEnMapa && (
-          <div className="rounded-md bg-green-400 h-[33px]" title="Continuar proceso">
+
+        <div className="flex justify-end">
+        {seleccionoPuntoEnMapa ? (
+          <div className="]" title="Iniciar proceso">
             <IconButtonContratos onClick={handleSiguienteContratacion}>
-              <FaArrowRight className="text-black"/>
+              <FaChevronCircleRight className="w-[2.9vh] h-[2.9vh]"/>
             </IconButtonContratos>
           </div>
-        )}
-        </div>
-    
-        </div>
-        
-      <div className="flex justify-between items-center space-x-4">
-
-
-        <div className="flex items-center space-x-2 w-full h-full">
-          <FiFilter className="w-[3vh] h-[3vh]" />
-          <span>Filtros</span>
-        </div>
-
-     
-      </div>
-
-        <div className="flex justify-between items-center space-x-2 mt-5">
-          
-  <div className="flex items-center space-x-4 text-lg font-semibold mt-4">
-    <span>Tomas</span>
-    <div title="Limpiar filtros">
-      <IconButton onClick={handleLimpiarFiltros}>
-        <LuFilterX />
-      </IconButton>
-    </div>
-  </div>
-
-      {/* Lupa (ícono de búsqueda) alineada a la derecha */}
-      <div title="Buscar" className="flex">
-        <IconButton onClick={handleBuscarTomas}>            
-          <FaSearch/>
+        )
+      :
+      <div className="w-[4vh] h-[4vh] flex justify-end">
+      <IconButton onClick={handleBuscarTomas} title="Buscar tomas">            
+          <FaSearch className="w-[2.5vh] h-[2.5vh]"/>
         </IconButton>
       </div>
-    </div>
-
-
-
-          <hr className="border-t border-border my-1" />
-
-          <div className="grid grid-cols-2 gap-x-[10vh] mb-2">
+      }
+        </div>
+      
+      </div>
+  
+     
+      <div className='p-4'>
+        <Accordion collapsible className="w-full" type="multiple" defaultValue={["item-1", "item-2"]}>
+          <AccordionItem value="item-1">
+            <AccordionTrigger>Tipo de toma</AccordionTrigger>
+            <AccordionContent>
             <div className="flex items-center space-x-2 mt-2">
               <div className="text-sm font-medium mb-2 mt-2">Desarrolladora</div>
               <div className="ml-2">
                 <Checkbox
-                 className="w-[2.3vh] h-[2.3vh]"
+                 className="w-[2.8vh] h-[2.8vh]"
                   checked={isCheckedPreContratadas}
                   onCheckedChange={setIsCheckedPreContratadas}
                 />
               </div>
               
             </div>
-
-            
-          </div>
-          
-          <div className="text-sm font-medium mb-2 mt-5">Codigo de toma</div>
-          <hr className="border-t border-border my-1" />
-          <div className="mt-5">
-          <Input
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger>Código de toma</AccordionTrigger>
+            <AccordionContent>
+            <Input
           placeholder="Ingresa el código de toma"
           value={codigoToma}
           onChange={handleChangeCodigoToma}
           />
-          </div>
-
-        </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
+    </div>
+      
+      <ContextMenuContent className="w-64">
+      <ContextMenuItem onClick={handleBuscarTomas}>
+          <IconButton>Buscar</IconButton>
+
+        </ContextMenuItem>
+        <ContextMenuItem onClick={handleLimpiarFiltros}>
+          <IconButton >Limpiar</IconButton>
+
+        </ContextMenuItem>
+       
+      </ContextMenuContent>
+    
+
+
+
+      </div>
+
+
+
+    
+
+
+      </div>
+        </ContextMenuTrigger>
+
+      </ContextMenu>
+
+
   );
 };
 
