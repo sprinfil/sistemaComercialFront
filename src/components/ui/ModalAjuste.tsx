@@ -164,118 +164,125 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
     <AlertDialog>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
       <AlertDialogContent className="w-[90vw] max-w-none">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="text-lg font-semibold">{title}</AlertDialogTitle>
-          {selectedAjuste && (
-            <div className="mt-4">
-              <h3 className="font-medium">Resumen:</h3>
-              <p>Ajuste: {selectedAjuste.nombre}</p>
-              <p>Cargos Ajustables:</p>
-              <ul>
-                {cargosSeleccionados.map((cargo: any) => (
-                  <li key={cargo.id}>{cargo.nombre}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </AlertDialogHeader>
-        
-        {loading ? (
-          <Loader />
-        ) : error ? (
-          <p className="text-red-500">{error}</p>
-        ) : (
-          <Accordion type="single" collapsible value={activeAccordion} onValueChange={setActiveAccordion}>
-            <AccordionItem value="ajustes">
-              <AccordionTrigger className="font-medium">Ajustes Disponibles</AccordionTrigger>
-              <AccordionContent>
-                {ajustes.length > 0 ? (
-                  ajustes.map((ajuste: any) => (
-                    <div
-                      key={ajuste.id}
-                      className={`cursor-pointer p-2 hover:bg-gray-100 ${selectedAjuste?.id === ajuste.id ? 'bg-gray-200' : ''}`}
-                      onClick={() => handleRowClick(ajuste)}
-                    >
-                      {ajuste.nombre}
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-center">No hay ajustes disponibles.</p>
-                )}
-              </AccordionContent>
-            </AccordionItem>
-
+      <div className='flex'>
+        {/* Primera parte - Resumen (1/3 del ancho) */}
+        <div className="w-[40vh] p-4 ">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-lg font-semibold">{title}</AlertDialogTitle>
             {selectedAjuste && (
-              <AccordionItem value="cargosAjustables">
-                <AccordionTrigger className="font-medium">Cargos Ajustables</AccordionTrigger>
-                <div className=''>
-                  <AccordionContent>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th className="px-4 py-2 text-left">Monto Ajustable</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                          <td className="px-4 py-2">
-                            <Input
-                              type="number"
-                              value={montoAjustable}
-                              onChange={(e) => setMontoAjustable(Number(e.target.value))}
-                              className="border p-1"
-                            />
-                          </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                    <table className="min-w-full table-auto mt-4">
+              <div className="mt-4">
+                <h3 className="font-medium">Resumen:</h3>
+                <p>Ajuste: {selectedAjuste.nombre}</p>
+                <p>Cargos Ajustables:</p>
+                <ul>
+                  {cargosSeleccionados.map((cargo: any) => (
+                    <li key={cargo.id}>{cargo.nombre}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </AlertDialogHeader>
+        </div>
+
+        {/* Segunda parte - Contenido restante (2/3 del ancho) */}
+        <div className="w-[120vh] p-4 ">
+          {loading ? (
+            <Loader />
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <Accordion type="single" collapsible value={activeAccordion} onValueChange={setActiveAccordion}>
+              <AccordionItem value="ajustes">
+                <AccordionTrigger className="font-medium">Ajustes Disponibles</AccordionTrigger>
+                <AccordionContent>
+                  {ajustes.length > 0 ? (
+                    ajustes.map((ajuste: any) => (
+                      <div
+                        key={ajuste.id}
+                        className={`cursor-pointer p-2 hover:bg-gray-100 ${selectedAjuste?.id === ajuste.id ? 'bg-gray-200' : ''}`}
+                        onClick={() => handleRowClick(ajuste)}
+                      >
+                        {ajuste.nombre}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-center">No hay ajustes disponibles.</p>
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+
+              {selectedAjuste && (
+                <AccordionItem value="cargosAjustables">
+                  <AccordionTrigger className="font-medium">Cargos Ajustables</AccordionTrigger>
+                  <div className=''>
+                    <AccordionContent>
+                    <table>
                       <thead>
                         <tr>
-                          <th className="px-4 py-2 text-left">
-                            <Checkbox
-                              checked={selectAll}
-                              onCheckedChange={handleSelectAll}
-                            />
-                            {" "} Nombre del Cargo
-                          </th>
-                          <th className="px-4 py-2 text-left">Monto total</th>
-                          <th className="px-4 py-2 text-left">Monto bonificado</th>
-                          <th className="px-4 py-2 text-left">Monto ajustado</th>
+                          <th className="px-4 py-2 text-left">Monto Ajustable</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {cargosAjustables.map((cargo: any) => {
-                          // Calcula el monto ajustado restando el monto ajustable
-                          const totalAjustado = cargo.monto - montoAjustable;
-
-                          return (
-                            <tr key={cargo.id} className="border-t">
-                              <td className="px-4 py-2">
-                                <Checkbox
-                                  checked={cargosSeleccionados.some((c: any) => c.id === cargo.id)}
-                                  onCheckedChange={() => handleCargoSeleccionado(cargo)}
-                                />
-                                {" "}{cargo.nombre}
-                              </td>
-                              <td className="px-4 py-2">${cargo.monto}</td>
-                              <td className="px-4 py-2">${montoAjustable}</td>
-                              <td className="px-4 py-2">${totalAjustado}</td>
-                            </tr>
-                          );
-                        })}
+                        <tr>
+                            <td className="px-4 py-2">
+                              <Input
+                                type="number"
+                                value={montoAjustable}
+                                onChange={(e) => setMontoAjustable(Number(e.target.value))}
+                                className="border p-1"
+                              />
+                            </td>
+                        </tr>
                       </tbody>
-
                     </table>
-                    
-                    
-                  </AccordionContent>
-                </div>
-              </AccordionItem>
-            )}
-          </Accordion>
-        )}
+                      <table className="min-w-full table-auto mt-4">
+                        <thead>
+                          <tr>
+                            <th className="px-4 py-2 text-left">
+                              <Checkbox
+                                checked={selectAll}
+                                onCheckedChange={handleSelectAll}
+                              />
+                              {" "} Nombre del Cargo
+                            </th>
+                            <th className="px-4 py-2 text-left">Monto total</th>
+                            <th className="px-4 py-2 text-left">Monto bonificado</th>
+                            <th className="px-4 py-2 text-left">Monto ajustado</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {cargosAjustables.map((cargo: any) => {
+                            // Calcula el monto ajustado restando el monto ajustable
+                            const totalAjustado = cargo.monto - montoAjustable;
 
+                            return (
+                              <tr key={cargo.id} className="border-t">
+                                <td className="px-4 py-2">
+                                  <Checkbox
+                                    checked={cargosSeleccionados.some((c: any) => c.id === cargo.id)}
+                                    onCheckedChange={() => handleCargoSeleccionado(cargo)}
+                                  />
+                                  {" "}{cargo.nombre}
+                                </td>
+                                <td className="px-4 py-2">${cargo.monto}</td>
+                                <td className="px-4 py-2">${montoAjustable}</td>
+                                <td className="px-4 py-2">${totalAjustado}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+
+                      </table>
+                      
+                      
+                    </AccordionContent>
+                  </div>
+                </AccordionItem>
+              )}
+            </Accordion>
+          )}
+          </div>
+        </div>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
           <AlertDialogAction onClick={handleConfirmar}>

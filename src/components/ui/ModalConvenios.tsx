@@ -220,7 +220,7 @@ return (
       <div className='flex '>
         
         {/* Primera parte - Resumen (1/3 del ancho) */}
-        <div className="w-[40vh] p-4">
+        <div className="w-[40vh] p-4 ">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-lg font-semibold">{title}</AlertDialogTitle>
 
@@ -240,7 +240,7 @@ return (
         </div>
 
         {/* Segunda parte - Contenido restante (2/3 del ancho) */}
-        <div className="w-[60vh] p-4 ">
+        <div className="w-[120vh] p-4 ">
           {loading ? (
             <Loader />
           ) : error ? (
