@@ -180,27 +180,9 @@ export const MenuSuperiosNew = () => {
             icon: <ReaderIcon />,
             opciones: [
                 {
-                    titulo: "Cargas de Trabajo",
-                    descripcion: "Adminsitra las cargas de trabajo para los operadores de campo.",
-                    route: "/proximamente",
-                    permission: ""
-                },
-                {
-                    titulo: "Anomalias",
-                    descripcion: "Gestiona, Monitorea y valida Anomalias",
-                    route: "/proximamente",
-                    permission: ""
-                },
-                {
-                    titulo: "Facturar",
-                    descripcion: "Factura o Refactura",
-                    route: "/proximamente",
-                    permission: ""
-                },
-                {
-                    titulo: "Monitor de Operadores de Campo",
-                    descripcion: "Consulta el recorrido de los operadores de campo",
-                    route: "/proximamente",
+                    titulo: "Periodos de facturación",
+                    descripcion: "Adminsitra todo el proceso de facturación.",
+                    route: "/periodosFacturacion",
                     permission: ""
                 },
             ]
