@@ -519,6 +519,21 @@ const FiltrosAsignarOTMasiva = () => {
           </>
 
         )}
+
+      <AccordionItem value="item-6">
+            <AccordionTrigger>Tipos de orden de trabajo</AccordionTrigger>
+            <AccordionContent>
+            <div className="flex space-x-5 items-center mt-5">
+          <div className="text-sm font-medium mb-2">GG</div>
+          <div className="mb-5">
+          
+          </div>
+         
+
+
+        </div>
+            </AccordionContent>
+          </AccordionItem>
          
         </Accordion>
       </div>
