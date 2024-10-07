@@ -51,14 +51,16 @@ export const columns2: ColumnDef<MonitorOrden2>[] = [
         const {setArregloOrdenesDeTrabajoParaAsignarAOperador, setInformacionCerrarOtMasivamente} = ZustandFiltrosOrdenTrabajo();
       return(
         <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
         
+        
+        
+        className="w-[2.7vh] h-[2.7vh]"
+
+        checked={
+          table.getIsAllRowsSelected()}        
         onCheckedChange={(value) => {
           // Actualizar la selección de todas las filas
-          table.toggleAllPageRowsSelected(!!value);
+          table.toggleAllRowsSelected(!!value);
 
           // Esperar hasta que se complete la actualización y luego obtener las filas seleccionadas
           setTimeout(() => {
@@ -81,6 +83,7 @@ export const columns2: ColumnDef<MonitorOrden2>[] = [
 
       return(
         <Checkbox
+        className="w-[2.7vh] h-[2.7vh]"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => {
           row.toggleSelected(!!value);

@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select"
 import ModalVerPago from "./ModalVerPago"
 import ModalVerFactibilidadMonitor from "./ModalVerFactibilidadMonitor"
+import ModalVerFactibilidadMonitorAgua from "./ModalVerFactibilidadMonitorAgua"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -74,9 +75,9 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
 
           {/* Filtros */}
           <div className="px-2">
-            <p>Codigo de toma</p>
+            <p>Código de toma</p>
             <Input
-              placeholder="Codigo de toma"
+              placeholder="Código de toma"
               value={(table.getColumn("codigo_toma")?.getFilterValue() as string) ?? ""}
               onChange={(event) =>
                 table.getColumn("codigo_toma")?.setFilterValue(event.target.value)
@@ -188,7 +189,7 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
-              Previous
+              Anterior
             </Button>
             <Button
               variant="outline"
@@ -196,14 +197,14 @@ export function FactibilidadMonitorDataTable<TData, TValue>({
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
-              Next
+              Siguiente
             </Button>
           </div>
         </div>
       </div>
 
       {selected_fact && (
-        <ModalVerFactibilidadMonitor
+        <ModalVerFactibilidadMonitorAgua
           selected_fact={selected_fact}
           open={modal_ver_fact}
           set_open={set_modal_ver_fact}

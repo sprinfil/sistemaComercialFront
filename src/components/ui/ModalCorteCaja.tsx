@@ -444,13 +444,13 @@ export const ModalCorteCaja = ({ trigger, onRegister, initialFund }) => {
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>Total Tarjeta Credito</TableCell>
+                        <TableCell>Total Tarjeta Crédito</TableCell>
                         <TableCell>
                           $ {total_tarjeta_credito?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "<<Sin datos>>"}
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell>Total Tarjeta Debito</TableCell>
+                        <TableCell>Total Tarjeta Débito</TableCell>
                         <TableCell>
                           $ {total_tarjeta_debito?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "<<Sin datos>>"}
                         </TableCell>

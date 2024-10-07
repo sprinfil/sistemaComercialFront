@@ -18,54 +18,46 @@ import {
 } from "@/components/ui/select";
 import IconButton from "../../components/ui/IconButton";
 import { LuDelete } from "react-icons/lu";
-
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { FaSearch } from "react-icons/fa";
 const FiltrosContratacionMonitor = () => {
   return (
-    <div className="overflow-auto min-h-[20vh]">
-      <div className="ml-5 mt-5 h-full p-3">
-        <div className="flex items-center">
-          <div>
-            <FiFilter className="w-[3vh] h-[3vh]" />
-          </div>
-          <div className="text-sm font-medium">Filtros</div>
-          <div className="ml-[30vh]">
-            <IconButton onClick={""}>
-              <LuDelete />
-            </IconButton>
-          </div>
-        </div>
+    <div>
+    <div className='w-full p-4 bg-muted shadow-md mb-2 flex items-center'>
+    <FiFilter className="w-[4vh] h-[4vh]"  />
+      <p>Filtros</p>
+    
+             {/** ESTE ES EL BUSCAR DE EL MONITOR DE ORDENES DE TRABAJO */}
+             <div className="ml-auto">
+             <IconButton title="Filtrar" >
+       <FaSearch className="w-[2.5vh] h-[2.5vh] " />
 
-        <div className="flex flex-col mt-6 w-full">
-          <div className="text-lg font-semibold mt-4">
-            Estado de contratación
-          </div>
-          <hr className="border-t border-border my-1" />
-
-          <div className="grid grid-cols-2 gap-x-[10vh] mb-2">
-            <div className="flex items-center space-x-2">
-              <div className="text-sm font-medium mb-2 mt-2">Asignada</div>
-              <div className="ml-2">
-                <Checkbox className="w-[2.3vh] h-[2.3vh]"/>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <div className="text-sm font-medium mb-2 mt-2">No asignada</div>
-              <div className="ml-2">
-              <Checkbox className="w-[2.3vh] h-[2.3vh]"/>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <div className="text-sm font-medium mb-2 mt-2">Concluida</div>
-              <div className="ml-2">
-              <Checkbox className="w-[2.3vh] h-[2.3vh]"/>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+     </IconButton>
+             </div>
+    
     </div>
+    <div className='p-4'>
+      <Accordion collapsible className="w-full" type="multiple" defaultValue={["item-1", "item-2"]}>
+        <AccordionItem value="item-1">
+          <AccordionTrigger>Estatus</AccordionTrigger>
+          <AccordionContent>
+            Proximamente
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-2">
+          <AccordionTrigger>Tipo de servicio</AccordionTrigger>
+          <AccordionContent>
+            Proximamente
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </div>
+  </div>
   );
 };
 

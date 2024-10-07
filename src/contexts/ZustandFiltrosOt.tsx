@@ -114,6 +114,9 @@ interface FiltrosOrdenTrabajo {
   setIsHastaFecha: (isHastaFecha:string) => void;
   isCodigoDeTomaFiltro:  string;
   setIsCodigoDeTomaFiltro: (isCodigoDeTomaFiltro:string) => void;
+
+  abrirModalOrdenTrabajo: boolean;
+  setAbrirModalOrdenTrabajo: (abrirModalOrdenTrabajo: boolean) => void;
 }
 
 export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => ({
@@ -219,5 +222,7 @@ export const ZustandFiltrosOrdenTrabajo = create<FiltrosOrdenTrabajo>((set) => (
   setIsHastaFecha: (isHastaFecha) => set({isHastaFecha}),
   isCodigoDeTomaFiltro: "",
   setIsCodigoDeTomaFiltro: (isCodigoDeTomaFiltro) => set({isCodigoDeTomaFiltro}),
+  abrirModalOrdenTrabajo: false,
+  setAbrirModalOrdenTrabajo: (abrirModalOrdenTrabajo) => set({abrirModalOrdenTrabajo}),
 }));
 

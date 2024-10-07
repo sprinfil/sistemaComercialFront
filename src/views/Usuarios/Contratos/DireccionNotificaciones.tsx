@@ -70,8 +70,8 @@ console.log(direccion_notificaciones);
                 <h1 className="text-3xl mb-[7vh]">
                 Dirección para las notificaciones
                 </h1>
-                        <div className='flex space-x-2 mt-[5vh] items-center'>
-                        <div className='w-full'>
+                        <div className='flex space-x-2 '>
+                        <div className='flex-1'>
                             <FormField
                                 control={form.control}
                                 name="direccion"
@@ -87,15 +87,15 @@ console.log(direccion_notificaciones);
                                 )}
                             />
                         </div>
-                        
-                        <div className="flex justify-end">
-                        <Button type="submit" className='flex justify-center items-center'>
-                            Guardar
-                        </Button>
-                     </div>
+                       
 
                         </div>
-                        
+                         <div className='flex justify-end mt-5'>
+                         <Button type="submit" className=''>
+                            Guardar
+                        </Button>
+                         </div>
+                    
                     </div>
                       
                         </form>

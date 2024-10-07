@@ -145,12 +145,23 @@ function onSubmit(values: z.infer<typeof cambioPropietarioSchema>)
   
 }
 const agregrarConcepto = () => {
-  // Si cargoSeleccionado es un objeto, conviértelo en un array si es necesario
+
   const nuevosConceptos = Array.isArray(cargoSeleccionado) ? cargoSeleccionado : [cargoSeleccionado];
 
-  // Agregar los nuevos conceptos al array existente
-  setConceptoEnviar(prevConceptos => [...prevConceptos, ...nuevosConceptos]);
+   if (!cargoSeleccionado ) {
+    toast({
+      variant: "destructive",
+      title: "Oh, no. Error",
+      description: "Selecciona un concepto.",
+      action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+    });
+  } else {
+
+    setConceptoEnviar(prevConceptos => [...prevConceptos, ...nuevosConceptos]);
+  }
 };
+console.log(conceptoEnviar);
+
 
 useEffect(() => {
   console.log('cargoSeleccionado:', cargoSeleccionado);
@@ -214,8 +225,8 @@ const eliminarConcepto = (index: number) => {
                                 render={({ field }) => (
                                     <FormItem>
                                     <div className="flex space-x-2 justify-center">
-                                      <div className="text-base text-black">Precio del contrato de agua:</div>
-                                   <div className="mt-1 mb-2">
+                                      <div className="text-lg text-black dark:text-white">Precio del contrato de agua:</div>
+                                   <div className="mt-2 mb-2">
                                    {tarifaDeContratoActual.monto}
                                     </div> 
                                         </div>
@@ -266,7 +277,7 @@ const eliminarConcepto = (index: number) => {
                                             <Button type="button" onClick={agregrarConcepto}>Agregar</Button>
                                           </div>
                                                                                       
-                                          <div className="max-h-[50vh] overflow-auto border border-gray-300 rounded-md p-2">
+                                          <div className="max-h-[50vh] overflow-auto rounded-md p-2">
 
                                             <div>
                                               {conceptoEnviar.length > 0 ? (

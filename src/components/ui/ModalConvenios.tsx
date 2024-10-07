@@ -216,11 +216,11 @@ const resultadoDivision = cantidadLetras > 0 ? resultadoResta / cantidadLetras :
 return (
   <AlertDialog>
     <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-    <AlertDialogContent className="w-[90vw] max-w-none">
-      <div className='flex '>
+    <AlertDialogContent className="w-[90vw] h-[45vw] max-w-none flex flex-col">
+    <div className="flex-1 flex">
         
         {/* Primera parte - Resumen (1/3 del ancho) */}
-        <div className="w-[40vh] p-4">
+        <div className="w-[40vh] p-4 ">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-lg font-semibold">{title}</AlertDialogTitle>
 
@@ -240,7 +240,7 @@ return (
         </div>
 
         {/* Segunda parte - Contenido restante (2/3 del ancho) */}
-        <div className="w-[60vh] p-4 ">
+        <div className="w-[120vh] p-4  h-[60vh]">
           {loading ? (
             <Loader />
           ) : error ? (
@@ -280,8 +280,8 @@ return (
                   <AccordionTrigger className="font-medium">
                     Cargos Conveniables
                   </AccordionTrigger>
-                  <AccordionContent>
-                    <table>
+                  <AccordionContent className='h-[60vh] overflow-auto'>
+                    <table >
                       <thead>
                         <tr>
                           <th className="px-4 py-2 text-left">Tipo de monto</th>
@@ -399,15 +399,15 @@ return (
         </div>
       </div>
 
-      <AlertDialogFooter>
-        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-        <AlertDialogAction
-          onClick={handleConfirmar}
-          disabled={!selectedConvenio || cargosSeleccionados.length === 0}
-        >
-          Aceptar
-        </AlertDialogAction>
-      </AlertDialogFooter>
+      <AlertDialogFooter className="mt-auto"> {/* Fijo en la parte inferior */}
+      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+      <AlertDialogAction
+        onClick={handleConfirmar}
+        disabled={!selectedConvenio || cargosSeleccionados.length === 0}
+      >
+        Aceptar
+      </AlertDialogAction>
+    </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>
 );

@@ -32,13 +32,19 @@ export const DetalleInformacionContrato = () => {
     entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma,tomaPreContratada,setIsCheckInspeccion, boolPeticionContratacion,
 
     isCheckInspeccion, setBooleanModalSubirArchivosContratacion, idContrato, setIdContrato,nombreGiroComercial, esPreContratado,puntoTomaLatitudLongitudAPI,
-    getCoordenadaString2, setTomaPreContratada, setBoolPeticionContratacion,contratoLocalStorage} = ZustandFiltrosContratacion();
+    getCoordenadaString2, setTomaPreContratada, setBoolPeticionContratacion,contratoLocalStorage,
+    nombreCalle, nombreEntreCalle1,nombreEntreCalle2,nombreColonia, nombreGiroComercial2, tipoTomaNombre
+  ,servicioAguaNombre, servicioAlcSan} = ZustandFiltrosContratacion();
 
+    console.log(servicioAguaNombre);
 
+    
     console.log(localStorage.getItem("contrato"));
     console.log(localStorage.getItem("libro"));
     console.log(localStorage.getItem("notificaciones"));
-
+    const contratoConvertido = JSON.parse(localStorage.getItem("contrato"));
+    console.log(contratoConvertido);
+    console.log(giroComercial);
 
       //contratacion obtenemos y despues lo parseamos 
       const contratacionLocalStorage = localStorage.getItem("contrato");
@@ -142,10 +148,10 @@ export const DetalleInformacionContrato = () => {
 
 
 
+  console.log(servicioContratado);
 
 
-
-
+console.log(boolPeticionContratacion);
   return (
     <div className=''>
      <div className="flex items-center justify-start bg-muted ">
@@ -233,6 +239,8 @@ export const DetalleInformacionContrato = () => {
      </TableFooter>
    </Table>
      :
+
+     !tomaPreContratada ?
      <Table className="mt-3">
      <TableCaption></TableCaption>
      <TableHeader className="bg-muted">
@@ -259,11 +267,8 @@ export const DetalleInformacionContrato = () => {
            <TableCell className="font-medium">{nombreGiroComercial}</TableCell>
            <TableCell className="font-medium">{contrato.municipio}</TableCell>
            <TableCell className="font-medium">
-
-            {tomaPreContratada?.c_agua === 0 && "Agua"}
-            ,
-            {tomaPreContratada?.c_alc === 0 && " Alcantarillado y Saneamiento"}
-
+           {(servicioContratado|| "") + ("," + servicioContratado2 || "")}
+           
           </TableCell>
        
            <TableCell className="font-medium">{contrato.tipo_contratacion}</TableCell>
@@ -276,6 +281,49 @@ export const DetalleInformacionContrato = () => {
        </TableRow>
      </TableFooter>
    </Table>
+   :
+   <Table className="mt-3">
+   <TableCaption></TableCaption>
+   <TableHeader className="bg-muted">
+     <TableRow>
+       <TableHead>Clave catastral</TableHead>
+       <TableHead>Direccion</TableHead>
+       <TableHead>Localidad</TableHead>
+       <TableHead>Giro comercial</TableHead>
+       <TableHead>Municipio</TableHead>
+       <TableHead>Servicios contratados</TableHead>
+       <TableHead>Tipo de contratación</TableHead>
+       <TableHead>Tipo de toma</TableHead>
+
+     </TableRow>
+   </TableHeader>
+   <TableBody>
+       <TableRow key={""}>
+         <TableCell className="font-medium"> {contrato.clave_catastral}</TableCell>
+         <TableCell className="font-medium"> 
+           {"Calle " + nombreCalle + " " + contrato.num_casa + ", Colonia " + nombreColonia + ", Entre calles " + (nombreEntreCalle1 || "") + ", " + 
+           (nombreEntreCalle2 || "") + ", Codigo postal " + contrato.codigo_postal}
+           </TableCell>
+           <TableCell className="font-medium">{contrato.localidad}</TableCell>
+         <TableCell className="font-medium">{nombreGiroComercial2}</TableCell>
+         <TableCell className="font-medium">{contrato.municipio}</TableCell>
+         <TableCell className="font-medium">
+         {(servicioContratado|| "") + (servicioContratado2 || "")}
+         {servicioAguaNombre == "0" && "Agua"}
+         {servicioAlcSan == "0" && ",Alcantarillado y Saneamiento"}
+
+        </TableCell>
+     
+         <TableCell className="font-medium">{contrato.tipo_contratacion}</TableCell>
+         <TableCell className="font-medium">{tipoTomaNombre}</TableCell>
+
+       </TableRow>
+   </TableBody>
+   <TableFooter>
+     <TableRow>
+     </TableRow>
+   </TableFooter>
+ </Table>
     }
        
           

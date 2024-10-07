@@ -32,11 +32,6 @@ export const Monitores = () => {
       permission: ""
     },
     {
-      titulo: "Contratación",
-      componente: <ContratacionMonitor />,
-      permission: ""
-    },
-    {
       titulo: "Factibilidad",
       componente: <FactibilidadMonitor />,
       permission: ""

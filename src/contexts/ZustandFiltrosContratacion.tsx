@@ -207,6 +207,36 @@ interface FiltrosContratacion {
 
   contratoLocalStorage: boolean;
   setContratoLocalStorage:(contratoLocalStorage: boolean) => void;
+
+  nombreCalle: string;
+  setNombreCalle:(nombreCalle: string) => void;
+
+  nombreEntreCalle1: string;
+  setNombreEntreCalle1:(nombreEntreCalle1: string) => void;
+
+  nombreEntreCalle2: string;
+  setNombreEntreCalle2:(nombreEntreCalle2: string) => void;
+
+
+  nombreColonia: string;
+  setNombreColonia:(nombreColonia: string) => void;
+
+  
+  nombreGiroComercial2: string;
+  setNombreGiroComercial2:(nombreGiroComercial2: string) => void;
+
+  tipoTomaNombre: string;
+  seTipoTomaNombre:(tipoTomaNombre: string) => void;
+
+  servicioAguaNombre: string;
+  setServicioAguaNombre:(servicioAguaNombre: string) => void;
+
+  servicioAlcSan: string;
+  setServicioAlcSan:(servicioAlcSan: string) => void;
+
+  
+  tomasFiltradas:[];
+  setTomasFiltradas:(tomasFiltradas: []) => void
 }
 
 export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => ({
@@ -401,8 +431,7 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
   codigoToma: "",
   setCodigoToma: (codigoToma) => set({ codigoToma }),
 
-  nombreGiroComercial: "",
-  setNombreGiroComercial: (nombreGiroComercial) => set({ nombreGiroComercial }),
+
 
   esPreContratado: false,
   setEsPreContratado: (esPreContratado) => set({ esPreContratado }),
@@ -423,5 +452,40 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
   contratoLocalStorage:false,
   setContratoLocalStorage: (contratoLocalStorage) => set({ contratoLocalStorage }),
 
+
+  
+
+  
+  nombreCalle: "",
+  setNombreCalle:(nombreCalle) => set({ nombreCalle }),
+  
+  nombreEntreCalle1: "",
+  setNombreEntreCalle1:(nombreEntreCalle1) => set({ nombreEntreCalle1 }),
+  nombreEntreCalle2: "",
+  setNombreEntreCalle2:(nombreEntreCalle2) => set({ nombreEntreCalle2 }),
+
+  nombreColonia: "",
+  setNombreColonia:(nombreColonia) => set({ nombreColonia }),
+
+  nombreGiroComercial: "",
+  setNombreGiroComercial:(nombreGiroComercial) => set({ nombreGiroComercial }),
+
+  nombreGiroComercial2: "",
+  setNombreGiroComercial2:(nombreGiroComercial2) => set({ nombreGiroComercial2 }),
+
+  tipoTomaNombre: "",
+  seTipoTomaNombre:(tipoTomaNombre) => set({ tipoTomaNombre }),
+
+  servicioAguaNombre: "",
+  setServicioAguaNombre:(servicioAguaNombre) => set({ servicioAguaNombre }),
+
+  servicioAlcSan: "",
+  setServicioAlcSan:(servicioAlcSan) => set({ servicioAlcSan }),
+
+  tomasFiltradas:[],
+  setTomasFiltradas: (tomasFiltradas) => set({ tomasFiltradas }),
+
+
+ 
 }));
 

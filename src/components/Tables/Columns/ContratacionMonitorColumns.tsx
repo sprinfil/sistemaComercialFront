@@ -29,6 +29,7 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
     id: "select",
     header: ({ table }) => (
       <Checkbox
+      className="w-[2.7vh] h-[2.7vh]"
         checked={table.getIsAllRowsSelected()}
         onCheckedChange={(value) => {
           table.toggleAllRowsSelected(!!value);
@@ -38,6 +39,7 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
     ),
     cell: ({ row }) => (
       <Checkbox
+      className="w-[2.7vh] h-[2.7vh]"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
@@ -47,6 +49,20 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
   {
     accessorKey: "folio_solicitud",
     header: "Folio",
+  },
+  {
+    accessorFn: (row) => {
+      return row.toma?.codigo_toma;
+    },
+    id: "toma.codigo_toma",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Código toma
+      </Button>
+    ),
   },
   {
     accessorKey: "nombre_contrato",
@@ -60,20 +76,7 @@ export const columns: ColumnDef<ContratoMonitor>[] = [
     accessorKey: "estatus",
     header: "Estatus",
   },
-  {
-    accessorFn: (row) => {
-      return row.toma?.codigo_toma;
-    },
-    id: "toma.codigo_toma",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Codigo toma
-      </Button>
-    ),
-  },
+ 
   {
     id: "actions",
     cell: ({ row }) => {

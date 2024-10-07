@@ -19,7 +19,7 @@ import { ContextProvider, useStateContext } from '../../contexts/ContextProvider
 import { XCircleIcon } from 'lucide-react';
 import ZustandMonitorFactibilidad from '../../contexts/ZustandMonitorFactibilidad';
 
-const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
+const ModalVerFactibilidadMonitorAgua = ({ selected_fact, open, set_open }) => {
   const { user } = useStateContext();
   const { toast } = useToast();
   const [mapCenter, setMapCenter] = useState({ lat: 24.115858323185, lng: -110.34761062742 });
@@ -127,33 +127,17 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
     }
   };
 
-  const validateFields = () => {
-    const errors = {};
-    if (!factibilidadAgua || factibilidadAgua === 'pendiente') errors.factibilidadAgua = 'Debe seleccionar una opción';
-    if (!factibilidadAlcantarillado || factibilidadAlcantarillado === 'pendiente') errors.factibilidadAlcantarillado = 'Debe seleccionar una opción';
-    if (!derechosConexion) errors.derechosConexion = 'Debe ingresar el valor de derechos de conexión';
-    return errors;
-  };
+ 
 
   const handleUpdate = async (newEstado) => {
-    const validationErrors = validateFields();
-    if (Object.keys(validationErrors)?.length > 0) {
-      setErrorMessages(validationErrors);
-      toast({
-        title: "Error",
-        description: "Para aceptar la factibilidad anexa la información requerida.",
-        variant: "destructive",
-      });
-      return;
-    }
+    
 
     try {
       const formData = new FormData();
       formData.append('id_revisor', user.id);
       formData.append('estado', newEstado);
-      formData.append('agua_estado_factible', factibilidadAgua);
-      formData.append('san_estado_factible', factibilidadSaneamiento)
-      formData.append('alc_estado_factible', factibilidadAlcantarillado);
+      formData.append('servicio', 'agua');
+      formData.append('estado_servicio', factibilidadAlcantarillado);
 
       // Si derechosConexion es null o undefined, lo enviamos como cadena vacía o un valor por defecto
       formData.append('derechos_conexion', derechosConexion !== null && derechosConexion !== undefined ? derechosConexion : '');
@@ -170,6 +154,7 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
           'Content-Type': 'multipart/form-data'
         }
       });
+      console.log(response); // Imprime la respuesta completa del error
 
       toast({
         title: "Éxito",
@@ -197,8 +182,8 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
         })
       })
 
-    } catch (error) {
-      console.error(error.response); // Imprime la respuesta completa del error
+    } catch (response) {
+      console.log(response); // Imprime la respuesta completa del error
       toast({
         title: "Error",
         description: "Llenar los campos y subir los archivos para aceptar una factibilidad.",
@@ -294,26 +279,13 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
           <div className='h-[80vh] max-w-[85vw]'>
             <div className='flex gap-3 shadow-md p-2 align-top rounded-md overflow-auto h-[70px] items-center'>
               {/* <p className='whitespace-nowrap p-1'><strong>Folio:</strong> {selected_fact?.contrato.folio_solicitud}</p> */}
-              <p className='whitespace-nowrap '>
-                <strong>Fact de agua:</strong>
-                <select
-                  defaultValue={factibilidadAgua}
-                  value={factibilidadAgua}
-                  onChange={(e) => handleFactibilidadChange(e, setFactibilidadAgua)}
-                  className={`ml-2 border rounded p-1 ${errorMessages.factibilidadAgua ? 'border-red-500' : ''}`}
-                  disabled={deshabilitado}
-                >
-                  <option value="pendiente">Pendiente</option>
-                  <option value="no factible">No Factible</option>
-                  <option value="factible">Factible</option>
-                </select>
-                {errorMessages.factibilidadAgua && (
-                  <p className="text-red-500 text-sm">{errorMessages.factibilidadAgua}</p>
-                )}
+              <p className='flex space-x-2 whitespace-nowrap '>
+                <strong>Servicio:</strong>
+                <p>AGUA</p>
               </p>
 
               <p className='whitespace-nowrap'>
-                <strong>Fact de alc:</strong>
+                <strong>Factibilidad servicio:</strong>
                 <select
                   defaultValue={factibilidadAlcantarillado}
                   value={factibilidadAlcantarillado}
@@ -451,4 +423,4 @@ const ModalVerFactibilidadMonitor = ({ selected_fact, open, set_open }) => {
   );
 };
 
-export default ModalVerFactibilidadMonitor;
+export default ModalVerFactibilidadMonitorAgua;
