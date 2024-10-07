@@ -4,31 +4,36 @@ import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario.tsx"
 import ModalConvenio from "../ui/ModalConvenios.tsx";
 import ModalAjuste from "../ui/ModalAjuste.tsx";
 import Loader from "../ui/Loader.tsx";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ConvenioTipoTomaForm } from "./ConvenioTipoTomaForm.tsx";
 import IconButton from "../ui/IconButton.tsx";
-import { EyeOpenIcon } from "@radix-ui/react-icons";
 import ModalConvenioDetalle from "../ui/ModalDetalleConvenio.tsx";
+import { EyeOpenIcon } from "@radix-ui/react-icons";
 
 const CargosTomaForm = () => {
   const { usuariosEncontrados } = ZustandGeneralUsuario();
   const [cargos, setCargos] = useState<any[]>([]);
-  const [convenios, setConvenios] = useState<any[]>([]);
+  const [convenios, setConvenios] = useState<any>(null); // Cambiado a null
   const [loading, setLoading] = useState(true);
   const [selectedConvenio, setSelectedConvenio] = useState<any>(null); // Estado para el convenio seleccionado
 
+  // Cargar los cargos del usuario
   const cargarCargos = () => {
     if (usuariosEncontrados) {
       setLoading(true);
       axiosClient
         .get(`/Toma/cargos/${usuariosEncontrados[0].tomas[0].codigo_toma}`)
         .then(({ data }) => {
-          const filteredCargos = data.data.map((cargo: any) => ({
-            id: cargo.id,
-            concepto: cargo.nombre,
-            monto: cargo.monto,
-            estado: cargo.estado,
-            fechaCargo: cargo.fecha_cargo,
-            prioridad: cargo.concepto.prioridad_abono,
-          }));
+          const filteredCargos = data.data
+            .filter((cargo: any) => cargo.estado === 'pendiente')
+            .map((cargo: any) => ({
+              id: cargo.id,
+              concepto: cargo.nombre,
+              monto: cargo.monto,
+              estado: cargo.estado,
+              fechaCargo: cargo.fecha_cargo,
+              prioridad: cargo.concepto.prioridad_abono,
+            }));
           setCargos(filteredCargos);
         })
         .catch((err) => {
@@ -42,7 +47,8 @@ const CargosTomaForm = () => {
 
   const cargarConvenios = () => {
     if (usuariosEncontrados && usuariosEncontrados.length > 0) {
-      const id_modelo = usuariosEncontrados[0].tomas[0];
+      const id_modelo = usuariosEncontrados[0].tomas[0].id;
+      setLoading(true);
       axiosClient
         .get(`/Convenio/ConsultarConvenio`, {
           params: {
@@ -52,33 +58,20 @@ const CargosTomaForm = () => {
         })
         .then(({ data }) => {
           if (data.convenio_catalogo) {
-            const convenioCatalogo = data.convenio_catalogo;
-            const conveniosData = [convenioCatalogo];
-            setConvenios(conveniosData);
+            const { nombre, estado } = data.convenio_catalogo;
+            setConvenios({ nombre, estado });
           } else {
-            // Si no hay convenio, asegurarse de que convenios esté vacío
-            setConvenios([]);
+            setConvenios(null);
           }
         })
         .catch((err) => {
-          // Verificar si el error es el mensaje específico de la API
-          if (err.response && err.response.data && err.response.data.error === 'No se encontro convenio asociado a la toma o el usuario seleccionado.') {
-            // No mostrar nada si no se encuentra el convenio
-            setConvenios([]);
-          } else {
-            console.error('Error al obtener los convenios:', err);
-          }
+          console.error('Error al obtener los convenios:', err);
         })
         .finally(() => {
           setLoading(false);
         });
     }
   };
-  
-
- 
-
-
 
   useEffect(() => {
     cargarCargos();
@@ -86,118 +79,98 @@ const CargosTomaForm = () => {
   }, [usuariosEncontrados]);
 
   const handleConvenioConfirm = () => {
-    cargarCargos();
-    cargarConvenios();
-     // Vuelve a cargar los cargos después de confirmar un convenio
+    cargarConvenios(); // Recargar convenios si es necesario
+    setSelectedConvenio(null); // Limpiar el convenio seleccionado
   };
 
+  const TabsCargos = () => (
+    <Tabs defaultValue="Cargos" className="">
+      <TabsList>
+        <TabsTrigger value="Cargos">Cargos</TabsTrigger>
+        <TabsTrigger value="Convenios">Convenios</TabsTrigger>
+        <TabsTrigger value="Ajustes">Ajustes</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="Cargos">
+        <div className="p-4">
+          <h3>Cargos</h3>
+          {cargos.length > 0 ? (
+            cargos.map((cargo) => (
+              <div key={cargo.id} className="border p-2 my-2">
+                <p>Concepto: {cargo.concepto}</p>
+                <p>Monto: {cargo.monto}</p>
+                <p>Estado: {cargo.estado}</p>
+              </div>
+            ))
+          ) : (
+            <p>No hay cargos disponibles.</p>
+          )}
+        </div>
+      </TabsContent>
+
+      <TabsContent value="Convenios">
+  <div className="p-4">
+    <h3>Convenio</h3>
+    {convenios ? (
+      <div className="border p-2 my-2 flex justify-between items-center">
+        <div>
+          <p>Nombre del convenio: {convenios.nombre}</p>
+          <p>Estado: {convenios.estado}</p>
+        </div>
+        <ModalConvenioDetalle
+          trigger={
+            <IconButton onClick={() => setSelectedConvenio(convenios)}>
+              <EyeOpenIcon className="w-[20px] h-[20px]" />
+            </IconButton>
+          }
+          title="Detalles del Convenio"
+          convenioData={selectedConvenio}
+          onClose={() => setSelectedConvenio(null)}
+          onConfirm={handleConvenioConfirm}
+        />
+      </div>
+    ) : (
+      <p>No hay convenio disponible.</p>
+    )}
+  </div>
+</TabsContent>
+
+
+      <TabsContent value="Ajustes">
+        <ConvenioTipoTomaForm />
+      </TabsContent>
+    </Tabs>
+  );
+
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       {loading ? (
         <Loader />
       ) : (
         <>
-          <div>
-          <div className="mb-4 flex justify-end gap-2">
-        <ModalConvenio
-          trigger={
-            <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-              Convenios
-            </button>
-          }
-          title="Convenios"
-          onConfirm={handleConvenioConfirm}
-        />
-        <ModalAjuste
-          trigger={
-            <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
-              Ajustes
-            </button>
-          }
-          title="Ajustes"
-        />
-      </div>
-      <strong>Cargos</strong>
-          
-            <table className="w-full table-fixed">
-              <thead className="bg-muted">
-                <tr>
-                  <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Concepto
-                  </th>
-                  <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Estado
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-background">
-                {cargos.length > 0 ? (
-                  cargos.map((cargo, index) => (
-                    <tr key={index}>
-                      <td className="px-2 py-3">{cargo.concepto}</td>
-                      <td className="px-2 py-3">{cargo.estado}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" className="px-2 py-3 text-center">
-                      No hay cargos disponibles.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-          
-          <div className="mt-4"> <strong>Convenios</strong> 
-            <table className="w-full ">
-              <thead className="bg-muted ">
-                <tr>
-                  <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Nombre
-                  </th>
-                  <th className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Estado
-                  </th>
-                  <th className="px-2 py-3 text-center text-xs font-medium uppercase tracking-wider">
-                    Ver
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-background">
-                {convenios.length > 0 ? (
-                  convenios.map((convenio, index) => (
-                    <tr key={index}>
-                      <td className="px-2 py-3">{convenio.nombre}</td>
-                      <td className="px-2 py-3">{convenio.estado}</td>
-                      <td>
-                        <ModalConvenioDetalle
-                          trigger={
-                            <IconButton onClick={() => setSelectedConvenio(convenio)}>
-                              <EyeOpenIcon className="w-[20px] h-[20px]"/>
-                            </IconButton>
-                          }
-                          title="Detalles del Convenio"
-                          convenioData={selectedConvenio}
-                          onClose={() => setSelectedConvenio(null)}
-                          onConfirm={handleConvenioConfirm} // Recargar cuando se confirma/cierra
-                        />
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" className="px-2 py-3 text-center">
-                      No hay convenios disponibles.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          <div className="flex-grow w-full rounded-md h-[77vh] p-4">
+            <TabsCargos />
+            <div className="mt-4 flex justify-end gap-2 p-4" style={{ marginTop: "auto" }}>
+              <ModalConvenio
+                trigger={
+                  <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    Convenios
+                  </button>
+                }
+                title="Convenios"
+              />
+              <ModalAjuste
+                trigger={
+                  <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    Ajustes
+                  </button>
+                }
+                title="Ajustes"
+              />
+            </div>
           </div>
         </>
       )}
-      
     </div>
   );
 };
