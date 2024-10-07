@@ -163,8 +163,8 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent className="w-[90vw] max-w-none">
-      <div className='flex'>
+      <AlertDialogContent className="w-[90vw] h-[45vw] max-w-none flex flex-col">
+      <div className="flex-1 flex">
         {/* Primera parte - Resumen (1/3 del ancho) */}
         <div className="w-[40vh] p-4 ">
           <AlertDialogHeader>
@@ -185,7 +185,7 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
         </div>
 
         {/* Segunda parte - Contenido restante (2/3 del ancho) */}
-        <div className="w-[120vh] p-4 ">
+        <div className="w-[120vh] p-4  h-[60vh]">
           {loading ? (
             <Loader />
           ) : error ? (
@@ -215,7 +215,7 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
                 <AccordionItem value="cargosAjustables">
                   <AccordionTrigger className="font-medium">Cargos Ajustables</AccordionTrigger>
                   <div className=''>
-                    <AccordionContent>
+                  <AccordionContent className='h-[60vh] overflow-auto'>
                     <table>
                       <thead>
                         <tr>
@@ -271,10 +271,7 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
                             );
                           })}
                         </tbody>
-
                       </table>
-                      
-                      
                     </AccordionContent>
                   </div>
                 </AccordionItem>
@@ -283,7 +280,7 @@ const ModalAjuste: React.FC<ModalAjusteProps> = ({ trigger, title, onConfirm }) 
           )}
           </div>
         </div>
-        <AlertDialogFooter>
+        <AlertDialogFooter className="mt-auto"> {/* Fijo en la parte inferior */}
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
           <AlertDialogAction onClick={handleConfirmar}>
             Aceptar
