@@ -291,6 +291,7 @@ const FiltrosAsignarOTMasiva = () => {
       </div>
       <div className='p-4'>
         <Accordion collapsible className="w-full" type="multiple" defaultValue={["item-1", "item-2"]}>
+          
           <AccordionItem value="item-1">
             <AccordionTrigger>Estado de la orden de trabajo</AccordionTrigger>
             <AccordionContent>
