@@ -14,7 +14,7 @@ import {
     MenubarSubContent,
     MenubarSubTrigger,
     MenubarTrigger,
-} from "@/components/ui/menubar"
+} from "@/components/ui/menubarSapa"
 import { ExitIcon, PersonIcon, GlobeIcon, ClipboardCopyIcon, DesktopIcon, BoxModelIcon, ReaderIcon, GearIcon } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -24,13 +24,14 @@ import { MouseEvent } from 'react';
 import axiosClient from '../../axios-client';
 import { subMenuZustand } from "../../contexts/ZustandSubmenu.tsx"
 import { Skeleton } from "@/components/ui/skeleton"
-import  logo_menu  from "../../img/logosapamenusuperiornew.png"
+import logo_menu from "../../img/logosapamenusuperiornew.png"
 
 
 export const MenuSuperiosNew = () => {
     const { setToken, setUser, user, permissions, setPermissions, setServerStatus } = useStateContext();
     const { set_titulo, set_icono, titulo } = subMenuZustand();
     const [loading_permissions, set_loading_permissions] = useState(true);
+    const [selectedOption, setSelectedOption] = useState("");
 
     const logout = (e: MouseEvent<SVGSVGElement>): void => {
         e.preventDefault();
@@ -262,20 +263,24 @@ export const MenuSuperiosNew = () => {
                     {
                         !loading_permissions &&
                         <>
-                        {/* <img src={logo_menu} className='w-[3vw] rounded-md shadow-md' alt=""/> */}
+                            {/* <img src={logo_menu} className='w-[3vw] rounded-md shadow-md' alt=""/> */}
                             {opciones.map((opcionPadre, index) => {
                                 if (permissions.includes(opcionPadre.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
                                     return (
-                                        
+
                                         <MenubarMenu>
-                                            <MenubarTrigger  className="h-full"><div className='flex gap-2 items-center'> <span className='text-primary '> {opcionPadre.icon}</span>{opcionPadre.titulo}</div></MenubarTrigger>
+                                            <MenubarTrigger
+                                                className={`h-full transition-all duration-200 hover:p-4 cursor-pointer ${localStorage.getItem("selectedMenuOption") == opcionPadre.titulo || selectedOption == opcionPadre.titulo  ? "bg-primary text-white  ": " hover:bg-muted"}`}
+                                                onClick={() => { }}>
+                                                <div className='flex gap-2 items-center'> <span className={`${localStorage.getItem("selectedMenuOption") == opcionPadre.titulo || selectedOption == opcionPadre.titulo  ? " text-white  ": "text-primary"}`}> {opcionPadre.icon}</span>{opcionPadre.titulo}</div>
+                                            </MenubarTrigger>
                                             <MenubarContent>
                                                 {opcionPadre.opciones.map((opcion, key) => {
                                                     if (permissions.includes(opcion.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
                                                         return (
                                                             <>
                                                                 <Link to={opcion.route} key={index}>
-                                                                    <MenubarItem onClick={() => { handle_menu_trigger_click(opcion, opcionPadre.icon) }}>
+                                                                    <MenubarItem onClick={() => { handle_menu_trigger_click(opcion, opcionPadre.icon);localStorage.setItem("selectedMenuOption", opcionPadre.titulo); setSelectedOption(opcionPadre.titulo); }}>
                                                                         <div key={key} className=' hover:hover:bg-accent p-3 rounded-md hover:cursor-pointer ease-in duration-100'>
                                                                             <div key={key} className="mb-1 text-[12px] font-medium">
                                                                                 {opcion.titulo}
