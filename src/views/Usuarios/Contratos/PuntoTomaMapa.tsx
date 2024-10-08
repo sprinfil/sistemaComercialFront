@@ -220,6 +220,10 @@ console.log(selectedLocation);
 
   const onLoad = useCallback((mapInstance) => {
     setMap(mapInstance);
+    google.maps.event.addListener(mapInstance, 'zoom_changed', () => {
+      const newZoom = mapInstance.getZoom();
+      setZoom(newZoom);
+    });
   
   }, []);
 

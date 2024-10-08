@@ -75,7 +75,7 @@ const FiltrosContratacionPuntoToma = () => {
     setBoolPeticionContratacion, seleccionoPuntoEnMapa, 
     codigoToma, setCodigoToma, 
     setEsPreContratado, setSeleccionoPuntoEnMapa,
-    setSelectedLocation, setTomasFiltradas} = ZustandFiltrosContratacion();
+    setSelectedLocation, setTomasFiltradas, boolCrearUsuarioProcesoContratacion, obtenerNombreUsuario} = ZustandFiltrosContratacion();
  
     const {usuariosEncontrados} = ZustandGeneralUsuario();
 //console.log(isCheckedPreContratadas);
@@ -135,10 +135,19 @@ console.log(usuariosEncontrados);
         <div className="text-lg mr-1">
           Usuario: 
         </div>
-      <div className="text-lg truncate flex-grow min-w-[20vh]">
-        {usuariosEncontrados[0]?.nombre_completo || "No hay usuario seleccionado"}
-        </div>
-
+        {
+          boolCrearUsuarioProcesoContratacion ?
+          <div className="text-lg truncate flex-grow min-w-[20vh]">
+         {obtenerNombreUsuario || "No hay usuario seleccionado"} 
+          </div>
+          :
+          <div className="text-lg truncate flex-grow min-w-[20vh]">
+          {usuariosEncontrados[0]?.nombre_completo || "No hay usuario seleccionado"}
+          </div>
+  
+          
+        }
+    
         <div className="flex justify-end">
         {seleccionoPuntoEnMapa ? (
           <div className="]" title="Iniciar proceso">

@@ -60,10 +60,11 @@ export const CrearContratoForm = () => {
         puntoTomaLatitudLongitudAPI,contratoLocalStorage,
         nombreCalle, setNombreCalle, nombreEntreCalle1, setNombreEntreCalle1, nombreEntreCalle2, setNombreEntreCalle2, nombreColonia, setNombreColonia
         ,setNombreGiroComercial, nombreGiroComercial, setNombreGiroComercial2, seTipoTomaNombre, setServicioAlcSan, setServicioAguaNombre,
+        boolCrearUsuarioProcesoContratacion, obtenerNombreUsuario, obtenerIdUsuarioRecienCreado
     } = ZustandFiltrosContratacion();
 
 
-    const { usuariosEncontrados,setUsuariosEncontrados } = ZustandGeneralUsuario();
+    const { usuariosEncontrados,setUsuariosEncontrados} = ZustandGeneralUsuario();
   
     console.log(localStorage.getItem("contrato"));
 
@@ -177,26 +178,53 @@ export const CrearContratoForm = () => {
         //DEPENDIENDO EL CASO DE CONTRATACIÓN SE ENVIARÁN ESTOS DATOS
         
         if (!esPreContratado) {
-            // Estos datos son para enviar
-            datos = {
-                id_usuario: usuariosEncontrados[0]?.id,
-                nombre_contrato: values.nombre_contrato,
-                clave_catastral: values.clave_catastral,
-                tipo_toma: tipoToma,
-                servicio_contratados: serviciosSeleccionados,
-                //diametro_toma: values.diametro_de_la_toma,
-                num_casa: values.num_casa,
-                colonia: values.colonia,
-                calle: values.calle,
-                codigo_postal: values.codigo_postal,
-                entre_calle1: values.entre_calle_1,
-                entre_calle2: values.entre_calle_2,
-                localidad: values.localidad,
-                municipio: values.municipio || "La Paz",
-                tipo_contratacion: values.tipo_contratacion,
-                coordenada: coordenadasComoCadenas,
+            if(boolCrearUsuarioProcesoContratacion)
+            {
+                       // Estos datos son para enviar
+                datos = {
+                    id_usuario: obtenerIdUsuarioRecienCreado,
+                    nombre_contrato: values.nombre_contrato,
+                    clave_catastral: values.clave_catastral,
+                    tipo_toma: tipoToma,
+                    servicio_contratados: serviciosSeleccionados,
+                    //diametro_toma: values.diametro_de_la_toma,
+                    num_casa: values.num_casa,
+                    colonia: values.colonia,
+                    calle: values.calle,
+                    codigo_postal: values.codigo_postal,
+                    entre_calle1: values.entre_calle_1,
+                    entre_calle2: values.entre_calle_2,
+                    localidad: values.localidad,
+                    municipio: values.municipio || "La Paz",
+                    tipo_contratacion: values.tipo_contratacion,
+                    coordenada: coordenadasComoCadenas,
 
-            };
+                };
+            }
+            else
+            {
+                // Estos datos son para enviar
+                datos = {
+                    id_usuario: usuariosEncontrados[0]?.id,
+                    nombre_contrato: values.nombre_contrato,
+                    clave_catastral: values.clave_catastral,
+                    tipo_toma: tipoToma,
+                    servicio_contratados: serviciosSeleccionados,
+                    //diametro_toma: values.diametro_de_la_toma,
+                    num_casa: values.num_casa,
+                    colonia: values.colonia,
+                    calle: values.calle,
+                    codigo_postal: values.codigo_postal,
+                    entre_calle1: values.entre_calle_1,
+                    entre_calle2: values.entre_calle_2,
+                    localidad: values.localidad,
+                    municipio: values.municipio || "La Paz",
+                    tipo_contratacion: values.tipo_contratacion,
+                    coordenada: coordenadasComoCadenas,
+
+                };
+            }
+          
         } else {
             if(tomaPreContratada?.tipo_contratacion == "pre-contrato")
                 {
@@ -446,6 +474,11 @@ export const CrearContratoForm = () => {
             form.setValue('nombre_contrato', nombreCompletoUsuario);
         } else {
             form.resetField('nombre_contrato');
+        }
+
+        if(boolCrearUsuarioProcesoContratacion)
+        {
+            form.setValue('nombre_contrato', obtenerNombreUsuario);
         }
     }, [usuariosEncontrados, form, esPreContratado, boolPeticionContratacion]); 
 
