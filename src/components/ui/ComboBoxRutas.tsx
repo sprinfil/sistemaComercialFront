@@ -21,14 +21,16 @@ import {
 import { loadRutas } from "../../lib/Services/PeriodosFacturacionService"
 import Loader from "./Loader"
 
-export function ComboboxRutas({ setSelectedRuta }) {
+export function ComboboxRutas({ setSelectedRuta}) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
   const [frameworks, setFrameworks] = React.useState([]);
   const [framework, setFramework] = React.useState([]);
+
   React.useEffect(() => {
     setSelectedRuta(framework);
   }, [framework])
+
   loadRutas(setFrameworks);
 
   return (
@@ -60,8 +62,6 @@ export function ComboboxRutas({ setSelectedRuta }) {
                     setValue(currentValue === value ? "" : framework.id)
                     setOpen(false)
                     setFramework(framework)
-
-                    console.log(framework)
                   }}
                 >
                   <Check

@@ -6,7 +6,6 @@ export function loadRutas(setData) {
 
   useEffect(() => {
     const load = async () => {
-
       try {
         const response = await axiosClient.get("/ruta");
         setData(response.data.data);
@@ -23,4 +22,8 @@ export function loadRutas(setData) {
 
   return {loadingRutas}
 
+}
+
+export function loadPeriodosRuta(selectedRuta) {
+  
 }

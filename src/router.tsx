@@ -28,6 +28,7 @@ import PuntoTomaMapa from './views/Usuarios/Contratos/PuntoTomaMapa';
 import CrearTomaForm from './views/Usuarios/Contratos/FormsContratos/CrearTomaForm';
 import { DetalleInformacionContrato } from './views/Usuarios/Contratos/DetalleInformacionContrato';
 import { PeriodosFacturacion } from './views/PeriodosFacturacion/PeriodosFacturacion';
+import PeriodoFacturacionDetalle from './views/PeriodosFacturacion/PeriodoFacturacionDetalle';
 
 
 const router = createBrowserRouter([
