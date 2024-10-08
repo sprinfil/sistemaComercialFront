@@ -136,14 +136,14 @@ console.log(usuariosEncontrados);
           Usuario: 
         </div>
       <div className="text-lg truncate flex-grow min-w-[20vh]">
-        {usuariosEncontrados[0]?.nombre_completo}
+        {usuariosEncontrados[0]?.nombre_completo || "No hay usuario seleccionado"}
         </div>
 
         <div className="flex justify-end">
         {seleccionoPuntoEnMapa ? (
           <div className="]" title="Iniciar proceso">
             <IconButtonContratos onClick={handleSiguienteContratacion}>
-              <FaChevronCircleRight className="w-[2.9vh] h-[2.9vh]"/>
+              <FaChevronCircleRight className="w-[3.5vh] h-[3.5vh]"/>
             </IconButtonContratos>
           </div>
         )
