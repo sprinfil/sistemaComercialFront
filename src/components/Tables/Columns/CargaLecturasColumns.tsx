@@ -17,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Ajuste = {
+export type CargaTrabajo = {
   id: number
   nombre: string
   descripcion: string
@@ -25,19 +25,9 @@ export type Ajuste = {
 }
 
 
-export const columns: ColumnDef<Ajuste>[] = [
+export const columns: ColumnDef<CargaTrabajo>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
@@ -54,26 +44,20 @@ export const columns: ColumnDef<Ajuste>[] = [
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-xl text-black"
         >
-          Nombre
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Libros
         </Button>
       )
     },
-
   },
   {
     id: "actions",
     cell: ({ row }) => {
       const ajuste = row.original
-      const { setAjuste, setAccion } = useStateContext();
-      
       return (
-        <div onClick={()=>{setAjuste(ajuste);setAccion("ver")}}>
-          <IconButton>
-            <EyeOpenIcon className="w-[20px] h-[20px]"/>
-          </IconButton>
+        <div>
+         
         </div>
       )
     },
