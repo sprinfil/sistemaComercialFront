@@ -30,11 +30,14 @@ export const PeriodosFacturacion = () => {
   const [selectedRuta, setSelectedRuta] = useState({});
   const [selectedRutaDetalle, setSelectedRutaDetalle] = useState({});
   const [accordionValue, setAccordionValue] = useState("item-1");
-  const { periodos, loadingPeriodos } = loadPeriodosRuta(selectedRuta);
+  const [periodos, setPeriodos] = useState([]);
+  const { loadingPeriodos } = loadPeriodosRuta(selectedRuta, setPeriodos);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     if (selectedRuta?.nombre) {
       setAccordionValue("item-2");
+
     } else {
       setAccordionValue("item-1");
     }
@@ -71,6 +74,9 @@ export const PeriodosFacturacion = () => {
                         </div>
                         <div className="w-full flex justify-end items-center my-2">
                           <ModalNuevoPeriodo
+                            open={openModal}
+                            setOpen={setOpenModal}
+                            setPeriodos={setPeriodos}
                             selectedRuta={selectedRuta}
                             trigger={<Button >
                               <div className='flex items-center'>
@@ -87,11 +93,19 @@ export const PeriodosFacturacion = () => {
                             </>
                             :
                             <>
-                              <DataTablePeriodosFacturacion
-                                columns={columns}
-                                setDetalle={setSelectedRutaDetalle}
-                                data={periodos}
-                              />
+                              {
+                                periodos.length > 0 ?
+                                  <>
+                                    <DataTablePeriodosFacturacion
+                                      columns={columns}
+                                      setDetalle={setSelectedRutaDetalle}
+                                      data={periodos}
+                                    />
+                                  </> :
+                                  <>
+                                    <p>Sin Periodos.</p>
+                                  </>
+                              }
                             </>
                         }
 
