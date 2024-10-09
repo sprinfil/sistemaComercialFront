@@ -31,7 +31,7 @@ const descuentoService = {
             );
             return response.data;
         } catch (error) {
-            throw error?.response?.data?.message;
+            throw error.response.data.error;
         }
     },
 

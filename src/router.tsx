@@ -1,4 +1,4 @@
-import {Navigate, createBrowserRouter} from 'react-router-dom';
+import { Navigate, createBrowserRouter } from 'react-router-dom';
 import Login from './views/Auth/Login';
 import DefaultLayout from './views/Layout/DefaultLayout';
 import GuestLayout from './views/Layout/GuestLayout';
@@ -7,10 +7,10 @@ import DashBoard from './views/Layout/DashBoard';
 import Catalogos from './views/Configuraciones/Catalogos/Catalogos';
 import Poligonos from './views/PoligonosGeograficos/Poligonos';
 import { Proximamente } from './views/Layout/Proximamente';
-import  DetalleUsuario  from './views/Usuarios/Consultar/DetalleUsuario';
+import DetalleUsuario from './views/Usuarios/Consultar/DetalleUsuario';
 import CrearUsuarioNuevo from './views/Usuarios/Crear/CrearUsuarioNuevo';
 import Roles from './views/Configuraciones/Roles/Roles';
-import Operadores from  './views/Configuraciones/Operadores/Operadores'
+import Operadores from './views/Configuraciones/Operadores/Operadores'
 import { Tarifa } from './views/Configuraciones/Tarifa/Tarifa';
 import App from './views/Cajas/Cajas';
 import { ContratacionBuscarUsuario } from './views/Usuarios/Contratos/ContratacionBuscarUsuario';
@@ -27,119 +27,124 @@ import { Monitores } from './views/Monitores/Monitores';
 import PuntoTomaMapa from './views/Usuarios/Contratos/PuntoTomaMapa';
 import CrearTomaForm from './views/Usuarios/Contratos/FormsContratos/CrearTomaForm';
 import { DetalleInformacionContrato } from './views/Usuarios/Contratos/DetalleInformacionContrato';
+import { PeriodosFacturacion } from './views/PeriodosFacturacion/PeriodosFacturacion';
 
 
-const router = createBrowserRouter ([
+const router = createBrowserRouter([
     {
-        path:'/',
-        element: <DefaultLayout/>,
-        children:[
+        path: '/',
+        element: <DefaultLayout />,
+        children: [
             {
-                path:'/',
-                element: <Navigate to="/dashboard"/>
+                path: '/',
+                element: <Navigate to="/dashboard" />
             },
             {
-                path:'/dashboard',
-                element: <DashBoard/>
+                path: '/dashboard',
+                element: <DashBoard />
             },
             {
-                path:'/catalogos',
-                element: <Catalogos/>
+                path: '/catalogos',
+                element: <Catalogos />
             },
             {
-                path:'/operadores',
-                element: <Operadores/>
+                path: '/operadores',
+                element: <Operadores />
             },
             {
-                path:'/roles',
-                element: <Roles/>
+                path: '/roles',
+                element: <Roles />
             },
             {
 
-                path:'/poligonos',
-                element: <Poligonos/>
+                path: '/poligonos',
+                element: <Poligonos />
             },
             {
-                path:'/proximamente',
-                element: <Proximamente/>
+                path: '/proximamente',
+                element: <Proximamente />
             },
             {
-                path:'/usuario',
-                element: <DetalleUsuario/>
+                path: '/usuario',
+                element: <DetalleUsuario />
             },
             {
-                path:'/CrearUsuario',
-                element: <CrearUsuarioNuevo/>
+                path: '/CrearUsuario',
+                element: <CrearUsuarioNuevo />
             },
             {
-                path:'/Tarifa',
-                element: <Tarifa/>
+                path: '/Tarifa',
+                element: <Tarifa />
             },
 
             {
-                path:'/Contratacion',
-                element: <ContratacionBuscarUsuario/>
+                path: '/Contratacion',
+                element: <ContratacionBuscarUsuario />
             },
             {
-                path:'/Buscar/Usuario',
-                element: <BuscarUsuario/>
+                path: '/Buscar/Usuario',
+                element: <BuscarUsuario />
             },
             {
-                path:'/Crear/Contrato/Usuario',
-                element: <PuntoTomaMapa/>
+                path: '/Crear/Contrato/Usuario',
+                element: <PuntoTomaMapa />
             },
             {
-                path:'/usuario/toma',
-                element: <TomaUsuarioDetalle/>
+                path: '/usuario/toma',
+                element: <TomaUsuarioDetalle />
             },
             {
-                path:'/direccion/toma',
-                element: <DireccionNotificaciones/>
-            },
-             {
-                path:'/crear/orden/masiva',
-                element: <GenerarOtMasiva/>
+                path: '/direccion/toma',
+                element: <DireccionNotificaciones />
             },
             {
-                path:'/asignar/orden/masiva',
-                element: <AsignarOTMasiva/>
+                path: '/crear/orden/masiva',
+                element: <GenerarOtMasiva />
             },
             {
-                path:'/monitores',
-                element: <Monitores/>
+                path: '/asignar/orden/masiva',
+                element: <AsignarOTMasiva />
             },
             {
-                path:'/Contrato/Usuario',
-                element: <CrearContratoForm/>
+                path: '/monitores',
+                element: <Monitores />
             },
             {
-                path:'/contrato/nueva/toma',
-                element: <CrearTomaForm/>
+                path: '/Contrato/Usuario',
+                element: <CrearContratoForm />
             },
             {
-                path:'/contrato/detalle',
-                element: <DetalleInformacionContrato/>
+                path: '/contrato/nueva/toma',
+                element: <CrearTomaForm />
+            },
+            {
+                path: '/contrato/detalle',
+                element: <DetalleInformacionContrato />
+            },
+            {
+                path: '/periodosFacturacion',
+                element: <PeriodosFacturacion />
             },
         ]
     },
     {
-        path:'/Cajas',
-        element: <App/>
+        path: '/Cajas',
+        element: <App />
     },
     {
-        path:'/',
-        element: <GuestLayout/>,
-        children:[
+        path: '/',
+        element: <GuestLayout />,
+        children: [
             {
-                path:'/login',
-                element: <Login/>
+                path: '/login',
+                element: <Login />
             },
         ]
     },
 
     {
-        path:'*',
-        element: <NotFound/>
+        path: '*',
+        element: <NotFound />
     },
 ])
 export default router;

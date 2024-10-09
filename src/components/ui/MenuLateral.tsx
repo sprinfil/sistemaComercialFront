@@ -8,24 +8,23 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from "@/components/ui/command"
+} from "@/components/ui/commandSapa"
 
 
-import React from 'react'
+import React, { useState } from 'react'
 
 const MenuLateral = ({ options, context}) => {
 
   const {setPantalla, setClick, click} = context();
-
+  const [selected, setSelected] = useState("");
   const changeScreen = (pantalla) => {
     setClick(!click);
     setPantalla(pantalla);
     console.log(pantalla);
   }
-  
 
   return (
-    <div className="border border-border rounded-md h-full">
+    <div className="border border-border rounded-md h-[75vh]">
       <Command>
         <CommandInput placeholder="Buscar..." />
         {options.map((option, index) => {
@@ -34,8 +33,8 @@ const MenuLateral = ({ options, context}) => {
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup heading={option.titulo}>
                 {option.opciones.map((opcion, index) => (
-                  <div onClick={()=>{changeScreen(opcion.pantalla)}}>
-                    <CommandItem>{opcion.nombre}</CommandItem>
+                  <div onClick={()=>{changeScreen(opcion.pantalla); setSelected(opcion?.nombre)}}>
+                    <CommandItem className={`p-2 transition-all duration-200 cursor-pointer ${selected == opcion.nombre ? "bg-primary text-white":"hover:bg-green-200 dark:hover:bg-muted  hover:p-3"}`}>{opcion.nombre}</CommandItem>
                   </div>
                 ))}
               </CommandGroup>
