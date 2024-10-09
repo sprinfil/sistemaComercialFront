@@ -22,6 +22,7 @@ import React from "react"
 import { ComboboxRutas } from "./ComboBoxRutas"
 import { Button } from "./button"
 import { Link, Navigate } from "react-router-dom"
+import Loader from "./Loader"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -36,12 +37,30 @@ type Payment = {
 
 export const columns: ColumnDef<Payment>[] = [
   {
-    accessorKey: "periodo",
+    accessorKey: "nombre",
     header: "Periodo",
   },
   {
-    accessorKey: "estado",
+    accessorKey: "estatus",
     header: "Estado",
+    cell: ({ row }) => {
+      let estatus = row.original.estatus;
+      let formatted = "";
+      let styles = "";
+      if (estatus == "activo") {
+        formatted = "Activo"
+        styles = "bg-green-500"
+      }
+      if (estatus == "cerrado") {
+        formatted = "Cerrado"
+        styles = "bg-red-500"
+      }
+
+      return <div className="flex gap-2 items-center w-[100px] justify-between">
+        {formatted}
+        <div className={`w-3 rounded-full ${styles} h-3`}></div>
+      </div>
+    },
   },
   {
     id: "actions",
@@ -61,7 +80,8 @@ export const columns: ColumnDef<Payment>[] = [
 export function DataTablePeriodosFacturacion<TData, TValue>({
   columns,
   data,
-  setDetalle
+  setDetalle,
+  loadingData
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -130,8 +150,6 @@ export function DataTablePeriodosFacturacion<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-
     </>
-
   )
 }

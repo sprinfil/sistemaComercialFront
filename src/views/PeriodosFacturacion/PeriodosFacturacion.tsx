@@ -22,13 +22,15 @@ import { IoCalendarNumberSharp } from "react-icons/io5";
 import ModalNuevoPeriodo from '../../components/ui/ModalNuevoPeriodo'
 import { useParams } from 'react-router-dom';
 import PeriodoFacturacionDetalle from './PeriodoFacturacionDetalle'
+import { loadPeriodosRuta } from '../../lib/Services/PeriodosFacturacionService'
+import Loader from '../../components/ui/Loader'
 
 export const PeriodosFacturacion = () => {
   // Cambiar el estado inicial a null
   const [selectedRuta, setSelectedRuta] = useState({});
   const [selectedRutaDetalle, setSelectedRutaDetalle] = useState({});
   const [accordionValue, setAccordionValue] = useState("item-1");
-  
+  const { periodos, loadingPeriodos } = loadPeriodosRuta(selectedRuta);
 
   useEffect(() => {
     if (selectedRuta?.nombre) {
@@ -37,6 +39,7 @@ export const PeriodosFacturacion = () => {
       setAccordionValue("item-1");
     }
   }, [selectedRuta]);
+
 
   return (
     <div className='h-[90vh] flex flex-col'>
@@ -67,25 +70,31 @@ export const PeriodosFacturacion = () => {
                           <p className='text-lg font-medium my-2'>{selectedRuta?.nombre}</p>
                         </div>
                         <div className="w-full flex justify-end items-center my-2">
-                          <ModalNuevoPeriodo trigger={<Button >
-                            <div className='flex items-center'>
-                              <p> Nuevo Periodo</p>
-                              <IoCalendarNumberSharp className='w-6 h-6 ml-3' />
-                            </div>
-                          </Button>}
+                          <ModalNuevoPeriodo
+                            selectedRuta={selectedRuta}
+                            trigger={<Button >
+                              <div className='flex items-center'>
+                                <p> Nuevo Periodo</p>
+                                <IoCalendarNumberSharp className='w-6 h-6 ml-3' />
+                              </div>
+                            </Button>}
                           />
                         </div>
-                        <DataTablePeriodosFacturacion
-                          columns={columns}
-                          setDetalle={setSelectedRutaDetalle}
-                          data={[
-                            {
-                              id: "728ed52f",
-                              periodo: "ENE 2024",
-                              estado: "activo",
-                            },
-                          ]}
-                        />
+                        {
+                          loadingPeriodos ?
+                            <>
+                              <Loader />
+                            </>
+                            :
+                            <>
+                              <DataTablePeriodosFacturacion
+                                columns={columns}
+                                setDetalle={setSelectedRutaDetalle}
+                                data={periodos}
+                              />
+                            </>
+                        }
+
                       </div>
                     </div>
                   </AccordionContent>

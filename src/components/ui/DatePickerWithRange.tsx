@@ -21,9 +21,7 @@ export function DatePickerWithRange({
 }: React.HTMLAttributes<HTMLDivElement>) {
 
 
-  const [date, setDate] = React.useState<DateRange | undefined>({
-
-  })
+  const [date, setDate] = React.useState<DateRange | undefined>({})
 
   React.useEffect(() => {
     if (typeof setFecha === 'function') {
