@@ -458,19 +458,19 @@ useEffect(() => {
 useEffect(() => {
   if (modelo && campo) {
     const nuevasOpcionesValores = opcionesPorEntidad[modelo]?.[campo] || [];
-    
-    // Asegúrate de que totalAccionesComponente está actualizado y no vacío
+
     if (totalAccionesComponente.length > 0) {
       const nuevasAcciones = [...totalAccionesComponente];
-      // Si tienes un índice específico que deseas actualizar, podrías definirlo aquí
-      // Por ejemplo, podrías usar el primer índice (0) para demostración
-      const index = 0; // Cambia esto según tu lógica
-
-      nuevasAcciones[index].valor = ''; // Limpia el valor anterior
+      const index = 0; // Cambia esto si tienes múltiples índices
+      nuevasAcciones[index] = {
+        ...nuevasAcciones[index],
+        valor: '', // Limpia el valor
+        opcionesValores: nuevasOpcionesValores, // Actualiza las opciones de valor para esa acción específica
+      };
       setTotalAccionesComponente(nuevasAcciones);
     }
 
-    setOpcionesValores(nuevasOpcionesValores);
+    setOpcionesValores(nuevasOpcionesValores); // Solo si es necesario
   }
 }, [modelo, campo]);
 
@@ -499,7 +499,7 @@ const handleEntidadChange = (index, value) => {
   nuevasAcciones[index] = { 
     ...nuevasAcciones[index], 
     modelo: value, 
-    campo: '', 
+    campo: '',     
     valor: '', 
     opcionesCampos: value === 'medidores' 
       ? ['estatus'] 
@@ -512,35 +512,34 @@ const handleEntidadChange = (index, value) => {
 };
 
 
-// Actualiza el campo y sus valores
 const handleCampoChange = (index, value) => {
-  // Crea una copia del array de acciones
   const nuevasAcciones = [...totalAccionesComponente];
-
-  // Actualiza solo el campo de la acción específica
   nuevasAcciones[index].campo = value;
-  console.log('Campo actualizado:', nuevasAcciones[index].campo);
-
-  // Si el campo cambia, reseteamos el valor de esa acción a un string vacío
-  nuevasAcciones[index].valor = ''; 
-
-  // Actualiza el estado con las acciones modificadas
+  nuevasAcciones[index].valor = ''; // Limpia el valor anterior
   setTotalAccionesComponente(nuevasAcciones);
 
-  // Asocia las opciones de valores a cada acción individualmente
-  const modelo = nuevasAcciones[index].modelo; // Asegúrate de que sea correcto
-  console.log(modelo);
-  console.log(value);
-  const opcionesActualizadas = opcionesPorEntidad[modelo]?.[value]; // Cambiar el acceso según el modelo
-  console.log('Opciones actualizadas:', opcionesActualizadas);
+  // Debug: imprimir el modelo y el campo seleccionados
+  const modeloSeleccionado = nuevasAcciones[index].modelo;
+  console.log("Modelo seleccionado:", modeloSeleccionado);
+  console.log("Campo seleccionado:", value);
 
-  // Maneja las opciones de valor por acción
-  const nuevasOpcionesValores = [...opcionesValores];
-  nuevasOpcionesValores[index] = opcionesActualizadas; // Actualiza el índice correcto
+  // Accede a las opciones de valores según el modelo y el campo seleccionado
+  const nuevasOpcionesValores = opcionesPorEntidad[modeloSeleccionado]?.[value] || [];
+  
+  // Debug: imprimir las nuevas opciones de valores
+  if (nuevasOpcionesValores.length === 0) {
+    console.log(`No se encontraron opciones para el modelo: ${modeloSeleccionado} y el campo: ${value}.`);
+  } else {
+    console.log("Nuevas opciones de valores:", nuevasOpcionesValores);
+  }
 
-  setOpcionesValores(opcionesActualizadas); // Asegúrate de actualizar el estado correctamente
-  console.log(opcionesActualizadas);
+  // Actualiza el estado de las opciones de valores
+  setOpcionesValores(nuevasOpcionesValores);
 };
+
+
+
+
 
 
 
@@ -607,7 +606,7 @@ console.log(form.getValues);
             </div>
           }
            <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
-            {totalAccionesComponente.map((item, index) => (
+            {totalAccionesComponente.length > 0 && totalAccionesComponente.map((item, index) => (
               <div key={item.id} className={`p-4 border ${borderColor} rounded-md`}>
                 <p>Acción {index + 1}</p>
                 <div className="flex justify-end mb-5">
