@@ -24,6 +24,7 @@ interface ModalConvenioProps {
   trigger: React.ReactNode;
   title: string;
   onConfirm: (selectedConvenio: any) => void;
+  
 }
 
 const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm }) => {
@@ -186,6 +187,7 @@ useEffect(() => {
     axiosClient.post('/Convenio/RegistrarConvenio', payload)
         .then(response => {
             console.log('Convenio registrado', response);
+            successToastCreado(); // Llama a la función para actualizar la tabla
             onConfirm(selectedConvenio); 
             successToastCreado(); // Llama a la función para actualizar la tabla
         })
