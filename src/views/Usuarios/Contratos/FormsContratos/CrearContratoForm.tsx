@@ -37,6 +37,8 @@ import { noAuto } from '@fortawesome/fontawesome-svg-core';
 import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario.tsx';
 import { GiroComercialComboBox } from '../../../../components/ui/GiroComercialComboBox.tsx';
 import { TipoDeTomaComboBox } from '../../../../components/ui/TipoDeTomaComboBox.tsx';
+import { FaChevronLeft } from "react-icons/fa";
+import IconButton from '../../../../components/ui/IconButton.tsx';
 
 
 
@@ -57,12 +59,14 @@ export const CrearContratoForm = () => {
         setServicioContratado2, selectedLocation, getCoordenadaString, esPreContratado,getCoordenadaString2, 
         puntoTomaLatitudLongitudAPI,contratoLocalStorage,
         nombreCalle, setNombreCalle, nombreEntreCalle1, setNombreEntreCalle1, nombreEntreCalle2, setNombreEntreCalle2, nombreColonia, setNombreColonia
-        ,setNombreGiroComercial, nombreGiroComercial, setNombreGiroComercial2, seTipoTomaNombre, setServicioAlcSan, setServicioAguaNombre
+        ,setNombreGiroComercial, nombreGiroComercial, setNombreGiroComercial2, seTipoTomaNombre, setServicioAlcSan, setServicioAguaNombre,
+        boolCrearUsuarioProcesoContratacion, obtenerNombreUsuario, obtenerIdUsuarioRecienCreado
     } = ZustandFiltrosContratacion();
 
 
-    const { usuariosEncontrados,setUsuariosEncontrados } = ZustandGeneralUsuario();
+    const { usuariosEncontrados,setUsuariosEncontrados} = ZustandGeneralUsuario();
   
+    console.log(localStorage.getItem("contrato"));
 
 
 
@@ -101,6 +105,11 @@ export const CrearContratoForm = () => {
     const detalleContratacion = () => {
         navigate("/contrato/detalle");
     };
+
+    const regresarPuntoTomaMapa = () => {
+        navigate("/Crear/Contrato/Usuario");
+    };
+
 
 
 
@@ -169,26 +178,53 @@ export const CrearContratoForm = () => {
         //DEPENDIENDO EL CASO DE CONTRATACIÓN SE ENVIARÁN ESTOS DATOS
         
         if (!esPreContratado) {
-            // Estos datos son para enviar
-            datos = {
-                id_usuario: usuariosEncontrados[0]?.id,
-                nombre_contrato: values.nombre_contrato,
-                clave_catastral: values.clave_catastral,
-                tipo_toma: tipoToma,
-                servicio_contratados: serviciosSeleccionados,
-                //diametro_toma: values.diametro_de_la_toma,
-                num_casa: values.num_casa,
-                colonia: values.colonia,
-                calle: values.calle,
-                codigo_postal: values.codigo_postal,
-                entre_calle1: values.entre_calle_1,
-                entre_calle2: values.entre_calle_2,
-                localidad: values.localidad,
-                municipio: values.municipio || "La Paz",
-                tipo_contratacion: values.tipo_contratacion,
-                coordenada: coordenadasComoCadenas,
+            if(boolCrearUsuarioProcesoContratacion)
+            {
+                       // Estos datos son para enviar
+                datos = {
+                    id_usuario: obtenerIdUsuarioRecienCreado,
+                    nombre_contrato: values.nombre_contrato,
+                    clave_catastral: values.clave_catastral,
+                    tipo_toma: tipoToma,
+                    servicio_contratados: serviciosSeleccionados,
+                    //diametro_toma: values.diametro_de_la_toma,
+                    num_casa: values.num_casa,
+                    colonia: values.colonia,
+                    calle: values.calle,
+                    codigo_postal: values.codigo_postal,
+                    entre_calle1: values.entre_calle_1,
+                    entre_calle2: values.entre_calle_2,
+                    localidad: values.localidad,
+                    municipio: values.municipio || "La Paz",
+                    tipo_contratacion: values.tipo_contratacion,
+                    coordenada: coordenadasComoCadenas,
 
-            };
+                };
+            }
+            else
+            {
+                // Estos datos son para enviar
+                datos = {
+                    id_usuario: usuariosEncontrados[0]?.id,
+                    nombre_contrato: values.nombre_contrato,
+                    clave_catastral: values.clave_catastral,
+                    tipo_toma: tipoToma,
+                    servicio_contratados: serviciosSeleccionados,
+                    //diametro_toma: values.diametro_de_la_toma,
+                    num_casa: values.num_casa,
+                    colonia: values.colonia,
+                    calle: values.calle,
+                    codigo_postal: values.codigo_postal,
+                    entre_calle1: values.entre_calle_1,
+                    entre_calle2: values.entre_calle_2,
+                    localidad: values.localidad,
+                    municipio: values.municipio || "La Paz",
+                    tipo_contratacion: values.tipo_contratacion,
+                    coordenada: coordenadasComoCadenas,
+
+                };
+            }
+          
         } else {
             if(tomaPreContratada?.tipo_contratacion == "pre-contrato")
                 {
@@ -246,7 +282,7 @@ export const CrearContratoForm = () => {
             ...(values.c_san != null && !isSanActive ? { c_san: values.c_san } : {}),
         };
 
-        if(!contratoLocalStorage )
+        if(!contratoLocalStorage)
         {
     
             setContrato(datosFiltrados);
@@ -258,7 +294,8 @@ export const CrearContratoForm = () => {
             //AQUI SE GUARDA CONTRATO STRING QUE GUARDA EN EL LOCALSTORAGE EL OBJETO.
             localStorage.setItem("contrato", contratoString); 
         }
-      
+        const contratoString = JSON.stringify(datos);
+        localStorage.setItem("contrato", contratoString); 
             handleAbrirModalNotificaciones();
         //navegarCrearNuevaToma();
 
@@ -438,12 +475,44 @@ export const CrearContratoForm = () => {
         } else {
             form.resetField('nombre_contrato');
         }
+
+        if(boolCrearUsuarioProcesoContratacion)
+        {
+            form.setValue('nombre_contrato', obtenerNombreUsuario);
+        }
     }, [usuariosEncontrados, form, esPreContratado, boolPeticionContratacion]); 
+
+    useEffect(() => {
+        // Obtenemos el valor de 'tipo_toma' directamente
+        const tipoToma = form.getValues('tipo_toma');
+    
+        // Si 'tipo_toma' es 'Domestica', actualizamos los estados
+        if (tipoToma === 1) {
+          setNombreGiroComercial("");
+          setNombreGiroComercial2("");
+        }
+      }, [form.getValues('tipo_toma')]); 
+
+
     return (
         <div className="">
+            <div className=' flex space-x-1 w-[4.5vh] h-[4.5vh] ml-2 mt-4'>
+              
+                <div>
+                <IconButton onClick={regresarPuntoTomaMapa}>
+                <FaChevronLeft className='w-[3vh] h-[3vh]'/>
+              
+                </IconButton>
+                </div>
+             
+                <div className='text-lg mt-1'>
+                    Regresar
+                </div>
+                </div>
             <div className="py-[20px] px-[10px]">
                 {errors.general && <Error errors={errors.general} />}
-
+                
+          
                 <Form {...form}>
 
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex justify-center ">
