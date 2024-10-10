@@ -33,6 +33,7 @@ export default function ConstanciaTable() {
     {
       setConstancia(constancia);
       setAccion("ver");
+      console.log(constancia)
     }
   
 
@@ -43,11 +44,6 @@ export default function ConstanciaTable() {
   return (
 
     <div>
-      <div onClick={()=>{setAccion("crear")}}>
-        <IconButton>
-          <div className='flex gap-2 items-center'> Agregar nueva constancia<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
-        </IconButton>
-      </div>
       <DataTable columns={columns} data={constancias} sorter='nombre' onRowClick={HandleClickRow}/>
     </div>
   );
