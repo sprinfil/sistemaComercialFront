@@ -30,7 +30,7 @@ const MenuLateral = ({ options, context}) => {
         {options.map((option, index) => {
           return (
             <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandEmpty>No resultados encontrados.</CommandEmpty>
               <CommandGroup heading={option.titulo}>
                 {option.opciones.map((opcion, index) => (
                   <div onClick={()=>{changeScreen(opcion.pantalla); setSelected(opcion?.nombre)}}>

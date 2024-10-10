@@ -146,7 +146,7 @@ const ModalImportarTomas: React.FC<ModalProps> = ({ trigger }) => {
 
       toast({
         title: "¡Éxito!",
-        description: "Las tomas se importaron con exito",
+        description: "Las tomas se importaron con éxito",
         variant: "success",
       })
       set_tomas([]);
@@ -176,7 +176,7 @@ const ModalImportarTomas: React.FC<ModalProps> = ({ trigger }) => {
         <AlertDialogContent className={"max-w-[96%] max-h-[90vh] h-[90vh] overflow-auto"}>
           <AlertDialogHeader>
             <AlertDialogTitle>Importar Tomas</AlertDialogTitle>
-            <AlertDialogDescription>Agrega Tomas</AlertDialogDescription>
+            <AlertDialogDescription>Agrega tomas</AlertDialogDescription>
           </AlertDialogHeader>
           <div className='h-[65vh] max-h-[65vh] grid grid-cols-1 gap-2'>
             <div>

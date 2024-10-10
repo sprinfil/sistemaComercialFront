@@ -122,7 +122,7 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
                   <th className="text-left px-4 py-2">Monto Conveniado</th>
                   <th className="text-left py-2">Monto Total</th>
                   <th className="text-left px-4 py-2">Periodicidad</th>
-                  <th className="text-left px-4 py-2">Cantidad en Letras</th>
+                  <th className="text-left px-4 py-2">Cantidad de Letras</th>
                   <th className="text-left px-4 py-2">Estado</th>
                   <th className="text-left px-4 py-2">Comentario</th>
                 </tr>

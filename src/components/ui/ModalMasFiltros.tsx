@@ -50,7 +50,7 @@ export const ModalMasFiltros = ({trigger, setUserData, cerrarForm}) => {
         </AlertDialogTrigger>
                 <AlertDialogContent className="max-w-[80rem] ">
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Selecciona El Usuario/Toma</AlertDialogTitle>
+                        <AlertDialogTitle>Selecciona el Usuario/Toma</AlertDialogTitle>
                         <AlertDialogDescription>
                              <div className='h-[70vh] overflow-auto p-4 max-w-[75rem]'>
                                     <BuscarUsuarioForm 

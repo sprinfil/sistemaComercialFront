@@ -101,7 +101,7 @@ console.log(abrirFiltro);
         {abrirFiltro && 
         <div className="flex space-x-10 border border-border shadow-md rounded-lg p-6 w-full h-[15vh] justify-center mb-[3vh] mt-5">
            <div className="flex-1">
-               <p>Codigo de toma</p>
+               <p>Código de toma</p>
                <Input
                  placeholder="Buscar código de toma..."
                  value={(table.getColumn("toma.codigo_toma")?.getFilterValue() as string) ?? ""}

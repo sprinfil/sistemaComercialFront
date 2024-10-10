@@ -69,7 +69,7 @@ export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma, update
                 <SheetHeader>
                     <SheetTitle>Agregar Concepto</SheetTitle>
                     <SheetDescription>
-                        Agrega una nueva tarifa para un concepto
+                        Agrega una nueva tarifa para un concepto.
                     </SheetDescription>
                 </SheetHeader>
                 <div className="flex items-center justify-center">
@@ -106,7 +106,7 @@ export function AgregarTarifaConceptoNew({ trigger, tarifa, id_tipo_toma, update
                             />
                             <SheetFooter>
                                 <SheetClose asChild>
-                                    <Button type="submit">Save changes</Button>
+                                    <Button type="submit">Guardar</Button>
                                 </SheetClose>
                             </SheetFooter>
                         </form>
