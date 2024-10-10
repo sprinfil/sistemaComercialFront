@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DataTablePeriodosFacturacion, columns } from '../../components/ui/DataTablePeriodosFacturacion'
+import { DataTablePeriodosFacturacion, columns } from '../../components/ui/DataTablePeriodosFacturacion.tsx';
 import { ComboboxRutas } from '../../components/ui/ComboBoxRutas'
 import {
   Accordion,
@@ -46,7 +46,7 @@ export const PeriodosFacturacion = () => {
 
   return (
     <div className='h-[90vh] flex flex-col'>
-      <div className='mx-5 mt-1 h-full flex flex-col flex-grow'>
+      <div className='mx-1 mt-1 h-full flex flex-col flex-grow'>
         {
           selectedRutaDetalle?.id ?
             <>
@@ -54,7 +54,7 @@ export const PeriodosFacturacion = () => {
             </>
             :
             <>
-              <Accordion type="single" collapsible className="w-full" value={accordionValue}>
+              <Accordion type="single" collapsible className={`w-full`} value={accordionValue}>
                 <AccordionItem value="item-1" onClick={() => { setSelectedRuta({}) }}>
                   <AccordionTrigger className="bg-muted px-2">Seleccionar Ruta</AccordionTrigger>
                   <AccordionContent>

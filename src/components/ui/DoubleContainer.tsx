@@ -12,7 +12,7 @@ const DoubleContainer = ({ children }) => {
   );
 };
 
-const Seccion1 = ({ children }) => {
+const Seccion1 = ({ children, width = null }) => {
 
   const [isIconOpen, setIsIconOpen] = useState(false);
 
@@ -35,7 +35,8 @@ const Seccion1 = ({ children }) => {
 
   return (
     <>
-      <div data-state="open" className='flex ease overflow-hidden w-full border tableContainer data-[state=open]:md:w-[30%] data-[state=closed]:w-0 duration-200 transition-all'>
+      <div data-state="open" 
+      className={`flex ease-in-out overflow-hidden w-full border tableContainer data-[state=open]:md:w-[${width != null ? width :"30%"}] data-[state=closed]:w-0 duration-300 transition-all`}>
         {children}
       </div>
       <div className='w-[25px] border cursor-pointer bg-muted transition-all duration-200 flex items-center mr-3 justify-center'

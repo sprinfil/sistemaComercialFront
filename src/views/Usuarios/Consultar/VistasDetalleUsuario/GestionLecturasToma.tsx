@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from '../../../../components/ui/button'
-import { DataTableGestionLecturasToma, columns } from '../../../../components/ui/DataTableGestionLecturasToma'
+import { DataTableGestionLecturasToma, columns } from '../../../../components/ui/DataTableGestionLecturasToma.tsx';
 import { useFetchLecturas } from '../../../../lib/Services/GestionLecturasTomaService'
 import Loader from '../../../../components/ui/Loader'
 import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario'
