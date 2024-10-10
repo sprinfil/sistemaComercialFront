@@ -95,7 +95,7 @@ export const columns: ColumnDef<Multas>[] = [
   },
 ]
 
-export function DataTableMultas({ data }) {
+export function DataTableMonitorMultas({ data }) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -139,14 +139,7 @@ export function DataTableMultas({ data }) {
 
   return (
     <div className="w-full p-2">
-       <IconButton onClick={handleCrearNuevaMulta}>
-          <div className='flex gap-2 items-center'> 
-            Agregar nueva multa
-            
-            <PlusCircleIcon className='w-[20px] h-[20px]'/>
-          
-          </div>
-        </IconButton>
+      
       <div className="flex items-center mb-2 mt-2 w-full justify-center">
         <Input
           placeholder="Filtrar multas..."

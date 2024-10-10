@@ -5,7 +5,14 @@ import ModalAgregarMulta from '../../../../components/ui/ModalAgregarMulta';
 import { DataTableMultas } from '../../../../components/ui/DataTableMultas';
 import { Multas, columns } from '../../../../components/Tables/Columns/MultasColumns';
 import axiosClient from '../../../../axios-client';
+import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario';
 export const MultasUsuario = () => {
+
+
+  const {usuariosEncontrados} =  ZustandGeneralUsuario();
+
+
+
 
     const [abrirModal, setAbrirModal] = useState(false);
 
@@ -15,19 +22,24 @@ export const MultasUsuario = () => {
     }
 
     useEffect(() => {
-        getAnomalias();
+      getMultas();
       }, []);
     
-      const getAnomalias = async () => {
+      const getMultas = async () => {
         //setLoadingTable(true);
         try {
-          const response = await axiosClient.get("/AnomaliasCatalogo");
+          const response = await axiosClient.get("/multa/consultarmultas", {
+            params:{
+            codigo_usuario : usuariosEncontrados[0]?.codigo_usuario
+
+            }
+          });
          // setLoadingTable(false);
           setData(response.data.data);
-          console.log(response.data.data);
+          console.log(response);
         } catch (error) {
           //setLoadingTable(false);
-          console.error("Failed to fetch anomalias:", error);
+          console.error("Failed to fetch multas:", error);
         }
       };
     
