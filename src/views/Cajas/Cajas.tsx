@@ -65,7 +65,7 @@ function App() {
     return (
         <div>
             <div className='bg-muted w-full h-[7vh] flex items-center px-2 relative border-b border-border'>
-                <a title='Modulo Principal' onClick={handleExitClick}>
+                <a title='Módulo Principal' onClick={handleExitClick}>
                     <Link to={"/dashboard"}>
                         <IconButton>
                             <ExitIcon className='w-[20px] h-[20px] rotate-180' />

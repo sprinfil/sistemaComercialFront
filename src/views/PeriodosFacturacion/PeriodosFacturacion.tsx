@@ -74,7 +74,7 @@ export const PeriodosFacturacion = () => {
                             selectedRuta={selectedRuta}
                             trigger={<Button >
                               <div className='flex items-center'>
-                                <p> Nuevo Periodo</p>
+                                <p> Nuevo periodo</p>
                                 <IoCalendarNumberSharp className='w-6 h-6 ml-3' />
                               </div>
                             </Button>}

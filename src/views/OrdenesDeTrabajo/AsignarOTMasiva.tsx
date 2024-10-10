@@ -260,13 +260,13 @@ return (
       <div className='w-full'>
         <div className='border border-gray-300 rounded-sm p-7 mr-5 shadow-sm h-[78vh] overflow-auto'>
           {selectedAction === "individual" && (
-            <p className="text-muted-foreground text-[20px] mb-5">Asignar órdenes de trabajo individual</p>
+            <p className="text-muted-foreground text-[20px] mb-5">Asignar ordenes de trabajo individual</p>
           )}
           {selectedAction === "" && (
             <p className="text-muted-foreground text-[20px] mb-5">Selecciona el tipo de orden de trabajo.</p>
           )}
           {selectedAction === "masivamente" && (
-            <p className="text-muted-foreground text-[20px] mb-5">Asignar órdenes de trabajo masivas.</p>
+            <p className="text-muted-foreground text-[20px] mb-5">Asignar ordenes de trabajo masivas.</p>
           )}
 
           <div className='flex space-x-2 w-full'>

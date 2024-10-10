@@ -11,7 +11,7 @@ export default function CrearUsuarioNuevo() {
 
   const opciones = [
     {
-      titulo: "Fisica",
+      titulo: "Física",
       componente: <CrearUsuarioFisicaForm/>
     },
     {

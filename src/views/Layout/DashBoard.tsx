@@ -6,7 +6,7 @@ const DashBoard = () => {
 
   return (
     <div className='w-full h-full flex flex-col items-center justify-center gap-20'>
-      <p>Selecciona alguna opción del menu</p>
+      <p>Selecciona una opción del menú.</p>
       <img src={Void} className='w-[50vh]' />
     </div>
   )

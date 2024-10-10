@@ -59,7 +59,7 @@ const DetalleUsuario: React.FC = () => {
           pantalla: <TomasUsuario/>
         },
         {
-          nombre: "convenio",
+          nombre: "Convenio",
           pantalla: <Convenio/>
         },
         

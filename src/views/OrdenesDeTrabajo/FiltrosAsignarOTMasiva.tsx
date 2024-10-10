@@ -109,18 +109,6 @@ const FiltrosAsignarOTMasiva = () => {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   console.log("Desde: ", isDesdeFecha, "Hasta", isHastaFecha);
 
   console.log(isFechaTipo);
@@ -445,7 +433,7 @@ const FiltrosAsignarOTMasiva = () => {
             <AccordionTrigger>Saldo</AccordionTrigger>
             <AccordionContent>
             <div className="flex space-x-5 items-center mt-5">
-          <div className="text-sm font-medium mb-2">Minimo</div>
+          <div className="text-sm font-medium mb-2">Mínimo</div>
           <div className="mb-5">
             <Input
               id="min"
@@ -454,7 +442,7 @@ const FiltrosAsignarOTMasiva = () => {
               onChange={handleInputChangeMin}
             />
           </div>
-          <div className="text-sm font-medium mb-2">Maximo</div>
+          <div className="text-sm font-medium mb-2">Máximo</div>
           <div className="mb-5">
             <Input
               id="max"

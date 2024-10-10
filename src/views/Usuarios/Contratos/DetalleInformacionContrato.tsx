@@ -201,7 +201,7 @@ console.log(boolPeticionContratacion);
      <TableHeader className="bg-muted">
        <TableRow>
          <TableHead>Clave catastral</TableHead>
-         <TableHead>Direccion</TableHead>
+         <TableHead>Dirección</TableHead>
          <TableHead>Localidad</TableHead>
          <TableHead>Giro comercial</TableHead>
          <TableHead>Municipio</TableHead>
@@ -216,7 +216,7 @@ console.log(boolPeticionContratacion);
            <TableCell className="font-medium"> {contrato.clave_catastral}</TableCell>
            <TableCell className="font-medium"> 
              {"Calle " + calleSeleccionada + " " + contrato.num_casa + ", Colonia " + coloniaSeleccionada + ", Entre calles " + entreCalle1Seleccionada + ", " + 
-             entreCalle2Seleccionada + ", Codigo postal " + contrato.codigo_postal}
+             entreCalle2Seleccionada + ", Código postal " + contrato.codigo_postal}
              </TableCell>
              <TableCell className="font-medium">{contrato.localidad}</TableCell>
            <TableCell className="font-medium">{nombreGiroComercial}</TableCell>
@@ -246,7 +246,7 @@ console.log(boolPeticionContratacion);
      <TableHeader className="bg-muted">
        <TableRow>
          <TableHead>Clave catastral</TableHead>
-         <TableHead>Direccion</TableHead>
+         <TableHead>Dirección</TableHead>
          <TableHead>Localidad</TableHead>
          <TableHead>Giro comercial</TableHead>
          <TableHead>Municipio</TableHead>
@@ -261,7 +261,7 @@ console.log(boolPeticionContratacion);
            <TableCell className="font-medium"> {contrato.clave_catastral}</TableCell>
            <TableCell className="font-medium"> 
              {"Calle " + calleSeleccionada + " " + contrato.num_casa + ", Colonia " + coloniaSeleccionada + ", Entre calles " + entreCalle1Seleccionada + ", " + 
-             entreCalle2Seleccionada + ", Codigo postal " + contrato.codigo_postal}
+             entreCalle2Seleccionada + ", Código postal " + contrato.codigo_postal}
              </TableCell>
              <TableCell className="font-medium">{contrato.localidad}</TableCell>
            <TableCell className="font-medium">{nombreGiroComercial}</TableCell>
@@ -287,7 +287,7 @@ console.log(boolPeticionContratacion);
    <TableHeader className="bg-muted">
      <TableRow>
        <TableHead>Clave catastral</TableHead>
-       <TableHead>Direccion</TableHead>
+       <TableHead>Dirección</TableHead>
        <TableHead>Localidad</TableHead>
        <TableHead>Giro comercial</TableHead>
        <TableHead>Municipio</TableHead>
@@ -302,7 +302,7 @@ console.log(boolPeticionContratacion);
          <TableCell className="font-medium"> {contrato.clave_catastral}</TableCell>
          <TableCell className="font-medium"> 
            {"Calle " + nombreCalle + " " + contrato.num_casa + ", Colonia " + nombreColonia + ", Entre calles " + (nombreEntreCalle1 || "") + ", " + 
-           (nombreEntreCalle2 || "") + ", Codigo postal " + contrato.codigo_postal}
+           (nombreEntreCalle2 || "") + ", Código postal " + contrato.codigo_postal}
            </TableCell>
            <TableCell className="font-medium">{contrato.localidad}</TableCell>
          <TableCell className="font-medium">{nombreGiroComercial2}</TableCell>

@@ -79,7 +79,7 @@ console.log(direccion_notificaciones);
                                     <FormItem>
                                         <FormLabel>Dirección</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Escribe completa la dirección" {...field} />
+                                            <Input placeholder="Escribe la dirección completa." {...field} />
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />

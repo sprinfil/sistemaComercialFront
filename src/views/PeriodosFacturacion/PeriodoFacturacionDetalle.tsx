@@ -27,9 +27,9 @@ const PeriodoFacturacionDetalle = ({ setDetalle }) => {
                 <TabsTrigger value="facturacion">Facturación</TabsTrigger>
               </TabsList>
               <TabsContent value="cargasTrabajo"><CargasTrabajo /></TabsContent>
-              <TabsContent value="anomalias">anomalias</TabsContent>
-              <TabsContent value="recorridos">recorridos account here.</TabsContent>
-              <TabsContent value="facturacion">facturacion</TabsContent>
+              <TabsContent value="anomalias">Anomalías</TabsContent>
+              <TabsContent value="recorridos">Recorridos account here.</TabsContent>
+              <TabsContent value="facturacion">Facturación</TabsContent>
             </Tabs>
 
           </div>

@@ -645,7 +645,7 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                         
                       )}
                       <div className="text-sm mt-2 ">
-                      Asegúrate de que la opción seleccionada refleje lo que la orden de trabajo realizara en el proceso.
+                      Asegúrate de que la opción seleccionada refleje lo que la orden de trabajo realizará en el proceso.
                     </div>
                     </div>
 
@@ -681,7 +681,7 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                       )}
                     />
                       <div className="text-sm mt-2 ">
-                      Entidades que pueden ser afectadas por la orden de trabajo. (Ejemplo: Toma o medidor de la toma son entidades).
+                      Entidades que pueden ser afectadas por la orden de trabajo. (Ejemplo: Toma o Medidor de la toma son entidades).
                     </div>
                   </div>
                 </div>
@@ -756,7 +756,7 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                   />
                 }
                   <div className="text-sm mt-2 ">
-                      Características relacionadas a la entidad que deseas afectar. (Ejemplo: el estatus de la toma o el tipo de contratación de la toma).
+                      Características relacionadas a la entidad que deseas modificar. (Ejemplo: el estatus de la toma o el tipo de contratación de la toma).
                     </div>
                   
                 </div>

@@ -335,7 +335,7 @@ export const ConfiguracionPermisos = ({ type }) => {
                           <Table>
                             <TableHeader>
                               <TableRow>
-                                <TableHead>Modulo</TableHead>
+                                <TableHead>Módulo</TableHead>
                                 <TableHead>Ver</TableHead>
                                 <TableHead>Crear</TableHead>
                                 <TableHead>Editar</TableHead>
