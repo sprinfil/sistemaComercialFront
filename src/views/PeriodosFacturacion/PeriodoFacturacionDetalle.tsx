@@ -6,7 +6,7 @@ import { CargasTrabajo } from './CargasTrabajo';
 import { MonitorAnomalias } from './MonitorAnomalias';
 import { InformacionGeneral } from './InformacionGeneral';
 
-const PeriodoFacturacionDetalle = ({ setDetalle }) => {
+const PeriodoFacturacionDetalle = ({ setDetalle, selectedRutaDetalle, setPeriodos }) => {
   return (
     <>
       <div className='h-full flex flex-col relative'>
@@ -16,7 +16,7 @@ const PeriodoFacturacionDetalle = ({ setDetalle }) => {
             <p >Volver</p>
           </div>
           <div className='h-full flex items-center mt-[2px]'>
-            <p className='text-[14px] font-medium'>R01 Enero 2024</p>
+            <p className='text-[14px] font-medium'>{selectedRutaDetalle?.nombre}</p>
           </div>
         </div>
         <div className='rounded-md flex-grow flex flex-col overflow-auto no-scrollbar'>
@@ -28,7 +28,7 @@ const PeriodoFacturacionDetalle = ({ setDetalle }) => {
               <TabsTrigger value="recorridos">Recorridos</TabsTrigger>
               <TabsTrigger value="facturacion">Facturación</TabsTrigger>
             </TabsList>
-            <TabsContent value="informacionGeneral" className="flex-grow"><InformacionGeneral/></TabsContent>
+            <TabsContent value="informacionGeneral" className="flex-grow"><InformacionGeneral setPeriodos={setPeriodos} selectedRutaDetalle = {selectedRutaDetalle} setDetalle={setDetalle}/></TabsContent>
             <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo /></TabsContent>
             <TabsContent value="anomalias" className="flex-grow"><MonitorAnomalias /></TabsContent>
             <TabsContent value="recorridos" className="flex-grow">recorridos account here.</TabsContent>

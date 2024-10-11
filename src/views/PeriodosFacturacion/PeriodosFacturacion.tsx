@@ -43,6 +43,7 @@ export const PeriodosFacturacion = () => {
     }
   }, [selectedRuta]);
 
+  useEffect(()=>{console.log(periodos)},[periodos])
 
   return (
     <div className='h-[90vh] flex flex-col'>
@@ -50,7 +51,11 @@ export const PeriodosFacturacion = () => {
         {
           selectedRutaDetalle?.id ?
             <>
-              <PeriodoFacturacionDetalle setDetalle={setSelectedRutaDetalle} />
+              <PeriodoFacturacionDetalle
+                setDetalle={setSelectedRutaDetalle}
+                selectedRutaDetalle={selectedRutaDetalle}
+                setPeriodos={setPeriodos}
+              />
             </>
             :
             <>
@@ -108,7 +113,6 @@ export const PeriodosFacturacion = () => {
                               }
                             </>
                         }
-
                       </div>
                     </div>
                   </AccordionContent>

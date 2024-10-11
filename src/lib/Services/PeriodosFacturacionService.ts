@@ -67,3 +67,28 @@ export async function newPeriodo(data, setError, setPeriodos, setOpen, setLoadin
     setLoadingNewPeriodo(false);
   }
 }
+
+export async function editPeriodo(data, setPeriodos, setDetalle) {
+
+  try {
+    const response = await axiosClient.put(`periodos/update/${data?.periodos?.id}`, data);
+    console.log(response.data.periodos);
+
+    setPeriodos((prev) => {
+      return prev.map(periodo => {
+        if (periodo.id == data?.periodos?.id) {
+          return response.data.periodos
+        } else {
+          return periodo;
+        }
+      })
+    })
+    setDetalle(response.data.periodos);
+  }
+  catch (e) {
+    console.log(e);
+  }
+  finally {
+
+  }
+}

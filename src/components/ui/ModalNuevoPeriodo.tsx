@@ -65,7 +65,7 @@ const ModalNuevoPeriodo = ({ trigger, selectedRuta, setPeriodos, open, setOpen }
             <div className='flex flex-col gap-4'>
               <div>
                 <p>Lectura</p>
-                <DatePickerWithRange setFecha={setDatesLectura} />
+                <DatePickerWithRange setFecha={setDatesLectura}/>
               </div>
 
               <div>
