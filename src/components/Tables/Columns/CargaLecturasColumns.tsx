@@ -30,6 +30,7 @@ export const columns: ColumnDef<CargaTrabajo>[] = [
     id: "select",
     cell: ({ row }) => (
       <Checkbox
+      className="w-[2.7vh] h-[2.7vh]"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
@@ -39,7 +40,7 @@ export const columns: ColumnDef<CargaTrabajo>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "nombre",
+    accessorKey: "libro.nombre",
     header: ({ column }) => {
       return (
         <Button
@@ -52,13 +53,15 @@ export const columns: ColumnDef<CargaTrabajo>[] = [
     },
   },
   {
-    id: "actions",
-    cell: ({ row }) => {
-      const ajuste = row.original
+    accessorKey: "tiene_encargado.nombre",
+    header: ({ column }) => {
       return (
-        <div>
-         
-        </div>
+        <Button
+          variant="ghost"
+          className="text-xl text-black"
+        >
+          Operador asignado
+        </Button>
       )
     },
   },

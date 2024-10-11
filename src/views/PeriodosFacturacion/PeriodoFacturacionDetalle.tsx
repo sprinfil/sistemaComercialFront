@@ -6,7 +6,8 @@ import { CargasTrabajo } from './CargasTrabajo';
 import { MonitorAnomalias } from './MonitorAnomalias';
 import { InformacionGeneral } from './InformacionGeneral';
 
-const PeriodoFacturacionDetalle = ({ setDetalle }) => {
+const PeriodoFacturacionDetalle = ({ setDetalle, detalle }) => {
+  console.log(detalle);
   return (
     <>
       <div className='h-full flex flex-col relative'>
@@ -29,7 +30,7 @@ const PeriodoFacturacionDetalle = ({ setDetalle }) => {
               <TabsTrigger value="facturacion">Facturación</TabsTrigger>
             </TabsList>
             <TabsContent value="informacionGeneral" className="flex-grow"><InformacionGeneral/></TabsContent>
-            <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo /></TabsContent>
+            <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo detalle={detalle}/></TabsContent>
             <TabsContent value="anomalias" className="flex-grow"><MonitorAnomalias /></TabsContent>
             <TabsContent value="recorridos" className="flex-grow">recorridos account here.</TabsContent>
             <TabsContent value="facturacion" className="flex-grow">facturacion</TabsContent>

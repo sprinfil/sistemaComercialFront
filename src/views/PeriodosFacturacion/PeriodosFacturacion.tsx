@@ -43,14 +43,14 @@ export const PeriodosFacturacion = () => {
     }
   }, [selectedRuta]);
 
-
+  console.log(selectedRutaDetalle);
   return (
     <div className='h-[90vh] flex flex-col'>
       <div className='mx-1 mt-1 h-full flex flex-col flex-grow'>
         {
           selectedRutaDetalle?.id ?
             <>
-              <PeriodoFacturacionDetalle setDetalle={setSelectedRutaDetalle} />
+              <PeriodoFacturacionDetalle setDetalle={setSelectedRutaDetalle} detalle={selectedRutaDetalle}/>
             </>
             :
             <>

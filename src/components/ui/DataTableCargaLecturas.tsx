@@ -67,11 +67,11 @@ export function DataTableCargaLecturas<TData, TValue>({
           <Input
             placeholder="Buscar..."
             type="text"
-            value={(table.getColumn(`nombre`)?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn(`libro.nombre`)?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn(`nombre`)?.setFilterValue(event.target.value)
+              table.getColumn(`libro.nombre`)?.setFilterValue(event.target.value)
             }
-            className="w-full"
+            className="w-fullt text-2xl"
           />
 
       </div>
@@ -102,7 +102,7 @@ export function DataTableCargaLecturas<TData, TValue>({
                   onClick={() => {
                     console.log(row)
                     handleRowClick(row.id, row.original)}}
-                  className={`cursor-pointer hover:bg-border ${selectedRow === row.id ? "bg-border" : ""
+                  className={`cursor-pointer hover:bg-border text-2xl ${selectedRow === row.id ? "bg-border" : ""
                     }`}
                 >
                   {row.getVisibleCells().map((cell) => (

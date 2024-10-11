@@ -7,32 +7,18 @@ import Loader from '../../ui/Loader.tsx';
 import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { DataTableCargaLecturas } from '../../ui/DataTableCargaLecturas.tsx';
+import { ZustandCargaDeTrabajo } from '../../../contexts/ZustandCargaDeTrabajo.tsx';
+export default function CargaLecturaTable({data}) {
 
-export default function CargaLecturaTable() {
-
-  const [data, setData] = useState([]);
-  
-  useEffect(() => {
-    getLibros();
-  }, []);
-
-  const getLibros = async () => {
-    //setLoadingTable(true);
-    try {
-      const response = await axiosClient.get("/AjustesCatalogo");
-      //setLoadingTable(false);
-      setData(response.data.data);
-      console.log(response.data.data);
-    } catch (error) {
-      //setLoadingTable(false);
-      console.error("Failed to fetch libros:", error);
-    }
-  };
+  const {setFilasSeleccionadasCargaTrabajo} = ZustandCargaDeTrabajo();
+  console.log(data);
  //Metodo para seleccionar las filas
  const handleRowClick = (cargaTrabajo: CargaTrabajo) => {
   //setAjuste(ajuste);
   //setAccion("ver");
   console.log(cargaTrabajo);
+  setFilasSeleccionadasCargaTrabajo(cargaTrabajo);
+
 };
 
 
