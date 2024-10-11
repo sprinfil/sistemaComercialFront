@@ -252,7 +252,7 @@ export const MenuSuperiosNew = () => {
 
                                         <MenubarMenu>
                                             <MenubarTrigger
-                                                className={`h-full transition-all duration-200 hover:p-4 cursor-pointer ${localStorage.getItem("selectedMenuOption") == opcionPadre.titulo || selectedOption == opcionPadre.titulo  ? "bg-primary text-white  ": " hover:bg-muted"}`}
+                                                className={`h-full  transition-all duration-200 hover:p-4 cursor-pointer ${localStorage.getItem("selectedMenuOption") == opcionPadre.titulo || selectedOption == opcionPadre.titulo  ? "bg-primary text-white  ": " hover:bg-muted"}`}
                                                 onClick={() => { }}>
                                                 <div className='flex gap-2 items-center'> <span className={`${localStorage.getItem("selectedMenuOption") == opcionPadre.titulo || selectedOption == opcionPadre.titulo  ? " text-white  ": "text-primary"}`}> {opcionPadre.icon}</span>{opcionPadre.titulo}</div>
                                             </MenubarTrigger>
