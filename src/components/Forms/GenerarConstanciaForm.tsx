@@ -46,8 +46,9 @@ const GenerarConstanciaForm = () => {
     const [control, setControl] = useState(false);
     const [constanciasRegistradas, setConstanciasRegistradas] = useState([]);
     const [constanciasCatalogo, setConstanciasCatalogo] = useState([]);
-
     const { usuariosEncontrados } = ZustandGeneralUsuario();
+    const [cargos, setCargos] = useState<any[]>([]);
+    const [cargosPendientes, setCargosPendientes] = useState(false);
 
     //#region SUCCESSTOAST
     function successToastCreado() {
@@ -74,6 +75,7 @@ const GenerarConstanciaForm = () => {
 
     }
 
+    
 
 
     const form = useForm<z.infer<typeof constanciaSchema>>({
@@ -97,15 +99,12 @@ const GenerarConstanciaForm = () => {
                 params: payload
             });
             setConstanciasRegistradas(response.data);
+            console.log(response.data)
             setLoading(false);
         } catch (error) {
             setLoading(false);
             console.error("Error al buscar constancias:", error);
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: "No se pudieron obtener las constancias.",
-            });
+           
         }
     };
 
@@ -128,12 +127,7 @@ const GenerarConstanciaForm = () => {
         console.log(constanciasRegistradas)
     }, []);
 
-    // Función para verificar si se habilita el botón
-    const isButtonEnabled = (idCatalogo) => {
-        return constanciasRegistradas.some(
-            (constancia) => constancia.id_catalogo_constancia === idCatalogo && constancia.estado === 'pagado'
-        );
-    };
+    
     // Función para manejar la generación de constancia
     const generarConstancia = async (data: any) => {
         setLoading(true);
@@ -195,6 +189,7 @@ const GenerarConstanciaForm = () => {
                 params: payload,
                 responseType: "blob", // Importante: Indica que esperamos un blob como respuesta
             });
+            console.log(response.data)
 
             // Crear un enlace de descarga
             const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -228,52 +223,29 @@ const GenerarConstanciaForm = () => {
 
     return (
         <div className="">
+             
+             
             <Form {...form}>
                 <form
                     className="space-y-8"
                     onSubmit={form.handleSubmit(generarConstancia)} // Vincular el envío del formulario a la función
                 >
-                    <FormField
-                        control={form.control}
-                        name="nombre"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Nombre</FormLabel>
-                                <FormControl>
-                                    <Input readOnly={!abrirInput} placeholder="Escribe el nombre de la constancia" {...field} />
-                                </FormControl>
-                                <FormDescription>El nombre de la constancia.</FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="descripcion"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Descripción</FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        readOnly={!abrirInput}
-                                        placeholder="Descripción de la constancia"
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormDescription>Agrega una breve descripción.</FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <Button type="submit">Generar constancia</Button> {/* Botón para generar la constancia */}
-                    <Button disabled={!isButtonEnabled(constancia.id)} onClick={descargarConstancia}>
-                    Descargar constancia
-                </Button>
-                    {loading && <Loader />}
+                    <div className="flex justify-end ">
+                    <Button className="mr-4" type="submit">Generar constancia</Button> {/* Botón para generar la constancia */}
+                    <Button  onClick={descargarConstancia}>
+                        Descargar constancia
+                    </Button>
+
+                    </div>
+                    
+                    <div>
+                        No hay constancias disponibles.
+                    </div>
+                    
                     {abrirInput && <Button type="submit">Guardar</Button>}
                 </form>
             </Form>
-        </div>
+         </div>
     );
     
 }
