@@ -7,6 +7,7 @@ import axiosClient from '../../axios-client';
 import { columns } from '../../components/Tables/Columns/ContratacionMonitorColumns';
 import { ZustandFiltrosContratacion } from '../../contexts/ZustandFiltrosContratacion';
 import { OcultarTableMonitor } from '../../components/Tables/Components/OcultarTableMonitor';
+import FiltrosMultasMonitor from '../OrdenesDeTrabajo/FiltrosMultasMonitor';
 
 const MostrarFiltros = () => {
 
@@ -18,7 +19,7 @@ const MostrarFiltros = () => {
         {/*Datatable*/}
   
         <OcultarTableMonitor accion={""}>
-          <FiltrosContratacionMonitor />
+          <FiltrosMultasMonitor />
         </OcultarTableMonitor>
   
       </>

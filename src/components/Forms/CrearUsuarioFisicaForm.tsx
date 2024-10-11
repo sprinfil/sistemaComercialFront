@@ -28,9 +28,8 @@ import Modal from "../ui/Modal.tsx";
 import { ToastComponentGreen } from "../ui/toastComponent.tsx";
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
-
-
-
+import { useNavigate } from "react-router-dom";
+import { ZustandFiltrosContratacion } from "../../contexts/ZustandFiltrosContratacion.tsx";
 const CrearUsuarioFisicaForm = () => {
     const { toast } = useToast()
 
@@ -38,6 +37,11 @@ const CrearUsuarioFisicaForm = () => {
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
 
+    const {boolCrearUsuarioProcesoContratacion, setObtenerIdUsuarioRecienCreado, setObtenerNombreUsuario, setBoolCrearUsuarioProcesoContratacion} =  ZustandFiltrosContratacion();
+
+
+
+    const navigate = useNavigate();
    //#region SUCCESSTOAST
    function successToastCreado() {
     toast({
@@ -75,6 +79,13 @@ const CrearUsuarioFisicaForm = () => {
         },
     });
 
+    const handleNavegarProcesoContratacion = () => 
+    {
+        navigate("/Crear/Contrato/Usuario");
+    }
+
+    console.log(boolCrearUsuarioProcesoContratacion);
+
     async function onSubmit(values: z.infer<typeof crearusuarionuevoSchema>) {
         setLoading(true);
         setErrors({});
@@ -82,8 +93,22 @@ const CrearUsuarioFisicaForm = () => {
     
         try {
             const response = await axiosClient.post('/usuarios/create', values);
-            console.log('Usuario creado:', response);
-            successToastCreado();
+            form.reset(); // Limpiar el formulario
+            console.log('Usuario creado:', response.data);
+            const idUsuario = response.data.id
+            const nombre = response.data.nombre_completo;
+            if(boolCrearUsuarioProcesoContratacion)
+            {
+                setObtenerIdUsuarioRecienCreado(idUsuario);
+                setObtenerNombreUsuario(nombre);
+                successToastCreado();
+                handleNavegarProcesoContratacion();
+            }
+            else
+            {
+                successToastCreado();
+
+            }
         } catch (response) {
             console.log(response.response.data.message);
             if(response.response.data.message === "The curp has already been taken.")
@@ -112,6 +137,8 @@ const CrearUsuarioFisicaForm = () => {
         } finally {
             setLoading(false);
         }
+        setBoolCrearUsuarioProcesoContratacion(false);
+
     }
 
     return (

@@ -66,7 +66,7 @@ const ConceptoForm = () => {
     const [valorConversionBool, setValorConversionBool] = useState(false);
     const [isAbonable, setIsAbonable] = useState(false);
     const [isTarifaFija, setIsTarifaFija] = useState(false);
-
+    const [deshabilitat, setDeshabilitar] = useState(false);
     const [ordenDeTrabajoSeleccionada, setOrdenDeTrabajoSeleccionada] = useState<string | null>(null);
     const [conceptoRezago, setConceptoRezago] = useState<string | null>(null);
 
@@ -501,6 +501,8 @@ const ConceptoForm = () => {
                             //#endregion
            
 
+                            console.log(concepto);
+
             form.reset({
                 id: concepto.id,
                 nombre: concepto.nombre,
@@ -846,6 +848,7 @@ const ConceptoForm = () => {
                                     </FormItem>
                                 )}
                             />
+                            
                          <FormField
                                 control={form.control}
                                 name="genera_orden"
@@ -853,7 +856,7 @@ const ConceptoForm = () => {
                                     <FormItem>
                                         <FormLabel>¿Genera orden?</FormLabel>
                                         <FormControl>
-                                        <OrdenesDeTrabajoComboBox form={form} field={field} name="genera_orden" setCargoSeleccionado={setOrdenDeTrabajoSeleccionada}/>
+                                        <OrdenesDeTrabajoComboBox form={form} field={field} name="genera_orden" setCargoSeleccionado={setOrdenDeTrabajoSeleccionada} disabled={!abrirInput}/>
                                         </FormControl>
                                         <FormDescription>
                                         </FormDescription>
@@ -917,7 +920,7 @@ const ConceptoForm = () => {
                                     <FormItem>
                                         <FormLabel>¿Concepto rezago?</FormLabel>
                                         <FormControl>
-                                        <ConceptoRezagoComboBox form={form} field={field} name="concepto_rezago" setCargoSeleccionado={setConceptoRezago}/>
+                                        <ConceptoRezagoComboBox form={form} field={field} name="concepto_rezago" setCargoSeleccionado={setConceptoRezago} disabled={!abrirInput}/>
                                         </FormControl>
                                         <FormDescription>
                                         </FormDescription>

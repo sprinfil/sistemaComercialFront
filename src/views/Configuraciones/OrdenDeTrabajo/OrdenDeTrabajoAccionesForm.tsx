@@ -138,6 +138,7 @@ const OrdenDeTrabajoAccionesForm = () => {
 
   
   const onSubmit = async (values: OrdenDeTrabajoAcciones) => {
+    
 
     console.log(values);
     // COMO OCUPO MANDARLE EL OBJETO orden_trabajo_accion
@@ -149,12 +150,12 @@ const OrdenDeTrabajoAccionesForm = () => {
       modelo: accion.modelo || "", // Manejo de valores vacíos
       campo: accion.campo || "", // Manejo de valores vacíos
       valor: accion.valor || "", // Manejo de valores vacíos
-
-      id_orden_trabajo_catalogo: idSeleccionadoConfiguracionOrdenDeTrabajo
+      id_orden_trabajo_catalogo:idSeleccionadoConfiguracionOrdenDeTrabajo
     }));
 
     // Crear el objeto que necesitamos enviarle y le metemos las acciones
     const orden_trabajo_accion = {
+      id_orden_trabajo_catalogo:idSeleccionadoConfiguracionOrdenDeTrabajo,
       orden_trabajo_accion: valoresAcciones
     };
 
@@ -182,7 +183,8 @@ const OrdenDeTrabajoAccionesForm = () => {
          
           setCampoDisabled(true);
 
-   
+          const selectedAction = data.orden_trabajo_accion; // o data['orden_trabajo_accion']
+          console.log(selectedAction); // Verifica qué valores se están enviando
 
       //una vez recorrido reseteamos el formulario. que viene siendo el objeto orden_trabajo_accion
       //con sus propiedades.
@@ -280,7 +282,7 @@ const OrdenDeTrabajoAccionesForm = () => {
       //validamos si es un array si no, lo devuelve como array vacío para que no nos de problemas el react
 
       //recorremos el array, y le asignamos sus propiedades
-
+      console.log(ordenDeTrabajo);
       const ordenTrabajoAcciones = Array.isArray(ordenDeTrabajo.orden_trabajo_accion) ?
         ordenDeTrabajo.orden_trabajo_accion.map(item => ({
 
@@ -456,62 +458,94 @@ useEffect(() => {
 useEffect(() => {
   if (modelo && campo) {
     const nuevasOpcionesValores = opcionesPorEntidad[modelo]?.[campo] || [];
-    
-    // Asegúrate de que totalAccionesComponente está actualizado y no vacío
+
     if (totalAccionesComponente.length > 0) {
       const nuevasAcciones = [...totalAccionesComponente];
-      // Si tienes un índice específico que deseas actualizar, podrías definirlo aquí
-      // Por ejemplo, podrías usar el primer índice (0) para demostración
-      const index = 0; // Cambia esto según tu lógica
-
-      nuevasAcciones[index].valor = ''; // Limpia el valor anterior
+      const index = 0; // Cambia esto si tienes múltiples índices
+      nuevasAcciones[index] = {
+        ...nuevasAcciones[index],
+        valor: '', // Limpia el valor
+        opcionesValores: nuevasOpcionesValores, // Actualiza las opciones de valor para esa acción específica
+      };
       setTotalAccionesComponente(nuevasAcciones);
     }
 
-    setOpcionesValores(nuevasOpcionesValores);
+    setOpcionesValores(nuevasOpcionesValores); // Solo si es necesario
   }
 }, [modelo, campo]);
+
+const handleAccionChange = (index, value) => {
+  const nuevasAcciones = [...totalAccionesComponente];
+
+  // Actualiza la acción en el índice específico sin duplicar
+  nuevasAcciones[index] = { 
+    ...nuevasAcciones[index], 
+    modelo: value, 
+    campo: '', 
+    valor: '', 
+    opcionesEntidades: value === 'registrar' ? ['medidores'] : ['toma', 'medidores'],
+    opcionesCampos: [] // Limpia las opciones de campos por ahora
+  };
+
+  setTotalAccionesComponente(nuevasAcciones);
+};
 
 
 
 const handleEntidadChange = (index, value) => {
   const nuevasAcciones = [...totalAccionesComponente];
-  nuevasAcciones[index] = { ...nuevasAcciones[index], modelo: value, campo: '', valor: '' };
+
+  // Actualiza la entidad y limpia los campos y valores
+  nuevasAcciones[index] = { 
+    ...nuevasAcciones[index], 
+    modelo: value, 
+    campo: '',     
+    valor: '', 
+    opcionesCampos: value === 'medidores' 
+      ? ['estatus'] 
+      : value === 'toma' 
+        ? ['tipo_contratacion', 'tipo_servicio', 'estatus', 'contrato_agua', 'contrato_alcantarillado', 'contrato_saneamiento'] 
+        : ['servicio_contratado', 'estatus'] 
+  };
+
   setTotalAccionesComponente(nuevasAcciones);
-  
-  // Limpia opciones y actualiza campos
-  setOpcionesCampos(value === 'medidores' ? ['estatus'] : value === 'toma' ? ['tipo_contratacion', 'tipo_servicio', 'estatus', 'contrato_agua', 'contrato_alcantarillado', 'contrato_saneamiento'] : ['servicio_contratado', 'estatus']);
 };
 
 
-
-// Actualiza el campo y sus valores
 const handleCampoChange = (index, value) => {
   const nuevasAcciones = [...totalAccionesComponente];
-
-  // Actualiza solo el campo de la acción específica
   nuevasAcciones[index].campo = value;
-
-  // Si el campo cambia, reseteamos el valor de esa acción a un string vacío
-  nuevasAcciones[index].valor = ''; 
-
-  // Actualiza el estado con las acciones modificadas
+  nuevasAcciones[index].valor = ''; // Limpia el valor anterior
   setTotalAccionesComponente(nuevasAcciones);
 
-  // Asocia las opciones de valores a cada acción individualmente
-  const opcionesActualizadas = opcionesPorEntidad[nuevasAcciones[index].modelo]?.[value] || [];
+  // Debug: imprimir el modelo y el campo seleccionados
+  const modeloSeleccionado = nuevasAcciones[index].modelo;
+  console.log("Modelo seleccionado:", modeloSeleccionado);
+  console.log("Campo seleccionado:", value);
 
-  // Maneja las opciones de valor por acción
-  const nuevasOpcionesValores = [...opcionesValores];
-  nuevasOpcionesValores[index] = opcionesActualizadas;
+  // Accede a las opciones de valores según el modelo y el campo seleccionado
+  const nuevasOpcionesValores = opcionesPorEntidad[modeloSeleccionado]?.[value] || [];
+  
+  // Debug: imprimir las nuevas opciones de valores
+  if (nuevasOpcionesValores.length === 0) {
+    console.log(`No se encontraron opciones para el modelo: ${modeloSeleccionado} y el campo: ${value}.`);
+  } else {
+    console.log("Nuevas opciones de valores:", nuevasOpcionesValores);
+  }
 
+  // Actualiza el estado de las opciones de valores
   setOpcionesValores(nuevasOpcionesValores);
 };
 
 
+
+
+
+
+
 const [prueba, setPrueba] = useState(['lectura', 'promedio'])
 
-
+console.log(form.getValues);
   const formatearClave = (clave: string) => {
     return clave
       .replace(/_/g, " ") // Reemplaza guion bajo con espacio
@@ -572,7 +606,7 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
             </div>
           }
            <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
-            {totalAccionesComponente.map((item, index) => (
+            {totalAccionesComponente.length > 0 && totalAccionesComponente.map((item, index) => (
               <div key={item.id} className={`p-4 border ${borderColor} rounded-md`}>
                 <p>Acción {index + 1}</p>
                 <div className="flex justify-end mb-5">
@@ -600,6 +634,7 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                               onValueChange={(value) => {
                                 field.onChange(value);
                                 handleAccionChange(index, value);
+
                               }}
                               value={field.value || ''} 
                               disabled={campoDisabled}
@@ -626,6 +661,7 @@ const [prueba, setPrueba] = useState(['lectura', 'promedio'])
                               onValueChange={(value) => {
                                 field.onChange(value);
                                 handleAccionChange(index, value);
+
                               }}
                               value={field.value || ''} 
                               disabled={campoDisabled}
