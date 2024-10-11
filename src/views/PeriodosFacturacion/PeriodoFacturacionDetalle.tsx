@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card } from '../../components/ui/card';
 import { CargasTrabajo } from './CargasTrabajo';
 import { MonitorAnomalias } from './MonitorAnomalias';
+import { InformacionGeneral } from './InformacionGeneral';
 
 const PeriodoFacturacionDetalle = ({ setDetalle }) => {
   return (
@@ -27,7 +28,7 @@ const PeriodoFacturacionDetalle = ({ setDetalle }) => {
               <TabsTrigger value="recorridos">Recorridos</TabsTrigger>
               <TabsTrigger value="facturacion">Facturación</TabsTrigger>
             </TabsList>
-            <TabsContent value="informacionGeneral" className="flex-grow">Información General del periodo</TabsContent>
+            <TabsContent value="informacionGeneral" className="flex-grow"><InformacionGeneral/></TabsContent>
             <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo /></TabsContent>
             <TabsContent value="anomalias" className="flex-grow"><MonitorAnomalias /></TabsContent>
             <TabsContent value="recorridos" className="flex-grow">recorridos account here.</TabsContent>
