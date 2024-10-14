@@ -36,7 +36,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { Coins } from 'lucide-react';
-
+import { Toaster } from '../../components/ui/toaster.tsx';
 export const tipoCargaSchema = z.object({
   tipo_carga: z.string().min(1, "El tipo de carga es requerido"),
   operadores: z.number().min(1, "El operador es requerido"),
@@ -50,8 +50,12 @@ export const TipoDeCarga = ({booleanMostrar}) => {
 
   const [existenCargaAsignada, setExisteCargaAsignada] = useState(false);
 
+  const [cargaAsignadaValorFront, setCargaAsignadaValorFront] = useState(false);
+
+
   const { toast } = useToast()
-  const { filasSeleccionadaCargaTrabajo, cargasDeTrabajoAEnviar, setCargasDeTrabajoAEnviar, setFilasSeleccionadaCargaTrabajo } = ZustandCargaDeTrabajo();
+  const { filasSeleccionadaCargaTrabajo, cargasDeTrabajoAEnviar, setCargasDeTrabajoAEnviar, setFilasSeleccionadaCargaTrabaj, dataArrayColumns, 
+    setDataArrayColumns,setDataInfoCargaTrabajo, dataInfoCargaTrabajo} = ZustandCargaDeTrabajo();
   console.log(filasSeleccionadaCargaTrabajo);
 
   const [tipoCargaSeleccionada, setTipoCargaSeleccionada] = useState("");
@@ -68,9 +72,11 @@ export const TipoDeCarga = ({booleanMostrar}) => {
 
   const onSubmit = (values) => {
     console.log(values);
-    
-    
-    // Crear el nuevo objeto
+    setCargaAsignadaValorFront(true);
+    setDataArray(cargasDeTrabajoAEnviar);
+
+
+    // Crear el nuevo objeto para enviar a la petición
     const newData = {
       id: filasSeleccionadaCargaTrabajo?.id,
       id_libro: filasSeleccionadaCargaTrabajo?.id_libro,
@@ -78,41 +84,72 @@ export const TipoDeCarga = ({booleanMostrar}) => {
       id_operador_encargado: values.operadores,
       estado: "en proceso",
       tipo_carga: values.tipo_carga,
-      nombre_operador_encargado: operadorSeleccionado,
     };
+
+    const actualizarDataEnFront = {
+      id: filasSeleccionadaCargaTrabajo?.id,
+      id_libro: filasSeleccionadaCargaTrabajo?.id_libro,
+      id_periodo: filasSeleccionadaCargaTrabajo?.id_periodo,
+      id_operador_encargado: values.operadores,
+      estado: "en proceso",
+      tiene_encargado: 
+      {
+        nombre: operadorSeleccionado
+      },
+      libro:
+      {
+        nombre: filasSeleccionadaCargaTrabajo?.libro?.nombre
+
+      }
+     
+    };
+
+    setDataArrayColumns(newData);
   
-    // ACTUALIZAMOS EL ESTADO SET DATA ARRAY
+    // Actualizamos el estado del array de datos
     setDataArray(prevDataArray => {
-
-      //VERIFICAMOS SI EN EL ESTADO EXISTE UN ID IGUAL QUE EL NEW DATA
-
+      // Verificamos si ya existe un objeto con el mismo ID
       const existingIndex = prevDataArray.findIndex(item => item.id === newData.id);
-      
-      //SI EXISTE EL ID SE ACTUALIZA
+  
+      let updatedArray;
+  
       if (existingIndex !== -1) {
-        // Si existe, actualizar el objeto
-        const updatedArray = [...prevDataArray];
+        // Si el ID existe, actualizamos el objeto
+        updatedArray = [...prevDataArray];
         updatedArray[existingIndex] = {
           ...updatedArray[existingIndex],
           tipo_carga: newData.tipo_carga,
           id_operador_encargado: newData.id_operador_encargado,
-          nombre_operador_encargado: operadorSeleccionado, 
+          estado: "en proceso",
+          nombre_operador_encargado: operadorSeleccionado,
         };
-        console.log(updatedArray);
-        //REGRESA LA ACTUALIZACIÓN DEL ESTADO
-        return updatedArray;
       } else {
-        // SI NO EXISTE CREA OTRO OBJETO
-        return [...prevDataArray, newData];
+        // Si no existe, agregamos el nuevo objeto
+        updatedArray = [...prevDataArray, newData];
       }
+  
+      
+  
+      // Actualizamos cargasDeTrabajoAEnviar con el array actualizado
+      setCargasDeTrabajoAEnviar(updatedArray);
+      console.log(updatedArray);
+
+      return updatedArray;
     });
-  
+    setDataInfoCargaTrabajo([actualizarDataEnFront]); //FALTA ACTUALIZAR ESTA VARIABLE CORRECTAMENTE PARA QUE SE VEAN LOS CAMBIOS EN EL FRONT Y DESPUES
+    //ENVIARLO AL SERVIDOR
+    toast({
+      title: "¡Carga éxitosa!",
+      description: "Se agrego al libro esta carga de trabajo.",
+      action: (
+        <ToastAction altText="Goto schedule to undo">Cerrar</ToastAction>
+      ),
+    })
     console.log(dataArray);
-    // Actualizar cargas de trabajo a enviar
-    setCargasDeTrabajoAEnviar(dataArray); // Usa el nuevo objeto `newData` que acabas de crear
   
-    // Reiniciar el formulario
   };
+  
+  console.log(dataInfoCargaTrabajo);
   console.log(dataArray);
   console.log(cargasDeTrabajoAEnviar);
   console.log(cargasDeTrabajoAEnviar[0]?.nombre_operador_encargado);
@@ -139,7 +176,7 @@ export const TipoDeCarga = ({booleanMostrar}) => {
   {
     if(filasSeleccionadaCargaTrabajo)
     {
-      if( filasSeleccionadaCargaTrabajo?.id_operador_encargado)
+      if(filasSeleccionadaCargaTrabajo?.id_operador_encargado)
         {
           setExisteCargaAsignada(true);
           setNombreOperadorVer(filasSeleccionadaCargaTrabajo?.tiene_encargado?.nombre);
@@ -168,6 +205,8 @@ export const TipoDeCarga = ({booleanMostrar}) => {
 
 
   console.log(filasSeleccionadaCargaTrabajo);
+  console.log(dataArrayColumns);
+  console.log(cargaAsignadaValorFront);
 
   console.log(form.getValues());
 
@@ -182,8 +221,12 @@ export const TipoDeCarga = ({booleanMostrar}) => {
         {existenCargaAsignada &&
         <div>Operador asignado: {nombreOperadorVer}</div>
         }
+
+   
+
           </div>
       </div>
+    
 
       <div className='p-6'>
         <div className='text-xl '>

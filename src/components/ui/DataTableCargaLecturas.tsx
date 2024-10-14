@@ -48,10 +48,12 @@ export function DataTableCargaLecturas<TData, TValue>({
       columnFilters,
     },
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters, // Asegúrate de gestionar el estado
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    
   });
 
   const handleRowClick = (rowId: string, rowData: TData) => {

@@ -1,5 +1,4 @@
 import React,{useEffect, useState} from 'react'
-import CargaLecturaTable from '../../components/Tables/Components/CargaLecturaTable'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import IconButton from '../../components/ui/IconButton'
 import { FaSave } from "react-icons/fa";
@@ -14,10 +13,13 @@ import { Pencil1Icon } from '@radix-ui/react-icons';
 import Loader from '../../components/ui/Loader';
 import LoaderChico from '../../components/ui/LoaderChico';
 import { getCargaLectura } from '../../lib/Services/CargaLecturaService';
+import { CargaLecturaDataTable } from '../../components/Tables/Components/CargaLecturaTable';
+
 
 
 export const CargasTrabajo = ({detalle}) => {
   const { toast } = useToast()
+  const { filasSeleccionadaCargaTrabajo, cargasDeTrabajoAEnviar, setCargasDeTrabajoAEnviar, setFilasSeleccionadaCargaTrabajo, dataInfoCargaTrabajo, setDataInfoCargaTrabajo } = ZustandCargaDeTrabajo();
 
   const [activeTab, setActiveTab] = useState("tipoDeCarga");
   const [editar, setEditar] = useState(false);
@@ -25,13 +27,15 @@ export const CargasTrabajo = ({detalle}) => {
   console.log(detalle);
     
   const [data,setData] = useState([]);
-  const {cargasDeTrabajoAEnviar} = ZustandCargaDeTrabajo();
+
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosClient.get(`cargaTrabajo/show/${detalle?.id}`);
         console.log(response.data.cargas_trabajo); // Asegúrate de acceder a los datos que necesitas
         setData(response.data.cargas_trabajo);
+        setCargasDeTrabajoAEnviar(response.data.cargas_trabajo);
       } catch (error) {
         console.error('Error al obtener los datos:', error);
       }
@@ -40,7 +44,7 @@ export const CargasTrabajo = ({detalle}) => {
     fetchData();
   }, [detalle?.id]);
 
-
+console.log(cargasDeTrabajoAEnviar);
 
   const handleEnviarCargaDeTrabajo = async () =>
   {
@@ -86,6 +90,15 @@ export const CargasTrabajo = ({detalle}) => {
   {
     setEditar(true);
   }
+
+
+  useEffect(() => {
+
+  },[])
+
+  const {setMultas} = getCargaLectura(setDataInfoCargaTrabajo, detalle?.id);
+  console.log(dataInfoCargaTrabajo);
+
   return (
     <div className='max-h-[81vh] overflow-auto'>
                   <div className='ml-5 text-2xl mt-2'>
@@ -94,7 +107,7 @@ export const CargasTrabajo = ({detalle}) => {
       <div className='flex space-x-2'>
               <div className='p-2 '>
                 
-                    <CargaLecturaTable data = {data}/>
+                    <CargaLecturaDataTable data = {dataInfoCargaTrabajo}/>
                   </div>
           <div className='w-full mt-6'>
       

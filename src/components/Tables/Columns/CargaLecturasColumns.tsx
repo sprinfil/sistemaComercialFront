@@ -14,15 +14,10 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon, EyeOpenIcon } from '@radix-ui/
 import { useState } from "react"
 import { useStateContext } from "../../../contexts/ContextAjuste"
 import { Checkbox } from "@/components/ui/checkbox"
-
+import { ZustandCargaDeTrabajo } from "../../../contexts/ZustandCargaDeTrabajo"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type CargaTrabajo = {
-  id: number
-  nombre: string
-  descripcion: string
-  estado: boolean
-}
+
 
 
 export const columns: ColumnDef<CargaTrabajo>[] = [
@@ -46,8 +41,9 @@ export const columns: ColumnDef<CargaTrabajo>[] = [
         <Button
           variant="ghost"
           className="text-xl text-black"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Libros
+          Libro
         </Button>
       )
     },
@@ -64,6 +60,15 @@ export const columns: ColumnDef<CargaTrabajo>[] = [
         </Button>
       )
     },
+    cell({row}) {
+      const encargado = row?.original?.tiene_encargado?.nombre || "";
+      const {dataArrayColumns} = ZustandCargaDeTrabajo();
+      console.log(dataArrayColumns);
+      return encargado === "" ? <div className="text-red-500">No asignado</div>: encargado
+
+    },
   },
+
+  
 
 ]

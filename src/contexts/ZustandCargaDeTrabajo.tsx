@@ -13,6 +13,12 @@ interface ZustandCargaDeTrabajo {
 
   cargasDeTrabajoAEnviar: FilaCargaTrabajo[];
   setCargasDeTrabajoAEnviar:(filasSeleccionadaCargaTrabajo: FilaCargaTrabajo[]) => void;
+
+  dataArrayColumns: FilaCargaTrabajo[];
+  setDataArrayColumns:(dataArrayColumns: FilaCargaTrabajo[]) => void;
+
+  dataInfoCargaTrabajo: [];
+  setDataInfoCargaTrabajo: (dataInfoCargaTrabajo:[]) => void;
   
 }
 
@@ -22,6 +28,12 @@ export const ZustandCargaDeTrabajo= create<ZustandCargaDeTrabajo>((set) => ({
 
   cargasDeTrabajoAEnviar: [],
   setCargasDeTrabajoAEnviar: (cargasDeTrabajoAEnviar) => set({cargasDeTrabajoAEnviar}),
+
+  
+  dataArrayColumns: [],
+  setDataArrayColumns: (dataArrayColumns) => set({dataArrayColumns}),
+  dataInfoCargaTrabajo: [],
+  setDataInfoCargaTrabajo: (dataInfoCargaTrabajo) => set({dataInfoCargaTrabajo}),
  
 }));
 
