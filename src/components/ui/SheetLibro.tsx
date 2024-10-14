@@ -54,7 +54,7 @@ const SheetLibro = ({ trigger, updateData, libro, id_ruta}) => {
                     console.log(response);
                     toast({
                         title: "Exito",
-                        description: "libro Creado",
+                        description: "Libro Creado",
                         variant: "success",
                         action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                     })
@@ -112,7 +112,7 @@ const SheetLibro = ({ trigger, updateData, libro, id_ruta}) => {
                     <SheetHeader>
                         <SheetTitle>{libro == null ? "Crear Libro" : "Editar " + libro.nombre}</SheetTitle>
                         <SheetDescription>
-                            Llena toda la información correspondiente
+                            Ingresa toda la información correspondiente.
                         </SheetDescription>
                         <>
                             <Form {...form}>

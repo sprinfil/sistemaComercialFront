@@ -124,7 +124,7 @@ const handleBorrarContrato = async () => {
       <AlertDialogContent className="max-w-screen-sm overflow-auto">
         <AlertDialogHeader>
         
-          <AlertDialogTitle>¿Estas seguro que deseas eliminar este contrato?</AlertDialogTitle>
+          <AlertDialogTitle>¿Estás seguro de que deseas eliminar este contrato?</AlertDialogTitle>
           <AlertDialogDescription> 
             <div className="overflow-x-auto">
 

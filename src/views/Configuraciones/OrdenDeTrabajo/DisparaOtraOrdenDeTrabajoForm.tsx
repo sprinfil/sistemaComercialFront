@@ -83,13 +83,6 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
 
     console.log(control);
 
-
-
-
-
-
-
-
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0 
             ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1 
@@ -411,10 +404,6 @@ console.log(form.getValues());
                                          
                                           
 
-
-
-
-
                                         {
                                             accionGeneradaEntreTabs == "editar" ? 
                                             <Controller
@@ -446,10 +435,6 @@ console.log(form.getValues());
                                             
 
                                         }
-
-
-
-
 
 
 

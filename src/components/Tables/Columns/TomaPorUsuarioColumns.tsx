@@ -55,7 +55,7 @@ export const columns: ColumnDef<TomaPorUsuario>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Codigo 
+          Código 
         </Button>
       )
     },

@@ -168,7 +168,7 @@ const handleDownload = async (url) => {
   <TableCaption></TableCaption>
   <TableHeader>
     <TableRow>
-      <TableHead >Archivo</TableHead>
+      <TableHead>Archivo</TableHead>
       <TableHead>Tipo</TableHead>
       <TableHead>Fecha de Creación</TableHead>
       <TableHead>Descargar</TableHead>

@@ -98,7 +98,7 @@ export function DataTableUsuarios<TData, TValue>({
 
               <div className="flex space-x-4">
                 <div className="flex flex-col space-y-2">
-                  <p>Telefono</p>
+                  <p>Teléfono</p>
                   <Input
                     placeholder="Buscar telefono"
                     type="text"

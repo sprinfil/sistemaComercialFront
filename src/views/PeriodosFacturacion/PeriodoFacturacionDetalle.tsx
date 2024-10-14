@@ -19,21 +19,22 @@ const PeriodoFacturacionDetalle = ({ setDetalle }) => {
             <p className='text-[14px] font-medium'>R01 Enero 2024</p>
           </div>
         </div>
-        <div className='rounded-md flex-grow flex flex-col overflow-auto no-scrollbar'>
-          <Tabs defaultValue="informacionGeneral" className="w-full flex-grow flex flex-col ">
-            <TabsList>
-              <TabsTrigger value="informacionGeneral">Información General</TabsTrigger>
-              <TabsTrigger value="cargasTrabajo">Cargas de trabajo</TabsTrigger>
-              <TabsTrigger value="anomalias">Anomalías</TabsTrigger>
-              <TabsTrigger value="recorridos">Recorridos</TabsTrigger>
-              <TabsTrigger value="facturacion">Facturación</TabsTrigger>
-            </TabsList>
-            <TabsContent value="informacionGeneral" className="flex-grow"><InformacionGeneral/></TabsContent>
-            <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo /></TabsContent>
-            <TabsContent value="anomalias" className="flex-grow"><MonitorAnomalias /></TabsContent>
-            <TabsContent value="recorridos" className="flex-grow">recorridos account here.</TabsContent>
-            <TabsContent value="facturacion" className="flex-grow">facturacion</TabsContent>
-          </Tabs>
+        <div className='rounded-md border flex-grow overflow-auto no-scrollbar'>
+          <div className='w-full'>
+            <Tabs defaultValue="cargasTrabajo" className="">
+              <TabsList>
+                <TabsTrigger value="cargasTrabajo">Cargas de trabajo</TabsTrigger>
+                <TabsTrigger value="anomalias">Anomalías</TabsTrigger>
+                <TabsTrigger value="recorridos">Recorridos</TabsTrigger>
+                <TabsTrigger value="facturacion">Facturación</TabsTrigger>
+              </TabsList>
+              <TabsContent value="cargasTrabajo"><CargasTrabajo /></TabsContent>
+              <TabsContent value="anomalias">Anomalías</TabsContent>
+              <TabsContent value="recorridos">Recorridos account here.</TabsContent>
+              <TabsContent value="facturacion">Facturación</TabsContent>
+            </Tabs>
+
+          </div>
         </div>
       </div>
 

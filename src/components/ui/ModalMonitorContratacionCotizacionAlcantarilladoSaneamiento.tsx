@@ -207,7 +207,7 @@ const eliminarConcepto = (index: number) => {
           <div className="flex justify-between items-center">
             {/* Título al principio */}
             <div className="flex">
-              <span className="text-lg">Cotizacion contrato de alcantarillado y saneamiento.</span>
+              <span className="text-lg">Cotización contrato de alcantarillado y saneamiento.</span>
             </div>
             
             

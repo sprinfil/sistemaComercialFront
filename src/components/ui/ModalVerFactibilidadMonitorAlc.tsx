@@ -270,7 +270,7 @@ const ModalVerFactibilidadMonitorAlc = ({ selected_fact, open, set_open }) => {
           <div className="flex justify-between items-center max-w-[85vw]">
             <div>
               <AlertDialogTitle>{selected_fact?.toma.codigo_toma}</AlertDialogTitle>
-              <AlertDialogDescription>Detalles del factibilidad.</AlertDialogDescription>
+              <AlertDialogDescription>Detalles de la factibilidad.</AlertDialogDescription>
             </div>
             <Button className="ml-auto" onClick={handleDownload}>Constancia de factibilidad</Button>
           </div>
@@ -281,7 +281,7 @@ const ModalVerFactibilidadMonitorAlc = ({ selected_fact, open, set_open }) => {
               <p className='flex space-x-2 whitespace-nowrap '>
                 <strong>Servicio:</strong>
                 
-                <p>ALCANTARILLADO Y SANEAMIENTO</p>
+                <p>Alcantarillado y saneamiento</p>
 
                
               </p>

@@ -218,15 +218,15 @@ console.log(isOpenHijoFormularioModalMonitorOT);
                   name="numero_serie"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Numero de serie</FormLabel>
+                      <FormLabel>Número de serie</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Escribe el numero de serie"
+                          placeholder="Escribe el número de serie"
                           {...field}
                           type="number"
                         />
                       </FormControl>
-                      <FormDescription>Numero de serie</FormDescription>
+                      <FormDescription>Número de serie</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -257,7 +257,7 @@ console.log(isOpenHijoFormularioModalMonitorOT);
                   name="diametro"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Diametro de la toma</FormLabel>
+                      <FormLabel>Diámetro de la toma</FormLabel>
                       <FormControl>
                       <Select
                           onValueChange={(value) => field.onChange(value)}
@@ -265,7 +265,7 @@ console.log(isOpenHijoFormularioModalMonitorOT);
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Selecciona el diametro de la toma" />
+                              <SelectValue placeholder="Selecciona el diámetro de la toma" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>

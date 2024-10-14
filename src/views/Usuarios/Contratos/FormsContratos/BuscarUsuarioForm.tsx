@@ -322,7 +322,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                         <form onSubmit={form.handleSubmit(onSubmit)} className="">
                             <div className="flex space-x-2">
                                 <div className="w-[50vh]">
-                                    <p className="ml-1 mb-3 text-[13px]">Filtrar Por</p>
+                                    <p className="ml-1 mb-3 text-[13px]">Filtrar por</p>
                                     <FormField
                                         control={form.control}
                                         name="filtro"
