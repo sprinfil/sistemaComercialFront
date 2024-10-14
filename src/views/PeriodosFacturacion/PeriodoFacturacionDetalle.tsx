@@ -3,18 +3,20 @@ import { FaArrowCircleLeft } from "react-icons/fa";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card } from '../../components/ui/card';
 import { CargasTrabajo } from './CargasTrabajo';
+import { MonitorAnomalias } from './MonitorAnomalias';
+import { InformacionGeneral } from './InformacionGeneral';
 
 const PeriodoFacturacionDetalle = ({ setDetalle }) => {
   return (
     <>
-      <div className='h-full flex flex-col'>
-        <div className='flex gap-2 items-center w-full mb-2'>
+      <div className='h-full flex flex-col relative'>
+        <div className='flex gap-2 items-center mb-2 absolute top-0'>
           <div onClick={() => { setDetalle({}) }} className='rounded-md cursor-pointer flex gap-2 items-center text-[15px] text-primary transition-all hover:bg-muted p-2'>
             <FaArrowCircleLeft />
             <p >Volver</p>
           </div>
           <div className='h-full flex items-center mt-[2px]'>
-            <p className='text-[11px]'>R01 Enero 2024</p>
+            <p className='text-[14px] font-medium'>R01 Enero 2024</p>
           </div>
         </div>
         <div className='rounded-md border flex-grow overflow-auto no-scrollbar'>

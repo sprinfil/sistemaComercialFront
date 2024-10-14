@@ -148,13 +148,16 @@ const handleSeleccionarOperador = () =>
       </IconButton>
 
       }
-        
-        <div className='flex justify-end ' title='Cerrar ordenes de trabajo'>
-            <IconButton onClick={abrirModalGG}>
-              <FaCheckCircle className="ml-2 w-[3.0vh] h-[3.0vh]"/>
-            </IconButton>
-            <IconButton title="Cancelar ordenes de trabajo" onClick={abrirModalGG2}>  <TiCancel className='w-[5vh] h-[4.3vh]' /></IconButton>
-          </div>
+        {
+          informacionCerrarOtMasivamente.length > 1 && 
+          <div className='flex justify-end ' title='Cerrar ordenes de trabajo'>
+          <IconButton onClick={abrirModalGG}>
+            <FaCheckCircle className="ml-2 w-[3.0vh] h-[3.0vh]"/>
+          </IconButton>
+          <IconButton title="Cancelar ordenes de trabajo" onClick={abrirModalGG2}>  <TiCancel className='w-[5vh] h-[4.3vh]' /></IconButton>
+        </div>
+        }
+       
         </div>
         
       </div>
@@ -262,8 +265,8 @@ const handleSeleccionarOperador = () =>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No resultados.
+                <TableCell colSpan={columns.length} className="h-24 text-center text-3xl">
+                  Filtra las tomas.
                 </TableCell>
               </TableRow>
             )}

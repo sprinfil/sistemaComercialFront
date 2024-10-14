@@ -27,11 +27,27 @@ import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { ZustandFiltrosContratacion } from "../../contexts/ZustandFiltrosContratacion.tsx";
+import { useNavigate } from "react-router-dom";
+
+
 const CrearUsuarioMoralForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
     const { toast } = useToast()
+
+    const {boolCrearUsuarioProcesoContratacion, setObtenerIdUsuarioRecienCreado, setObtenerNombreUsuario, setBoolCrearUsuarioProcesoContratacion} =  ZustandFiltrosContratacion();
+
+    function successToastCreado() {
+        toast({
+            title: "¡Éxito!",
+            description: "El usuario se ha creado correctamente",
+            variant: "success",
+    
+        })
+    }
+    const navigate = useNavigate();
 
     const form = useForm<z.infer<typeof crearUsuarioMoralSchema>>({
         resolver: zodResolver(crearUsuarioMoralSchema),
@@ -45,6 +61,15 @@ const CrearUsuarioMoralForm = () => {
         },
     });
 
+    
+    const handleNavegarProcesoContratacion = () => 
+        {
+            navigate("/Crear/Contrato/Usuario");
+        }
+
+        console.log(boolCrearUsuarioProcesoContratacion);
+
+
     async function onSubmit(values: z.infer<typeof crearUsuarioMoralSchema>) {
         setLoading(true);
         setErrors({});
@@ -54,12 +79,21 @@ const CrearUsuarioMoralForm = () => {
             const response = await axiosClient.post('/usuarios/createmoral', values);
             console.log('Usuario creado:', response.data);
             form.reset(); // Limpiar el formulario
-            toast({
-                title: "¡Éxito!",
-                description: "El usuario se ha creado correctamente",
-                variant: "success",
-        
-            })
+            console.log('Usuario creado:', response);
+            const idUsuario = response.data.id
+            const nombre = response.data.nombre;
+           if(boolCrearUsuarioProcesoContratacion)
+            {
+                setObtenerIdUsuarioRecienCreado(idUsuario);
+                setObtenerNombreUsuario(nombre);
+                successToastCreado();
+                handleNavegarProcesoContratacion();
+            }
+            else
+            {
+                successToastCreado();
+
+            }
             // Aquí puedes realizar alguna acción adicional, como redirigir al usuario o mostrar un mensaje de éxito
         } catch (response) {
             console.log(response.response.data.message);
@@ -83,6 +117,8 @@ const CrearUsuarioMoralForm = () => {
         } finally {
             setLoading(false);
         }
+        setBoolCrearUsuarioProcesoContratacion(false);
+
     }
 
     return (

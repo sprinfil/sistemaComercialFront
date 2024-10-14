@@ -6,6 +6,7 @@ import {
   Marker,
   Polygon,
   useJsApiLoader,
+  
 } from "@react-google-maps/api";
 import axiosClient from "../../../axios-client";
 import { Button } from "../../../components/ui/button";
@@ -46,8 +47,9 @@ const PuntoTomaMapa = () => {
 
   const { toast } = useToast();
   const [poligonos, setPoligonos] = useState([]);
-  const [map, setMap] = useState(null);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
   const markerRefs = useRef([]);
+  const [zoom, setZoom] = useState(18); // Establecer un valor inicial para el zoom
 
   const navigate = useNavigate();
 
@@ -171,49 +173,58 @@ console.log(selectedLocation);
       markerRefs.current = [];
       setSelectedLocation(null);
 
-      tomasFiltradas.forEach(toma => {
-        if (toma.posicion?.coordinates) {
-          const markerPosition = {
-            lat: toma.posicion.coordinates[1],
-            lng: toma.posicion.coordinates[0],
-          };
-
-          const marker = new google.maps.Marker({
-            position: markerPosition,
-            map: map,
-            title: `Toma: ${toma.codigo_toma}`,
-          });
-
-          const infoWindow = new google.maps.InfoWindow({
-            content: `<div class="text-black">
-                      <strong>Código de Toma: ${toma.codigo_toma}</strong></br>
-                      <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
-                      <strong>Calle: ${toma.calle}</strong></br>
-                      <strong>Número de casa: ${toma.numero_casa}</strong></br>
-                      <strong>Colonia: ${toma.colonia}</strong></br>
-                      <strong>Código Postal: ${toma.codigo_postal}</strong></br>
-                      <br>
-                      <button id="view-details-btn" class="text-green-800 text-xl"><strong>Contratar esta toma</strong></button>
-                    </div>`,
-          });
-
-          infoWindow.addListener('domready', () => {
-            document.getElementById('view-details-btn')?.addEventListener('click', handleSiguienteContratacion);
-            setTomaPreContratada(toma);
-          });
-
-          marker.addListener('click', () => {
-            infoWindow.open(map, marker);
-          });
-
-          markerRefs.current.push(marker);
-        }
-      });
+      if(zoom >= 18)
+      {
+        tomasFiltradas.forEach(toma => {
+          if (toma.posicion?.coordinates) {
+            const markerPosition = {
+              lat: toma.posicion.coordinates[1],
+              lng: toma.posicion.coordinates[0],
+            };
+  
+            const marker = new google.maps.Marker({
+              position: markerPosition,
+              map: map,
+              title: `Toma: ${toma.codigo_toma}`,
+            });
+  
+            const infoWindow = new google.maps.InfoWindow({
+              content: `<div class="text-black">
+                        <strong>Código de Toma: ${toma.codigo_toma}</strong></br>
+                        <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
+                        <strong>Calle: ${toma.calle}</strong></br>
+                        <strong>Número de casa: ${toma.numero_casa}</strong></br>
+                        <strong>Colonia: ${toma.colonia}</strong></br>
+                        <strong>Código Postal: ${toma.codigo_postal}</strong></br>
+                        <br>
+                        <button id="view-details-btn" class="text-green-800 text-xl"><strong>Contratar esta toma</strong></button>
+                      </div>`,
+            });
+  
+            infoWindow.addListener('domready', () => {
+              document.getElementById('view-details-btn')?.addEventListener('click', handleSiguienteContratacion);
+              setTomaPreContratada(toma);
+            });
+  
+            marker.addListener('click', () => {
+              infoWindow.open(map, marker);
+            });
+  
+            markerRefs.current.push(marker);
+          }
+        });
+      }
+     
     }
-  }, [map, tomasFiltradas, handleSiguienteContratacion]);
+  }, [map, tomasFiltradas, handleSiguienteContratacion, zoom]);
 
   const onLoad = useCallback((mapInstance) => {
     setMap(mapInstance);
+    google.maps.event.addListener(mapInstance, 'zoom_changed', () => {
+      const newZoom = mapInstance.getZoom();
+      setZoom(newZoom);
+    });
+  
   }, []);
 
   const onUnmount = useCallback(() => {

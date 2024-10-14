@@ -14,6 +14,7 @@ import TomasUsuario from './VistasDetalleUsuario/TomasUsuario';
 import { BreadCrumbDetalleTomaUsuario } from '../../../components/ui/breadCrumbDetalleTomaUsuario.tsx';
 import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
 import { GestionDescuentos } from './VistasDetalleUsuario/GestionDescuentos.tsx';
+import { MultasUsuario } from './VistasDetalleUsuario/MultasUsuario.tsx';
 import { GestionLecturasToma } from './VistasDetalleUsuario/GestionLecturasToma.tsx';
 export const TomaUsuarioDetalle = () => {
 
@@ -66,6 +67,10 @@ export const TomaUsuarioDetalle = () => {
           pantalla: <GestionDescuentos/>
         },
         {
+          nombre: "Multas",
+          pantalla: <MultasUsuario/>
+        },
+      {
           nombre: "Facturaciones",
           pantalla: <GestionLecturasToma/>
         },
