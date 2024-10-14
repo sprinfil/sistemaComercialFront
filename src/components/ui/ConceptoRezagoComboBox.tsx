@@ -31,7 +31,7 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void;
 };
 
-export const ConceptoRezagoComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado }: ConceptosComboBoxNewProps) => {
+export const ConceptoRezagoComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado, disabled }: ConceptosComboBoxNewProps) => {
     const [loading, setLoading] = React.useState<boolean>(false);
     const [languages, setLanguages] = React.useState<Status[]>([]);
     const [open, setOpen] = React.useState(false);
@@ -70,6 +70,7 @@ export const ConceptoRezagoComboBox = ({ field, form, name = "id_concepto", setC
                                 "w-full justify-between",
                                 !field.value && "text-muted-foreground"
                             )}
+                            disabled={disabled}
                         >
                             {field.value
                                 ? languages.find(

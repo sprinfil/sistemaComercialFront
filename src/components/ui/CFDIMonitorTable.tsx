@@ -188,7 +188,7 @@ export function CFDIMonitorTable<TData, TValue>({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Accion</SelectLabel>
+                  <SelectLabel>Acción</SelectLabel>
                   <SelectItem value="timbrar">Enviar Correo</SelectItem>
                   <SelectItem value="cancelacion">Imprimir Timbre</SelectItem>
                 </SelectGroup>
@@ -205,7 +205,7 @@ export function CFDIMonitorTable<TData, TValue>({
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
-              Previous
+              Anterior
             </Button>
             <Button
               variant="outline"
@@ -213,7 +213,7 @@ export function CFDIMonitorTable<TData, TValue>({
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
-              Next
+              Siguiente
             </Button>
           </div>
         </div>

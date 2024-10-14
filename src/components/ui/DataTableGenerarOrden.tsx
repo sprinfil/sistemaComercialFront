@@ -71,7 +71,7 @@ export function DataTableGenerarOrden<TData, TValue>({
           <div className="flex space-x-2 mt-5 border border-border shadow-md h-[10vh] p-5">
             <div className="flex-1">
             <Input
-          placeholder="Buscar codigo de toma..."
+          placeholder="Buscar código de toma..."
           type="text"
           value={(table.getColumn(`codigo_toma`)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>

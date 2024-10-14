@@ -13,6 +13,7 @@ import { BreadCrumbDetalleUsuario } from '../../../components/ui/breadCrumbDetal
 import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario';
 import Loader from '../../../components/ui/Loader';
+import { MultasUsuario } from './VistasDetalleUsuario/MultasUsuario';
 
 const DetalleUsuario: React.FC = () => {
   const { pantalla } = useStateContext();
@@ -59,8 +60,12 @@ const DetalleUsuario: React.FC = () => {
           pantalla: <TomasUsuario/>
         },
         {
-          nombre: "convenio",
+          nombre: "Convenio",
           pantalla: <Convenio/>
+        },
+        {
+          nombre: "Multas",
+          pantalla: <MultasUsuario/>
         },
         
       ]

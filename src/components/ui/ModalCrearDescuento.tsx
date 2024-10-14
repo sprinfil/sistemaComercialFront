@@ -143,7 +143,7 @@ const ModalCrearDescuento: React.FC<ModalProps> = ({ update_data, trigger, open,
                           <Input placeholder="folio" {...field} />
                         </FormControl>
                         <FormDescription>
-                          El Folio del descuento
+                          El folio del descuento
                         </FormDescription>
                         <FormMessage />
                       </FormItem>

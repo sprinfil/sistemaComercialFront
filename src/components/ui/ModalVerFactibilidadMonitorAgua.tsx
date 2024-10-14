@@ -271,7 +271,7 @@ const ModalVerFactibilidadMonitorAgua = ({ selected_fact, open, set_open }) => {
           <div className="flex justify-between items-center max-w-[85vw]">
             <div>
               <AlertDialogTitle>{selected_fact?.toma.codigo_toma}</AlertDialogTitle>
-              <AlertDialogDescription>Detalles del factibilidad.</AlertDialogDescription>
+              <AlertDialogDescription>Detalles de la factibilidad.</AlertDialogDescription>
             </div>
             <Button className="ml-auto" onClick={handleDownload}>Constancia de factibilidad</Button>
           </div>

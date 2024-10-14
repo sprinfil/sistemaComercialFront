@@ -22,7 +22,7 @@ export type Medidor = {
 export const columns: ColumnDef<Medidor>[] = [
   {
     accessorKey: "fecha_instalacion",
-    header: "Fecha de instalacion",
+    header: "Fecha de instalación",
   },
   {
     

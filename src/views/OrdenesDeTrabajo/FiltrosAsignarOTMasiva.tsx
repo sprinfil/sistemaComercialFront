@@ -109,18 +109,6 @@ const FiltrosAsignarOTMasiva = () => {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   console.log("Desde: ", isDesdeFecha, "Hasta", isHastaFecha);
 
   console.log(isFechaTipo);
@@ -291,6 +279,7 @@ const FiltrosAsignarOTMasiva = () => {
       </div>
       <div className='p-4'>
         <Accordion collapsible className="w-full" type="multiple" defaultValue={["item-1", "item-2"]}>
+          
           <AccordionItem value="item-1">
             <AccordionTrigger>Estado de la orden de trabajo</AccordionTrigger>
             <AccordionContent>
@@ -445,7 +434,7 @@ const FiltrosAsignarOTMasiva = () => {
             <AccordionTrigger>Saldo</AccordionTrigger>
             <AccordionContent>
             <div className="flex space-x-5 items-center mt-5">
-          <div className="text-sm font-medium mb-2">Minimo</div>
+          <div className="text-sm font-medium mb-2">Mínimo</div>
           <div className="mb-5">
             <Input
               id="min"
@@ -454,7 +443,7 @@ const FiltrosAsignarOTMasiva = () => {
               onChange={handleInputChangeMin}
             />
           </div>
-          <div className="text-sm font-medium mb-2">Maximo</div>
+          <div className="text-sm font-medium mb-2">Máximo</div>
           <div className="mb-5">
             <Input
               id="max"
@@ -519,6 +508,21 @@ const FiltrosAsignarOTMasiva = () => {
           </>
 
         )}
+
+      <AccordionItem value="item-6">
+            <AccordionTrigger>Tipos de orden de trabajo</AccordionTrigger>
+            <AccordionContent>
+            <div className="flex space-x-5 items-center mt-5">
+          <div className="text-sm font-medium mb-2">GG</div>
+          <div className="mb-5">
+          
+          </div>
+         
+
+
+        </div>
+            </AccordionContent>
+          </AccordionItem>
          
         </Accordion>
       </div>

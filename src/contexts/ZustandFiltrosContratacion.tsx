@@ -237,6 +237,16 @@ interface FiltrosContratacion {
   
   tomasFiltradas:[];
   setTomasFiltradas:(tomasFiltradas: []) => void
+
+  
+  boolCrearUsuarioProcesoContratacion: boolean;
+  setBoolCrearUsuarioProcesoContratacion: (boolCrearUsuarioProcesoContratacion: boolean) => void;
+
+  obtenerIdUsuarioRecienCreado: string;
+  setObtenerIdUsuarioRecienCreado:(obtenerIdUsuarioRecienCreado: string) => void;
+
+  obtenerNombreUsuario: string;
+  setObtenerNombreUsuario:(obtenerNombreUsuario: string) => void;
 }
 
 export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => ({
@@ -485,7 +495,16 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
   tomasFiltradas:[],
   setTomasFiltradas: (tomasFiltradas) => set({ tomasFiltradas }),
 
+  boolCrearUsuarioProcesoContratacion: false,
+  setBoolCrearUsuarioProcesoContratacion: (boolCrearUsuarioProcesoContratacion) => set({ boolCrearUsuarioProcesoContratacion }),
 
+  
+  obtenerIdUsuarioRecienCreado: "",
+  setObtenerIdUsuarioRecienCreado:(obtenerIdUsuarioRecienCreado) => set({ obtenerIdUsuarioRecienCreado }),
+
+
+  obtenerNombreUsuario: "",
+  setObtenerNombreUsuario:(obtenerNombreUsuario) => set({ obtenerNombreUsuario }),
  
 }));
 

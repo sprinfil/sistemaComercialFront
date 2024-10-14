@@ -58,7 +58,7 @@ export const FactiblidadMonitorColumns: ColumnDef<Factibilidad>[] = [
   {
     id: "codigo_toma", // Este es el ID de la columna
     accessorFn: (row) => row.toma.codigo_toma,
-    header: "Codigo de toma",
+    header: "Código de toma",
   }, 
   {
     accessorKey: "fecha_solicitud",

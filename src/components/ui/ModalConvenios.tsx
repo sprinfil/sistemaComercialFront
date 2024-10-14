@@ -24,6 +24,7 @@ interface ModalConvenioProps {
   trigger: React.ReactNode;
   title: string;
   onConfirm: (selectedConvenio: any) => void;
+  
 }
 
 const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm }) => {
@@ -35,6 +36,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const [error, setError] = useState<string | null>(null);
   const [selectedConvenio, setSelectedConvenio] = useState<any | null>(null);
   const [porcentajeConveniado, setPorcentajeConveniado] = useState<number>(0);
+  const [pagoInicial, setPagoInicial] = useState<number>(0);
   const [montoBonificado, setmontoBonificado] = useState<number>(0);
   const [cantidadLetras, setCantidadLetras] = useState<number>(0);
   const [comentario, setComentario] = useState<string>('');
@@ -59,6 +61,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
     setLoading(true);
     axiosClient.get('/Convenio')
       .then(({ data }) => {
+        console.log(data.data)
         setConvenios(data.data);
         setLoading(false);
       })
@@ -174,6 +177,7 @@ useEffect(() => {
         modelo_origen: "toma",
         cantidad_letras: cantidadLetras,
         comentario: comentario,
+        pago_inicial: pagoInicial,
         cargos_conveniados: cargosSeleccionados.map(cargo => ({
             id: cargo.id,
             porcentaje_conveniado: tipoMonto === '%' ? porcentajeConveniado : montoBonificado,
@@ -183,10 +187,12 @@ useEffect(() => {
     axiosClient.post('/Convenio/RegistrarConvenio', payload)
         .then(response => {
             console.log('Convenio registrado', response);
+            successToastCreado(); // Llama a la función para actualizar la tabla
             onConfirm(selectedConvenio); 
             successToastCreado(); // Llama a la función para actualizar la tabla
         })
         .catch(error => {
+            console.log(payload)
             console.error('Error al registrar convenio:', error);
         });
 };
@@ -257,21 +263,25 @@ return (
                   Convenios Disponibles
                 </AccordionTrigger>
                 <AccordionContent>
-                  {convenios.length > 0 ? (
-                    convenios.map((convenio: any) => (
-                      <div
-                        key={convenio.id}
-                        className={`cursor-pointer p-2 hover:bg-gray-100 ${
-                          selectedConvenio?.id === convenio.id ? 'bg-gray-200' : ''
-                        }`}
-                        onClick={() => handleRowClick(convenio)}
-                      >
-                        {convenio.nombre}
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-center">No hay convenios disponibles.</p>
-                  )}
+                {convenios.length > 0 ? (
+                  convenios.map((convenio: any) => (
+                    <div
+                      key={convenio.id}
+                      className={`cursor-pointer p-2 hover:bg-gray-100 ${
+                        selectedConvenio?.id === convenio.id ? 'bg-gray-200' : ''
+                      }`}
+                      onClick={() => handleRowClick(convenio)}
+                    >
+                      {/* Mostrar el nombre del convenio */}
+                      <p>{convenio.nombre}</p>
+                      {/* Mostrar el pago inicial del convenio */}
+                      <p><strong>Pago Inicial:</strong> {convenio.pago_inicial ? `$${convenio.pago_inicial}` : 'No disponible'}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center">No hay convenios disponibles.</p>
+                )}
+
                 </AccordionContent>
               </AccordionItem>
 

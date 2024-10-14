@@ -46,13 +46,13 @@ const FiltrosContratacionMonitor = () => {
         <AccordionItem value="item-1">
           <AccordionTrigger>Estatus</AccordionTrigger>
           <AccordionContent>
-            Proximamente
+            Próximamente
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2">
           <AccordionTrigger>Tipo de servicio</AccordionTrigger>
           <AccordionContent>
-            Proximamente
+            Próximamente
           </AccordionContent>
         </AccordionItem>
       </Accordion>
