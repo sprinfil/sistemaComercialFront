@@ -152,6 +152,7 @@ const GenerarConstanciaForm = () => {
         } catch (error) {
             setLoading(false);
             errorToast(); // Mostrar mensaje de error
+            console.log(constanciaSchema)
             console.error("Error al generar constancia:", error);
         }
     };
@@ -223,30 +224,41 @@ const GenerarConstanciaForm = () => {
 
     return (
         <div className="">
-             
-             
             <Form {...form}>
-                <form
-                    className="space-y-8"
-                    onSubmit={form.handleSubmit(generarConstancia)} // Vincular el envío del formulario a la función
-                >
-                    <div className="flex justify-end ">
-                    <Button className="mr-4" type="submit">Generar constancia</Button> {/* Botón para generar la constancia */}
-                    <Button  onClick={descargarConstancia}>
-                        Descargar constancia
-                    </Button>
-
+                <form className="space-y-8" onSubmit={form.handleSubmit(generarConstancia)}>
+                    <div className="flex justify-end">
+                        <Button className="mr-4" type="submit">Generar constancia</Button>
                     </div>
-                    
-                    <div>
-                        No hay constancias disponibles.
-                    </div>
-                    
+    
+                    {/* Mostrar lista de constancias disponibles */}
+                    {constanciasRegistradas.length > 0 ? (
+                        <div>
+                            <h3 className="font-semibold mb-2">Constancias Disponibles:</h3>
+                            <ul>
+                                {constanciasRegistradas.map((constancia, index) => (
+                                    <li key={index} className="mb-2">
+                                        <a
+                                            href={`http://localhost:8001/storage/${constancia.archivo.url}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-blue-600 underline"
+                                        >
+                                            Constancia #{index + 1} - {constancia.archivo.url || 'Sin Nombre'}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : (
+                        <div>No hay constancias disponibles.</div>
+                    )}
+    
                     {abrirInput && <Button type="submit">Guardar</Button>}
                 </form>
             </Form>
-         </div>
+        </div>
     );
+    
     
 }
 
