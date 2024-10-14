@@ -162,7 +162,7 @@ export function DataTableTomaUsuarios<TData, TValue>({
                 </div>
 
                 <div className="">
-                  <p className="mb-2 ml-2 mt-2">Telefono</p>
+                  <p className="mb-2 ml-2 mt-2">Teléfono</p>
                   <Input
                     placeholder="Buscar por telefono"
                     type="text"

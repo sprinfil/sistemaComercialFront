@@ -83,7 +83,7 @@ export const ConceptosComboBoxCotizacion = ({ field, form, name = "id_concepto",
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0 h-[300px]">
                     <Command>
-                        <CommandInput placeholder="Buscar un concepto.. " />
+                        <CommandInput placeholder="Buscar un concepto. " />
                         <CommandList>
                             <CommandEmpty>Concepto no encontrado.</CommandEmpty>
                             <CommandGroup>

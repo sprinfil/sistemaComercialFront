@@ -33,16 +33,16 @@ const MenuSuperior = () => {
             opciones: [
                 {
                     titulo: "Consulta Usuario",
-                    descripcion: "Mira los detalles de los usuarios, consulta por número de toma o nombre de usuario",
+                    descripcion: "Consulta los detalles de los usuarios, consulta por número de toma o nombre de usuario.",
                     route: "/proximamente",
                 },
                 {
                     titulo: "Contratos",
-                    descripcion: "Genera un nuevo contrato",
+                    descripcion: "Genera un nuevo contrato.",
                     route: "/proximamente"
                 },
                 {
-                    titulo: "Crear Nuevo Usuario",
+                    titulo: "Crear nuevo usuario",
                     descripcion: "Registra un nuevo usuario.",
                     route: "/proximamente"
                 }
@@ -50,12 +50,12 @@ const MenuSuperior = () => {
 
         },
         {
-            titulo: "Poligonos Geograficos",
+            titulo: "Polígonos Geográficos",
             icon: <GlobeIcon />,
             opciones: [
                 {
-                    titulo: "Ver poligonos",
-                    descripcion: "Administra las posiciones geograficas de las rutas y libros.",
+                    titulo: "Ver polígonos",
+                    descripcion: "Administra las posiciones geográficas de las rutas y libros.",
                     route: "/poligonos"
                 },
             ]
@@ -66,12 +66,12 @@ const MenuSuperior = () => {
             opciones: [
                 {
                     titulo: "Generar Ordenes de Trabajo",
-                    descripcion: "Genera ordenes para operadores de campo",
+                    descripcion: "Genera ordenes de trabajo para operadores de campo.",
                     route: "/proximamente"
                 },
                 {
                     titulo: "Asignar Ordenes de Trabajo",
-                    descripcion: "Asigna Ordenes de trabajo para operadores de campo",
+                    descripcion: "Asigna ordenes de trabajo para operadores de campo.",
                     route: "/proximamente"
                 },
             ]
@@ -108,18 +108,18 @@ const MenuSuperior = () => {
                     route: "/proximamente"
                 },
                 {
-                    titulo: "Anomalias",
-                    descripcion: "Gestiona, Monitorea y valida Anomalias",
+                    titulo: "Anomalías",
+                    descripcion: "Gestiona, monitorea y valida anomalías.",
                     route: "/proximamente"
                 },
                 {
                     titulo: "Facturar",
-                    descripcion: "Factura o Refactura",
+                    descripcion: "Factura o Refactura.",
                     route: "/proximamente"
                 },
                 {
                     titulo: "Monitor de Operadores de Campo",
-                    descripcion: "Consulta el recorrido de los operadores de campo",
+                    descripcion: "Consulta el recorrido de los operadores de campo.",
                     route: "/proximamente"
                 },
             ]
@@ -134,8 +134,8 @@ const MenuSuperior = () => {
                     route: "/catalogos"
                 },
                 {
-                    titulo: "Operadores del Sistema",
-                    descripcion: "Gestiona Operadores de sistema, También sus roles y permisos.",
+                    titulo: "Operadores del sistema",
+                    descripcion: "Gestiona los operadores del sistema (roles y permisos).",
                     route: "/proximamente"
                 },
                 {
@@ -145,7 +145,7 @@ const MenuSuperior = () => {
                 },
                 {
                     titulo: "Configuraciones Generales",
-                    descripcion: "Opciones Adicionales.",
+                    descripcion: "Opciones adicionales.",
                     route: "/proximamente"
                 },
                 {

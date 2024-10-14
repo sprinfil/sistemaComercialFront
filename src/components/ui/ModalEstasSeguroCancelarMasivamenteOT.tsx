@@ -134,7 +134,7 @@ const cerrarMasivamente = async () => {
 
                     <AlertDialogTitle>
 
-                   ¿Estas seguro que deseas cerrar las ordenes de trabajo seleccionadas?
+                   ¿Estás seguro de que deseas cerrar las ordenes de trabajo seleccionadas?
     
 
                     </AlertDialogTitle>

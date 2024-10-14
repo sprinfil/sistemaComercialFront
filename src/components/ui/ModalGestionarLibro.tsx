@@ -243,7 +243,7 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
                                       <div onClick={() => { setEditandoSecuencia(!editandoSecuencia) }}>
                                         <IconButton>
                                           <div className='text-blue-500 flex gap-2 items-center underline select-none '>
-                                            <p>editar</p>
+                                            <p>Editar</p>
                                             <Pencil2Icon />
                                           </div>
                                         </IconButton>
@@ -374,7 +374,7 @@ const ModalGestionarLibro: React.FC<ModalProps> = ({ trigger, title, description
 
                         <div className='flex items-center  gap-3'>
                           <div className='bg-blue-950 w-5 h-5'></div>
-                          <p>Ultimo</p>
+                          <p>Último</p>
                         </div>
                       </div>
                     </div>

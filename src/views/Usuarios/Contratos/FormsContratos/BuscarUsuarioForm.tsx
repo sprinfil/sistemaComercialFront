@@ -51,9 +51,10 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     const { nombreBuscado, setNombreBuscado,
         nombreSeleccionado, setNombreSeleccionado,
         usuariosEncontrados, setUsuariosEncontrados,
-        accion, setAccion, setFindUserOrToma, findUserOrToma, setToma, setBooleanCodigoDeToma, toma, setBuscarTomaAgregarLecturaMonitor,
+        accion, setAccion, setFindUserOrToma, findUserOrToma, setToma, setBooleanCodigoDeToma, toma, setBuscarTomaAgregarLecturaMonitor
+    } = ZustandGeneralUsuario(); 
 
-    } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
+    const {setBoolCrearUsuarioProcesoContratacion} = ZustandFiltrosContratacion();
 
     console.log("este es la accion pare " + accion);
     const navigate = useNavigate();
@@ -95,8 +96,9 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
         setLoading(true);
         setUsuariosEncontrados([]);
         setContratoLocalStorage(false);
+        setBoolCrearUsuarioProcesoContratacion(false);
         const criterio = values.nombre.trim();
-
+       
         let endpoint = "";
 
         switch (values.filtro) {
@@ -292,6 +294,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     function handleNavigationCrearUsuario() {
 
         navigate('/CrearUsuario');
+        setBoolCrearUsuarioProcesoContratacion(true);
     }
 
     return (
@@ -319,7 +322,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                         <form onSubmit={form.handleSubmit(onSubmit)} className="">
                             <div className="flex space-x-2">
                                 <div className="w-[50vh]">
-                                    <p className="ml-1 mb-3 text-[13px]">Filtrar Por</p>
+                                    <p className="ml-1 mb-3 text-[13px]">Filtrar por</p>
                                     <FormField
                                         control={form.control}
                                         name="filtro"

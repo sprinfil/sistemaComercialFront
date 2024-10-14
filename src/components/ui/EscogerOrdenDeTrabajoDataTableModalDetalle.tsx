@@ -87,34 +87,44 @@ export function EscogerOrdenDeTrabajoDataTableModalDetalle<TData, TValue>({
         </div>
 
         {control && (
-          <div className="flex space-x-5">
+          <div className="flex space-x-5 w-full border border-boder shadow-md h-[11vh] p-5">
+            <div className="flex-1">
             <Input
+                  className="w-full" // Asegura que el input ocupe todo el espacio disponible
           placeholder="Buscar tipo..."
           type="text"
           value={(table.getColumn('orden_trabajo_catalogo.tipo')?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn('orden_trabajo_catalogo.tipo')?.setFilterValue(event.target.value)
           }
-          className="w-full"
         />
-        <Input
+              </div>
+              <div className="flex-1">
+              <Input
+                    className="w-full" // Asegura que el input ocupe todo el espacio disponible
           placeholder="Buscar estado..."
           type="text"
           value={(table.getColumn('estado')?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn('estado')?.setFilterValue(event.target.value)
           }
-          className="w-full"
         />
-           <Input
+              </div>
+             <div className="flex-1">
+             <Input
+                  className="w-full" // Asegura que el input ocupe todo el espacio disponible
+
           placeholder="Buscar creación..."
           type="text"
           value={(table.getColumn('created_at')?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn('created_at')?.setFilterValue(event.target.value)
           }
-          className="w-full"
         />
+              </div>
+           
+     
+        
           </div>
         )}
       </div>

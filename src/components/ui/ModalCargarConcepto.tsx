@@ -215,7 +215,7 @@ const ModalCargarConcepto = ({ trigger, dueño, setCargos = null, handleCargoSel
               </TabsList>
               <TabsContent value="Concepto">
                 <div >
-                  <p className='mb-5'>Selecciona algún Concepto</p>
+                  <p className='mb-5'>Selecciona un concepto</p>
                   <ComboBoxCargosCargables set={set_selected_concepto} />
                   <p className='text-[14px] mt-5'>Monto (No Incluye IVA)</p>
                   <input ref={monto_input} type="number" className='bg-background border p-2 mt-2 w-full rounded-md outline-none' placeholder='Monto' />

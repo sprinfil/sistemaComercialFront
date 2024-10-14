@@ -20,13 +20,14 @@ import {
 import IconButton from '../../../components/ui/IconButton'
 import { MdOutlineDeleteForever } from "react-icons/md";
 import ModalSubirArchivosContratacion from '../../../components/ui/ModalSubirArchivosContratacion'
-
+import { FaChevronLeft } from 'react-icons/fa6'
+import { useNavigate } from 'react-router-dom'
 export const DetalleInformacionContrato = () => {
   const { toast } = useToast()
 
 
   const [mostrarBoton, setMostrarBoton] = useState();
-
+  const navigate = useNavigate();
 
   const {contrato, direccion_notificaciones, libroToma, idGiroComercial,giroComercial, calleSeleccionada, coloniaSeleccionada, entreCalle1Seleccionada, 
     entreCalle2Seleccionada,servicioContratado,servicioContratado2, tipoDeToma,tomaPreContratada,setIsCheckInspeccion, boolPeticionContratacion,
@@ -34,7 +35,7 @@ export const DetalleInformacionContrato = () => {
     isCheckInspeccion, setBooleanModalSubirArchivosContratacion, idContrato, setIdContrato,nombreGiroComercial, esPreContratado,puntoTomaLatitudLongitudAPI,
     getCoordenadaString2, setTomaPreContratada, setBoolPeticionContratacion,contratoLocalStorage,
     nombreCalle, nombreEntreCalle1,nombreEntreCalle2,nombreColonia, nombreGiroComercial2, tipoTomaNombre
-  ,servicioAguaNombre, servicioAlcSan} = ZustandFiltrosContratacion();
+  ,servicioAguaNombre, servicioAlcSan, setContratoLocalStorage, setNombreGiroComercial, setNombreGiroComercial2} = ZustandFiltrosContratacion();
 
     console.log(servicioAguaNombre);
 
@@ -50,12 +51,12 @@ export const DetalleInformacionContrato = () => {
       const contratacionLocalStorage = localStorage.getItem("contrato");
       const contratacionConvertido = JSON.parse(contratacionLocalStorage); 
 
+      const [verMapa, setVerMapa] = useState<boolean>(false);
 
-
-    console.log(contratacionConvertido);
 
     const libroLocalStorage = localStorage.getItem("libro");
     const NotificacionesLocalStorage = localStorage.getItem("notificaciones");
+
 
 
 
@@ -150,10 +151,36 @@ export const DetalleInformacionContrato = () => {
 
   console.log(servicioContratado);
 
+  const regresarCrearContratoForm = () => {
+    navigate("/Contrato/Usuario");
+    setContratoLocalStorage(true);
+};
 
-console.log(boolPeticionContratacion);
+//PARA PODER MOSTRAR EL MAPA
+const apiKey = 'AIzaSyAnqFPxn8eq_QFwi9HES_LbnyuNmnhf2rA'; //API KEY
+const lat = contratacionConvertido?.coordenada[0]; //LATITUD
+const lng = contratacionConvertido?.coordenada[1];  //LONGITUD
+const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&zoom=19&q=${lat},${lng}`;
+
+console.log(verMapa);
   return (
     <div className=''>
+      {!mostrarBoton &&
+             <div className=' flex space-x-1 w-[4.5vh] h-[4.5vh] ml-2 mt-4'>
+              
+             <div>
+             <IconButton onClick={regresarCrearContratoForm}>
+             <FaChevronLeft className='w-[3vh] h-[3vh]'/>
+           
+             </IconButton>
+             </div>
+          
+             <div className='text-lg mt-1'>
+                 Regresar
+             </div>
+             </div>
+      }
+
      <div className="flex items-center justify-start bg-muted ">
      
     </div>
@@ -201,7 +228,7 @@ console.log(boolPeticionContratacion);
      <TableHeader className="bg-muted">
        <TableRow>
          <TableHead>Clave catastral</TableHead>
-         <TableHead>Direccion</TableHead>
+         <TableHead>Dirección</TableHead>
          <TableHead>Localidad</TableHead>
          <TableHead>Giro comercial</TableHead>
          <TableHead>Municipio</TableHead>
@@ -216,7 +243,7 @@ console.log(boolPeticionContratacion);
            <TableCell className="font-medium"> {contrato.clave_catastral}</TableCell>
            <TableCell className="font-medium"> 
              {"Calle " + calleSeleccionada + " " + contrato.num_casa + ", Colonia " + coloniaSeleccionada + ", Entre calles " + entreCalle1Seleccionada + ", " + 
-             entreCalle2Seleccionada + ", Codigo postal " + contrato.codigo_postal}
+             entreCalle2Seleccionada + ", Código postal " + contrato.codigo_postal}
              </TableCell>
              <TableCell className="font-medium">{contrato.localidad}</TableCell>
            <TableCell className="font-medium">{nombreGiroComercial}</TableCell>
@@ -246,7 +273,7 @@ console.log(boolPeticionContratacion);
      <TableHeader className="bg-muted">
        <TableRow>
          <TableHead>Clave catastral</TableHead>
-         <TableHead>Direccion</TableHead>
+         <TableHead>Dirección</TableHead>
          <TableHead>Localidad</TableHead>
          <TableHead>Giro comercial</TableHead>
          <TableHead>Municipio</TableHead>
@@ -261,7 +288,7 @@ console.log(boolPeticionContratacion);
            <TableCell className="font-medium"> {contrato.clave_catastral}</TableCell>
            <TableCell className="font-medium"> 
              {"Calle " + calleSeleccionada + " " + contrato.num_casa + ", Colonia " + coloniaSeleccionada + ", Entre calles " + entreCalle1Seleccionada + ", " + 
-             entreCalle2Seleccionada + ", Codigo postal " + contrato.codigo_postal}
+             entreCalle2Seleccionada + ", Código postal " + contrato.codigo_postal}
              </TableCell>
              <TableCell className="font-medium">{contrato.localidad}</TableCell>
            <TableCell className="font-medium">{nombreGiroComercial}</TableCell>
@@ -287,7 +314,7 @@ console.log(boolPeticionContratacion);
    <TableHeader className="bg-muted">
      <TableRow>
        <TableHead>Clave catastral</TableHead>
-       <TableHead>Direccion</TableHead>
+       <TableHead>Dirección</TableHead>
        <TableHead>Localidad</TableHead>
        <TableHead>Giro comercial</TableHead>
        <TableHead>Municipio</TableHead>
@@ -302,7 +329,7 @@ console.log(boolPeticionContratacion);
          <TableCell className="font-medium"> {contrato.clave_catastral}</TableCell>
          <TableCell className="font-medium"> 
            {"Calle " + nombreCalle + " " + contrato.num_casa + ", Colonia " + nombreColonia + ", Entre calles " + (nombreEntreCalle1 || "") + ", " + 
-           (nombreEntreCalle2 || "") + ", Codigo postal " + contrato.codigo_postal}
+           (nombreEntreCalle2 || "") + ", Código postal " + contrato.codigo_postal}
            </TableCell>
            <TableCell className="font-medium">{contrato.localidad}</TableCell>
          <TableCell className="font-medium">{nombreGiroComercial2}</TableCell>
@@ -367,6 +394,7 @@ console.log(boolPeticionContratacion);
 
       
 
+          {/**CHECK PARA LA INSPECCIÓN */}
 
         <div className='flex space-x-2 mt-[3vh]'>
           <div className='text-xl'>
@@ -381,8 +409,38 @@ console.log(boolPeticionContratacion);
 
         </div>
 
-        
-       
+            { !mostrarBoton &&
+              <div className='flex space-x-2 mt-[3vh]'>
+              <div className='text-xl'>
+                Ver ubicación de la toma:
+                </div>
+                  <div className='w-[5vh] h-[5vh] mt-1'>
+                  <Checkbox className='w-[2.5vh] h-[2.5vh]'
+                    checked={verMapa}
+                    onCheckedChange={(checked) => setVerMapa(checked === true)}/>
+                  </div>
+
+            </div>}
+     
+
+          {/**AQUI MUESTRA EL MAPA */}
+
+            {
+              verMapa && !mostrarBoton &&
+              <div>
+                <iframe
+                  className='w-full'
+                  height="450"
+                  src={mapSrc}
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+
+                  </div>
+
+            }
+     
 
 
         <div className='flex justify-end'>

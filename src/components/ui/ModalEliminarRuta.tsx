@@ -27,7 +27,7 @@ const ModalEliminarRuta = ({ method, button, delete_id = null}) => {
                 <AlertDialogTrigger>{button}</AlertDialogTrigger>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>¿Estas seguro que desea eliminar este registro?</AlertDialogTitle>
+                        <AlertDialogTitle>¿Estás seguro que desea eliminar este registro?</AlertDialogTitle>
                         <AlertDialogDescription>
                             
                         </AlertDialogDescription>

@@ -5,7 +5,7 @@ import { Button } from '../../../../components/ui/button'
 import ModalCrearDescuento from '../../../../components/ui/ModalCrearDescuento'
 import TomaDescuentosTable from '../../../../components/Tables/Components/TomaDescuentosTable'
 import { columns } from '../../../../components/Tables/Columns/DescuentosTomaColumns'
-import { DataTable } from '../../../../components/ui/DataTableTomaDescuentos'
+import { DataTable } from '../../../../components/ui/DataTable.tsx';
 import descuentoService from '../../../../lib/DescuentoService'
 import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario'
 import Loader from '../../../../components/ui/Loader'

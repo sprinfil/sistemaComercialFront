@@ -237,12 +237,12 @@ const ModalMonitorOrdenTrabajoTable = () => {
       <TableCaption></TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead >Nombre del usuario</TableHead>
+          <TableHead>Nombre del usuario</TableHead>
           <TableHead>Código de toma</TableHead>
           <TableHead>Clave catastral</TableHead>
-          <TableHead >Dirección</TableHead>
-          <TableHead >Ruta y Libro</TableHead>
-          <TableHead >Tipo de toma</TableHead>
+          <TableHead>Dirección</TableHead>
+          <TableHead>Ruta y Libro</TableHead>
+          <TableHead>Tipo de toma</TableHead>
 
         </TableRow>
       </TableHeader>
@@ -290,10 +290,10 @@ const ModalMonitorOrdenTrabajoTable = () => {
       <TableCaption></TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead >Tipo de OT</TableHead>
+          <TableHead>Tipo de OT</TableHead>
           <TableHead>Estado de la OT</TableHead>
           <TableHead>Creación de la OT</TableHead>
-          <TableHead >Fecha finalizada</TableHead>
+          <TableHead>Fecha finalizada</TableHead>
 
 
         </TableRow>
@@ -334,8 +334,8 @@ const ModalMonitorOrdenTrabajoTable = () => {
       <TableCaption></TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead>La creo</TableHead>
-          <TableHead>La asigno</TableHead>
+          <TableHead>La creó</TableHead>
+          <TableHead>La asignó</TableHead>
           <TableHead>Encargado de hacerla</TableHead>
 
 

@@ -22,6 +22,7 @@ import { OrdenDeTrabajoAsignarIndividualSchema } from '../../../../components/Fo
 import { zodResolver } from '@hookform/resolvers/zod';
 import axiosClient from '../../../../axios-client.ts'
 import ModalAsignarOperadorTomaOT from '../../../../components/ui/ModalAsignarOperadorTomaOT.tsx'
+import { SiGooglesearchconsole } from 'react-icons/si'
 const CrearOrdenDeTrabajo = () => {
 
   const [abrirModal, setAbrirModal] = useState(false);
@@ -61,7 +62,7 @@ const CrearOrdenDeTrabajo = () => {
           </div>
         <div className='flex justify-end ml-[80vh] space-x-2'>
           <div title='Crear orden de trabajo'>
-          <IconButton onClick={handleGenerarOrdenDeTrabajo}><MdOutlinePostAdd className='w-[5vh] h-[5vh]'/></IconButton>
+          <IconButton onClick={handleGenerarOrdenDeTrabajo}><SiGooglesearchconsole className='w-[4vh] h-[4vh]'/></IconButton>
           </div>
           </div>
           <div title='Asignar operador'>

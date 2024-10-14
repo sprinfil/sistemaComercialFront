@@ -8,7 +8,7 @@ import { MonitorCFDI } from './CFDI/MonitorCFDI'
 import { FactibilidadMonitor } from './FactibilidadMonitor'
 import { AjustesMonitor } from './Ajustes/AjusteMonitor'
 import { LecturasMonitor } from './Lecturas/LecturaMonitor'
-
+import { MultasMonitor } from './MultasMonitor'
 export const Monitores = () => {
 
 
@@ -49,6 +49,11 @@ export const Monitores = () => {
     {
       titulo: "Lecturas",
       componente: <LecturasMonitor />,
+      permission: ""
+    },
+    {
+      titulo: "Multas",
+      componente: <MultasMonitor />,
       permission: ""
     },
   ]

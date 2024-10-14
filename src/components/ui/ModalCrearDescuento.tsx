@@ -43,6 +43,7 @@ interface ModalProps {
 const formSchema = z.object({
   id_descuento: z.number().min(1),
   folio: z.string().min(2).max(50),
+  curp: z.string().min(18).max(18),
   vigencia: z.string().min(2).max(50),
 })
 
@@ -58,6 +59,7 @@ const ModalCrearDescuento: React.FC<ModalProps> = ({ update_data, trigger, open,
     defaultValues: {
       folio: "",
       vigencia: "",
+      curp: "",
     },
   })
 
@@ -141,7 +143,24 @@ const ModalCrearDescuento: React.FC<ModalProps> = ({ update_data, trigger, open,
                           <Input placeholder="folio" {...field} />
                         </FormControl>
                         <FormDescription>
-                          El Folio del descuento
+                          El folio del descuento
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="curp"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>CURP</FormLabel>
+                        <FormControl>
+                          <Input placeholder="CURP" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          CURP.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>

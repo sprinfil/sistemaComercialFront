@@ -216,9 +216,8 @@ const CajaOperadoresForm = () => {
                     setLoading(false);
                 } else {
                     setLoading(false);
-                 
+
                     console.log(response);
-                    getAnomalias();
                    
                     setAccionGeneradaEntreTabs("ver");
                     successToastCreado();
