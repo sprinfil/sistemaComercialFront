@@ -5,19 +5,51 @@ import { DatePickerWithRange } from '../../components/ui/DatePickerWithRange';
 import { Button } from '../../components/ui/button';
 import { Pencil1Icon } from '@radix-ui/react-icons';
 import { editPeriodo } from '../../lib/Services/PeriodosFacturacionService';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import Modal from '../../components/ui/Modal';
+import { useToast } from '../../components/ui/use-toast';
+import { ToastAction } from '@radix-ui/react-toast';
 
 export const InformacionGeneral = ({ selectedRutaDetalle, setPeriodos, setDetalle }) => {
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+  const { toast } = useToast();
+  console.log(selectedRutaDetalle)
   const [datesLectura, setDatesLectura] = useState({
-    from: new Date(selectedRutaDetalle?.lectura_inicio),
-    to: new Date(selectedRutaDetalle?.lectura_final)
+    from: dayjs(selectedRutaDetalle?.lectura_inicio).local().toDate(),
+    to: dayjs(selectedRutaDetalle?.lectura_final).local().toDate()
   });
-  const [datesValidacion, setDatesValidacion] = useState({});
-  const [datesFacturacion, setDatesFacturacion] = useState({});
-  const [datesEntrega, setDatesEntrega] = useState({});
+  const [datesValidacion, setDatesValidacion] = useState({
+    from: dayjs(selectedRutaDetalle?.validacion_inicio).local().toDate(),
+    to: dayjs(selectedRutaDetalle?.validacion_final).local().toDate()
+  });
+  const [datesFacturacion, setDatesFacturacion] = useState({
+    from: dayjs(selectedRutaDetalle?.facturacion_fecha_inicio).local().toDate(),
+    to: dayjs(selectedRutaDetalle?.facturacion_fecha_final).local().toDate()
+  });
+  const [datesEntrega, setDatesEntrega] = useState({
+    from: dayjs(selectedRutaDetalle?.recibo_inicio).local().toDate(),
+    to: dayjs(selectedRutaDetalle?.recibo_final).local().toDate()
+  });
   const [data, setData] = useState([]);
   const [error, setError] = useState("");
   const [loadingEditPeriodo, setLoadingEditPeriodo] = useState(false);
   const [editar, setEditar] = useState(false);
+
+
+  useEffect(() => {
+    if (error != "") {
+      toast({
+        title: "Error",
+        description: error,
+        variant: "destructive",
+        action: <ToastAction altText='Aceptar'>Aceptar</ToastAction>
+      })
+    }
+    setError("");
+  }, [error])
 
   useEffect(() => {
     setData(
@@ -33,6 +65,8 @@ export const InformacionGeneral = ({ selectedRutaDetalle, setPeriodos, setDetall
           lectura_final: datesLectura?.to?.toISOString().split('T')[0],
           recibo_inicio: datesEntrega?.from?.toISOString().split('T')[0],
           recibo_final: datesEntrega?.to?.toISOString().split('T')[0],
+          validacion_inicio: datesValidacion?.from?.toISOString().split('T')[0],
+          validacion_final: datesValidacion?.to?.toISOString().split('T')[0],
         }
       }
     )
@@ -50,20 +84,42 @@ export const InformacionGeneral = ({ selectedRutaDetalle, setPeriodos, setDetall
   ]
 
   const handleEditar = () => {
-    setEditar(!editar);
+    if (!editar) {
+      setEditar(true);
+    }
     if (editar) {
-      editPeriodo(data, setPeriodos, setDetalle);
+      editPeriodo(data, setPeriodos, setDetalle, setLoadingEditPeriodo, setEditar, false, setError);
     }
   }
 
+  const refresh = () => {
+    setDatesFacturacion({
+      from: dayjs(selectedRutaDetalle?.facturacion_fecha_inicio).local().toDate(),
+      to: dayjs(selectedRutaDetalle?.facturacion_fecha_final).local().toDate()
+    })
+
+    setDatesLectura({
+      from: dayjs(selectedRutaDetalle?.lectura_inicio).local().toDate(),
+      to: dayjs(selectedRutaDetalle?.lectura_final).local().toDate()
+    })
+
+    setDatesEntrega({
+      from: dayjs(selectedRutaDetalle?.recibo_inicio).local().toDate(),
+      to: dayjs(selectedRutaDetalle?.recibo_final).local().toDate()
+    })
+
+    setDatesValidacion({
+      from: dayjs(selectedRutaDetalle?.validacion_inicio).local().toDate(),
+      to: dayjs(selectedRutaDetalle?.validacion_final).local().toDate()
+    })
+  }
+
   useEffect(() => {
-    let facturacion_temp = {
-      from: new Date(selectedRutaDetalle?.facturacion_fecha_inicio),
-      to: new Date(selectedRutaDetalle?.facturacion_fecha_final)
-    }
-    setDatesFacturacion(facturacion_temp);
-    console.log(facturacion_temp)
-  }, [selectedRutaDetalle])
+
+    console.log(datesLectura)
+
+  }, [datesLectura])
+
 
   return (
     <>
@@ -72,59 +128,89 @@ export const InformacionGeneral = ({ selectedRutaDetalle, setPeriodos, setDetall
           <div className='flex flex-col gap-4'>
             <div className='h-5 w-full flex'>
               <div className='ml-auto flex gap-2'>
-                <Button variant={"outline"}>Cerrar Periodo</Button>
+                {
+                  loadingEditPeriodo ?
+                    <>
+                      <div className='h-10 w-10 flex mr-3'>
+                        <div class="loader"></div>
+                      </div>
+                    </>
+                    : <>
+                    </>
+                }
+                {
+                  selectedRutaDetalle?.estatus == "activo" ?
+                    <>
+                      <Modal
+                        trigger={<Button variant={"outline"}>Cerrar Periodo</Button>}
+                        title='¿Cerrar Periodo?'
+                        onConfirm={() => { editPeriodo(data, setPeriodos, setDetalle, setLoadingEditPeriodo, setEditar, true, setError); }}
+                      />
+                    </> :
+                    <>
+
+                    </>
+                }
+
                 {
                   editar ?
                     <>
-                      <Button variant={"destructive"} onClick={() => { setEditar(false); }}>Cancelar</Button>
+                      <Button variant={"destructive"} onClick={() => { setEditar(false); refresh(); }}>Cancelar</Button>
                     </>
                     : <></>
                 }
-                <Button onClick={() => { handleEditar(); }}
-                  variant={editar ? "default" : "outline"}
-                  className=''>
-                  {
-                    editar ?
-                      <>
-                        Aceptar
-                      </>
-                      :
-                      <>
-                        <Pencil1Icon className='mr-3' />
-                        Editar Fechas
-                      </>
-                  }
-                </Button>
+                {
+                  selectedRutaDetalle?.estatus == "activo" ?
+                    <>
+                      <Button onClick={() => { handleEditar(); }}
+                        variant={editar ? "default" : "outline"}
+                        className={` select-none ${loadingEditPeriodo ? "pointer-events-none" : ""}`}>
+                        {
+
+                        }
+
+                        {
+                          editar ?
+                            <>
+                              <p>
+                                Aceptar
+
+                              </p>
+                            </>
+                            :
+                            <>
+                              <Pencil1Icon className='mr-3' />
+                              Editar Fechas
+                            </>
+                        }
+                      </Button>
+                    </>
+                    :
+                    <>
+                    </>
+                }
+
               </div>
             </div>
             <div className={`flex flex-col gap-3 ${editar == true ? " " : "pointer-events-none"}`}>
               <div>
                 <p>Lectura</p>
-                <DatePickerWithRange setFecha={setDatesLectura} defaultDate={{
-                  from: new Date(selectedRutaDetalle?.lectura_inicio),
-                  to: new Date(selectedRutaDetalle?.lectura_final)
-                }}
+                <DatePickerWithRange setFecha={setDatesLectura} defaultDate={datesLectura}
                 />
               </div>
 
               <div>
                 <p>Validación</p>
-                <DatePickerWithRange setFecha={setDatesValidacion} />
+                <DatePickerWithRange setFecha={setDatesValidacion} defaultDate={datesValidacion} />
               </div>
 
               <div>
                 <p>Facturación</p>
-                <DatePickerWithRange setFecha={setDatesFacturacion} defaultDate={{
-                  from: new Date(selectedRutaDetalle?.facturacion_fecha_inicio),
-                  to: new Date(selectedRutaDetalle?.facturacion_fecha_final)
-                }} />
+                <DatePickerWithRange setFecha={setDatesFacturacion} defaultDate={datesFacturacion} />
               </div>
               <div>
                 <p>Entrega de recibos</p>
-                <DatePickerWithRange setFecha={setDatesEntrega} defaultDate={{
-                  from: new Date(selectedRutaDetalle?.recibo_inicio),
-                  to: new Date(selectedRutaDetalle?.recibo_final)
-                }} />
+                <DatePickerWithRange setFecha={setDatesEntrega} defaultDate={datesEntrega} />
               </div>
               <div className="">
                 <p>Vencimiento de recibos</p>

@@ -6,9 +6,11 @@ import { addDays, format } from "date-fns"
 import { es } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react"
 import { DateRange } from "react-day-picker"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import dayjs from 'dayjs';
 import {
   Popover,
   PopoverContent,
@@ -22,15 +24,18 @@ export function DatePickerWithRange({
   minDate = null
 }: React.HTMLAttributes<HTMLDivElement>) {
 
-  const [date, setDate] = React.useState(defaultDate ?? {})
+  const [date, setDate] = React.useState(defaultDate)
 
-  React.useEffect(() => {
-    if (typeof setFecha === 'function') {
-      setFecha(date);
-      console.log(date)
-    }
-  }, [date])
+  // React.useEffect(() => {
+  //   if (typeof setFecha === 'function' && date) {
+  //     setFecha(date);
+  //     console.log(date);
+  //   }
+  // }, [date]);
 
+  React.useEffect(()=>{
+    console.log(defaultDate)
+  },[defaultDate])
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -46,14 +51,14 @@ export function DatePickerWithRange({
 
           >
             <CalendarIcon className="mr-5 h-4 w-4" />
-            {date?.from ? (
-              date.to ? (
+            {defaultDate?.from ? (
+              defaultDate?.to ? (
                 <>
-                  {format(date.from, "d 'de' MMMM 'de' yyyy", { locale: es })} -{" "}
-                  {format(date.to, "d 'de' MMMM 'de' yyyy", { locale: es })}
+                  {format(defaultDate?.from, "d 'de' MMMM 'de' yyyy", { locale: es })} - {" "}
+                  {format(defaultDate?.to, "d 'de' MMMM 'de' yyyy", { locale: es })}
                 </>
               ) : (
-                format(date.from, "d 'de' MMMM 'de' yyyy", { locale: es })
+                format(defaultDate?.from, "d 'de' MMMM 'de' yyyy", { locale: es })
               )
             ) : (
               <span>Selecciona una fecha</span>
@@ -64,8 +69,8 @@ export function DatePickerWithRange({
           <Calendar
             initialFocus
             mode="range"
-            selected={date}
-            onSelect={setDate}
+            selected={defaultDate}
+            onSelect={setFecha}
             numberOfMonths={2}
             locale={es}
           />

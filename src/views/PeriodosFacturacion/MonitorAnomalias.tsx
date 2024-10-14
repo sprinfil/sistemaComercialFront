@@ -17,14 +17,14 @@ export const MonitorAnomalias = () => {
             </div>
           </Seccion1>
           <Seccion2>
-            <Tabs defaultValue="account" className="w-full h-full flex flex-col ">
+            <Tabs defaultValue="consumos" className="w-full h-full flex flex-col ">
               <TabsList>
                 <TabsTrigger value="imagen">Imagen</TabsTrigger>
                 <TabsTrigger value="toma">Toma</TabsTrigger>
                 <TabsTrigger value="consumos">Consumos</TabsTrigger>
                 <TabsTrigger value="ordenes">Ordenes de trabajo</TabsTrigger>
               </TabsList>
-              <TabsContent value="imagen" className="h-full"><VerImagen/></TabsContent>
+              <TabsContent value="imagen" className="h-full"><VerImagen /></TabsContent>
               <TabsContent value="toma" className="h-full"><VerToma /></TabsContent>
               <TabsContent value="consumos" className="h-full"><Consumos /></TabsContent>
               <TabsContent value="ordenes" className="h-full">Change your password here.</TabsContent>

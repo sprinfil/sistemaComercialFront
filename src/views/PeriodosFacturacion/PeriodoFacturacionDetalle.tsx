@@ -5,6 +5,8 @@ import { Card } from '../../components/ui/card';
 import { CargasTrabajo } from './CargasTrabajo';
 import { MonitorAnomalias } from './MonitorAnomalias';
 import { InformacionGeneral } from './InformacionGeneral';
+import { Facturacion } from './Facturacion';
+import { Recorridos } from './Recorridos';
 
 const PeriodoFacturacionDetalle = ({ setDetalle, selectedRutaDetalle, setPeriodos }) => {
   return (
@@ -31,8 +33,8 @@ const PeriodoFacturacionDetalle = ({ setDetalle, selectedRutaDetalle, setPeriodo
             <TabsContent value="informacionGeneral" className="flex-grow"><InformacionGeneral setPeriodos={setPeriodos} selectedRutaDetalle = {selectedRutaDetalle} setDetalle={setDetalle}/></TabsContent>
             <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo /></TabsContent>
             <TabsContent value="anomalias" className="flex-grow"><MonitorAnomalias /></TabsContent>
-            <TabsContent value="recorridos" className="flex-grow">recorridos account here.</TabsContent>
-            <TabsContent value="facturacion" className="flex-grow">facturacion</TabsContent>
+            <TabsContent value="recorridos" className="flex-grow"><Recorridos/></TabsContent>
+            <TabsContent value="facturacion" className="flex-grow"><Facturacion/></TabsContent>
           </Tabs>
         </div>
       </div>

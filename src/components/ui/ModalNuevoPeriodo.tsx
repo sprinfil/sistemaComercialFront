@@ -38,6 +38,8 @@ const ModalNuevoPeriodo = ({ trigger, selectedRuta, setPeriodos, open, setOpen }
               lectura_final: datesLectura?.to?.toISOString().split('T')[0],
               recibo_inicio: datesEntrega?.from?.toISOString().split('T')[0],
               recibo_final: datesEntrega?.to?.toISOString().split('T')[0],
+              validacion_inicio: datesValidacion?.from?.toISOString().split('T')[0],
+              validacion_final: datesValidacion?.to?.toISOString().split('T')[0],
             }
           ]
       }
@@ -65,21 +67,21 @@ const ModalNuevoPeriodo = ({ trigger, selectedRuta, setPeriodos, open, setOpen }
             <div className='flex flex-col gap-4'>
               <div>
                 <p>Lectura</p>
-                <DatePickerWithRange setFecha={setDatesLectura}/>
+                <DatePickerWithRange setFecha={setDatesLectura} defaultDate={datesLectura} />
               </div>
 
               <div>
                 <p>Validación</p>
-                <DatePickerWithRange setFecha={setDatesValidacion} />
+                <DatePickerWithRange setFecha={setDatesValidacion} defaultDate={datesValidacion} />
               </div>
 
               <div>
                 <p>Facturación</p>
-                <DatePickerWithRange setFecha={setDatesFacturacion} />
+                <DatePickerWithRange setFecha={setDatesFacturacion} defaultDate={datesFacturacion} />
               </div>
               <div>
                 <p>Entrega de recibos</p>
-                <DatePickerWithRange setFecha={setDatesEntrega} />
+                <DatePickerWithRange setFecha={setDatesEntrega} defaultDate={datesEntrega} />
               </div>
               <div className="mt-[20px]">
                 <p>Vencimiento de recibos</p>
@@ -89,13 +91,23 @@ const ModalNuevoPeriodo = ({ trigger, selectedRuta, setPeriodos, open, setOpen }
           </AlertDialogHeader>
 
           <AlertDialogFooter className="flex items-end">
-            <AlertDialogCancel onClick={() => { setOpen(false) }}>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => {
+              setOpen(false)
+              setDatesEntrega({});
+              setDatesLectura({});
+              setDatesFacturacion({});
+              setDatesValidacion({});
+            }}>Cancelar</AlertDialogCancel>
 
             <Button
               disabled={loadingNewPeriodo}
               className='select-none'
               onClick={() => {
                 newPeriodo(data, setError, setPeriodos, setOpen, setLoadingNewPeriodo);
+                setDatesEntrega({});
+                setDatesLectura({});
+                setDatesFacturacion({});
+                setDatesValidacion({});
               }}>
               <div className='flex gap-2 items-center justify-center'>
                 {loadingNewPeriodo ?

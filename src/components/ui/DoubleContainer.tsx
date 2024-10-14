@@ -36,7 +36,7 @@ const Seccion1 = ({ children, width = null }) => {
   return (
     <>
       <div data-state="open" 
-      className={`flex ease overflow-hidden w-full border tableContainer data-[state=open]:md:w-[${width != null ? width : "30%"}] data-[state=closed]:w-0 duration-200 transition-all`}>
+      className={`flex ease overflow-hidden w-full border tableContainer data-[state=open]:md:w-[35%] data-[state=closed]:w-0 duration-200 transition-all`}>
         {children}
       </div>
       <div className='w-[25px] border cursor-pointer bg-muted transition-all duration-100 flex items-center mr-3 justify-center'
