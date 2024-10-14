@@ -13,7 +13,7 @@ import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
 import { Pencil1Icon } from '@radix-ui/react-icons';
 import Loader from '../../components/ui/Loader';
 import LoaderChico from '../../components/ui/LoaderChico';
-
+import { getCargaLectura } from '../../lib/Services/CargaLecturaService';
 
 
 export const CargasTrabajo = ({detalle}) => {
@@ -93,6 +93,7 @@ export const CargasTrabajo = ({detalle}) => {
                   </div>
       <div className='flex space-x-2'>
               <div className='p-2 '>
+                
                     <CargaLecturaTable data = {data}/>
                   </div>
           <div className='w-full mt-6'>
