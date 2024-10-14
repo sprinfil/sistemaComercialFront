@@ -80,6 +80,12 @@ export const columns: ColumnDef<Multas>[] = [
     header: 'Nombre', 
     cell: ({ row }) => row?.original?.nombre || 'Sin nombre', 
   },
+  {
+    accessorKey: 'estado',
+    header: 'Estado', 
+    cell: ({ row }) => row?.original?.estado, 
+  },
+
  
  
   {
@@ -139,14 +145,7 @@ export function DataTableMultas({ data }) {
 
   return (
     <div className="w-full p-2">
-       <IconButton onClick={handleCrearNuevaMulta}>
-          <div className='flex gap-2 items-center'> 
-            Agregar nueva multa
-            
-            <PlusCircleIcon className='w-[20px] h-[20px]'/>
-          
-          </div>
-        </IconButton>
+      
       <div className="flex items-center mb-2 mt-2 w-full justify-center">
         <Input
           placeholder="Filtrar multas..."

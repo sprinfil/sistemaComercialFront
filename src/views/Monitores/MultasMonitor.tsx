@@ -32,6 +32,8 @@ export const MultasMonitor = () => {
   const {setMultas} = getMultas(setMultasTabla);
 
   console.log(multasTabla);
+
+
   return (
     <div>
       <div className='flex space-x-2'>
@@ -39,7 +41,7 @@ export const MultasMonitor = () => {
 
         <div className='w-full'>
           <DataTableMonitorMultas data={multasTabla}/>
-
+            
         </div>
       </div>
         

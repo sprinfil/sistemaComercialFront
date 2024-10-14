@@ -38,6 +38,9 @@ import {
 import axiosClient from "../../axios-client"
 import IconButton from "./IconButton"
 import { getMultas } from "../../lib/MultasService"
+import ModalModificarMulta from "./ModalModificarMulta"
+import { EyeOpenIcon } from "@radix-ui/react-icons"
+import ModalMonitorMultas from "./ModalMonitorMultas"
 
 export type Multas = {
   id: number;
@@ -46,7 +49,16 @@ export type Multas = {
   UMAS_min: string;
   UMAS_max: string;
   estatus: boolean;
-
+  codigo_toma: number;
+  nombre_multa: string;
+  operador_levanto_multa: string;
+  nombre_operador_revisor: string; 
+  monto: string; 
+  estado: string;
+  fecha_solicitud: string;
+  fecha_revision: string;
+  motivo: string;
+  nombre_multado: string;
 }
 
 
@@ -76,19 +88,50 @@ export const columns: ColumnDef<Multas>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'nombre',
-    header: 'Nombre', 
-    cell: ({ row }) => row?.original?.nombre || 'Sin nombre', 
+    accessorKey: 'codigo_toma',
+    header: 'Código de toma', 
+    cell: ({ row }) => row?.original?.codigo_toma, 
   },
- 
+  {
+    accessorKey: 'nombre_multado',
+    header: 'Nombre del usuario', 
+    cell: ({ row }) => row?.original?.nombre_multado, 
+  },
+  {
+    accessorKey: 'nombre_multa',
+    header: 'Multa', 
+    cell: ({ row }) => row?.original?.nombre_multa, 
+  },
+  {
+    accessorKey: 'motivo',
+    header: 'Motivo', 
+    cell: ({ row }) => row?.original?.motivo, 
+  },
+  {
+    accessorKey: 'estado',
+    header: 'Estado', 
+    cell: ({ row }) => row?.original?.estado, 
+  },
+
  
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
+      console.log(row?.original);
+      const [abrirModal, setAbrirModal] = React.useState(false);
+      const handleVerDetalles = () => 
+      {
+        setAbrirModal(true);
+
+      }
       return (
         <>
-         
+        <ModalMonitorMultas isOpen={abrirModal} setIsOpen={setAbrirModal} idMulta={row?.original}/>
+
+         <IconButton onClick={handleVerDetalles}>
+         <EyeOpenIcon className="w-[20px] h-[20px]"/>
+         </IconButton>
         </>
       )
     },

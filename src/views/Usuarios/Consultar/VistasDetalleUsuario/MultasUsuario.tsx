@@ -15,7 +15,7 @@ export const MultasUsuario = () => {
 
 
     const [abrirModal, setAbrirModal] = useState(false);
-
+//console.log( usuariosEncontrados[0].tomas[0].codigo_toma);
     const [data, setData] = useState([]);
     const handleAbrirModal = () => {
         setAbrirModal(true);
@@ -30,13 +30,13 @@ export const MultasUsuario = () => {
         try {
           const response = await axiosClient.get("/multa/consultarmultas", {
             params:{
-            codigo_usuario : usuariosEncontrados[0]?.codigo_usuario
-
+              codigo_toma : "0101001",
+              modelo_multado: "toma"
             }
           });
          // setLoadingTable(false);
           setData(response.data.data);
-          console.log(response);
+          console.log(response.data.data);
         } catch (error) {
           //setLoadingTable(false);
           console.error("Failed to fetch multas:", error);

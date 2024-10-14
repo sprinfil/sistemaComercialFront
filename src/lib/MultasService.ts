@@ -11,7 +11,7 @@ export function getMultas(setMultas) {
     const fetchData = async ()  => {
       try {
         setLoadingMultas(true);
-        const response = await axiosClient.get("/catalogomulta");
+        const response = await axiosClient.get("/multas/monitormultas");
         console.log(response.data);
         setMultas(response.data);
       } catch (e) {
