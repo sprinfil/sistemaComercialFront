@@ -12,19 +12,22 @@ import {
 import axiosClient from '../../axios-client';
 import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario.tsx';
 import { useToast } from './use-toast.ts';
+import Loader from "../ui/Loader.tsx";
 
 interface ModalConvenioProps {
   trigger: React.ReactNode;
   title: string;
-  onConfirm: () => void; 
+  onConfirm: () => void;
 }
 
 const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm }) => {
   const { usuariosEncontrados } = ZustandGeneralUsuario();
   const [convenios, setConvenios] = useState<any[]>([]);
-  const [comentario, set_comentario] = useState<string>("");
+  const [comentario, setComentario] = useState<string>("");
   const [selectedConvenio, setSelectedConvenio] = useState<any>(null);
+  const [convenioDetails, setConvenioDetails] = useState<any>(null); // State for detailed convenio info
   const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
 
   function successToastEliminado() {
     toast({
@@ -37,6 +40,7 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
   const cargarConvenios = () => {
     if (usuariosEncontrados && usuariosEncontrados.length > 0) {
       const id_modelo = usuariosEncontrados[0].tomas[0];
+      setLoading(true);
       axiosClient
         .get(`/Convenio/ConsultarConvenio`, {
           params: {
@@ -47,7 +51,6 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
         .then(({ data }) => {
           if (data && data.id_convenio_catalogo) {
             const convenioCatalogo = data.convenio_catalogo;
-            console.log(data)
             const conveniosData = [{
               id: data.id,
               id_convenio_catalogo: convenioCatalogo.id,
@@ -59,11 +62,9 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
               cantidad_letras: data.cantidad_letras,
               estado: data.estado,
               comentario: data.comentario,
-              letras: data.letras, // Actualizar para incluir las letras
+              letras: data.letras,
             }];
-            console.log(conveniosData)
-         
-            //setConvenios(conveniosData);
+            setConvenios(conveniosData);
           } else {
             setConvenios([]);
           }
@@ -71,6 +72,9 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
         .catch((err) => {
           console.error('Error al obtener los convenios:', err);
           setConvenios([]);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
@@ -78,6 +82,27 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
   useEffect(() => {
     cargarConvenios();
   }, [usuariosEncontrados]);
+
+  const cargarConvenioDetalles = (convenioId: number) => {
+    axiosClient
+      .get(`/Convenio/DetallesConvenio`, {
+        params: {
+          id_convenio: convenioId,
+        },
+      })
+      .then(({ data }) => {
+        setConvenioDetails(data); // Set detailed data from the new API call
+      })
+      .catch((err) => {
+        console.error('Error al obtener los detalles del convenio:', err);
+      });
+  };
+
+  useEffect(() => {
+    if (selectedConvenio) {
+      cargarConvenioDetalles(selectedConvenio.id); // Fetch more details when a convenio is selected
+    }
+  }, [selectedConvenio]);
 
   const handleCancelarConvenio = async (convenioId: number) => {
     try {
@@ -89,7 +114,7 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
       if (response.status === 200) {
         cargarConvenios();
         setSelectedConvenio(null);
-        set_comentario(""); // Clear the comment when canceling
+        setComentario("");
         successToastEliminado();
       } else {
         console.error("Error al cancelar el convenio");
@@ -112,39 +137,45 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
             {title}
           </AlertDialogTitle>
         </AlertDialogHeader>
+        {loading ? (
+        <Loader />
+      ) : (
 
-        {/* Mostrar los detalles del convenio en una tabla */}
         <div className="mt-4 overflow-x-auto">
           {convenios.length > 0 ? (
             <table className="min-w-full border-collapse">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="text-left px-4 py-2">Monto Conveniado</th>
+                  <th className="text-left px-4 py-2">Monto conveniado</th>
                   <th className="text-left py-2">Monto Total</th>
                   <th className="text-left px-4 py-2">Periodicidad</th>
-                  <th className="text-left px-4 py-2">Cantidad de Letras</th>
+                  <th className="text-left px-4 py-2">Cantidad de letras</th>
                   <th className="text-left px-4 py-2">Estado</th>
                   <th className="text-left px-4 py-2">Comentario</th>
                 </tr>
               </thead>
               <tbody>
                 {convenios.map((convenio) => (
-                  <tr key={convenio.id} className="hover:bg-gray-50" onClick={() => setSelectedConvenio(convenio)}>
+                  <tr
+                    key={convenio.id}
+                    className={`hover:bg-gray-100 ${selectedConvenio?.id === convenio.id ? 'bg-green-300' : ''}`} // Agrega la clase si es seleccionado
+                    onClick={() => setSelectedConvenio(convenio)}
+                  >
                     <td className="px-4 py-2">{convenio.monto_conveniado}</td>
                     <td className="px-4 py-2">{convenio.monto_total}</td>
                     <td className="px-4 py-2">{convenio.periodicidad}</td>
                     <td className="px-4 py-2">{convenio.cantidad_letras}</td>
                     <td className="px-4 py-2">{convenio.estado}</td>
-                    <td className="px-4 py-2">{convenio.comentario}</td>    
+                    <td className="px-4 py-2">{convenio.comentario}</td>
                   </tr>
                 ))}
               </tbody>
+
             </table>
           ) : (
             <p>No hay convenios disponibles.</p>
           )}
-          
-          {/* Mostrar el comentario solo si hay un convenio seleccionado */}
+
           {selectedConvenio && (
             <div className="mt-4">
               <label htmlFor="comentario">Comentario</label>
@@ -152,14 +183,24 @@ const ModalConvenioDetalle: React.FC<ModalConvenioProps> = ({ trigger, title, on
                 id="comentario"
                 className="w-full mt-2 p-2 border rounded-md"
                 value={comentario}
-                onChange={(e) => set_comentario(e.target.value)}
+                onChange={(e) => setComentario(e.target.value)}
                 placeholder="Agrega un comentario..."
               />
             </div>
           )}
-        </div>
 
-        {/* Botón para cancelar el convenio seleccionado fuera de la tabla */}
+          {/* Display additional convenio details */}
+          {convenioDetails && (
+            <div className="mt-4 border p-4 rounded-md">
+              <h4 className="text-lg font-semibold">Detalles del Convenio</h4>
+              <p>Monto restante: {convenioDetails.monto_restante}</p>
+              <p>Pagos realizados: {convenioDetails.pagos_realizados}</p>
+              <p>Fecha de finalización: {convenioDetails.fecha_finalizacion}</p>
+            </div>
+          )}
+        </div>
+        )}
+
         <div className="mt-4">
           {selectedConvenio && (
             <button
