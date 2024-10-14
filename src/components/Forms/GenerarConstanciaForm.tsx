@@ -233,7 +233,7 @@ const GenerarConstanciaForm = () => {
                     {/* Mostrar lista de constancias disponibles */}
                     {constanciasRegistradas.length > 0 ? (
                         <div>
-                            <h3 className="font-semibold mb-2">Constancias Disponibles:</h3>
+                            <h3 className="font-semibold mb-3">Constancias Disponibles:</h3>
                             <ul>
                                 {constanciasRegistradas.map((constancia, index) => (
                                     <li key={index} className="mb-2">
