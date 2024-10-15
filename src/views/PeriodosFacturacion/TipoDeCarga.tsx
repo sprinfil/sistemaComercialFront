@@ -61,6 +61,7 @@ export const TipoDeCarga = ({booleanMostrar}) => {
   const [tipoCargaSeleccionada, setTipoCargaSeleccionada] = useState("");
 
   const [dataArray, setDataArray] = useState<FilaCargaTrabajo[]>([]);
+  const [dataArrayFront, setDataArrayFront] = useState<FilaCargaTrabajo[]>([]);
 
   const form = useForm<z.infer<typeof tipoCargaSchema>>({
     resolver: zodResolver(tipoCargaSchema),
@@ -70,46 +71,45 @@ export const TipoDeCarga = ({booleanMostrar}) => {
     },
   })
 
+  useEffect(() => {
+    setDataArray(cargasDeTrabajoAEnviar);
+  },[])
+
   const onSubmit = (values) => {
     console.log(values);
+    if (!filasSeleccionadaCargaTrabajo) {
+      toast({
+        variant: "destructive",
+        title: "Oh, no. Error",
+        description: "No haz seleccionado ninguna fila.",
+        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+    })
+      return; // Salir de la función si no hay selección
+    }
+    
     setCargaAsignadaValorFront(true);
-    setDataArray(cargasDeTrabajoAEnviar);
-
+    console.log(filasSeleccionadaCargaTrabajo);
 
     // Crear el nuevo objeto para enviar a la petición
     const newData = {
       id: filasSeleccionadaCargaTrabajo?.id,
       id_libro: filasSeleccionadaCargaTrabajo?.id_libro,
+      nombre_libro: filasSeleccionadaCargaTrabajo?.libro?.nombre,
       id_periodo: filasSeleccionadaCargaTrabajo?.id_periodo,
       id_operador_encargado: values.operadores,
       estado: "en proceso",
       tipo_carga: values.tipo_carga,
     };
 
-    const actualizarDataEnFront = {
-      id: filasSeleccionadaCargaTrabajo?.id,
-      id_libro: filasSeleccionadaCargaTrabajo?.id_libro,
-      id_periodo: filasSeleccionadaCargaTrabajo?.id_periodo,
-      id_operador_encargado: values.operadores,
-      estado: "en proceso",
-      tiene_encargado: 
-      {
-        nombre: operadorSeleccionado
-      },
-      libro:
-      {
-        nombre: filasSeleccionadaCargaTrabajo?.libro?.nombre
 
-      }
-     
-    };
+   
 
     setDataArrayColumns(newData);
   
     // Actualizamos el estado del array de datos
     setDataArray(prevDataArray => {
       // Verificamos si ya existe un objeto con el mismo ID
-      const existingIndex = prevDataArray.findIndex(item => item.id === newData.id);
+      const existingIndex = prevDataArray.findIndex(item => item.id === filasSeleccionadaCargaTrabajo.id);
   
       let updatedArray;
   
@@ -120,6 +120,7 @@ export const TipoDeCarga = ({booleanMostrar}) => {
           ...updatedArray[existingIndex],
           tipo_carga: newData.tipo_carga,
           id_operador_encargado: newData.id_operador_encargado,
+          nombre_libro: newData?.libro?.nombre,
           estado: "en proceso",
           nombre_operador_encargado: operadorSeleccionado,
         };
@@ -127,16 +128,20 @@ export const TipoDeCarga = ({booleanMostrar}) => {
         // Si no existe, agregamos el nuevo objeto
         updatedArray = [...prevDataArray, newData];
       }
+
+
+
+      //ESTO ES PARA MOSTRAR LOS VALORES EN EL FRONT
   
       
   
       // Actualizamos cargasDeTrabajoAEnviar con el array actualizado
       setCargasDeTrabajoAEnviar(updatedArray);
+     // setDataInfoCargaTrabajo(updatedArray); //FALTA ACTUALIZAR ESTA VARIABLE CORRECTAMENTE PARA QUE SE VEAN LOS CAMBIOS EN EL FRONT Y DESPUES
       console.log(updatedArray);
 
       return updatedArray;
     });
-    setDataInfoCargaTrabajo([actualizarDataEnFront]); //FALTA ACTUALIZAR ESTA VARIABLE CORRECTAMENTE PARA QUE SE VEAN LOS CAMBIOS EN EL FRONT Y DESPUES
     //ENVIARLO AL SERVIDOR
     toast({
       title: "¡Carga éxitosa!",
@@ -151,12 +156,16 @@ export const TipoDeCarga = ({booleanMostrar}) => {
   
   console.log(dataInfoCargaTrabajo);
   console.log(dataArray);
+  console.log(dataInfoCargaTrabajo);
   console.log(cargasDeTrabajoAEnviar);
   console.log(cargasDeTrabajoAEnviar[0]?.nombre_operador_encargado);
 
   useEffect(() => 
   {
+
+    //ESTOS SON LOS DATOS QUE VOY A ENVIAR AL BACKEND
     if (dataArray && dataArray.length > 0) {
+      console.log(dataArray);
       const updatedCargas = dataArray.map(item => ({
         id: item.id,
         id_libro: item.id_libro,
@@ -165,9 +174,37 @@ export const TipoDeCarga = ({booleanMostrar}) => {
         estado: item.estado,
         tipo_carga: item.tipo_carga,
       }));
+
+      console.log(updatedCargas);
   
       // Actualiza el estado
       setCargasDeTrabajoAEnviar(updatedCargas);
+
+
+        //ESTO CONTROLA EL FRONT PARA MOSTRAR NOMBRE Y LIBRO
+      const updatedCargas2 = dataArray.map(item => {
+        if (item.id === filasSeleccionadaCargaTrabajo?.id) { // Reemplaza idToUpdate con el id que deseas modificar
+          return {
+            id: item.id,
+            libro: {
+              nombre: item.libro ? item.libro.nombre : 'Nombre no disponible', // Valor predeterminado
+            },
+            id_periodo: item.id_periodo,
+            id_operador_encargado: item.id_operador_encargado,
+            estado: item.estado,
+            tipo_carga: item.tipo_carga,
+            tiene_encargado: {
+              nombre: item.nombre_operador_encargado ? item.nombre_operador_encargado : 'Operador no disponible', // Valor predeterminado
+            },
+          };
+        }
+        // Si no coincide, devolvemos el item original
+        return item;
+      });
+      console.log(updatedCargas2);
+      setDataInfoCargaTrabajo(updatedCargas2); //FALTA ACTUALIZAR ESTA VARIABLE CORRECTAMENTE PARA QUE SE VEAN LOS CAMBIOS EN EL FRONT Y DESPUES
+
+ 
     }
   },[dataArray])
 

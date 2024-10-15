@@ -262,7 +262,7 @@ export function CargaLecturaDataTable({ data }) {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                className={`text-xl cursor-pointer ${row.getIsSelected() ? "bg-gray-500" : ""}`}  // Aplica el fondo gris si está seleccionada
+                className={`text-xl cursor-pointer ${row.getIsSelected() ? 'bg-gray-900' : ''}`} 
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
                 onClick={() => { table.getRowModel().rows.forEach(r => r.toggleSelected(false)); row.toggleSelected(); setFilasSeleccionadasCargaTrabajo(row.original); } }  // Selecciona/deselecciona al hacer clic en la fila
