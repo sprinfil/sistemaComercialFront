@@ -18,6 +18,7 @@ import { ZustandGeneralUsuario } from '../../contexts/ZustandGeneralUsuario.tsx'
 import { Input } from './input.tsx';
 import { ToastAction } from '@radix-ui/react-toast';
 import { useToast } from './use-toast.ts';
+import { set } from 'date-fns';
 
 
 interface ModalConvenioProps {
@@ -37,6 +38,8 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const [selectedConvenio, setSelectedConvenio] = useState<any | null>(null);
   const [porcentajeConveniado, setPorcentajeConveniado] = useState<number>(0);
   const [pagoInicial, setPagoInicial] = useState<number>(0);
+  const [pagoInicialCalculad, setPagoInicialCalculado] = useState<number>(0);
+  const [pagoInicialPesos, setPagoInicialPesos] = useState<number>(0);
   const [montoBonificado, setmontoBonificado] = useState<number>(0);
   const [cantidadLetras, setCantidadLetras] = useState<number>(0);
   const [comentario, setComentario] = useState<string>('');
@@ -44,6 +47,8 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const [activeAccordion, setActiveAccordion] = useState<string | null>("convenios");
   const [tipoMonto, setTipoMonto] = useState<string>('%');
   const [montoConveniado, setMontoConveniado] = useState<number>(0);
+  const [valorAnteriorPagoInicial, setValorAnteriorPagoInicial] = useState(pagoInicialPesos);
+
 
   const { toast } = useToast()
   
@@ -74,6 +79,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
 
   const handleRowClick = (convenio: any) => {
     setSelectedConvenio(convenio);
+    setPagoInicial(convenio.pago_inicial);
 
     axiosClient.post("/Convenio/BuscarConceptosConveniables", {
       tipo: "toma", 
@@ -101,16 +107,22 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
     if (yaSeleccionado) {
         setCargosSeleccionados(cargosSeleccionados.filter((c) => c.id !== cargo.id));
     } else {
-        const montoBonificadoActual = tipoMonto === '%' 
-            ? (cargo.monto_pendiente * porcentajeConveniado) / 100 
+        const montoBonificadoActual = tipoMonto === '%'
+            ? (cargo.monto_pendiente * porcentajeConveniado) / 100
             : montoBonificado;
-        
+
         setCargosSeleccionados([
             ...cargosSeleccionados,
             { ...cargo, montoBonificado: montoBonificadoActual }
         ]);
+
+        // Calcular el pago inicial en pesos basado en el convenio
+        const totalSeleccionados = calcularTotalSeleccionados();
+        const pagoInicialCalculado = (totalSeleccionados * (selectedConvenio?.pago_inicial || 0)) / 100;
+        setPagoInicialCalculado(pagoInicialCalculado); // Guardar el monto calculado del pago inicial
     }
 };
+
 
 
 
@@ -121,7 +133,23 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
    const calcularTotalSeleccionados = () => {
     return cargosSeleccionados.reduce((acc, cargo) => acc + (cargo.monto_pendiente || 0), 0);
   };
-  
+  const handlePagoInicialChange = (pago: number) => {
+    
+    const totalSeleccionados = calcularTotalSeleccionados();
+    if (totalSeleccionados > 0) {
+        const porcentaje = (pago / totalSeleccionados) * 100;
+        
+        // Formatear el pago inicial a dos decimales
+        const pagoFormateado = parseFloat(porcentaje.toFixed(2));
+        
+        setPagoInicial(pagoFormateado); // Guardar el pago inicial en pesos
+        console.log(pagoFormateado);
+        setPorcentajeConveniado(pagoFormateado); // Guardar el porcentaje para enviar a la API
+    } else {
+        setPagoInicial(0); // Si no hay cargos seleccionados, no hay total
+        setPorcentajeConveniado(0);
+    }
+};
 
   useEffect(() => {
     calcularTotalSeleccionados(); // Llama a la función para que actualice el total
@@ -140,18 +168,19 @@ useEffect(() => {
 }, [porcentajeConveniado, montoBonificado, cargosSeleccionados, tipoMonto]);
 
   useEffect(() => {
+    
     const totalSeleccionados = calcularTotalSeleccionados();
     if (tipoMonto === '$') {
       // Si el tipo es monto fijo, recalculamos el porcentaje basado en el monto sobre el total seleccionado
       setPorcentajeConveniado((montoBonificado / totalSeleccionados) * 100);
+      
     }
   }, [montoBonificado, cargosSeleccionados]);
 
   const calcularTotalmontoBonificado = () => {
     return cargosSeleccionados.reduce((acc, cargo) => acc + (cargo.montoBonificado || 0), 0);
-    
-    
 };
+
 
 
   const handleSelectAll = (checked: boolean) => {
@@ -177,7 +206,7 @@ useEffect(() => {
         modelo_origen: "toma",
         cantidad_letras: cantidadLetras,
         comentario: comentario,
-        pago_inicial: pagoInicial,
+        pago_inicial: porcentajeConveniado,
         cargos_conveniados: cargosSeleccionados.map(cargo => ({
             id: cargo.id,
             porcentaje_conveniado: tipoMonto === '%' ? porcentajeConveniado : montoBonificado,
@@ -199,11 +228,24 @@ useEffect(() => {
 const calcularTotalMontos = () => {
   return cargosSeleccionados.reduce((total, cargo) => total + (Number(cargo.monto_pendiente) || 0), 0);
 };
+useEffect(() => {
+  const totalSeleccionados = calcularTotalSeleccionados(); // Suma de los montos pendientes de los cargos seleccionados
+  console.log("Total Seleccionados:", totalSeleccionados); // Agregar un log para depuración
+  console.log("Pago Inicial:", pagoInicial); // Log para ver el pago inicial
+
+  if (totalSeleccionados > 0) {
+    setPagoInicialPesos((pagoInicial / 100) * totalSeleccionados); // Asegúrate de que esto es lo que deseas
+  } 
+  console.log(pagoInicialPesos)
+}, [pagoInicial, cargosSeleccionados, pagoInicialPesos]); // Agregar cargosSeleccionados como dependencia
+
+
 
 useEffect(() => {
   const totalSeleccionados = calcularTotalMontos();
+  console.log(pagoInicial)
   console.log('Total de montos seleccionados:', totalSeleccionados); // Para depuración
-}, [cargosSeleccionados]);
+}, [cargosSeleccionados,]);
 
 const formatMonto = (monto: number) => {
   // Convierte el monto a una cadena con 2 decimales solo si es necesario
@@ -223,7 +265,7 @@ return (
   <AlertDialog>
     <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
     <AlertDialogContent className="w-[90vw] h-[45vw] max-w-none flex flex-col">
-    <div className="flex-1 flex">
+    <div className="flex-1 flex ">
         
         {/* Primera parte - Resumen (1/3 del ancho) */}
         <div className="w-[40vh] p-4 ">
@@ -234,6 +276,7 @@ return (
               <div className="mt-4 ">
                 <h3 className="font-medium">Resumen:</h3>
                 <p>Convenio: {selectedConvenio.nombre}</p>
+                <p>Pago inicial: {selectedConvenio.pago_inicial ? `%${selectedConvenio.pago_inicial}` : 'No requiere'} = ${pagoInicialPesos.toFixed(2)}</p>
                 <p>Cargos Conveniados:</p>
                 <ul>
                   {cargosSeleccionados.map((cargo: any) => (
@@ -262,25 +305,30 @@ return (
                 <AccordionTrigger className="font-medium">
                   Convenios Disponibles
                 </AccordionTrigger>
-                <AccordionContent>
+                <AccordionContent className="max-h-[70vh] overflow-y-auto">
                 {convenios.length > 0 ? (
-                  convenios.map((convenio: any) => (
-                    <div
-                      key={convenio.id}
-                      className={`cursor-pointer p-2 hover:bg-gray-100 ${
-                        selectedConvenio?.id === convenio.id ? 'bg-gray-200' : ''
-                      }`}
-                      onClick={() => handleRowClick(convenio)}
-                    >
-                      {/* Mostrar el nombre del convenio */}
-                      <p>{convenio.nombre}</p>
-                      {/* Mostrar el pago inicial del convenio */}
-                      <p><strong>Pago Inicial:</strong> {convenio.pago_inicial ? `$${convenio.pago_inicial}` : 'No disponible'}</p>
-                    </div>
-                  ))
+                  convenios.map((convenio: any) => {
+                    console.log(convenio); // Para verificar los convenios y su estructura
+                    console.log('Pago inicial:', convenio.pago_inicial); 
+                    return (
+                      <div
+                        key={convenio.id}
+                        className={`cursor-pointer p-2 hover:bg-gray-100  ${
+                          selectedConvenio?.id === convenio.id ? 'bg-gray-200' : ''
+                        }`}
+                        onClick={() => handleRowClick(convenio)}
+                      >
+                        {/* Mostrar el nombre del convenio */}
+                        <p>{convenio.nombre}</p>
+                        {/* Mostrar el pago inicial del convenio */}
+                        <p><strong>Pago Inicial:</strong> {convenio.pago_inicial ? `%${convenio.pago_inicial}` : 'No requiere'}</p>
+                      </div>
+                    );
+                  })
                 ) : (
                   <p className="text-center">No hay convenios disponibles.</p>
                 )}
+
 
                 </AccordionContent>
               </AccordionItem>
@@ -297,6 +345,7 @@ return (
                           <th className="px-4 py-2 text-left">Tipo de monto</th>
                           <th className="px-4 py-2 text-left">Porcentaje bonificado</th>
                           <th className="px-4 py-2 text-left">Monto bonificado</th>
+                          <th className="px-4 py-2 text-left">Pago inicial</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -333,6 +382,17 @@ return (
                               }}
                               className="border p-1"
                               disabled={tipoMonto !== '$'}
+                            />
+                          </td>
+                          <td className="px-4 py-2">
+                            <Input
+                              type="number"
+                             
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                handlePagoInicialChange(value === '' ? 0 : Number(value));
+                              }}
+                              className="border p-1"
                             />
                           </td>
                         </tr>
