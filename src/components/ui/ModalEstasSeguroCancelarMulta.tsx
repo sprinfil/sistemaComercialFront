@@ -30,22 +30,41 @@ import { Input } from './input';
 import { MultasComboBox } from './MultasComboBox';
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { ZustandMultas } from '../../contexts/ZustandMultas';
 const ModalEstasSeguroCancelarMulta = ({ isOpen, setIsOpen, idMulta }) => {
     const { toast } = useToast()
 
+    console.log(idMulta);
+    const {setMultasTabla, multasTabla} = ZustandMultas();
+    const [multasTablaFront, setMultasTablaFront] = useState([]);
+    const [mostrarEnFront, setMostrarEnFront] = useState(false);
 
     const handleCancelarMulta =  async () =>
     {
+        setMostrarEnFront(false);
         try
         {
             const response = await axiosClient.put(`/multas/monitor/cancelarmulta/${idMulta}`)
-            console.log(response);
+            console.log(response.data.multa);
+            const nuevaMulta = response.data.multa;
+
+            setMultasTablaFront((prevMultas) => {
+                console.log("Estado anterior de multas:", prevMultas); // Verifica el estado anterior aquí
+    
+                return prevMultas.map((multa) =>
+                    multa.id === idMulta
+                        ? nuevaMulta // Reemplaza todo el objeto de la multa con el nuevo
+                        : multa
+                );
+            }); // Suponiendo que aquí se devuelve el objeto completo de la multa actualizada
             toast({
                 title: "¡Éxito!",
                 description: "La multa se ha cancelado correctamente",
                 variant: "success",
     
             })
+            setMostrarEnFront(true);
+
         } 
         catch(response)
         {
@@ -61,6 +80,25 @@ const ModalEstasSeguroCancelarMulta = ({ isOpen, setIsOpen, idMulta }) => {
 
         }
     }
+
+
+
+
+useEffect(() => {
+    setMultasTablaFront(multasTabla);
+}, [multasTabla])
+
+useEffect(() => {
+    if(mostrarEnFront)
+    {
+        setMultasTabla(multasTablaFront);
+        //console.log(mostrarEnFront);
+       // console.log(multasTabla);
+    }
+    //console.log(multasTablaFront);
+}, [multasTablaFront])
+
+
     return (
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
             <AlertDialogContent className="max-w-[85vh]">

@@ -135,9 +135,9 @@ const ModalMonitorMultas = ({ isOpen, setIsOpen, idMulta }) => {
                             </TableHeader>
                             <TableBody>
                                 <TableRow >
-                                    <TableCell>{idMulta.codigo_toma}</TableCell>
-                                    <TableCell>{idMulta.nombre_multado}</TableCell>
-                                    <TableCell>"{idMulta.codigo_toma}"</TableCell>
+                                    <TableCell>{idMulta?.codigo_toma}</TableCell>
+                                    <TableCell>{idMulta?.nombre_multado}</TableCell>
+                                    <TableCell>"{idMulta?.codigo_toma}"</TableCell>
                                 </TableRow>
                             </TableBody>
                      
@@ -163,14 +163,14 @@ const ModalMonitorMultas = ({ isOpen, setIsOpen, idMulta }) => {
                             </TableHeader>
                             <TableBody>
                                 <TableRow >
-                                    <TableCell >{idMulta.nombre_multa}</TableCell>
-                                    <TableCell >{idMulta.motivo}</TableCell>
-                                    <TableCell >{idMulta.estado}</TableCell>
-                                    <TableCell >{idMulta.monto}</TableCell>
-                                    <TableCell >{idMulta.operador_levanto_multa}</TableCell>
-                                    <TableCell >{idMulta.nombre_operador_revisor}</TableCell>
-                                    <TableCell >{idMulta.fecha_solicitud}</TableCell>
-                                    <TableCell >{idMulta.fecha_revision}</TableCell>
+                                    <TableCell >{idMulta?.nombre_multa}</TableCell>
+                                    <TableCell >{idMulta?.motivo}</TableCell>
+                                    <TableCell >{idMulta?.estado}</TableCell>
+                                    <TableCell >{idMulta?.monto}</TableCell>
+                                    <TableCell >{idMulta?.operador_levanto_multa}</TableCell>
+                                    <TableCell >{idMulta?.nombre_operador_revisor}</TableCell>
+                                    <TableCell >{idMulta?.fecha_solicitud}</TableCell>
+                                    <TableCell >{idMulta?.fecha_revision}</TableCell>
 
                                 </TableRow>
                             </TableBody>

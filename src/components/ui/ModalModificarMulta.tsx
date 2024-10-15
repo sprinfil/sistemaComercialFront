@@ -30,17 +30,20 @@ import {
 import { Input } from './input';
 import { MultasComboBox } from './MultasComboBox';
 import { Button } from './button';
-
+import { ZustandMultas } from '../../contexts/ZustandMultas';
 const ModalModificarMulta = ({ isOpen, setIsOpen, idMulta }) => {
     const { toast } = useToast()
 
     const [estadoMulta, setEstadoMulta] = useState('');
     const [valorMulta, setValorMulta] = useState('');
     const [selectedMulta, setSelectedMulta] = useState("");
+    const [multasTablaFront, setMultasTablaFront] = useState([]);
 
     const [error, setError] = useState(""); // Para manejar errores
+    const {setMultasTabla,multasTabla} = ZustandMultas();
+    console.log(idMulta.nombre_multa);
 
-    console.log(idMulta);
+    const [mostrarEnFront, setMostrarEnFront] = useState(false);
 
     const handleValorInput = (event) => {
         setValorMulta(event.target.value);
@@ -53,13 +56,6 @@ const ModalModificarMulta = ({ isOpen, setIsOpen, idMulta }) => {
     };
 
 
-    useEffect(() => {
-        return () => {
-            setValorMulta("");
-            setEstadoMulta("");
-        }
-    }, [])
-
     const HandleLimpiarEstados = () => {
         setValorMulta("");
         setEstadoMulta("");
@@ -68,19 +64,14 @@ const ModalModificarMulta = ({ isOpen, setIsOpen, idMulta }) => {
     }
 
 
+
+
     const handleModificarMulta = async () => {
-        if (!estadoMulta) {
-            toast({
-                variant: "destructive",
-                title: "Oh, no. Error",
-                description: "Debes seleccionar un estado antes de enviar.",
-                action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-            })
-            return;
-        }
+        setMostrarEnFront(false);
+       
 
         const values = {
-            estado:estadoMulta,
+            estado:"activo",
             monto: valorMulta
         }
 
@@ -89,9 +80,24 @@ const ModalModificarMulta = ({ isOpen, setIsOpen, idMulta }) => {
         try {
 
             const response = await axiosClient.put(`/multas/monitor/modificarmulta/${idMulta?.id}`, values)
-            console.log(response);
+            console.log(response.data.multa);
             setValorMulta("");
             setEstadoMulta("");
+            const nuevaMulta = response.data.multa; // Suponiendo que aquí se devuelve el objeto completo de la multa actualizada
+
+            setMultasTablaFront((prevMultas) => {
+                console.log("Estado anterior de multas:", prevMultas); // Verifica el estado anterior aquí
+    
+                return prevMultas.map((multa) =>
+                    multa.id === idMulta?.id
+                        ? nuevaMulta // Reemplaza todo el objeto de la multa con el nuevo
+                        : multa
+                );
+            });
+
+           
+            setMultasTabla(multasTablaFront);
+            setMostrarEnFront(true);
             //setIsOpen(false);
             toast({
                 title: "¡Éxito!",
@@ -99,6 +105,7 @@ const ModalModificarMulta = ({ isOpen, setIsOpen, idMulta }) => {
                 variant: "success",
 
             })
+            setIsOpen(false);
         }
         catch (response) {
             console.log(response.response.data.message);
@@ -112,14 +119,30 @@ const ModalModificarMulta = ({ isOpen, setIsOpen, idMulta }) => {
         }
     }
 
-    console.log(selectedMulta);
+
+
+    useEffect(() => {
+            setMultasTablaFront(multasTabla);
+    }, [multasTabla])
+    
+    
+    useEffect(() => {
+        if(mostrarEnFront)
+        {
+            setMultasTabla(multasTablaFront);
+            console.log(mostrarEnFront);
+            console.log(multasTabla);
+        }
+        //console.log(multasTablaFront);
+}, [multasTablaFront])
+
     return (
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
             <AlertDialogContent className="max-w-[85vh]">
                 <AlertDialogHeader>
 
                     <AlertDialogTitle className="text-2xl">
-                        Gestionar multa
+                        Multa
 
 
                     </AlertDialogTitle>
@@ -130,41 +153,30 @@ const ModalModificarMulta = ({ isOpen, setIsOpen, idMulta }) => {
 
 
 
-                        <div className='mt-5 text-xl'>Selecciona el estado</div>
-
-                        <Select onValueChange={(value) => setEstadoMulta(value)}>
-                            <SelectTrigger className="w-full mt-5">
-                                <SelectValue placeholder="Selecciona el estado de la multa" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>Estado</SelectLabel>
-                                    <SelectItem value="activo">Activo</SelectItem>
-                                    <SelectItem value="cancelado">Cancelado</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                        {estadoMulta != "cancelado" && estadoMulta != "" 
-                            &&
+                <div className='text-base mt-5'>Nombre de multa: {idMulta?.nombre_multa}</div>
+                     
+                        
+                            
                             <>
                               <div className="mt-5">
                         <div className="text-xl ">
                             Ingresa la cantidad de UMAS
                         </div>
                         <div className="text-sm mt-1">
-                            <span className='text-base'>Min: <span >{selectedMulta.UMAS_min}</span></span> 
-                            <span className="ml-3 text-base">Max: <span >{selectedMulta.UMAS_max}</span></span>
+                            <span className='text-base'>Min: <span >{idMulta.UMAS_min}</span></span> 
+                            <span className="ml-3 text-base">Max: <span >{idMulta.UMAS_max}</span></span>
                         </div>
                                                     
 
                                 </div>
                                 <div className='mt-5'>
                                     <Input value={valorMulta}
-                                        onChange={handleValorInput} />
+                                        onChange={handleValorInput}
+                                        type='number' />
                                 </div>
                             </>
 
-                        }
+                        
 
 
 

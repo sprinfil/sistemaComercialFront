@@ -38,6 +38,10 @@ import {
 import axiosClient from "../../axios-client"
 import IconButton from "./IconButton"
 import { getMultas } from "../../lib/MultasService"
+import { EyeOpenIcon } from "@radix-ui/react-icons"
+import { ImCancelCircle } from "react-icons/im"
+import ModalEstasSeguroMulta2 from "./ModalEstasSeguroMulta2"
+import ModalDetalleMulta from "./ModalDetalleMulta"
 
 export type Multas = {
   id: number;
@@ -55,18 +59,10 @@ export const columns: ColumnDef<Multas>[] = [
   
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
+   
     cell: ({ row }) => (
       <Checkbox
+      className="w-[3vh] h-[3vh]"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
@@ -76,26 +72,57 @@ export const columns: ColumnDef<Multas>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'nombre',
+    accessorKey: 'nombre_multa_catalogo',
     header: 'Nombre', 
-    cell: ({ row }) => row?.original?.nombre || 'Sin nombre', 
+    cell: ({ row }) => row?.original?.nombre_multa_catalogo || 'Sin nombre', 
   },
   {
     accessorKey: 'estado',
     header: 'Estado', 
     cell: ({ row }) => row?.original?.estado, 
   },
+  {
+    accessorKey: 'monto',
+    header: 'Monto', 
+    cell: ({ row }) => row?.original?.monto, 
+  },
 
  
  
   {
     id: "actions",
-    enableHiding: false,
+    header: 'Acciones', 
     cell: ({ row }) => {
+      const anomalia = row.original
+      const {abrirModalCancelacion, setAbrirModalCancelacion} = ZustandMultas();
+      const [abrirModal, setAbrirModal] = React.useState(false);
+      const [abrirModalDetalle, setAbrirModalDetalle] = React.useState(false);
+
+      const handleAbrirModal = () => {
+        setAbrirModal(true);
+    }
+    const handleAbrirModal2 = () => {
+      setAbrirModalDetalle(true);
+  }
+    
       return (
         <>
-         
+        <div className="flex space-x-2">
+        <div onClick={()=>{handleAbrirModal2;setAbrirModal(true)}} title="Ver detalles">
+          <IconButton title="Ver detalle">
+            <EyeOpenIcon className="w-[3vh] h-[3vh]"/>
+          </IconButton>
+        </div>
+          <div onClick={()=>{handleAbrirModal;setAbrirModalDetalle(true)}} title="Cancelar multa">
+          <IconButton title="Cancelar multa">
+            <ImCancelCircle className="w-[2.2vh] h-[2.2vh] mt-[2px]"/>
+          </IconButton>
+        </div>
+        </div>
+        <ModalEstasSeguroMulta2 open={abrirModalDetalle} setIsOpen={setAbrirModalDetalle} selected_multa={row?.original}/>
+        <ModalDetalleMulta open={abrirModal} setIsOpen={setAbrirModal} selected_multa={row?.original}/>
         </>
+   
       )
     },
   },
@@ -149,9 +176,9 @@ export function DataTableMultas({ data }) {
       <div className="flex items-center mb-2 mt-2 w-full justify-center">
         <Input
           placeholder="Filtrar multas..."
-          value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("nombre_multa_catalogo")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("nombre")?.setFilterValue(event.target.value)
+            table.getColumn("nombre_multa_catalogo")?.setFilterValue(event.target.value)
           }
           className="w-full"
         />
@@ -187,7 +214,6 @@ export function DataTableMultas({ data }) {
                   className={row.getIsSelected() ? 'bg-gray-100' : ''} // Estilo condicional
                 >
                  {row.getVisibleCells().map((cell) => {
-              console.log("Datos de la celda:", cell.getValue()); // Verifica los valores de la celda
               return (
                   <TableCell key={cell.id}>
                       {flexRender(

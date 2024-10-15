@@ -6,12 +6,13 @@ import { DataTableMultas } from '../../../../components/ui/DataTableMultas';
 import { Multas, columns } from '../../../../components/Tables/Columns/MultasColumns';
 import axiosClient from '../../../../axios-client';
 import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario';
+import { ZustandMultas } from '../../../../contexts/ZustandMultas';
 export const MultasUsuario = () => {
 
 
   const {usuariosEncontrados} =  ZustandGeneralUsuario();
 
-
+  const {setMultasTablaToma, multasTablaToma} = ZustandMultas();
 
 
     const [abrirModal, setAbrirModal] = useState(false);
@@ -30,13 +31,13 @@ export const MultasUsuario = () => {
         try {
           const response = await axiosClient.get("/multa/consultarmultas", {
             params:{
-              codigo_toma : "0101001",
+              codigo_toma : usuariosEncontrados[0]?.tomas[0]?.codigo_toma,
               modelo_multado: "toma"
             }
           });
          // setLoadingTable(false);
-          setData(response.data.data);
-          console.log(response.data.data);
+         setMultasTablaToma(response?.data[0]?.multas);
+          console.log(response?.data);
         } catch (error) {
           //setLoadingTable(false);
           console.error("Failed to fetch multas:", error);
@@ -55,7 +56,7 @@ export const MultasUsuario = () => {
         </div>
 
         <div>
-            <DataTableMultas columns={columns} data={data} />
+            <DataTableMultas columns={columns} data={multasTablaToma} />
         </div>
 
         <ModalAgregarMulta open={abrirModal} setIsOpen={setAbrirModal}/>

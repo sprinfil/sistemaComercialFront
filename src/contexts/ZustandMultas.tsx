@@ -17,6 +17,10 @@ interface ZustandMultas {
   setAccionMulta:  (accion:string) => void;
 
 
+  multasTablaToma: Multas[] | null;
+  setMultasTablaToma:(multasTablaToma: Multas[] | null) => void;
+
+
   
 }
 
@@ -36,6 +40,10 @@ export const ZustandMultas= create<ZustandMultas>((set) => ({
   
   multasTabla: [],
   setMultasTabla: (multasTabla) => set({multasTabla}),
+
+    
+  multasTablaToma: [],
+  setMultasTablaToma: (multasTablaToma) => set({multasTablaToma}),
 
 }));
 
