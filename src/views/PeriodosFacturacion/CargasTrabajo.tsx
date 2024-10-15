@@ -16,7 +16,6 @@ import { getCargaLectura } from '../../lib/Services/CargaLecturaService';
 import { CargaLecturaDataTable } from '../../components/Tables/Components/CargaLecturaTable';
 
 
-
 export const CargasTrabajo = ({detalle}) => {
   const { toast } = useToast()
   const { filasSeleccionadaCargaTrabajo, cargasDeTrabajoAEnviar, setCargasDeTrabajoAEnviar, setFilasSeleccionadaCargaTrabajo, dataInfoCargaTrabajo, setDataInfoCargaTrabajo } = ZustandCargaDeTrabajo();
@@ -31,11 +30,13 @@ export const CargasTrabajo = ({detalle}) => {
   
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await axiosClient.get(`cargaTrabajo/show/${detalle?.id}`);
         console.log(response.data.cargas_trabajo); // Asegúrate de acceder a los datos que necesitas
         setData(response.data.cargas_trabajo);
         setCargasDeTrabajoAEnviar(response.data.cargas_trabajo);
+        setLoading(false);
       } catch (error) {
         console.error('Error al obtener los datos:', error);
       }

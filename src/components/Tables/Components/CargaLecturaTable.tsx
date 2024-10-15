@@ -92,9 +92,30 @@ export const columns: ColumnDef<CargaTrabajo>[] = [
     ),
   },
   {
+    cell: ({ row }) => {
+      const nombre = row?.original?.tiene_encargado?.nombre; 
+
+      return (
+          
+        <div className="flex items-center w-full justify-between">
+          { 
+           
+            <span>{nombre} {!nombre && <div className="text-red-500">No asignado</div>}</span>
+
+          }
+        
+        <div className="flex items-center">
+          <span
+          >
+          </span>
+        </div>
+      </div>
+      );
+    },
     accessorFn: (row) => {
       return row?.tiene_encargado?.nombre;
     },
+   
     id: "tiene_encargado.nombre",
     header: ({ column }) => (
       <Button
@@ -105,7 +126,9 @@ export const columns: ColumnDef<CargaTrabajo>[] = [
         Encargado
       </Button>
     ),
+   
   },
+  
   {
     id: "actions",
     enableHiding: false,
