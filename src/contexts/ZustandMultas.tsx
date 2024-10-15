@@ -21,6 +21,9 @@ interface ZustandMultas {
   setMultasTablaToma:(multasTablaToma: Multas[] | null) => void;
 
 
+
+
+
   
 }
 

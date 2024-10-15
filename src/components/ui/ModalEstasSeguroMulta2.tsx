@@ -68,7 +68,7 @@ const ModalEstasSeguroMulta2 = ({open, setIsOpen, selected_multa}) => {
     setMostrarFront(false);
       try
       {
-          const response = await axiosClient.put(`/multas/monitor/cancelarmulta/${selected_multa?.id_multa}`)
+          const response = await axiosClient.put(`/multas/monitor/cancelarmulta/${selected_multa?.id}`)
           console.log(response.data.multa);
           const nuevaMulta = response.data.multa;
           setMostrarFront(true);

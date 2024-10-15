@@ -39,7 +39,6 @@ import { cerrarOtSchema } from "../Forms/validaciones.ts";
 import ModalRegistroOT from "./ModalRegistroOT.tsx";
 import { MultasComboBox } from "./MultasComboBox.tsx";
 import { OperadorParaHacerLaMulta } from "./OperadorParaHacerLaMulta.tsx";
-
 const ModalAgregarMulta = ({open, setIsOpen}) => {
 
   const { toast } = useToast();
@@ -49,7 +48,7 @@ const ModalAgregarMulta = ({open, setIsOpen}) => {
   const [comentarioMulta, setComentarioMulta] = useState("");
 
   console.log(operadorSeleccionado.id);
-
+const {usuariosEncontrados} = ZustandGeneralUsuario();
 
   const crearMulta =  async () => 
   {
@@ -89,7 +88,7 @@ const ModalAgregarMulta = ({open, setIsOpen}) => {
 
 
     const values = {
-      codigo_toma: "0101001",
+      codigo_toma: usuariosEncontrados[0]?.tomas[0]?.codigo_toma,
       id_catalogo_multa: seleccionado?.id,
       modelo_multado:"toma",
       motivo:comentarioMulta,

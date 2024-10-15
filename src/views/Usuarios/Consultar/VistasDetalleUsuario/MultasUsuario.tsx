@@ -36,7 +36,7 @@ export const MultasUsuario = () => {
             }
           });
          // setLoadingTable(false);
-         setMultasTablaToma(response?.data[0]?.multas);
+         setMultasTablaToma(response?.data);
           console.log(response?.data);
         } catch (error) {
           //setLoadingTable(false);
@@ -56,7 +56,7 @@ export const MultasUsuario = () => {
         </div>
 
         <div>
-            <DataTableMultas columns={columns} data={multasTablaToma} />
+            <DataTableMultas data={multasTablaToma} />
         </div>
 
         <ModalAgregarMulta open={abrirModal} setIsOpen={setAbrirModal}/>

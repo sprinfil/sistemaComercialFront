@@ -72,9 +72,9 @@ export const columns: ColumnDef<Multas>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'nombre_multa_catalogo',
+    accessorKey: 'nombre_multa',
     header: 'Nombre', 
-    cell: ({ row }) => row?.original?.nombre_multa_catalogo || 'Sin nombre', 
+    cell: ({ row }) => row?.original?.nombre_multa || 'Sin nombre', 
   },
   {
     accessorKey: 'estado',
