@@ -34,13 +34,11 @@ const PeriodoFacturacionDetalle = ({ setDetalle, selectedRutaDetalle, setPeriodo
             <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo /></TabsContent>
             <TabsContent value="anomalias" className="flex-grow"><MonitorAnomalias /></TabsContent>
             <TabsContent value="recorridos" className="flex-grow"><Recorridos/></TabsContent>
-            <TabsContent value="facturacion" className="flex-grow"><Facturacion/></TabsContent>
+            <TabsContent value="facturacion" className="flex-grow"><Facturacion setPeriodos={setPeriodos} selectedRutaDetalle = {selectedRutaDetalle} setDetalle={setDetalle}/></TabsContent>
           </Tabs>
         </div>
       </div>
-
     </>
-
   )
 }
 
