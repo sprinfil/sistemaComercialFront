@@ -13,6 +13,7 @@ import { useStateContext } from '../../../contexts/ContextProvider'
 import { Colonia } from './Colonias-Calles/Colonia'
 import OrdenDeTrabajo from './OrdenDeTrabajo'
 import Caja from './Caja'
+import Multas from './Multas'
 const Catalogos = () => {
 
   const { permissions, user } = useStateContext();
@@ -81,7 +82,12 @@ const Catalogos = () => {
       titulo: "Caja",
       componente: <Caja />,
       permission: "VerCaja"
-    }
+    },
+    {
+      titulo: "Multas",
+      componente: <Multas />,
+      permission: "VerMultas"
+    },
   ]
 
   return ( 
