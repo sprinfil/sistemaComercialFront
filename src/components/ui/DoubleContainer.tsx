@@ -12,10 +12,10 @@ const DoubleContainer = ({ children }) => {
   );
 };
 
-const Seccion1 = ({ children, width = null }) => {
+const Seccion1 = ({ children, size = "md" }) => {
 
   const [isIconOpen, setIsIconOpen] = useState(false);
-  console.log(width)
+  let styles = "";
   const toggleTableContainer = () => {
     setIsIconOpen(!isIconOpen);
     let containers = document.getElementsByClassName('tableContainer');
@@ -30,13 +30,22 @@ const Seccion1 = ({ children, width = null }) => {
         container.setAttribute('data-state', 'open');
       }
     });
-
+  }
+  
+  if (size == "sm") {
+    styles = `data-[state=open]:md:w-[15%]`;
+  }
+  if (size == "md") {
+    styles = `data-[state=open]:md:w-[35%]`;
+  }
+  if (size == "lg") {
+    styles = `data-[state=open]:md:w-[50%]`;
   }
 
   return (
     <>
-      <div data-state="open" 
-      className={`flex ease overflow-hidden w-full border tableContainer data-[state=open]:md:w-[${width!=null?width:"35%"}] data-[state=closed]:w-0 duration-200 transition-all`}>
+      <div data-state="open"
+        className={`flex ease overflow-hidden w-full border tableContainer ${styles} data-[state=closed]:w-0 duration-200 transition-all`}>
         {children}
       </div>
       <div className='w-[25px] border cursor-pointer bg-muted transition-all duration-100 flex items-center mr-3 justify-center'

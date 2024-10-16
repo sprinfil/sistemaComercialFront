@@ -52,16 +52,62 @@ type Factura = {
   id: number
   periodo: string
   total: number
+  consumo: number
+  tipoServicio: string
 }
 
 export const columns: ColumnDef<Factura>[] = [
   {
     accessorKey: "periodo",
     header: "Periodo",
+    cell: ({ row }) => {
+      const info = row.original
+      console.log(info)
+      return (
+        <>
+          <p>{info[0]?.periodo?.nombre.toUpperCase()}</p>
+        </>
+      )
+    }
+  },
+  {
+    accessorKey: "consumo",
+    header: "Consumo",
+    cell: ({ row }) => {
+      const info = row.original
+      console.log(info)
+      return (
+        <>
+          <p>{info[0]?.consumo?.consumo} m3</p>
+        </>
+      )
+    }
+  },
+  {
+    accessorKey: "tipoServicio",
+    header: "Tipo de servicio",
+    cell: ({ row }) => {
+      const info = row.original
+      console.log(info)
+      return (
+        <>
+          <p>{info[0]?.consumo?.tipo.toUpperCase()}</p>
+        </>
+      )
+    }
   },
   {
     accessorKey: "total",
     header: "Total",
+    cell: ({ row }) => {
+      const info = row.original
+      console.log(info)
+      return (
+        <>
+          <p>$ {info[0]?.monto}</p>
+        </>
+      )
+    }
   },
   {
     id: "actions",

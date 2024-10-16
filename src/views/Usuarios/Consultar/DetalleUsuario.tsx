@@ -94,7 +94,7 @@ const DetalleUsuario: React.FC = () => {
           </div> */}
 
           <DoubleContainer>
-            <Seccion1 width={"15%"}>
+            <Seccion1 size={"sm"}>
               <MenuLateral options={options} context={useStateContext} />
             </Seccion1>
             <Seccion2>

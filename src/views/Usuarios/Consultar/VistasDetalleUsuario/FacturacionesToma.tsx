@@ -1,13 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '../../../../components/ui/button'
 import { DataTableFacturacionesToma, columns } from '../../../../components/ui/DataTableFacturacionesToma.tsx';
-import { useFetchLecturas } from '../../../../lib/Services/GestionLecturasTomaService'
 import Loader from '../../../../components/ui/Loader'
 import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario'
-
+import { getFacturacionesToma } from '../../../../lib/Services/FacturacionesToma.tsx';
+import { useToast } from '../../../../components/ui/use-toast.ts';
 export const FacturacionesToma = () => {
+  const { toast } = useToast();
   const { usuariosEncontrados } = ZustandGeneralUsuario();
-  //const { lecturas, loadingLecturas } = useFetchLecturas(usuariosEncontrados[0]?.tomas[0]?.id);
+  const [loadingFacturaciones, setLoadingfacturaciones] = useState<Boolean>(true);
+  const [facturaciones, setFacturaciones] = useState<Array<any>>([]);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    if (error != "") {
+      toast({
+        title: "error",
+        description: error,
+        variant: "destructive"
+      })
+      setError("");
+    }
+  }, [error])
+  getFacturacionesToma(setLoadingfacturaciones, setFacturaciones, usuariosEncontrados[0]?.tomas[0]?.id, setError);
+
   return (
     <div className=''>
       <div className='w-full flex justify-between items-center'>
@@ -16,32 +31,18 @@ export const FacturacionesToma = () => {
 
       <div className='mt-5'>
         {
-          // loadingLecturas ?
-          //   <>
-          //     <Loader />
-          //   </>
-          //   :
-          //   <>
+          loadingFacturaciones ?
+            <>
+              <Loader />
+            </>
+            :
+            <>
               <DataTableFacturacionesToma data={
                 [
-                  {
-                    id: 1,
-                    periodo: "Enero 2024",
-                    total: 537
-                  },
-                  {
-                    id: 1,
-                    periodo: "Febrero 2024",
-                    total: 625
-                  },
-                  {
-                    id: 1,
-                    periodo: "Marzo 2024",
-                    total: 456
-                  }
+                  facturaciones
                 ]
               } columns={columns} />
-            // </>
+            </>
         }
       </div>
     </div>

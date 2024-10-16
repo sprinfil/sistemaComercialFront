@@ -110,7 +110,7 @@ export async function editPeriodo(data, setPeriodos, setDetalle, setLoadingEditP
 
 export async function IniciarProcesoFacturacion(periodo) {
   try {
-    const response = await axiosClient.post(`factura/periodo`, {
+    const response = await axiosClient.post(`/factura/create/periodo`, {
       periodos: [
         {
           id: periodo?.id

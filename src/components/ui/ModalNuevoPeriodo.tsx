@@ -40,6 +40,7 @@ const ModalNuevoPeriodo = ({ trigger, selectedRuta, setPeriodos, open, setOpen }
               recibo_final: datesEntrega?.to?.toISOString().split('T')[0],
               validacion_inicio: datesValidacion?.from?.toISOString().split('T')[0],
               validacion_final: datesValidacion?.to?.toISOString().split('T')[0],
+              vigencia_recibo: "2001-12-30"
             }
           ]
       }
