@@ -1,9 +1,15 @@
 import React from 'react'
+import InformacionFiscalForm from '../../../../components/Forms/InformacionFiscalForm'
 
-const InformacionFiscal = () => {
+const InformaciónFiscal = () => {
   return (
-    <div>InformacionFiscal</div>
+    <div>
+        <div className=''>
+        {/*Formulario*/}
+        <InformacionFiscalForm/>
+    </div>
+    </div>
   )
 }
 
-export default InformacionFiscal
+export default InformaciónFiscal

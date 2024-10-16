@@ -9,7 +9,7 @@ import { PlusCircledIcon } from '@radix-ui/react-icons';
 
 export default function GiroComercialTable() {
 
-  const { giroscomerciales, setGirosComerciales, loadingTable, setLoadingTable, setAccion } = useStateContext();
+  const { giroscomerciales, setGirosComerciales, loadingTable, setLoadingTable, setAccion, setGiroComercial} = useStateContext();
 
   useEffect(() => {
     getGirosComerciales();
@@ -18,7 +18,7 @@ export default function GiroComercialTable() {
   const getGirosComerciales = async () => {
     setLoadingTable(true);
     try {
-      const response = await axiosClient.get("/Giros");
+      const response = await axiosClient.get("/giros-catalogos");
       setLoadingTable(false);
       setGirosComerciales(response.data);
       console.log(response.data);
@@ -28,6 +28,11 @@ export default function GiroComercialTable() {
       console.error("Failed to fetch Giros Comerciales:", error);
     }
   };
+  const HandleClickRow = (giroComercial: GiroComercial) =>
+    {
+      setGiroComercial(giroComercial);
+    setAccion("ver");
+}
 
   if (loadingTable) {
     return <div><Loader /></div>;
@@ -38,10 +43,10 @@ export default function GiroComercialTable() {
     <div>
       <div onClick={()=>{setAccion("crear")}}>
         <IconButton>
-          <div className='flex gap-2 items-center'> Agregar nuevo Giro Comercial<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
+          <div className='flex gap-2 items-center'> Agregar nuevo giro comercial<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
       </div>
-      <DataTable columns={columns} data={giroscomerciales} sorter='nombre' />
+      <DataTable columns={columns} data={giroscomerciales} sorter='nombre' onRowClick={HandleClickRow}/>
     </div>
   );
 }

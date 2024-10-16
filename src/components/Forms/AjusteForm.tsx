@@ -29,6 +29,7 @@ import { useStateContext } from "../../contexts/ContextAjuste.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { Switch } from "../ui/switch.tsx";
 
 const AjusteForm = () => {
     const { toast } = useToast()
@@ -36,6 +37,10 @@ const AjusteForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
+    const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
+    const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
+    const [valorObtenidoBool, setValorObtenidoBool] = useState(false);
+    const [control, setControl] = useState(false);
 
     //#region SUCCESSTOAST
     function successToastCreado() {
@@ -85,14 +90,24 @@ const AjusteForm = () => {
 
 
     }
+    function errorYaExisteToast() {
+
+        toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "El ajuste ya existe.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+    }
+
 
     const form = useForm<z.infer<typeof ajusteSchema>>({
         resolver: zodResolver(ajusteSchema),
         defaultValues: {
-            id: ajuste.id,
-            nombre: ajuste.nombre,
-            descripcion: ajuste.descripcion,
-            estado: ajuste.estado,
+            id: 0,
+            nombre: "",
+            descripcion: "",
+            estado: false,
         },
     })
 
@@ -100,27 +115,45 @@ const AjusteForm = () => {
 
     function onSubmit(values: z.infer<typeof ajusteSchema>) {
         setLoading(true);
+        const boolConvetido = ajuste.estado ? "activo" : "inactivo"
+
+        let values2 = {...values, estado: boolConvetido}
+
         if (accion == "crear") {
-            axiosClient.post(`/AjustesCatalogo/create`, values)
-                .then(() => {
+            axiosClient.post(`/AjustesCatalogo/create`, values2)
+                .then((response) => {
+                    const data = response.data;
+                    if(data.restore)
+                    {
+                        setIdParaRestaurar(data.ajuste_id);
+                        setModalReactivacionOpen(true);
+                    }
+                    else if (data.restore == false) {
+                        errorYaExisteToast();
+                        setLoading(false);
+                    }
+                    else
+                    {
                     successToastCreado();
+                    setAccion("creado");
                     setLoading(false);
                     //SIEMPRE CHECAR LOS DATOS COINCIDAN CON EL MODELO
                     setAjuste({
                         id: 0,
                         nombre: "",
                         descripcion: "ninguna",
-                        estado: "activo"
+                        estado: false
                     });
                     form.reset({
                         id: 0,
                         nombre: "",
                         descripcion: "ninguna",
-                        estado: "activo"
+                        estado: false
                     });
                     getAjustes();
                     console.log(values);
                     //setNotification("usuario creado");
+                    }
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -132,7 +165,11 @@ const AjusteForm = () => {
                 })
         }
         if (accion == "editar") {
-            axiosClient.put(`/AjustesCatalogo/update/${ajuste.id}`, values)
+            const boolConvetido = values.estado == true ? "activo" : "inactivo"
+
+            let values2 = {...values, estado: boolConvetido}
+
+            axiosClient.put(`/AjustesCatalogo/update/${ajuste.id}`, values2)
                 .then((data) => {
                     successToastEditado();
                     setLoading(false);
@@ -172,7 +209,7 @@ const AjusteForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/AjustesCatalogo/log_delete/${ajuste.id}`);
+            await axiosClient.delete(`/AjustesCatalogo/log_delete/${ajuste.id}`);
             getAjustes();
             setAccion("eliminar");
             successToastEliminado();
@@ -182,36 +219,84 @@ const AjusteForm = () => {
         }
     };
 
+     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
+    const restaurarDato = (IdParaRestaurar: any) => {
+        axiosClient.put(`/AjustesCatalogo/restaurar/${IdParaRestaurar}`)
+            .then(() => {
+                setLoading(false);
+                setAbrirInput(false);
+                setAccion("crear");
+                setAjuste({
+                    id: 0,
+                    nombre: "",
+                    descripcion: "ninguna",
+                    estado: "activo"
+                });
+                getAjustes();
+                setAccion("creado");
+                successToastRestaurado();
+                setModalReactivacionOpen(false);
+            })
+            .catch((err) => {
+                errorToast();
+                setLoading(false);
+            });
+    };
+
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            setControl(false);
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             });
             setAjuste({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
-            console.log("creando");
+            setAbrirInput(true);
+            setControl(true);
+            setErrors({});
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                estado: false
+            });
+            setAjuste({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                estado: false
+            })
+        }
+        if (accion == "creado") {
+            setControl(false);
             setAbrirInput(true);
             setErrors({});
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             });
             setAjuste({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             })
         }
+        
         if (accion == "ver") {
+            setControl(false);
+            const valorDesdeBaseDeDatos: string = ajuste.estado as unknown as string; 
+            const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
+            setValorObtenidoBool(valorBooleano);
+
             setAbrirInput(false);
             setErrors({});
             setAccion("");
@@ -219,15 +304,18 @@ const AjusteForm = () => {
                 id: ajuste.id,
                 nombre: ajuste.nombre,
                 descripcion: ajuste.descripcion,
-                estado: ajuste.estado
+                estado: Boolean(ajuste.estado)
             });
         }
         if (accion == "editar") {
+            setControl(true);
             setAbrirInput(true);
             setErrors({});
         }
         console.log(accion);
     }, [accion]);
+
+   
 
     return (
         <div className="overflow-auto">
@@ -235,7 +323,7 @@ const AjusteForm = () => {
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nueva Ajuste</p>}
+                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo ajuste</p>}
                         {ajuste.nombre != "" && <p className="text-muted-foreground text-[20px]">{ajuste.nombre}</p>}
                     </div>
                     {(ajuste.nombre != null && ajuste.nombre != "") &&
@@ -243,16 +331,31 @@ const AjusteForm = () => {
                             <Modal
                                 method={onDelete}
                                 button={
+                                    <a title = "Eliminar">
                                     <IconButton>
-                                        <TrashIcon className="w-[20px] h-[20px]" />
-                                    </IconButton>}
+                                <TrashIcon className="w-[20px] h-[20px]"/>
+                                    </IconButton>
+                                    </a>}
                             />
                             <div onClick={() => setAccion("editar")}>
+                            <a title = "Editar">
                                 <IconButton>
                                     <Pencil2Icon className="w-[20px] h-[20px]" />
                                 </IconButton>
+                                </a>
                             </div>
                         </>
+                    }
+                    {// ESTE ES EL MODAL DE REACTIVACIÓN
+                        //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
+                        //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
+                    }
+                    {ModalReactivacionOpen &&
+                        <ModalReactivacion
+                            isOpen={ModalReactivacionOpen}
+                            setIsOpen={setModalReactivacionOpen}
+                            method={() => restaurarDato(IdParaRestaurar)}
+                        />
                     }
                 </div>
             </div>
@@ -286,12 +389,45 @@ const AjusteForm = () => {
                                     <FormControl>
                                         <Textarea
                                             readOnly={!abrirInput}
-                                            placeholder="Descripcion del ajuste"
+                                            placeholder="Descripción del ajuste"
                                             {...field}
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        Agregar una breve descripción.
+                                        Agrega una breve descripción.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Estado</FormLabel>
+                                    <FormControl>
+                                        {
+                                            control ?
+                                            <Switch
+                                            className="ml-3"
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            }
+                                            /> 
+                                            :
+                                            <Switch
+                                            disabled
+                                            className="ml-3"
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            }
+                                            /> 
+                                        }
+                       
+                                    </FormControl>
+                                    <FormDescription>
+                                    Aquí puedes cambiar el estado del ajuste.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

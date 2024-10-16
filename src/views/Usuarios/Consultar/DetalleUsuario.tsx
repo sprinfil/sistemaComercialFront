@@ -1,22 +1,43 @@
-import React, { useEffect, useState } from 'react'
-import MenuLateral from '../../../components/ui/MenuLateral'
-import InformacionFiscal from './VistasDetalleUsuario/InformacionFiscal'
-import { useStateContext, ContextProvider } from '../../../contexts/ContextDetalleUsuario'
-import PantallaDetalleUsuario from './VistasDetalleUsuario/PantallaDetalleUsuario'
-import InformacionPensionado from './VistasDetalleUsuario/InformacionPensionado'
-import InformaciónGeneral from './VistasDetalleUsuario/InformaciónGeneral'
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import MenuLateral from '../../../components/ui/MenuLateral';
+import PantallaDetalleUsuario from './VistasDetalleUsuario/PantallaDetalleUsuario';
+import InformaciónGeneral from './VistasDetalleUsuario/InformaciónGeneral';
+import InformacionFiscal from './VistasDetalleUsuario/InformacionFiscal';
+import CrearOrdenDeTrabajo from './VistasDetalleUsuario/CrearOrdenDeTrabajo';
+import TomasUsuario from './VistasDetalleUsuario/TomasUsuario';
+import Convenio from './VistasDetalleUsuario/CargosUsuario';
+import { useStateContext, ContextProvider } from '../../../contexts/ContextDetalleUsuario';
+import { OcultarTableDetalleUsuario } from '../../../components/Tables/Components/OcultarTableDetalleUsuario';
+import { BreadCrumbDetalleUsuario } from '../../../components/ui/breadCrumbDetalleUsuario';
+import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
+import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario';
+import Loader from '../../../components/ui/Loader';
+import { MultasUsuario } from './VistasDetalleUsuario/MultasUsuario';
 
-const DetalleUsuario = () => {
-
+const DetalleUsuario: React.FC = () => {
   const { pantalla } = useStateContext();
+  const location = useLocation();
+  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, tomasRuta, usuariosRecuperado} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+  const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
-  const [mostrarPantalla, setMostrarPantalla] = useState();
 
-  useEffect(()=>{
-    setMostrarPantalla(pantalla)
+
+  useEffect(() => {
+    console.log("USUARIOS ENCONTRADOS: PP", usuariosEncontrados);
+    console.log("ESTE FUE EL USUARIO RECUPERADO", usuariosRecuperado);
+    setMostrarSiguiente(false);
+  }, [usuariosRecuperado, usuariosEncontrados]);
+
+  
+
+  const [mostrarPantalla, setMostrarPantalla] = useState(pantalla);
+  const [accion, setAccion] = useState<string | undefined>();
+
+  useEffect(() => {
+    setMostrarPantalla(pantalla);
     console.log(pantalla);
-  },[pantalla]
-)
+  }, [pantalla]);
 
   const options = [
     {
@@ -24,38 +45,57 @@ const DetalleUsuario = () => {
       opciones: [
         {
           nombre: "Información Principal",
-          pantalla:  <InformaciónGeneral />
+          pantalla: <InformaciónGeneral />
         },
         {
           nombre: "Fiscal",
-          pantalla:  <InformacionFiscal />
+          pantalla: <InformacionFiscal/>
         },
         {
-          nombre: "Pensionado",
-          pantalla:  <InformacionPensionado />
+          nombre: "Ordenes de trabajo",
+          pantalla: <CrearOrdenDeTrabajo/>
         },
+        {
+          nombre: "Tomas",
+          pantalla: <TomasUsuario/>
+        },
+        {
+          nombre: "Convenio",
+          pantalla: <Convenio/>
+        },
+        {
+          nombre: "Multas",
+          pantalla: <MultasUsuario/>
+        },
+        
       ]
     }
-  ]
+  ];
 
   return (
     <>
       <ContextProvider>
-        <div>
-          <div className='flex gap-2'>
-            <div className='w-[300px]'>
-              <MenuLateral options={options} />
+        <div className='max-h-[70vh]'>
+          {/* Breadcrumb en la parte superior */}
+          <div className=''>
+            <BreadCrumbDetalleUsuario />
+          </div>
+
+          {/* Contenido principal */}
+          <div className='flex gap-2 px-2'>
+            <div className='flex-shrink-0'>
+              <OcultarTableDetalleUsuario accion={accion}>
+                <MenuLateral options={options} context={useStateContext} />
+              </OcultarTableDetalleUsuario>
             </div>
-            <div>
-              <PantallaDetalleUsuario/>
+            <div className='w-full'>
+              <PantallaDetalleUsuario />
             </div>
           </div>
         </div>
       </ContextProvider>
-
     </>
+  );
+};
 
-  )
-}
-
-export default DetalleUsuario
+export default DetalleUsuario;

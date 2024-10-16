@@ -33,29 +33,29 @@ const MenuSuperior = () => {
             opciones: [
                 {
                     titulo: "Consulta Usuario",
-                    descripcion: "Mira los detalles de los usuarios, consulta por numero de toma o nombre de usuario",
+                    descripcion: "Consulta los detalles de los usuarios, consulta por número de toma o nombre de usuario.",
                     route: "/proximamente",
                 },
                 {
                     titulo: "Contratos",
-                    descripcion: "Genera un nuevo contrato",
+                    descripcion: "Genera un nuevo contrato.",
                     route: "/proximamente"
                 },
                 {
-                    titulo: "Crear Nuevo Usuario",
-                    descripcion: "Registra un nuevo ususario sin contrato.",
-                    route: "/CrearUsuario"
+                    titulo: "Crear nuevo usuario",
+                    descripcion: "Registra un nuevo usuario.",
+                    route: "/proximamente"
                 }
             ]
 
         },
         {
-            titulo: "Poligonos Geograficos",
+            titulo: "Polígonos Geográficos",
             icon: <GlobeIcon />,
             opciones: [
                 {
-                    titulo: "Ver poligonos",
-                    descripcion: "Administra las posiciones geograficas de las rutas y libros.",
+                    titulo: "Ver polígonos",
+                    descripcion: "Administra las posiciones geográficas de las rutas y libros.",
                     route: "/poligonos"
                 },
             ]
@@ -66,12 +66,12 @@ const MenuSuperior = () => {
             opciones: [
                 {
                     titulo: "Generar Ordenes de Trabajo",
-                    descripcion: "Genera ordenes para operadores de campo",
+                    descripcion: "Genera ordenes de trabajo para operadores de campo.",
                     route: "/proximamente"
                 },
                 {
                     titulo: "Asignar Ordenes de Trabajo",
-                    descripcion: "Asigna Ordenes de trabajo para operadores de campo",
+                    descripcion: "Asigna ordenes de trabajo para operadores de campo.",
                     route: "/proximamente"
                 },
             ]
@@ -94,7 +94,7 @@ const MenuSuperior = () => {
                 {
                     titulo: "Punto de venta",
                     descripcion: "Registra los pagos de los usuarios.",
-                    route: "/proximamente"
+                    route: "/Cajas"
                 },
             ]
         },
@@ -108,18 +108,18 @@ const MenuSuperior = () => {
                     route: "/proximamente"
                 },
                 {
-                    titulo: "Anomalias",
-                    descripcion: "Gestiona, Monitorea y valida Anomalias",
+                    titulo: "Anomalías",
+                    descripcion: "Gestiona, monitorea y valida anomalías.",
                     route: "/proximamente"
                 },
                 {
                     titulo: "Facturar",
-                    descripcion: "Factura o Refactura",
+                    descripcion: "Factura o Refactura.",
                     route: "/proximamente"
                 },
                 {
                     titulo: "Monitor de Operadores de Campo",
-                    descripcion: "Consulta el recorrido de los operadores de campo",
+                    descripcion: "Consulta el recorrido de los operadores de campo.",
                     route: "/proximamente"
                 },
             ]
@@ -134,8 +134,8 @@ const MenuSuperior = () => {
                     route: "/catalogos"
                 },
                 {
-                    titulo: "Operadores del Sistema",
-                    descripcion: "Gestiona Operadores de sistema, También sus roles y permisos.",
+                    titulo: "Operadores del sistema",
+                    descripcion: "Gestiona los operadores del sistema (roles y permisos).",
                     route: "/proximamente"
                 },
                 {
@@ -145,9 +145,15 @@ const MenuSuperior = () => {
                 },
                 {
                     titulo: "Configuraciones Generales",
-                    descripcion: "Opciones Adicionales.",
+                    descripcion: "Opciones adicionales.",
                     route: "/proximamente"
                 },
+                {
+                    titulo: "Tarifa",
+                    descripcion: "Consulta y gestiona las tarifas.",
+                    route: "/proximamente"
+                },
+
             ]
         },
 
@@ -181,7 +187,7 @@ const MenuSuperior = () => {
 
 
     return (
-        <div className=' bg-background h-[9vh] border border-border shadow-sm relative flex items-center select-none'>
+        <div className='z-40 bg-background h-[9vh] border-b border-border shadow-sm relative flex items-center select-none'>
             {/*logo*/}
             {/*
                         <div className='h-full min-w-[60px] max-w-[60px] min-h-[60px] max-h-[60px] p-[10px]'>
@@ -192,14 +198,13 @@ const MenuSuperior = () => {
             {/*menu de opciones*/}
             <div className='p-[10px] left-[0px] absolute items-center w-[500px] hidden xl:flex'>
 
-                <NavigationMenu>
+                <NavigationMenu >
                     <NavigationMenuList >
                         {opciones.map((opcion, key) => (
                             <NavigationMenuItem key={key}>
-                                <NavigationMenuTrigger key={key}><div className='flex gap-2 items-center'>{opcion.titulo}{opcion.icon}</div></NavigationMenuTrigger>
+                                <NavigationMenuTrigger key={key}><div className='flex gap-2 items-center'> <span className='text-primary'> {opcion.icon}</span>{opcion.titulo}</div></NavigationMenuTrigger>
                                 <NavigationMenuContent>
                                     <div className='flex'>
-
                                         <ul className='px-[10px] py-[10px] w-[1100px]' key={key}>
                                             {opcion.opciones.map((opcion, index) => (
                                                 <Link to={opcion.route} key={index}>

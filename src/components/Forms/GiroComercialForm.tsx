@@ -29,6 +29,7 @@ import Modal from "../ui/Modal.tsx";
 import ModalReactivacion from "../ui/ModalReactivación.tsx"; //MODAL PARA REACTIVAR UN DATO QUE HAYA SIDO ELIMINADO
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { Switch } from "../ui/switch.tsx";
 
 const GiroComercialForm = () => {
     const { toast } = useToast()
@@ -36,6 +37,11 @@ const GiroComercialForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
+    const [IdParaRestaurar, setIdParaRestaurar] = useState(null);
+    const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
+    const [valorObtenidoBool, setValorObtenidoBool] = useState(false);
+    const [control, setControl] = useState(false);
+
 
 
     const form = useForm<z.infer<typeof girocomercialSchema>>({
@@ -52,7 +58,7 @@ const GiroComercialForm = () => {
     function successToastCreado() {
         toast({
             title: "¡Éxito!",
-            description: "La constancia se ha creado correctamente",
+            description: "El giro comercial se ha creado correctamente",
             variant: "success",
 
         })
@@ -60,7 +66,7 @@ const GiroComercialForm = () => {
     function successToastEditado() {
         toast({
             title: "¡Éxito!",
-            description: "La constancia se ha editado correctamente",
+            description: "El giro comercial se ha editado correctamente",
             variant: "success",
 
         })
@@ -68,7 +74,7 @@ const GiroComercialForm = () => {
     function successToastEliminado() {
         toast({
             title: "¡Éxito!",
-            description: "La constancia se ha eliminado correctamente",
+            description: "El giro comercial se ha eliminado correctamente",
             variant: "success",
 
         })
@@ -76,7 +82,7 @@ const GiroComercialForm = () => {
     function successToastRestaurado() {
         toast({
             title: "¡Éxito!",
-            description: "La constancia se ha restaurado correctamente",
+            description: "El giro comercial se ha restaurado correctamente",
             variant: "success",
 
         })
@@ -97,30 +103,58 @@ const GiroComercialForm = () => {
 
     }
 
+    function errorYaExisteToast() {
+
+        toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "El giro comercial ya existe.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+    }
+
 
     function onSubmit(values: z.infer<typeof girocomercialSchema>) {
         console.log("submit");
         setLoading(true);
+        const boolConvetido = girocomercial.estado ? "activo" : "inactivo"
+
+        let values2 = {...values, estado: boolConvetido}
         if (accion == "crear") {
-            axiosClient.post(`/Giros/create`, values)
-                .then(() => {
+            axiosClient.post(`/giros-catalogos`, values2)
+                .then((response) => {
+                    const data = response.data;
+                    if(data.restore)
+                    {
+                        setIdParaRestaurar(data.giro_comercial_id);
+                        setModalReactivacionOpen(true);
+                    }
+                    else if (data.restore == false) {
+                        errorYaExisteToast();
+                        setLoading(false);
+                    }
+                    else
+                    {
+                    setAccion("creado");
                     successToastCreado();
                     setLoading(false);
                     setGiroComercial({
                         id: 0,
                         nombre: "",
                         descripcion: "ninguna",
-                        estado: "activo"
+                        estado: false
                     });
                     form.reset({
                         id: 0,
                         nombre: "",
                         descripcion: "ninguna",
-                        estado: "activo"
+                        estado: false
                     });
+                    
                     getGirosComerciales();
                     console.log(values);
                     //setNotification("usuario creado");
+                }
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -133,7 +167,10 @@ const GiroComercialForm = () => {
                 console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/Giros/update/${girocomercial.id}`, values)
+            const boolConvetido = values.estado == true ? "activo" : "inactivo"
+
+            let values2 = {...values, estado: boolConvetido}
+            axiosClient.put(`/giros-catalogos/${girocomercial.id}`, values2)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
@@ -159,7 +196,7 @@ const GiroComercialForm = () => {
     const getGirosComerciales = async () => {
         setLoadingTable(true);
         try {
-            const response = await axiosClient.get("/Giros");
+            const response = await axiosClient.get("/giros-catalogos");
             setLoadingTable(false);
             setGirosComerciales(response.data);
         } catch (error) {
@@ -172,7 +209,7 @@ const GiroComercialForm = () => {
     //elimianar anomalia
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/Giros/log_delete/${girocomercial.id}`);
+            await axiosClient.delete(`/giros-catalogos/${girocomercial.id}`);
             getGirosComerciales();
             setAccion("eliminar");
             successToastEliminado();
@@ -182,19 +219,45 @@ const GiroComercialForm = () => {
         }
     };
 
+     //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
+     const restaurarDato = (IdParaRestaurar: any) => {
+        axiosClient.put(`/giros-catalogos/restaurar/${IdParaRestaurar}`)
+            .then(() => {
+                setLoading(false);
+                setAbrirInput(false);
+                setAccion("crear");
+                setGiroComercial({
+                    id: 0,
+                    nombre: "",
+                    descripcion: "ninguna",
+                    estado: false
+                });
+                setAccion("creado");
+                getGirosComerciales();
+                successToastRestaurado();
+                setModalReactivacionOpen(false);
+            })
+            .catch((err) => {
+                errorToast();
+                setLoading(false);
+            });
+    };
+
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            setControl(false);
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             });
             setGiroComercial({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
+            setControl(true);
             console.log("creando");
             setAbrirInput(true);
             setErrors({});
@@ -202,16 +265,38 @@ const GiroComercialForm = () => {
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
             });
             setGiroComercial({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
-                estado: "activo"
+                estado: false
+            })
+        }
+        if (accion == "creado") {
+            setControl(false);
+
+            setAbrirInput(true);
+            setErrors({});
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                estado: false
+            });
+            setGiroComercial({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                estado: false
             })
         }
         if (accion == "ver") {
+            setControl(false);
+            const valorDesdeBaseDeDatos: string = girocomercial.estado as unknown as string; 
+            const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
+            setValorObtenidoBool(valorBooleano);
             setAbrirInput(false);
             setErrors({});
             setAccion("");
@@ -219,15 +304,25 @@ const GiroComercialForm = () => {
                 id: girocomercial.id,
                 nombre: girocomercial.nombre,
                 descripcion: girocomercial.descripcion,
-                estado: girocomercial.estado
+                estado:valorObtenidoBool
             });
         }
         if (accion == "editar") {
             setAbrirInput(true);
+            setControl(true);
             setErrors({});
         }
         console.log(accion);
     }, [accion]);
+
+    useEffect(() => {
+        form.reset({
+            id: girocomercial.id,
+            nombre: girocomercial.nombre,
+            descripcion: girocomercial.descripcion,
+            estado:valorObtenidoBool
+        });
+    },[valorObtenidoBool])
 
     return (
         <div className="overflow-auto">
@@ -235,21 +330,36 @@ const GiroComercialForm = () => {
             <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nuevo Giro Comercial</p>}
+                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo giro comercial</p>}
                         {girocomercial.nombre != "" && <p className="text-muted-foreground text-[20px]">{girocomercial.nombre}</p>}
                     </div>
-                    <Modal
-                        method={onDelete}
-                        button={
-                            <IconButton>
-                                <TrashIcon className="w-[20px] h-[20px]" />
-                            </IconButton>}
-                    />
-                    <div onClick={() => setAccion("editar")}>
-                        <IconButton>
-                            <Pencil2Icon className="w-[20px] h-[20px]" />
-                        </IconButton>
-                    </div>
+                    {(girocomercial.nombre != null && girocomercial.nombre != "") &&
+                                <>
+                                    <Modal
+                                        method={onDelete}
+                                        button={
+                                            <IconButton>
+                                                <TrashIcon className="w-[20px] h-[20px]" />
+                                            </IconButton>}
+                                    />
+                                    <div onClick={() => setAccion("editar")}>
+                                        <IconButton>
+                                            <Pencil2Icon className="w-[20px] h-[20px]" />
+                                        </IconButton>
+                                    </div>
+                                </>
+                            }
+                            {// ESTE ES EL MODAL DE REACTIVACIÓN
+                        //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
+                        //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
+                    }
+                    {ModalReactivacionOpen &&
+                        <ModalReactivacion
+                            isOpen={ModalReactivacionOpen}
+                            setIsOpen={setModalReactivacionOpen}
+                            method={() => restaurarDato(IdParaRestaurar)}
+                        />
+                    }
                 </div>
             </div>
             <div className="py-[20px] px-[10px] ">
@@ -282,12 +392,46 @@ const GiroComercialForm = () => {
                                     <FormControl>
                                         <Textarea
                                             readOnly={!abrirInput}
-                                            placeholder="Descripcion del giro comercial"
+                                            placeholder="Descripción del giro comercial"
                                             {...field}
                                         />
                                     </FormControl>
                                     <FormDescription>
                                         Agrega una breve descripción.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Descripción</FormLabel>
+                                    <FormControl>
+                                        {
+                                            control ? 
+                                            <Switch
+                                            className="ml-3"
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            }
+                                            /> 
+                                            :
+                                            <Switch
+                                            disabled
+                                            className="ml-3"
+                                            checked={field.value}
+                                            onCheckedChange={(checked) => field.onChange(checked)
+                                            }
+                                            /> 
+                                            
+                                        }
+                               
+                                    </FormControl>
+                                    <FormDescription>
+                                    Aquí puedes cambiar el estado del giro comercial.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

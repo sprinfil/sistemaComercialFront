@@ -1,17 +1,16 @@
-"use client"
-import * as React from "react"
+import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
   flexRender,
-  getCoreRowModel,
   useReactTable,
+  getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
   getPaginationRowModel,
-} from "@tanstack/react-table"
-import { Input } from "@/components/ui/input"
+} from "@tanstack/react-table";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -19,80 +18,94 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  sorter: string
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  sorter?: string;
+  onRowClick?: (row: TData) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   sorter,
+  onRowClick,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
-  )
+  );
+  const [selectedRow, setSelectedRow] = React.useState<string | null>(null);
+
   const table = useReactTable({
     data,
     columns,
-    sorter,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
       columnFilters,
     },
-  })
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
+
+  const handleRowClick = (rowId: string, rowData: TData) => {
+    setSelectedRow(rowId);
+    onRowClick?.(rowData);
+  };
 
   return (
     <div className="">
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Buscar..."
-          type="text"
-          value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
-          }
-          className="w-full"
-        />
+        
+        {sorter &&
+          <Input
+            placeholder="Buscar..."
+            type="text"
+            value={(table.getColumn(`${sorter}`)?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn(`${sorter}`)?.setFilterValue(event.target.value)
+            }
+            className="w-full"
+          />
+        }
+
+
       </div>
-      <div className="rounded-md border  h-full overflow-auto">
+      <div className="rounded-md border overflow-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  )
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
 
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  onClick={() => {
+                    console.log(row)
+                    handleRowClick(row.id, row.original)}}
+                  className={`cursor-pointer hover:bg-border ${selectedRow === row.id ? "bg-border" : ""
+                    }`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -109,11 +122,8 @@ export function DataTable<TData, TValue>({
               </TableRow>
             )}
           </TableBody>
-
-
         </Table>
       </div>
-      {/*paginacion*/}
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
@@ -133,6 +143,5 @@ export function DataTable<TData, TValue>({
         </Button>
       </div>
     </div>
-
-  )
+  );
 }

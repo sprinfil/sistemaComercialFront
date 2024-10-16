@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { DataTable } from '../../../components/ui/DataTable';
 import { columns, Concepto } from "../Columns/ConceptosColumns.tsx";
 import axiosClient from '../../../axios-client.ts';
@@ -8,8 +8,7 @@ import IconButton from '../../ui/IconButton.tsx';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
 
 export default function ConceptoTable() {
-
-  const { conceptos, setConceptos, loadingTable, setLoadingTable, setAccion } = useStateContext();
+  const { conceptos, setConceptos, loadingTable, setLoadingTable, setAccion, setConcepto } = useStateContext();
 
   useEffect(() => {
     getConcepto();
@@ -20,12 +19,18 @@ export default function ConceptoTable() {
     try {
       const response = await axiosClient.get("/Concepto");
       setLoadingTable(false);
-      setConceptos(response.data.data);
-      console.log(response.data.data);
+      setConceptos(response.data);
+      console.log(response.data);
     } catch (error) {
       setLoadingTable(false);
       console.error("Failed to fetch concepto:", error);
     }
+  };
+
+  //Metodo para seleccionar las filas
+  const handleRowClick = (concepto: Concepto) => {
+    setConcepto(concepto);
+    setAccion("ver");
   };
 
   if (loadingTable) {
@@ -33,14 +38,13 @@ export default function ConceptoTable() {
   }
 
   return (
-
     <div>
-      <div onClick={()=>{setAccion("crear")}}>
+      <div onClick={() => { setAccion("crear") }}>
         <IconButton>
           <div className='flex gap-2 items-center'> Agregar nuevo concepto <PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
       </div>
-      <DataTable columns={columns} data={conceptos} sorter='nombre' />
+      <DataTable columns={columns} data={conceptos} sorter='nombre' onRowClick={handleRowClick} />
     </div>
   );
 }

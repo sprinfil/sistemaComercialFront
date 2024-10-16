@@ -26,6 +26,8 @@ import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import ModalReactivacion from "../ui/ModalReactivación.tsx";
+import { Switch } from "../ui/switch.tsx";
 
 
 
@@ -37,15 +39,21 @@ const ConceptoForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
+    const [conceptoIdParaRestaurar, setConceptoIdParaRestaurar] = useState(null);
+    const [ModalReactivacionOpen, setModalReactivacionOpen] = useState(false);
+    const [valorObtenidoBool, setValorObtenidoBool] = useState(false);
+    const [control, setControl] = useState(false);
+
 
 
 
     const form = useForm<z.infer<typeof conveniosSchema>>({
         resolver: zodResolver(conveniosSchema),
         defaultValues: {
-            id: convenio.id,
-            nombre: convenio.nombre,
-            descripcion: convenio.descripcion,
+            id: convenio?.id || 0,
+            nombre: convenio?.nombre || "",
+            descripcion: convenio?.descripcion || "",
+            estado: convenio?.estado ||  false
         },
     })
 
@@ -74,6 +82,14 @@ const ConceptoForm = () => {
 
         })
     }
+    function successToastRestaurado() {
+        toast({
+            title: "¡Éxito!",
+            description: "El convenio se ha restaurado correctamente",
+            variant: "success",
+
+        })
+    }
     //#endregion
 
 
@@ -89,27 +105,57 @@ const ConceptoForm = () => {
 
 
     }
+    function errorYaExisteToast() {
+
+        toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "El convenio ya existe.",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+    }
+
 
     function onSubmit(values: z.infer<typeof conveniosSchema>) {
         setLoading(true);
+        const boolConvetido = convenio.estado ? "activo" : "inactivo"
+
+        let values2 = { ...values, estado: boolConvetido }
         if (accion == "crear") {
-            axiosClient.post(`/Convenio/create`, values)
-                .then(() => {
-                    setLoading(false);
-                    setConvenio({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    form.reset({
-                        id: 0,
-                        nombre: "",
-                        descripcion: "ninguna",
-                    });
-                    getConvenios();
-                    console.log(values);
-                    successToastCreado();
-                    //setNotification("usuario creado");
+            axiosClient.post(`/Convenio/create`, values2)
+                .then((response) => {
+                    const data = response.data;
+                    if (data.restore) {
+                        setConceptoIdParaRestaurar(data.convenio_id);
+                        setModalReactivacionOpen(true);
+                    }
+                    else if (data.restore == false) {
+                        errorYaExisteToast();
+                        setLoading(false);
+                    }
+                    else {
+                        setLoading(false);
+                        setConvenio({
+                            id: 0,
+                            nombre: "",
+                            descripcion: "ninguna",
+                            estado: false
+
+                        });
+                        form.reset({
+                            id: 0,
+                            nombre: "",
+                            descripcion: "ninguna",
+                            estado: false
+
+                        });
+                        getConvenios();
+                        console.log(values);
+                        successToastCreado();
+                        setAccion("creado");
+                        //setNotification("usuario creado");
+                    }
+
                 })
                 .catch((err) => {
                     const response = err.response;
@@ -122,7 +168,11 @@ const ConceptoForm = () => {
             console.log(abrirInput);
         }
         if (accion == "editar") {
-            axiosClient.put(`/Convenio/update/${convenio.id}`, values)
+
+            const boolConvetido = values.estado == true ? "activo" : "inactivo"
+
+            let values2 = { ...values, estado: boolConvetido }
+            axiosClient.put(`/Convenio/update/${convenio.id}`, values2)
                 .then((data) => {
                     setLoading(false);
                     //alert("anomalia creada");
@@ -159,10 +209,10 @@ const ConceptoForm = () => {
         }
     };
 
-    //elimianar anomalia
+    //elimianar convenio
     const onDelete = async () => {
         try {
-            await axiosClient.put(`/Convenio/log_delete/${convenio.id}`);
+            await axiosClient.delete(`/Convenio/log_delete/${convenio.id}`);
             getConvenios();
             setAccion("eliminar");
             successToastEliminado();
@@ -171,33 +221,84 @@ const ConceptoForm = () => {
         }
     };
 
+    //Metodo para estaurar el dato que se encuentra eliminado(soft-delete)
+    const restaurarDato = (concepto_id: any) => {
+        axiosClient.put(`/Convenio/restaurar/${concepto_id}`)
+            .then(() => {
+                setLoading(false);
+                setAbrirInput(false);
+                setAccion("crear");
+                setConvenio({
+                    id: 0,
+                    nombre: "",
+                    descripcion: "ninguna",
+                    estado: "activo"
+                });
+                getConvenios();
+                successToastRestaurado();
+                setModalReactivacionOpen(false);
+                setAccion("creado");
+            })
+            .catch((err) => {
+                errorToast();
+                setLoading(false);
+            });
+    };
+
     //este metodo es para cuando actualizar el formulario cuando limpias las variables de la anomalia
     useEffect(() => {
         if (accion == "eliminar") {
+            setControl(false);
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
+
+            });
+            setConvenio({});
+            setAbrirInput(false);
+        }
+        if (accion == "creado") {
+            setControl(false);
+            form.reset({
+                id: 0,
+                nombre: "",
+                descripcion: "ninguna",
+                estado: false
+
             });
             setConvenio({});
             setAbrirInput(false);
         }
         if (accion == "crear") {
-            console.log("creando");
+            setControl(true);
             setAbrirInput(true);
             setErrors({});
             form.reset({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
+
             });
             setConvenio({
                 id: 0,
                 nombre: "",
                 descripcion: "ninguna",
+                estado: false
+
             })
         }
         if (accion == "ver") {
+            setControl(false);
+
+
+
+            const valorDesdeBaseDeDatos: string = convenio.estado as unknown as string;
+            const valorBooleano: boolean = valorDesdeBaseDeDatos === 'activo';
+            setValorObtenidoBool(valorBooleano);
+
             setAbrirInput(false);
             setErrors({});
             setAccion("");
@@ -205,20 +306,23 @@ const ConceptoForm = () => {
                 id: convenio.id,
                 nombre: convenio.nombre,
                 descripcion: convenio.descripcion,
+                estado: valorBooleano
+
             });
         }
         if (accion == "editar") {
             setAbrirInput(true);
+            setControl(true);
             setErrors({});
         }
     }, [accion]);
     return (
 
         <div className="overflow-auto">
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+            <div className='flex h-[40px] items-center mb-[10px] rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando Nuevo Convenio</p>}
+                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo convenio</p>}
                         {convenio.nombre != "" && <p className="text-muted-foreground text-[20px]">{convenio.nombre}</p>}
                     </div>
                     {(convenio.nombre != null && convenio.nombre != "") &&
@@ -226,16 +330,30 @@ const ConceptoForm = () => {
                             <Modal
                                 method={onDelete}
                                 button={
-                                    <IconButton>
-                                        <TrashIcon className="w-[20px] h-[20px]" />
-                                    </IconButton>}
+                                    <a title="Eliminar">
+                                        <IconButton>
+                                            <TrashIcon className="w-[20px] h-[20px]" />
+                                        </IconButton></a>}
                             />
                             <div onClick={() => setAccion("editar")}>
-                                <IconButton>
-                                    <Pencil2Icon className="w-[20px] h-[20px]" />
-                                </IconButton>
+                                <a title="Editar">
+                                    <IconButton>
+                                        <Pencil2Icon className="w-[20px] h-[20px]" />
+                                    </IconButton>
+                                </a>
                             </div>
                         </>
+                    }
+                    {// ESTE ES EL MODAL DE REACTIVACIÓN
+                        //ES UNA VALIDACIÓN POR SI LO QUE ESTA ELIMINADO(SOFT DELETE) LO ENCUENTRA
+                        //SE ABRE EL MODAL Y SE RESTAURA EL DATO.
+                    }
+                    {ModalReactivacionOpen &&
+                        <ModalReactivacion
+                            isOpen={ModalReactivacionOpen}
+                            setIsOpen={setModalReactivacionOpen}
+                            method={() => restaurarDato(conceptoIdParaRestaurar)}
+                        />
                     }
 
                 </div>
@@ -275,7 +393,41 @@ const ConceptoForm = () => {
                                         />
                                     </FormControl>
                                     <FormDescription>
-                                        Agrega una pequeña descripción.
+                                        Agrega una breve descripción.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="estado"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Estado</FormLabel>
+                                    <FormControl>
+                                        {control
+                                            ?
+                                            <Switch
+                                                className="ml-3"
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => field.onChange(checked)
+                                                }
+                                            />
+                                            :
+                                            <Switch
+                                                disabled
+                                                className="ml-3"
+                                                checked={field.value}
+                                                onCheckedChange={(checked) => field.onChange(checked)
+                                                }
+                                            />
+                                        }
+
+                                    </FormControl>
+                                    <FormDescription>
+                                    Aquí puedes cambiar el estado del convenio.
+
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

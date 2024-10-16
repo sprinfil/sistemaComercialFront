@@ -12,6 +12,20 @@ export type Concepto = {
   id: number
   nombre: string
   descripcion: string
+  prioridad_abono: number
+  genera_iva: string
+  abonable: number,
+  tarifa_fija: number,
+  cargo_directo: number,
+  genera_orden: number,
+  genera_orden_data: number,
+  genera_recargo: number,
+  concepto_rezago: number,
+  pide_monto: number,
+  bonificable:number,
+  recargo:string,
+  estado: boolean,
+  tarifas: Array<{}>
 }
 
 
@@ -59,11 +73,11 @@ export const columns: ColumnDef<Concepto>[] = [
       const { setConcepto, setAccion } = useStateContext();
 
       return (
-        <div onClick={()=>{setConcepto(concepto);setAccion("ver")}}>
+        <tr onClick={()=>{setConcepto(concepto);setAccion("ver")}}>
           <IconButton>
             <EyeOpenIcon className="w-[20px] h-[20px]"/>
           </IconButton>
-        </div>
+        </tr>
       )
     },
   },

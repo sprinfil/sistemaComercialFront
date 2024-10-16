@@ -1,8 +1,14 @@
 import React from 'react'
+import InformacionGeneralForm from '../../../../components/Forms/InformacionGeneralForm.tsx'
 
 const InformaciónGeneral = () => {
   return (
-    <div>InformaciónGeneral</div>
+    <div>
+        <div className=''>
+        {/*Formulario*/}
+        <InformacionGeneralForm/>
+    </div>
+    </div>
   )
 }
 

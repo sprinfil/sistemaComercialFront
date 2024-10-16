@@ -21,7 +21,7 @@ const ModalReactivacion = ({ isOpen, setIsOpen, method }) => {
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Ya hay uno existente eliminado. ¿Le gustaría reactivarlo?</AlertDialogTitle>
+                    <AlertDialogTitle>Ya hay un registro con el mismo nombre. ¿Desea reactivarlo?</AlertDialogTitle>
                     <AlertDialogDescription></AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
