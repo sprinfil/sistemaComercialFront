@@ -12,8 +12,9 @@ export const MultasUsuario = () => {
 
   const {usuariosEncontrados} =  ZustandGeneralUsuario();
 
-  const {setMultasTablaToma, multasTablaToma} = ZustandMultas();
+  const {setMultasTablaToma, multasTablaToma,setLoadingTable} = ZustandMultas();
 
+  console.log(usuariosEncontrados[0]?.tomas[0]?.codigo_toma);
 
     const [abrirModal, setAbrirModal] = useState(false);
 //console.log( usuariosEncontrados[0].tomas[0].codigo_toma);
@@ -27,7 +28,7 @@ export const MultasUsuario = () => {
       }, []);
     
       const getMultas = async () => {
-        //setLoadingTable(true);
+        setLoadingTable(true);
         try {
           const response = await axiosClient.get("/multa/consultarmultas", {
             params:{
@@ -35,7 +36,7 @@ export const MultasUsuario = () => {
               modelo_multado: "toma"
             }
           });
-         // setLoadingTable(false);
+         setLoadingTable(false);
          setMultasTablaToma(response?.data);
           console.log(response?.data);
         } catch (error) {
@@ -47,6 +48,9 @@ export const MultasUsuario = () => {
 
   return (
     <div>
+        <div className='text-[20px] font-medium p-1'>
+          Multas
+        </div>
 
         <div className='flex justify-end p-5'>
             <Button onClick={handleAbrirModal}>

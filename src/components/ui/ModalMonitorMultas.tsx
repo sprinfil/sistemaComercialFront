@@ -43,8 +43,15 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-  } from "@/components/ui/table"
-
+} from "@/components/ui/table"
+import { MdAddBox, MdOutlineAddCircleOutline } from 'react-icons/md';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { IoMdAddCircle } from 'react-icons/io';
 
 const ModalMonitorMultas = ({ isOpen, setIsOpen, idMulta }) => {
 
@@ -53,7 +60,7 @@ const ModalMonitorMultas = ({ isOpen, setIsOpen, idMulta }) => {
     const [abrirModalModificar, setAbrirModalModificar] = useState(false);
     const [abrirModalEliminar, setAbrirModalEliminar] = useState(false)
 
-        console.log(idMulta);
+    console.log(idMulta);
 
     const handleValorInput = (event) => {
         setValorMulta(event.target.value);
@@ -76,12 +83,10 @@ const ModalMonitorMultas = ({ isOpen, setIsOpen, idMulta }) => {
     }
 
     const handleAbrirModalModificarMulta = () => {
-        setIsOpen(false);
         setAbrirModalModificar(true);
     }
 
     const handleAbrirModalEliminarMulta = () => {
-        setIsOpen(false);
         setAbrirModalEliminar(true);
     }
 
@@ -91,28 +96,48 @@ const ModalMonitorMultas = ({ isOpen, setIsOpen, idMulta }) => {
             <ModalEstasSeguroCancelarMulta isOpen={abrirModalEliminar} setIsOpen={setAbrirModalEliminar} idMulta={idMulta?.id} />
 
             <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-            <AlertDialogContent className="max-w-screen-2xl max-h-screen-2xl overflow-auto">
-            <AlertDialogHeader>
+                <AlertDialogContent className="max-w-screen-2xl max-h-screen-2xl overflow-auto">
+                    <AlertDialogHeader>
 
                         <AlertDialogTitle className="text-2xl ">
 
-                           Detalle de la multa
+                            Detalle de la multa
                         </AlertDialogTitle>
 
                         <AlertDialogDescription>
 
-                            <div className='bg-muted'>
-                                <div className='flex space-x-2 justify-center items-center'>
+                            <div className='bg-muted rounded-lg'>
+                                <div className='flex space-x-1 justify-center items-center'>
                                     <div className=''>
-                                        <IconButton title='Cancelar multa' onClick={handleAbrirModalEliminarMulta}>
-                                            <TiCancel className='w-[3.8vh] h-[3.8vh]' />
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger>
+                                                        <IconButton onClick={handleAbrirModalEliminarMulta} >
+                                                            <TiCancel className='w-[4.5vh] h-[4.5vh] text-black dark:text-white ' />
 
-                                        </IconButton>
+                                                        </IconButton>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Cancelar multa</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
                                     </div>
                                     <div className=''>
-                                        <IconButton title='Modificar multa' onClick={handleAbrirModalModificarMulta}>
-                                            <FaEdit className='w-[3vh] h-[3vh]' />
-                                        </IconButton>
+
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger> 
+                                                   <IconButton onClick={handleAbrirModalModificarMulta}>
+                                                        <IoMdAddCircle className='w-[3.8vh] h-[3.8vh] text-black dark:text-white ' />
+                                                    </IconButton>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Agregar cantidad de UMAS</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+
 
                                     </div>
                                 </div>
@@ -121,68 +146,68 @@ const ModalMonitorMultas = ({ isOpen, setIsOpen, idMulta }) => {
 
 
                             <div className='max-h-[90vh] overflow-auto'>
-                            <h1 className="text-2xl mb-[7vh] mt-5 text-black">
-                            Información del usuario
+                                <h1 className="text-2xl mb-[7vh] mt-5 text-black dark:text-white ">
+                                    Información del usuario
                                 </h1>
-                            <Table>
-                            <TableCaption></TableCaption>
-                            <TableHeader>
-                                <TableRow>
-                                <TableHead >Código de toma</TableHead>
-                                <TableHead>Nombre del usuario</TableHead>
-                                <TableHead>Dirección</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                <TableRow >
-                                    <TableCell>{idMulta?.codigo_toma}</TableCell>
-                                    <TableCell>{idMulta?.nombre_multado}</TableCell>
-                                    <TableCell>"{idMulta?.codigo_toma}"</TableCell>
-                                </TableRow>
-                            </TableBody>
-                     
-                            </Table>
+                                <Table className="text-black">
+                                    <TableCaption></TableCaption>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="text-black text-base dark:text-white" >Código de toma</TableHead>
+                                            <TableHead className="text-black text-base dark:text-white">Nombre del usuario</TableHead>
+                                            <TableHead className="text-black text-base dark:text-white">Dirección</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        <TableRow >
+                                            <TableCell className="text-black text-base dark:text-white">{idMulta?.codigo_toma}</TableCell>
+                                            <TableCell className="text-black text-base dark:text-white">{idMulta?.nombre_multado}</TableCell>
+                                            <TableCell className="text-black text-base dark:text-white">{idMulta?.codigo_toma}</TableCell>
+                                        </TableRow>
+                                    </TableBody>
 
-                            <h1 className="text-2xl mb-[7vh] mt-5 text-black">
-                            Información de la multa
+                                </Table>
+
+                                <h1 className="text-2xl mb-[7vh] mt-5 text-black dark:text-white">
+                                    Información de la multa
                                 </h1>
-                            <Table>
-                            <TableCaption></TableCaption>
-                            <TableHeader>
-                                <TableRow>
-                                <TableHead >Multa</TableHead>
-                                <TableHead >Motivo</TableHead>
-                                <TableHead >Estado</TableHead>
-                                <TableHead >Monto</TableHead>
-                                <TableHead>Levantó la multa</TableHead>
-                                <TableHead>Revisó la multa</TableHead>
-                                <TableHead>Fecha de solicitud</TableHead>
-                                <TableHead>Fecha de revisión</TableHead>
+                                <Table className="text-black">
+                                    <TableCaption></TableCaption>
+                                    <TableHeader >
+                                        <TableRow >
+                                            <TableHead className="text-black  text-base dark:text-white" >Multa</TableHead>
+                                            <TableHead className="text-black text-base dark:text-white">Motivo</TableHead>
+                                            <TableHead className="text-black text-base dark:text-white">Estado</TableHead>
+                                            <TableHead className="text-black text-base dark:text-white">Monto</TableHead>
+                                            <TableHead className="text-black text-base dark:text-white">Levantó la multa</TableHead>
+                                            <TableHead className="text-black text-base dark:text-white">Revisó la multa</TableHead>
+                                            <TableHead className="text-black text-base dark:text-white">Fecha de solicitud</TableHead>
+                                            <TableHead className="text-black text-base dark:text-white">Fecha de revisión</TableHead>
 
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                <TableRow >
-                                    <TableCell >{idMulta?.nombre_multa}</TableCell>
-                                    <TableCell >{idMulta?.motivo}</TableCell>
-                                    <TableCell >{idMulta?.estado}</TableCell>
-                                    <TableCell >{idMulta?.monto}</TableCell>
-                                    <TableCell >{idMulta?.operador_levanto_multa}</TableCell>
-                                    <TableCell >{idMulta?.nombre_operador_revisor}</TableCell>
-                                    <TableCell >{idMulta?.fecha_solicitud}</TableCell>
-                                    <TableCell >{idMulta?.fecha_revision}</TableCell>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        <TableRow >
+                                            <TableCell  className="text-black  text-base dark:text-white">{idMulta?.nombre_multa}</TableCell>
+                                            <TableCell className="text-black  text-base dark:text-white">{idMulta?.motivo}</TableCell>
+                                            <TableCell className="text-black  text-base dark:text-white">{idMulta?.estado}</TableCell>
+                                            <TableCell className="text-black  text-base dark:text-white">{idMulta?.monto}</TableCell>
+                                            <TableCell className="text-black  text-base dark:text-white">{idMulta?.operador_levanto_multa}</TableCell>
+                                            <TableCell className="text-black  text-base dark:text-white">{idMulta?.nombre_operador_revisor}</TableCell>
+                                            <TableCell className="text-black  text-base dark:text-white">{idMulta?.fecha_solicitud}</TableCell>
+                                            <TableCell className="text-black  text-base dark:text-white">{idMulta?.fecha_revision}</TableCell>
 
-                                </TableRow>
-                            </TableBody>
-                     
-                            </Table>
+                                        </TableRow>
+                                    </TableBody>
+
+                                </Table>
                             </div>
 
 
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <Button onClick={HandleLimpiarEstados}>Cancelar</Button>
+                        <AlertDialogCancel onClick={HandleLimpiarEstados}>Cancelar</AlertDialogCancel>
 
 
                         <Button>

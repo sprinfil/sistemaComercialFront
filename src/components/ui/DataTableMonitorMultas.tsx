@@ -41,7 +41,7 @@ import { getMultas } from "../../lib/MultasService"
 import ModalModificarMulta from "./ModalModificarMulta"
 import { EyeOpenIcon } from "@radix-ui/react-icons"
 import ModalMonitorMultas from "./ModalMonitorMultas"
-
+import Loader from "./Loader"
 export type Multas = {
   id: number;
   nombre: string;
@@ -65,28 +65,6 @@ export type Multas = {
 
 export const columns: ColumnDef<Multas>[] = [
   
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: 'codigo_toma',
     header: 'Código de toma', 
@@ -180,6 +158,8 @@ export function DataTableMonitorMultas({ data }) {
 
   }
 
+  const {loadingTableMonitor} = ZustandMultas();
+
   return (
     <div className="w-full p-2">
       
@@ -195,7 +175,10 @@ export function DataTableMonitorMultas({ data }) {
         
       </div>
       <div className="rounded-md border">
-        <Table>
+        {
+          loadingTableMonitor ? <Loader/>
+          :
+          <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -248,6 +231,8 @@ export function DataTableMonitorMultas({ data }) {
             )}
           </TableBody>
         </Table>
+        }
+       
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">

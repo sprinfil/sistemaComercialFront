@@ -39,6 +39,7 @@ import { cerrarOtSchema } from "../Forms/validaciones.ts";
 import ModalRegistroOT from "./ModalRegistroOT.tsx";
 import { MultasComboBox } from "./MultasComboBox.tsx";
 import { OperadorParaHacerLaMulta } from "./OperadorParaHacerLaMulta.tsx";
+import { ZustandMultas } from "../../contexts/ZustandMultas.tsx";
 const ModalAgregarMulta = ({open, setIsOpen}) => {
 
   const { toast } = useToast();
@@ -46,9 +47,25 @@ const ModalAgregarMulta = ({open, setIsOpen}) => {
   const [operadorSeleccionado, setOperadorSeleccionado] = useState("");
 
   const [comentarioMulta, setComentarioMulta] = useState("");
+  const [informacionTablaFront, setInformacionTablaFront] = useState([]);
+  const [boolMostrarEnFront, setBoolMostrarEnFront] = useState("");
 
-  console.log(operadorSeleccionado.id);
+  const {multasTablaToma, setMultasTablaToma} = ZustandMultas();
+
+
+  useEffect(() => {setInformacionTablaFront(multasTablaToma)},[multasTablaToma])
+
+  useEffect(() => 
+  {
+    if(boolMostrarEnFront)
+    {
+      setMultasTablaToma(informacionTablaFront);
+    }
+  },[informacionTablaFront])
+
+  //console.log(operadorSeleccionado.id);
 const {usuariosEncontrados} = ZustandGeneralUsuario();
+//console.log(informacionTablaFront);
 
   const crearMulta =  async () => 
   {
@@ -79,7 +96,7 @@ const {usuariosEncontrados} = ZustandGeneralUsuario();
           toast({
             variant: "destructive",
             title: "Oh, no. Error",
-            description: "Debes ingresar un comentario",
+            description: "Debes ingresar un motivo",
             action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
         })
         return;
@@ -94,11 +111,18 @@ const {usuariosEncontrados} = ZustandGeneralUsuario();
       motivo:comentarioMulta,
       id_revisor:operadorSeleccionado?.id
     }
-    console.log(values);
+    //console.log(values);
     try
     {
       const response = await axiosClient.post("multa/store", values);
-      console.log(response);
+      console.log(response.data.data);
+      setInformacionTablaFront((prev) => 
+      {
+        //console.log(prev);
+        return ([response.data.data, ...prev]);
+      })
+      setBoolMostrarEnFront(true);
+
       toast({
         title: "¡Éxito!",
         description: "La multa se ha creado correctamente",
@@ -137,7 +161,7 @@ const {usuariosEncontrados} = ZustandGeneralUsuario();
     }
   
 
-  console.log(comentarioMulta);
+  //console.log(comentarioMulta);
 
   return (
     <AlertDialog open={open} onOpenChange={setIsOpen}>

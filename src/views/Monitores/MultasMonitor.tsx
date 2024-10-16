@@ -6,6 +6,7 @@ import { ZustandMultas } from '../../contexts/ZustandMultas';
 import { getMultas } from '../../lib/MultasService';
 import { OcultarTable } from '../../components/Tables/Components/OcultarTable';
 import { DataTableMonitorMultas } from '../../components/ui/DataTableMonitorMultas';
+import Loader from '../../components/ui/Loader';
 export const MultasMonitor = () => {
 
     const MostrarFiltros = () => {
@@ -29,7 +30,7 @@ export const MultasMonitor = () => {
       
 
   const {multasTabla, setMultasTabla, accionMulta} = ZustandMultas();
-  const {setMultas} = getMultas(setMultasTabla);
+  const {setMultas,loadingMultas} = getMultas(setMultasTabla);
 
   console.log(multasTabla);
 
@@ -40,7 +41,10 @@ export const MultasMonitor = () => {
         <MostrarFiltros/>
 
         <div className='w-full'>
+          {loadingMultas ? <Loader/>
+          :
           <DataTableMonitorMultas data={multasTabla}/>
+          }
             
         </div>
       </div>

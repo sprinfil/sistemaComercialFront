@@ -54,14 +54,11 @@ const ModalEstasSeguroMulta2 = ({open, setIsOpen, selected_multa}) => {
  useEffect(() => {
     if(mostrarFront)
     {
-      console.log(multasTablaTomaFront);
+      //console.log(multasTablaTomaFront);
       setMultasTablaToma(multasTablaTomaFront);
     }
  }, [multasTablaTomaFront])
 
- useEffect(()=> {
-  console.log(multasTablaTomaFront);
- },[multasTablaTomaFront])
 
  const handleCancelarMulta =  async () =>
   {
@@ -74,11 +71,11 @@ const ModalEstasSeguroMulta2 = ({open, setIsOpen, selected_multa}) => {
           setMostrarFront(true);
           console.log(nuevaMulta);
           setMultasTablaTomaFront((prevMultas) => {
-            console.log("Estado anterior de multas:", prevMultas); // Verifica el estado anterior aquí
-            console.log(selected_multa?.id_multa); // Verifica el estado anterior aquí
+            //console.log("Estado anterior de multas:", prevMultas); // Verifica el estado anterior aquí
+            //console.log(selected_multa?.id); // Verifica el estado anterior aquí
 
             return prevMultas.map((multa) =>
-                multa.id === selected_multa?.id_multa
+                multa.id === selected_multa?.id
                     ? nuevaMulta // Reemplaza todo el objeto de la multa con el nuevo
                     : multa
             );
@@ -96,7 +93,7 @@ const ModalEstasSeguroMulta2 = ({open, setIsOpen, selected_multa}) => {
       } 
       catch(response)
       {
-          console.log(response.response.data.message);
+          //console.log(response.response.data.message);
           const mensaje = response.response.data.message;
           
       toast({

@@ -20,9 +20,11 @@ interface ZustandMultas {
   multasTablaToma: Multas[] | null;
   setMultasTablaToma:(multasTablaToma: Multas[] | null) => void;
 
+  loadingTable: boolean;
+  setLoadingTable:(loadingTable: boolean) => void;
 
-
-
+  loadingTableMonitor: boolean;
+  setLoadingTableMonitor:(loadingTableMonitor: boolean) => void;
 
   
 }
@@ -47,6 +49,14 @@ export const ZustandMultas= create<ZustandMultas>((set) => ({
     
   multasTablaToma: [],
   setMultasTablaToma: (multasTablaToma) => set({multasTablaToma}),
+
+  loadingTable: false,
+  setLoadingTable: (loadingTable) => set({loadingTable}),
+
+
+  loadingTableMonitor: false,
+  setLoadingTableMonitor: (loadingTableMonitor) => set({loadingTableMonitor}),
+
 
 }));
 

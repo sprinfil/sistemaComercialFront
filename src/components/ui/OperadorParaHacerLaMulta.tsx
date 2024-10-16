@@ -44,7 +44,7 @@ export function OperadorParaHacerLaMulta({ onSelect }) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full justify-between " 
         >
           {value
             ? multas.find((multa) => multa.id === value)?.nombre 
@@ -52,8 +52,8 @@ export function OperadorParaHacerLaMulta({ onSelect }) {
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
+      <PopoverContent className="w-[300px] p-0 max-h-[40vh] overflow-y-auto">
+        <Command className="">
           <CommandInput placeholder="Buscar operador..." />
           <CommandList>
             <CommandEmpty>Operador no encontrado.</CommandEmpty>
