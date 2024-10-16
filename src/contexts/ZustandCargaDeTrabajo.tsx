@@ -14,11 +14,17 @@ interface ZustandCargaDeTrabajo {
   cargasDeTrabajoAEnviar: FilaCargaTrabajo[];
   setCargasDeTrabajoAEnviar:(filasSeleccionadaCargaTrabajo: FilaCargaTrabajo[]) => void;
 
+  cargasDeTrabajoAEnviarAPI: FilaCargaTrabajo[];
+  setCargasDeTrabajoAEnviarFrontAPI:(cargasDeTrabajoAEnviarAPI: FilaCargaTrabajo[]) => void;
+
   dataArrayColumns: FilaCargaTrabajo[];
   setDataArrayColumns:(dataArrayColumns: FilaCargaTrabajo[]) => void;
 
   dataInfoCargaTrabajo: [];
   setDataInfoCargaTrabajo: (dataInfoCargaTrabajo:[]) => void;
+
+  loadingTable: boolean;
+  setLoadingTable:(loadingTable:boolean) => void;
   
 }
 
@@ -29,12 +35,21 @@ export const ZustandCargaDeTrabajo= create<ZustandCargaDeTrabajo>((set) => ({
   cargasDeTrabajoAEnviar: [],
   setCargasDeTrabajoAEnviar: (cargasDeTrabajoAEnviar) => set({cargasDeTrabajoAEnviar}),
 
-  
+  cargasDeTrabajoAEnviarAPI: [],
+  setCargasDeTrabajoAEnviarFrontAPI: (cargasDeTrabajoAEnviarAPI) => set({cargasDeTrabajoAEnviarAPI}),
+
+
   dataArrayColumns: [],
   setDataArrayColumns: (dataArrayColumns) => set({dataArrayColumns}),
-  
   dataInfoCargaTrabajo: [],
   setDataInfoCargaTrabajo: (dataInfoCargaTrabajo) => set({dataInfoCargaTrabajo}),
+
+  loadingTable: false,
+  setLoadingTable: (loadingTable) => set({loadingTable}),
+
+
+  
+
  
 }));
 

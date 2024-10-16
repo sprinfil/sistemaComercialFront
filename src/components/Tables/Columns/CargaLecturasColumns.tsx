@@ -14,32 +14,18 @@ import { TrashIcon, Pencil2Icon, PlusCircledIcon, EyeOpenIcon } from '@radix-ui/
 import { useState } from "react"
 import { useStateContext } from "../../../contexts/ContextAjuste"
 import { Checkbox } from "@/components/ui/checkbox"
-
+import { ZustandCargaDeTrabajo } from "../../../contexts/ZustandCargaDeTrabajo"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Ajuste = {
-  id: number
-  nombre: string
-  descripcion: string
-  estado: boolean
-}
 
 
-export const columns: ColumnDef<Ajuste>[] = [
+
+export const columns: ColumnDef<CargaTrabajo>[] = [
   {
     id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
     cell: ({ row }) => (
       <Checkbox
+      className="w-[2.7vh] h-[2.7vh]"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
@@ -49,34 +35,40 @@ export const columns: ColumnDef<Ajuste>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "nombre",
+    accessorKey: "libro.nombre",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
+          className="text-xl text-black"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Nombre
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          Libro
         </Button>
       )
     },
-
   },
   {
-    id: "actions",
-    cell: ({ row }) => {
-      const ajuste = row.original
-      const { setAjuste, setAccion } = useStateContext();
-      
+    accessorKey: "tiene_encargado.nombre",
+    header: ({ column }) => {
       return (
-        <div onClick={()=>{setAjuste(ajuste);setAccion("ver")}}>
-          <IconButton>
-            <EyeOpenIcon className="w-[20px] h-[20px]"/>
-          </IconButton>
-        </div>
+        <Button
+          variant="ghost"
+          className="text-xl text-black"
+        >
+          Operador asignado
+        </Button>
       )
     },
+    cell({row}) {
+      const encargado = row?.original?.tiene_encargado?.nombre || "";
+      const {dataArrayColumns} = ZustandCargaDeTrabajo();
+      console.log(dataArrayColumns);
+      return encargado === "" ? <div className="text-red-500">No asignado</div>: encargado
+
+    },
   },
+
+  
 
 ]
