@@ -37,11 +37,18 @@ export const FacturacionesToma = () => {
             </>
             :
             <>
-              <DataTableFacturacionesToma data={
-                [
-                  facturaciones
-                ]
-              } columns={columns} />
+              {
+                facturaciones.length > 0 ?
+                  <>
+                    <DataTableFacturacionesToma data={
+                      [
+                        facturaciones
+                      ]
+                    } columns={columns} />
+                  </>
+                  :
+                  <>No hay facturaciones.</>
+              }
             </>
         }
       </div>
