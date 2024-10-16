@@ -18,7 +18,7 @@ import { CargaLecturaDataTable } from '../../components/Tables/Components/CargaL
 
 export const CargasTrabajo = ({detalle}) => {
   const { toast } = useToast()
-  const { filasSeleccionadaCargaTrabajo, cargasDeTrabajoAEnviar, setCargasDeTrabajoAEnviar, setFilasSeleccionadaCargaTrabajo, dataInfoCargaTrabajo, setDataInfoCargaTrabajo } = ZustandCargaDeTrabajo();
+  const { filasSeleccionadaCargaTrabajo, cargasDeTrabajoAEnviar, setCargasDeTrabajoAEnviar, setFilasSeleccionadaCargaTrabajo, dataInfoCargaTrabajo, setDataInfoCargaTrabajo, cargasDeTrabajoAEnviarAPI } = ZustandCargaDeTrabajo();
 
   const [activeTab, setActiveTab] = useState("tipoDeCarga");
   const [editar, setEditar] = useState(false);
@@ -45,7 +45,7 @@ export const CargasTrabajo = ({detalle}) => {
     fetchData();
   }, [detalle?.id]);
 
-console.log(cargasDeTrabajoAEnviar);
+console.log(cargasDeTrabajoAEnviarAPI);
 
   const handleEnviarCargaDeTrabajo = async () =>
   {
@@ -53,7 +53,7 @@ console.log(cargasDeTrabajoAEnviar);
     const values2 =
     {
       cargas_trabajo: 
-        cargasDeTrabajoAEnviar
+      cargasDeTrabajoAEnviarAPI
       
     }
     console.log(values2);
