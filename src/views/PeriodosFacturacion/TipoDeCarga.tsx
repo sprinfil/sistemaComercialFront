@@ -61,9 +61,13 @@ export const TipoDeCarga = ({booleanMostrar}) => {
   const [tipoCargaSeleccionada, setTipoCargaSeleccionada] = useState("");
 
   console.log(cargasDeTrabajoAEnviar);
-  const [dataArray, setDataArray] = useState<FilaCargaTrabajo[]>(cargasDeTrabajoAEnviar);
-  const [dataArrayFront, setDataArrayFront] = useState<FilaCargaTrabajo[]>(cargasDeTrabajoAEnviar);
+  const [dataArray, setDataArray] = useState<FilaCargaTrabajo[]>([]);
+  const [dataArrayFront, setDataArrayFront] = useState<FilaCargaTrabajo[]>([]);
 
+  useEffect(() => {
+    setDataArray(cargasDeTrabajoAEnviar);
+    setDataArrayFront(cargasDeTrabajoAEnviar);
+  },[cargasDeTrabajoAEnviar])
   const form = useForm<z.infer<typeof tipoCargaSchema>>({
     resolver: zodResolver(tipoCargaSchema),
     defaultValues: {
@@ -149,9 +153,9 @@ export const TipoDeCarga = ({booleanMostrar}) => {
   
       
   
-      // Actualizamos cargasDeTrabajoAEnviar con el array actualizado
-      setCargasDeTrabajoAEnviar(updatedArray);
-     // setDataInfoCargaTrabajo(updatedArray); //FALTA ACTUALIZAR ESTA VARIABLE CORRECTAMENTE PARA QUE SE VEAN LOS CAMBIOS EN EL FRONT Y DESPUES
+      //setCargasDeTrabajoAEnviar(updatedArray);
+
+      setDataInfoCargaTrabajo(updatedArray); //FALTA ACTUALIZAR ESTA VARIABLE CORRECTAMENTE PARA QUE SE VEAN LOS CAMBIOS EN EL FRONT Y DESPUES
       console.log(updatedArray);
 
       return updatedArray;

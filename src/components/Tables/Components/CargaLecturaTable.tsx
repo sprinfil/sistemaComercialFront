@@ -44,7 +44,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-
+import Loader from "../../ui/Loader"
 export type CargaTrabajo = {
   id: number
   nombre: string
@@ -152,7 +152,7 @@ export function CargaLecturaDataTable({ data }) {
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
   const [booleanAbrir, setBooleanAbrir] = React.useState(false)
-
+  const {setLoadingTable, loadingTable} = ZustandCargaDeTrabajo();
   const table = useReactTable({
     data,
     columns,
@@ -262,57 +262,61 @@ export function CargaLecturaDataTable({ data }) {
 
       </div>
       <div className="rounded-md border">
+        {loadingTable ? <Loader/> :
+        
         <Table className="w-[50vh]">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                className={`text-xl cursor-pointer ${row.getIsSelected() ? 'bg-gray-900' : ''}`} 
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                onClick={() => { table.getRowModel().rows.forEach(r => r.toggleSelected(false)); row.toggleSelected(); setFilasSeleccionadasCargaTrabajo(row.original); } }  // Selecciona/deselecciona al hacer clic en la fila
-
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="h-24 text-center"
-              >
-                No resultados.
-              </TableCell>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
+                )
+              })}
             </TableRow>
-          )}
-          </TableBody>
-        </Table>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+              className={`text-xl cursor-pointer ${row.getIsSelected() ? 'bg-gray-900' : ''}`} 
+              key={row.id}
+              data-state={row.getIsSelected() && "selected"}
+              onClick={() => { table.getRowModel().rows.forEach(r => r.toggleSelected(false)); row.toggleSelected(); setFilasSeleccionadasCargaTrabajo(row.original); } }  // Selecciona/deselecciona al hacer clic en la fila
+
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(
+                    cell.column.columnDef.cell,
+                    cell.getContext()
+                  )}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell
+              colSpan={columns.length}
+              className="h-24 text-center"
+            >
+              No resultados.
+            </TableCell>
+          </TableRow>
+        )}
+        </TableBody>
+      </Table>
+        }
+     
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">

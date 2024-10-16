@@ -22,6 +22,9 @@ interface ZustandCargaDeTrabajo {
 
   dataInfoCargaTrabajo: [];
   setDataInfoCargaTrabajo: (dataInfoCargaTrabajo:[]) => void;
+
+  loadingTable: boolean;
+  setLoadingTable:(loadingTable:boolean) => void;
   
 }
 
@@ -40,6 +43,9 @@ export const ZustandCargaDeTrabajo= create<ZustandCargaDeTrabajo>((set) => ({
   setDataArrayColumns: (dataArrayColumns) => set({dataArrayColumns}),
   dataInfoCargaTrabajo: [],
   setDataInfoCargaTrabajo: (dataInfoCargaTrabajo) => set({dataInfoCargaTrabajo}),
- 
+
+  loadingTable: false,
+  setLoadingTable: (loadingTable) => set({loadingTable}),
+
 }));
 

@@ -18,7 +18,8 @@ import { CargaLecturaDataTable } from '../../components/Tables/Components/CargaL
 
 export const CargasTrabajo = ({detalle}) => {
   const { toast } = useToast()
-  const { filasSeleccionadaCargaTrabajo, cargasDeTrabajoAEnviar, setCargasDeTrabajoAEnviar, setFilasSeleccionadaCargaTrabajo, dataInfoCargaTrabajo, setDataInfoCargaTrabajo, cargasDeTrabajoAEnviarAPI } = ZustandCargaDeTrabajo();
+  const { filasSeleccionadaCargaTrabajo, cargasDeTrabajoAEnviar, setCargasDeTrabajoAEnviar, setFilasSeleccionadaCargaTrabajo, dataInfoCargaTrabajo, setDataInfoCargaTrabajo, 
+    cargasDeTrabajoAEnviarAPI, setLoadingTable } = ZustandCargaDeTrabajo();
 
   const [activeTab, setActiveTab] = useState("tipoDeCarga");
   const [editar, setEditar] = useState(false);
@@ -30,13 +31,13 @@ export const CargasTrabajo = ({detalle}) => {
   
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      setLoadingTable(true);
       try {
         const response = await axiosClient.get(`cargaTrabajo/show/${detalle?.id}`);
         console.log(response.data.cargas_trabajo); // Asegúrate de acceder a los datos que necesitas
         setData(response.data.cargas_trabajo);
         setCargasDeTrabajoAEnviar(response.data.cargas_trabajo);
-        setLoading(false);
+        setLoadingTable(false);
       } catch (error) {
         console.error('Error al obtener los datos:', error);
       }
@@ -97,6 +98,8 @@ console.log(cargasDeTrabajoAEnviarAPI);
 
   },[])
 
+
+
   const {setMultas} = getCargaLectura(setDataInfoCargaTrabajo, detalle?.id);
   console.log(dataInfoCargaTrabajo);
 
@@ -107,8 +110,8 @@ console.log(cargasDeTrabajoAEnviarAPI);
                   </div>
       <div className='flex space-x-2'>
               <div className='p-2 '>
-                
-                    <CargaLecturaDataTable data = {dataInfoCargaTrabajo}/>
+        
+                                      <CargaLecturaDataTable data = {dataInfoCargaTrabajo}/>
                   </div>
           <div className='w-full mt-6'>
       
