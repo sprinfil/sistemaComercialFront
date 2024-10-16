@@ -43,14 +43,19 @@ export const PeriodosFacturacion = () => {
     }
   }, [selectedRuta]);
 
-  console.log(selectedRutaDetalle);
+  useEffect(()=>{console.log(periodos)},[periodos])
+
   return (
     <div className='h-[90vh] flex flex-col'>
       <div className='mx-1 mt-1 h-full flex flex-col flex-grow'>
         {
           selectedRutaDetalle?.id ?
             <>
-              <PeriodoFacturacionDetalle setDetalle={setSelectedRutaDetalle} detalle={selectedRutaDetalle}/>
+              <PeriodoFacturacionDetalle
+                setDetalle={setSelectedRutaDetalle}
+                selectedRutaDetalle={selectedRutaDetalle}
+                setPeriodos={setPeriodos}
+              />
             </>
             :
             <>
@@ -80,7 +85,7 @@ export const PeriodosFacturacion = () => {
                             selectedRuta={selectedRuta}
                             trigger={<Button >
                               <div className='flex items-center'>
-                                <p> Nuevo Periodo</p>
+                                <p> Nuevo periodo</p>
                                 <IoCalendarNumberSharp className='w-6 h-6 ml-3' />
                               </div>
                             </Button>}
@@ -108,7 +113,6 @@ export const PeriodosFacturacion = () => {
                               }
                             </>
                         }
-
                       </div>
                     </div>
                   </AccordionContent>

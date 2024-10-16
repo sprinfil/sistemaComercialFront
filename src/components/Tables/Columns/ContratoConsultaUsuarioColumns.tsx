@@ -63,7 +63,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Telefono
+        Teléfono
       </Button>
     ),
   },
@@ -126,7 +126,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Direccion
+        Dirección
       </Button>
     ),
   },

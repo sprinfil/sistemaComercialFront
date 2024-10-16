@@ -138,7 +138,7 @@ const ModalHistorialPagos = ({ trigger }) => {
                         variant: "destructive",
                         title: "Error",
                         //description: response.response.data.error,
-                        description: "Ocurrio un error al imprimir",
+                        description: "Ocurrió un error al imprimir",
                         action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                     })
                 })
@@ -148,7 +148,7 @@ const ModalHistorialPagos = ({ trigger }) => {
                     variant: "destructive",
                     title: "Error",
                     //description: response.response.data.error,
-                    description: "Ocurrio un error al imprimir",
+                    description: "Ocurrió un error al imprimir",
                     action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                 })
             })

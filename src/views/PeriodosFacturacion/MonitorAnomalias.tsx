@@ -11,20 +11,20 @@ export const MonitorAnomalias = () => {
     <>
       <div className='flex flex-col flex-grow h-full relative'>
         <DoubleContainer>
-          <Seccion1 width={"40%"}>
+          <Seccion1 width={"35%"}>
             <div className='w-full px-2 overflow-auto h-[80vh] no-scrollbar'>
               <DataTableMonitorAnomalias columns={columns} />
             </div>
           </Seccion1>
           <Seccion2>
-            <Tabs defaultValue="account" className="w-full h-full flex flex-col ">
+            <Tabs defaultValue="consumos" className="w-full h-full flex flex-col ">
               <TabsList>
                 <TabsTrigger value="imagen">Imagen</TabsTrigger>
                 <TabsTrigger value="toma">Toma</TabsTrigger>
                 <TabsTrigger value="consumos">Consumos</TabsTrigger>
                 <TabsTrigger value="ordenes">Ordenes de trabajo</TabsTrigger>
               </TabsList>
-              <TabsContent value="imagen" className="h-full"><VerImagen/></TabsContent>
+              <TabsContent value="imagen" className="h-full"><VerImagen /></TabsContent>
               <TabsContent value="toma" className="h-full"><VerToma /></TabsContent>
               <TabsContent value="consumos" className="h-full"><Consumos /></TabsContent>
               <TabsContent value="ordenes" className="h-full">Change your password here.</TabsContent>

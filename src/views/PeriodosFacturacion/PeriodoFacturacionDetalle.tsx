@@ -5,9 +5,10 @@ import { Card } from '../../components/ui/card';
 import { CargasTrabajo } from './CargasTrabajo';
 import { MonitorAnomalias } from './MonitorAnomalias';
 import { InformacionGeneral } from './InformacionGeneral';
+import { Facturacion } from './Facturacion';
+import { Recorridos } from './Recorridos';
 
-const PeriodoFacturacionDetalle = ({ setDetalle, detalle }) => {
-  console.log(detalle);
+const PeriodoFacturacionDetalle = ({ setDetalle, selectedRutaDetalle, setPeriodos }) => {
   return (
     <>
       <div className='h-full flex flex-col relative'>
@@ -17,7 +18,7 @@ const PeriodoFacturacionDetalle = ({ setDetalle, detalle }) => {
             <p >Volver</p>
           </div>
           <div className='h-full flex items-center mt-[2px]'>
-            <p className='text-[14px] font-medium'>R01 Enero 2024</p>
+            <p className='text-[14px] font-medium'>{selectedRutaDetalle?.nombre}</p>
           </div>
         </div>
         <div className='rounded-md flex-grow flex flex-col overflow-auto no-scrollbar'>
@@ -29,11 +30,11 @@ const PeriodoFacturacionDetalle = ({ setDetalle, detalle }) => {
               <TabsTrigger value="recorridos">Recorridos</TabsTrigger>
               <TabsTrigger value="facturacion">Facturación</TabsTrigger>
             </TabsList>
-            <TabsContent value="informacionGeneral" className="flex-grow"><InformacionGeneral/></TabsContent>
-            <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo detalle={detalle}/></TabsContent>
+            <TabsContent value="informacionGeneral" className="flex-grow"><InformacionGeneral setPeriodos={setPeriodos} selectedRutaDetalle = {selectedRutaDetalle} setDetalle={setDetalle}/></TabsContent>
+            <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo detalle={selectedRutaDetalle}/></TabsContent>
             <TabsContent value="anomalias" className="flex-grow"><MonitorAnomalias /></TabsContent>
-            <TabsContent value="recorridos" className="flex-grow">recorridos account here.</TabsContent>
-            <TabsContent value="facturacion" className="flex-grow">facturacion</TabsContent>
+            <TabsContent value="recorridos" className="flex-grow"><Recorridos/></TabsContent>
+            <TabsContent value="facturacion" className="flex-grow"><Facturacion/></TabsContent>
           </Tabs>
         </div>
       </div>

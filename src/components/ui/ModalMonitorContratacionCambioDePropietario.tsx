@@ -193,9 +193,9 @@ console.log(usuariosEncontrados.length);
       <TableCaption></TableCaption>
       <TableHeader>
         <TableRow>
-        <TableHead >Codigo de usuario</TableHead>
+        <TableHead >Código de usuario</TableHead>
           <TableHead >Nombre</TableHead>
-          <TableHead>Telefono</TableHead>
+          <TableHead>Teléfono</TableHead>
           <TableHead>Correo</TableHead>
           <TableHead>CURP</TableHead>
           <TableHead>RFC</TableHead>

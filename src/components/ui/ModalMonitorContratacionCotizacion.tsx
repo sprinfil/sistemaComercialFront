@@ -62,9 +62,6 @@ console.log(usuariosEncontrados[0]?.id);
 console.log(selected_contrato?.id);
 
 
-
-
-
 const form = useForm<z.infer<typeof cambioPropietarioSchema>>({
   resolver: zodResolver(cambioPropietarioSchema),
   defaultValues: {
@@ -72,11 +69,6 @@ const form = useForm<z.infer<typeof cambioPropietarioSchema>>({
       nombre_contrato: "",
   },
 })
-
-
-
-
-
 
 
 async function onSubmit(values: z.infer<typeof cambioPropietarioSchema>) {
@@ -130,7 +122,7 @@ async function onSubmit(values: z.infer<typeof cambioPropietarioSchema>) {
           <div className="flex justify-between items-center">
             {/* Título al principio */}
             <div className="flex">
-              <span className="text-lg">Cotizacion</span>
+              <span className="text-lg">Cotización</span>
             </div>
             
             

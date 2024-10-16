@@ -567,9 +567,9 @@ export const CrearContratoForm = () => {
                                                 <FormControl>
                                                     {
                                                         esPreContratado ?
-                                                            <Input placeholder="Escribe su clave catastral" {...field} readOnly />
+                                                            <Input placeholder="Escribe la clave catastral" {...field} readOnly />
                                                             :
-                                                            <Input placeholder="Escribe su clave catastral" {...field} />
+                                                            <Input placeholder="Escribe la clave catastral" {...field} />
 
 
                                                     }
@@ -633,17 +633,17 @@ export const CrearContratoForm = () => {
                                         name="num_casa"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Numero de casa</FormLabel>
+                                                <FormLabel>Número de casa</FormLabel>
                                                 <FormControl>
                                                     {esPreContratado ?
                                                         <Input
                                                             type='number'
-                                                            placeholder="Escribe el numero de casa" {...field}
+                                                            placeholder="Escribe el número de casa" {...field}
                                                             readOnly />
                                                         :
                                                         <Input
                                                             type='number'
-                                                            placeholder="Escribe el numero de casa" {...field} />}
+                                                            placeholder="Escribe el número de casa" {...field} />}
 
                                                 </FormControl>
                                                 <FormDescription />
@@ -1055,15 +1055,6 @@ export const CrearContratoForm = () => {
                                     
 
                             </div>
-
-
-
-
-
-
-
-
-
 
 
                             <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-10 dark:text-white">Tipo de Contratación y Giro de Negocio</h3>

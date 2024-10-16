@@ -87,7 +87,7 @@ export function PagosMonitorDataTable<TData, TValue>({
           </div>
 
           <div className="px-2">
-            <p>Referenia</p>
+            <p>Referencia</p>
             <Input
               placeholder="Referencia"
               value={(table.getColumn("referencia")?.getFilterValue() as string) ?? ""}
@@ -118,18 +118,18 @@ export function PagosMonitorDataTable<TData, TValue>({
           </div>
 
           <div className="px-2">
-            <p>Metodo de Pago</p>
+            <p>Método de Pago</p>
             <Select onValueChange={(value) => { table.getColumn("forma_pago")?.setFilterValue(value == "cualquiera" ? "" : value) }}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Metodo Pago" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Metodo</SelectLabel>
+                  <SelectLabel>Método</SelectLabel>
                   <SelectItem value="cualquiera">Cualquiera</SelectItem>
                   <SelectItem value="efectivo">Efectivo</SelectItem>
-                  <SelectItem value="tarjeta_debito">Tarjeta Debito</SelectItem>
-                  <SelectItem value="tarjeta_credito">Tarjeta Credito</SelectItem>
+                  <SelectItem value="tarjeta_debito">Tarjeta Débito</SelectItem>
+                  <SelectItem value="tarjeta_credito">Tarjeta Crédito</SelectItem>
                   <SelectItem value="transferencia">Transferencia</SelectItem>
                   <SelectItem value="cheque">Cheque</SelectItem>
                 </SelectGroup>
@@ -211,7 +211,7 @@ export function PagosMonitorDataTable<TData, TValue>({
                 ) : (
                   <TableRow>
                     <TableCell colSpan={columns.length} className="h-24 text-center">
-                      No results.
+                      No resultados.
                     </TableCell>
                   </TableRow>
                 )}
@@ -227,7 +227,7 @@ export function PagosMonitorDataTable<TData, TValue>({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Accion</SelectLabel>
+                  <SelectLabel>Acción</SelectLabel>
                   <SelectItem value="timbrar">Timbrar</SelectItem>
                   <SelectItem value="cancelacion">Solicitar Cancelación</SelectItem>
                 </SelectGroup>
@@ -244,7 +244,7 @@ export function PagosMonitorDataTable<TData, TValue>({
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
-              Previous
+              Anterior
             </Button>
             <Button
               variant="outline"
@@ -252,7 +252,7 @@ export function PagosMonitorDataTable<TData, TValue>({
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
-              Next
+              Siguiente
             </Button>
           </div>
         </div>

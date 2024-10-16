@@ -25,8 +25,8 @@ export const SelectTarifaFija = ({value, onChange}) => {
     </SelectTrigger>
     <SelectContent>
       <SelectGroup>
-        <SelectLabel>Tiene tarifa fija?</SelectLabel>
-        <SelectItem value="si">Si</SelectItem>
+        <SelectLabel>¿Tiene tarifa fija?</SelectLabel>
+        <SelectItem value="si">Sí</SelectItem>
         <SelectItem value="no">No</SelectItem>
       </SelectGroup>
     </SelectContent>

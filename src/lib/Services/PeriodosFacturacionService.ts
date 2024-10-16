@@ -67,3 +67,45 @@ export async function newPeriodo(data, setError, setPeriodos, setOpen, setLoadin
     setLoadingNewPeriodo(false);
   }
 }
+
+export async function editPeriodo(data, setPeriodos, setDetalle, setLoadingEditPeriodo, setEditar, cerrarPeriodo = false, setError) {
+
+
+  if (cerrarPeriodo) {
+    const id = data?.periodos?.id;
+    data = {
+      periodos: {
+        id: id,
+        estatus: "cerrado"
+      }
+    }
+  }
+
+  console.log(data);
+
+  try {
+    setLoadingEditPeriodo(true);
+    const response = await axiosClient.put(`periodos/update/${data?.periodos?.id}`, data);
+    console.log(response.data.periodos);
+
+    setPeriodos((prev) => {
+      return prev.map(periodo => {
+        if (periodo.id == data?.periodos?.id) {
+          return response.data.periodos
+        } else {
+          return periodo;
+        }
+      })
+    })
+    setDetalle(response.data.periodos);
+    setEditar(false);
+   
+  }
+  catch (e) {
+    console.log(e.response.data.error);
+    setError(e.response.data.error);
+  }
+  finally {
+    setLoadingEditPeriodo(false);
+  }
+}
