@@ -102,6 +102,21 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
       });
   };
 
+  useEffect(() => {
+    if (cargosSeleccionados.length > 0) {
+      const nuevosCargosSeleccionados = cargosSeleccionados.map((cargo) => {
+        // Recalcular el monto bonificado basado en el porcentaje
+        const montoBonificadoActual = tipoMonto === '%'
+          ? (cargo.monto_pendiente * porcentajeConveniado) / 100
+          : montoBonificado;
+  
+        return { ...cargo, montoBonificado: montoBonificadoActual };
+      });
+      
+      setCargosSeleccionados(nuevosCargosSeleccionados); // Actualizar el estado
+    }
+  }, [porcentajeConveniado, tipoMonto]);
+
   const handleCargoSeleccionado = (cargo: any) => {
     const yaSeleccionado = cargosSeleccionados.some((c) => c.id === cargo.id);
     if (yaSeleccionado) {
@@ -146,6 +161,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
         console.log(pagoFormateado);
         setPorcentajeConveniado(pagoFormateado); // Guardar el porcentaje para enviar a la API
     } else {
+      
         setPagoInicial(0); // Si no hay cargos seleccionados, no hay total
         setPorcentajeConveniado(0);
     }
@@ -165,6 +181,8 @@ useEffect(() => {
         // Aquí se puede manejar el caso de monto fijo si es necesario
         setPorcentajeConveniado((montoBonificado / totalSeleccionados) * 100);
     }
+    setmontoBonificado(0)
+    
 }, [porcentajeConveniado, montoBonificado, cargosSeleccionados, tipoMonto]);
 
   useEffect(() => {
@@ -235,9 +253,14 @@ useEffect(() => {
 
   if (totalSeleccionados > 0) {
     setPagoInicialPesos((pagoInicial / 100) * totalSeleccionados); // Asegúrate de que esto es lo que deseas
+  }else{
+    setPagoInicialPesos(0)
   } 
+  setPorcentajeConveniado
   console.log(pagoInicialPesos)
-}, [pagoInicial, cargosSeleccionados, pagoInicialPesos]); // Agregar cargosSeleccionados como dependencia
+  console.log(cantidadLetras)
+  console.log(porcentajeConveniado)
+}, [pagoInicial, cargosSeleccionados, pagoInicialPesos,porcentajeConveniado]); // Agregar cargosSeleccionados como dependencia
 
 
 
@@ -254,8 +277,10 @@ const formatMonto = (monto: number) => {
 
 const totalMontos = calcularTotalMontos();
 const totalBonificado = calcularTotalmontoBonificado();
-const resultadoResta = totalMontos - totalBonificado;
+const totalBonificadoConveniado = totalBonificado + pagoInicialPesos;
+const resultadoResta = totalMontos - totalBonificadoConveniado;
 const resultadoDivision = cantidadLetras > 0 ? resultadoResta / cantidadLetras : 0;
+console.log(resultadoDivision)
 
 
 
@@ -275,14 +300,27 @@ return (
             {selectedConvenio && (
               <div className="mt-4 ">
                 <h3 className="font-medium">Resumen:</h3>
-                <p>Convenio: {selectedConvenio.nombre}</p>
-                <p>Pago inicial: {selectedConvenio.pago_inicial ? `%${selectedConvenio.pago_inicial}` : 'No requiere'} = ${pagoInicialPesos.toFixed(2)}</p>
-                <p>Cargos Conveniados:</p>
+                <p><strong>Convenio: </strong>{selectedConvenio.nombre}</p>
+                <p>Pago inicial minimo: {selectedConvenio.pago_inicial ? `%${selectedConvenio.pago_inicial}` : 'No requiere'} = ${Math.round(pagoInicialPesos)}</p>
+                <p><strong>Cargos Conveniados:</strong></p>
                 <ul>
-                  {cargosSeleccionados.map((cargo: any) => (
-                    <li key={cargo.id}>{cargo.nombre}</li>
-                  ))}
+                  
+                    {cargosSeleccionados.map((cargo: any) => (
+                      <div className='bg-slate-300 me-8 my-1 rounded-md'>
+                        <li className=' ml-2' key={cargo.id}>{cargo.nombre}</li>
+                      </div>
+                    ))}
+                  
                 </ul>
+                
+                  
+                    <p><strong>Monto total: </strong>${calcularTotalMontos().toFixed(2)}</p>
+                    <p><strong>Monto bonificado: </strong>${calcularTotalmontoBonificado().toFixed(2)}</p>
+                    <p><strong>Monto conveniado: </strong>${resultadoResta.toFixed(2)}</p>
+                    <p><strong>Cantidad por letra: </strong>${resultadoDivision.toFixed(2)}</p>
+                  
+                
+
               </div>
             )}
           </AlertDialogHeader>
@@ -361,12 +399,13 @@ return (
                           <td className="px-4 py-2">
                             <Input
                               type="number"
-                              
+                              maxLength={3}
                               onChange={(e) => {
                                 const value = e.target.value;
                                 setPorcentajeConveniado(
                                   value === '' ? 0 : Number(value)
                                 );
+                                setPagoInicialCalculado
                               }}
                               className="border p-1"
                               disabled={tipoMonto !== '%'}
