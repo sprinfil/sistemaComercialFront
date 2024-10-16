@@ -38,7 +38,7 @@ type ConceptosComboBoxNewProps = {
     onSelect: (selected: Status) => void; // Nueva prop para el callback
 };
 
-export const OperadoresOtIndividualComboBox = ({ field, form, name = "id_concepto", setCargoSeleccionado}) => {
+export const OperadoresCargaTrabajo = ({ field, form, name = "id_concepto", setCargoSeleccionado, disabled = false}) => {
 
 
     const [loading, setLoading] = React.useState<boolean>(false);
@@ -68,7 +68,7 @@ export const OperadoresOtIndividualComboBox = ({ field, form, name = "id_concept
     const [open, setOpen] = React.useState(false)
 
     return (
-        <div  className="w-full">
+        <div>
             <Popover>
                 <PopoverTrigger asChild>
                     <FormControl>
@@ -79,19 +79,20 @@ export const OperadoresOtIndividualComboBox = ({ field, form, name = "id_concept
                                 "w-full justify-between",
                                 !field.value && "text-muted-foreground"
                             )}
+                            disabled={disabled}
                         >
                             {field.value
                                 ? languages.find(
                                     (language) => language.value === field.value
                                 )?.label
-                                : "Selecciona un operador."}
+                                : "Selecciona un operador"}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0 h-[300px] overflow-auto">
+                <PopoverContent className="w-full p-0 h-[300px]">
                     <Command>
-                        <CommandInput placeholder="Buscar operador... " />
+                        <CommandInput placeholder="Buscar Operador ... " />
                         <CommandList>
                             <CommandEmpty>Operador no encontrado.</CommandEmpty>
                             <CommandGroup>

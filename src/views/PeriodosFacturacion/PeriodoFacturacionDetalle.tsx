@@ -31,7 +31,7 @@ const PeriodoFacturacionDetalle = ({ setDetalle, selectedRutaDetalle, setPeriodo
               <TabsTrigger value="facturacion">Facturación</TabsTrigger>
             </TabsList>
             <TabsContent value="informacionGeneral" className="flex-grow"><InformacionGeneral setPeriodos={setPeriodos} selectedRutaDetalle = {selectedRutaDetalle} setDetalle={setDetalle}/></TabsContent>
-            <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo /></TabsContent>
+            <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo detalle={selectedRutaDetalle}/></TabsContent>
             <TabsContent value="anomalias" className="flex-grow"><MonitorAnomalias /></TabsContent>
             <TabsContent value="recorridos" className="flex-grow"><Recorridos/></TabsContent>
             <TabsContent value="facturacion" className="flex-grow"><Facturacion setPeriodos={setPeriodos} selectedRutaDetalle = {selectedRutaDetalle} setDetalle={setDetalle}/></TabsContent>
