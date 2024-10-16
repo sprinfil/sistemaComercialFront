@@ -37,7 +37,16 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { cerrarOtSchema } from "../Forms/validaciones.ts";
 import ModalRegistroOT from "./ModalRegistroOT.tsx";
-
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 const ModalDetalleMulta = ({open, setIsOpen, selected_multa}) => {
 
   const { toast } = useToast();
@@ -45,25 +54,55 @@ const ModalDetalleMulta = ({open, setIsOpen, selected_multa}) => {
 
   return (
     <AlertDialog open={open} onOpenChange={setIsOpen}>
-    <AlertDialogContent className="max-w-[65vh]">
+    <AlertDialogContent className="max-w-[190vh] h-[40vh]">
       <AlertDialogHeader>
         <AlertDialogTitle>
-         Detalle
+         Detalle de la multa
         </AlertDialogTitle>
 
         <AlertDialogDescription>
-              asddsasd
-              <div className="flex justify-end">
-                  <div className="flex space-x-2">
-                <AlertDialogCancel onClick={() => setIsOpen(false)}>Cancelar </AlertDialogCancel>
-                <Button type="submit">Multar</Button>
-                </div>
-       
-              </div>
+        <Table className="mt-10">
+      <TableCaption></TableCaption>
+      <TableHeader className="text-xl ">
+        <TableRow>
+          <TableHead className="w-[100px]">Multa</TableHead>
+          <TableHead>Motivo</TableHead>
+          <TableHead>Estado</TableHead>
+          <TableHead >Monto</TableHead>
+          <TableHead >Levantó la multa</TableHead>
+          <TableHead >Revisó la multa</TableHead>
+          <TableHead >Fecha de solicitud</TableHead>
+          <TableHead >Fecha de revisión</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+    
+          <TableRow className="text-xl">
+            <TableCell >{selected_multa?.nombre_multa}</TableCell>
+            <TableCell>{selected_multa?.motivo}</TableCell>
+            <TableCell>{selected_multa?.estado}</TableCell>
+            <TableCell>{selected_multa?.monto}</TableCell>
+            <TableCell>{selected_multa?.operador_levanto_multa}</TableCell>
+            <TableCell>{selected_multa?.nombre_operador_revisor}</TableCell>
+            <TableCell>{selected_multa?.fecha_solicitud}</TableCell>
+            <TableCell>{selected_multa?.fecha_revision}</TableCell>
 
+          </TableRow>
+      </TableBody>
+      <TableFooter>
+        <TableRow>
+        
+        </TableRow>
+      </TableFooter>
+    </Table>
 
         </AlertDialogDescription>
       </AlertDialogHeader>
+      <div className="flex justify-end">
+      <AlertDialogCancel className="w-[12vh]">Cerrar</AlertDialogCancel>
+
+      </div>
+
     </AlertDialogContent>
   </AlertDialog>
   );
