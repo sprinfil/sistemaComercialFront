@@ -38,7 +38,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const [selectedConvenio, setSelectedConvenio] = useState<any | null>(null);
   const [porcentajeConveniado, setPorcentajeConveniado] = useState<number>(0);
   const [pagoInicial, setPagoInicial] = useState<number>(0);
-  const [pagoInicialCalculad, setPagoInicialCalculado] = useState<number>(0);
+  const [pagoInicialCalculado, setPagoInicialCalculado] = useState<number>(0);
   const [pagoInicialPesos, setPagoInicialPesos] = useState<number>(0);
   const [montoBonificado, setmontoBonificado] = useState<number>(0);
   const [cantidadLetras, setCantidadLetras] = useState<number>(0);
@@ -48,9 +48,11 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const [tipoMonto, setTipoMonto] = useState<string>('%');
   const [montoConveniado, setMontoConveniado] = useState<number>(0);
   const [valorAnteriorPagoInicial, setValorAnteriorPagoInicial] = useState(pagoInicialPesos);
+  const [pagoInicialValido, setPagoInicialValido] = useState(true); 
 
 
   const { toast } = useToast()
+  
   
 
   function successToastCreado() {
@@ -94,6 +96,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
           monto: cargo.monto_pendiente,
         }));
         setCargosConveniables(filteredCargos);
+        setCargosSeleccionados(filteredCargos)
         setActiveAccordion("cargosConveniables");
         console.log(filteredCargos)
       })
@@ -149,23 +152,26 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
     return cargosSeleccionados.reduce((acc, cargo) => acc + (cargo.monto_pendiente || 0), 0);
   };
   const handlePagoInicialChange = (pago: number) => {
-    
     const totalSeleccionados = calcularTotalSeleccionados();
     if (totalSeleccionados > 0) {
-        const porcentaje = (pago / totalSeleccionados) * 100;
-        
-        // Formatear el pago inicial a dos decimales
-        const pagoFormateado = parseFloat(porcentaje.toFixed(2));
-        
-        setPagoInicial(pagoFormateado); // Guardar el pago inicial en pesos
-        console.log(pagoFormateado);
-        setPorcentajeConveniado(pagoFormateado); // Guardar el porcentaje para enviar a la API
+      const porcentaje = (pago / totalSeleccionados) * 100;
+      const pagoFormateado = parseFloat(porcentaje.toFixed(2));
+
+      setPagoInicial(pagoFormateado); // Guardar el pago inicial
+      setPorcentajeConveniado(pagoFormateado); // Guardar el porcentaje
+
+      // Validar si el pago inicial es menor que el porcentaje requerido del convenio
+      if (pagoFormateado < (selectedConvenio?.pago_inicial || 0)) {
+        setPagoInicialValido(false); // Mostrar advertencia si es menor
+      } else {
+        setPagoInicialValido(true); // Ocultar advertencia si es válido
+      }
     } else {
-      
-        setPagoInicial(0); // Si no hay cargos seleccionados, no hay total
-        setPorcentajeConveniado(0);
+      setPagoInicial(0);
+      setPorcentajeConveniado(0);
+      setPagoInicialValido(true);
     }
-};
+  };
 
   useEffect(() => {
     calcularTotalSeleccionados(); // Llama a la función para que actualice el total
@@ -173,30 +179,38 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   
   
 
-useEffect(() => {
+  useEffect(() => {
     const totalSeleccionados = calcularTotalSeleccionados();
+    
     if (tipoMonto === '%') {
+        // Si el tipo es porcentaje, recalculamos el monto bonificado basado en el porcentaje
         setmontoBonificado((totalSeleccionados * porcentajeConveniado) / 100);
     } else if (tipoMonto === '$') {
-        // Aquí se puede manejar el caso de monto fijo si es necesario
+        // Si es un monto fijo, recalculamos el porcentaje basado en el monto fijo
         setPorcentajeConveniado((montoBonificado / totalSeleccionados) * 100);
     }
-    setmontoBonificado(0)
-    
 }, [porcentajeConveniado, montoBonificado, cargosSeleccionados, tipoMonto]);
 
-  useEffect(() => {
-    
-    const totalSeleccionados = calcularTotalSeleccionados();
-    if (tipoMonto === '$') {
-      // Si el tipo es monto fijo, recalculamos el porcentaje basado en el monto sobre el total seleccionado
-      setPorcentajeConveniado((montoBonificado / totalSeleccionados) * 100);
-      
-    }
-  }, [montoBonificado, cargosSeleccionados]);
-
+useEffect(() => {
+  const totalSeleccionados = calcularTotalSeleccionados();
+  if (totalSeleccionados > 0) {
+      setPagoInicialPesos((pagoInicial / 100) * totalSeleccionados);
+  } else {
+      setPagoInicialPesos(0);
+  }
+}, [pagoInicial, cargosSeleccionados, pagoInicialPesos]);
   const calcularTotalmontoBonificado = () => {
     return cargosSeleccionados.reduce((acc, cargo) => acc + (cargo.montoBonificado || 0), 0);
+};
+
+const handleMontoBonificadoChange = (monto: number) => {
+  setmontoBonificado(monto);
+
+  const totalSeleccionados = calcularTotalSeleccionados();
+  if (tipoMonto === '$') {
+      const nuevoPorcentaje = (monto / totalSeleccionados) * 100;
+      setPorcentajeConveniado(nuevoPorcentaje);
+  }
 };
 
 
@@ -217,32 +231,40 @@ useEffect(() => {
 };
 
 
-  const handleConfirmar = () => {
-    const payload = {
-        id_convenio_catalogo: selectedConvenio.id || 0,
-        id_modelo: usuariosEncontrados[0].tomas[0].id,
-        modelo_origen: "toma",
-        cantidad_letras: cantidadLetras,
-        comentario: comentario,
-        pago_inicial: porcentajeConveniado,
-        cargos_conveniados: cargosSeleccionados.map(cargo => ({
-            id: cargo.id,
-            porcentaje_conveniado: tipoMonto === '%' ? porcentajeConveniado : montoBonificado,
-        })),
-    };
 
-    axiosClient.post('/Convenio/RegistrarConvenio', payload)
-        .then(response => {
-            console.log('Convenio registrado', response);
-            successToastCreado(); // Llama a la función para actualizar la tabla
-            onConfirm(selectedConvenio); 
-            successToastCreado(); // Llama a la función para actualizar la tabla
-        })
-        .catch(error => {
-            console.log(payload)
-            console.error('Error al registrar convenio:', error);
-        });
+
+const handleConfirmar = () => {
+  const payload = {
+    id_convenio_catalogo: selectedConvenio.id || 0,
+    id_modelo: usuariosEncontrados[0].tomas[0].id,
+    modelo_origen: "toma",
+    cantidad_letras: cantidadLetras,
+    comentario: comentario,
+    pago_inicial: pagoInicial,
+    cargos_conveniados: cargosSeleccionados.map(cargo => {
+      // Si el tipo de monto es '$', convierte el monto bonificado a porcentaje
+      const porcentaje_conveniado = tipoMonto === '%'
+        ? porcentajeConveniado // Ya está en porcentaje
+        : (montoBonificado / calcularTotalSeleccionados()) * 100; // Convierte monto bonificado a porcentaje
+
+      return {
+        id: cargo.id,
+        porcentaje_conveniado, // Envía el porcentaje calculado o directo
+      };
+    }),
+  };
+
+  axiosClient.post('/Convenio/RegistrarConvenio', payload)
+    .then(response => {
+      console.log('Convenio registrado', response);
+      successToastCreado();
+      onConfirm(selectedConvenio);
+    })
+    .catch(error => {
+      console.error('Error al registrar convenio:', error);
+    });
 };
+
 const calcularTotalMontos = () => {
   return cargosSeleccionados.reduce((total, cargo) => total + (Number(cargo.monto_pendiente) || 0), 0);
 };
@@ -260,6 +282,7 @@ useEffect(() => {
   console.log(pagoInicialPesos)
   console.log(cantidadLetras)
   console.log(porcentajeConveniado)
+  console.log(pagoInicialCalculado)
 }, [pagoInicial, cargosSeleccionados, pagoInicialPesos,porcentajeConveniado]); // Agregar cargosSeleccionados como dependencia
 
 
@@ -286,6 +309,8 @@ console.log(resultadoDivision)
 
 
 
+
+
 return (
   <AlertDialog>
     <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
@@ -301,6 +326,14 @@ return (
               <div className="mt-4 ">
                 <h3 className="font-medium">Resumen:</h3>
                 <p><strong>Convenio: </strong>{selectedConvenio.nombre}</p>
+                <div>
+                {/* Mostrar mensaje de advertencia si el pago inicial no es válido */}
+                {!pagoInicialValido && (
+                  <p className="text-red-500">
+                    El pago inicial debe ser mayor o igual al porcentaje requerido del convenio.
+                  </p>
+                )}
+              </div>
                 <p>Pago inicial minimo: {selectedConvenio.pago_inicial ? `%${selectedConvenio.pago_inicial}` : 'No requiere'} = ${Math.round(pagoInicialPesos)}</p>
                 <p><strong>Cargos Conveniados:</strong></p>
                 <ul>
@@ -512,7 +545,7 @@ return (
       <AlertDialogCancel>Cancelar</AlertDialogCancel>
       <AlertDialogAction
         onClick={handleConfirmar}
-        disabled={!selectedConvenio || cargosSeleccionados.length === 0}
+        disabled={!selectedConvenio || cargosSeleccionados.length === 0 || !pagoInicialValido}
       >
         Aceptar
       </AlertDialogAction>
