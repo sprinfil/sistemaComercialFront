@@ -70,7 +70,7 @@ const Catalogos = () => {
       titulo: "Colonias y calles",
       componente: <Colonia />,
       permission: "VerColoniasCalles"
-      
+
     },
     {
       titulo: "Orden de trabajo",
@@ -90,13 +90,12 @@ const Catalogos = () => {
     },
   ]
 
-  return ( 
-    <div className='w-full'>
-      <Tabs defaultValue="" className="" onValueChange={() => { setSeleccionarCatalogo(false) }}>
-
+  return (
+    <div className='w-full h-full '>
+      <Tabs defaultValue="" className="h-full" onValueChange={() => { setSeleccionarCatalogo(false) }}>
         <TabsList>
           {opciones.map((opcion, index) => {
-            if (permissions.includes(opcion.permission) || user.id == 1|| user?.roles?.includes("Admin")) {
+            if (permissions.includes(opcion.permission) || user.id == 1 || user?.roles?.includes("Admin")) {
               return (
                 <>
                   <TabsTrigger value={opcion.titulo} key={index}>{opcion.titulo}</TabsTrigger>
@@ -107,14 +106,14 @@ const Catalogos = () => {
         </TabsList>
         {opciones.map((opcion, index) => (
           <>
-            <TabsContent value={opcion.titulo} key={index}>{opcion.componente}</TabsContent>
+            <TabsContent value={opcion.titulo} key={index} className="h-full">{opcion.componente}</TabsContent>
           </>
         ))}
       </Tabs>
       {
         seleccionarCatalogo &&
         <>
-          <div className='w-full h-[70vh] mt-[20px] flex flex-col items-center justify-center gap-5'>
+          <div className='w-full mt-[20px]  h-hull flex flex-col items-center justify-center gap-5'>
             <p>Selecciona un catálogo.</p>
           </div>
         </>

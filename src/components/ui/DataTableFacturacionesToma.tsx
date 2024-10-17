@@ -48,15 +48,9 @@ import IconButton from "./IconButton";
 import { EyeOpenIcon } from "@radix-ui/react-icons";
 import ModalVerFacturacion from "./ModalVerFacturacion";
 
-type Factura = {
-  id: number
-  periodo: string
-  total: number
-  consumo: number
-  tipoServicio: string
-}
 
-export const columns: ColumnDef<Factura>[] = [
+
+export const columns = [
   {
     accessorKey: "periodo",
     header: "Periodo",
@@ -101,7 +95,7 @@ export const columns: ColumnDef<Factura>[] = [
     header: "Total",
     cell: ({ row }) => {
       const info = row.original
-      console.log(info)
+      console.log(info[0])
       return (
         <>
           <p>$ {info[0]?.monto}</p>
@@ -113,11 +107,11 @@ export const columns: ColumnDef<Factura>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
+      const info = row.original[0]
 
       return (
         <>
-          <ModalVerFacturacion trigger={
+          <ModalVerFacturacion selectedFacturacion = {info} trigger={
             <IconButton>
               <EyeOpenIcon />
             </IconButton>

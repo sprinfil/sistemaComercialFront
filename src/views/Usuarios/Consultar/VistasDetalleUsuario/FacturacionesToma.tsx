@@ -5,6 +5,7 @@ import Loader from '../../../../components/ui/Loader'
 import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario'
 import { getFacturacionesToma } from '../../../../lib/Services/FacturacionesToma.tsx';
 import { useToast } from '../../../../components/ui/use-toast.ts';
+
 export const FacturacionesToma = () => {
   const { toast } = useToast();
   const { usuariosEncontrados } = ZustandGeneralUsuario();
@@ -21,6 +22,9 @@ export const FacturacionesToma = () => {
       setError("");
     }
   }, [error])
+
+
+  {/**METODO SERVICE */}
   getFacturacionesToma(setLoadingfacturaciones, setFacturaciones, usuariosEncontrados[0]?.tomas[0]?.id, setError);
 
   return (

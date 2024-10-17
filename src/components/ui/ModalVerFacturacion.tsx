@@ -22,27 +22,29 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "../../components/ui/button";
 import { Input } from './input';
+import dayjs from 'dayjs';
+
 
 interface ModalProps {
   trigger: React.ReactNode;
-  title: string;
-  description?: string;
-  children: React.ReactNode;
-  onConfirm: () => void;
+  selectedFacturacion: Object
 }
 
-const ModalVerFacturacion: React.FC<ModalProps> = ({ trigger }) => {
+const ModalVerFacturacion: React.FC<ModalProps> = ({ trigger, selectedFacturacion }) => {
+  console.log(selectedFacturacion?.consumo?.lectura_actual?.lectura)
   return (
     <div>
       <AlertDialog>
         <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="mb-5">Facturacion - Enero 2024</AlertDialogTitle>
+            <AlertDialogTitle className="mb-5">{selectedFacturacion?.periodo?.nombre?.toUpperCase()}</AlertDialogTitle>
             <div className='w-full mt-10'>
               <div className='w-full flex px-3 text-[20px]'>
                 <p>Consumo</p>
-                <p className='ml-auto'>50 m3</p>
+                <p className='ml-auto'>
+                  {selectedFacturacion?.consumo?.consumo} m3
+                </p>
               </div>
               <div className='mt-4'>
                 <Table>
@@ -54,16 +56,31 @@ const ModalVerFacturacion: React.FC<ModalProps> = ({ trigger }) => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
-                      <TableCell>450 m3</TableCell>
-                      <TableCell>25/01/2024</TableCell>
-                      <TableCell><Input defaultValue={450}></Input></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>400 m3</TableCell>
-                      <TableCell>05/01/2024</TableCell>
-                      <TableCell><Input defaultValue={400}></Input></TableCell>
-                    </TableRow>
+
+                    {
+                      selectedFacturacion?.consumo?.lectura_actual != null ?
+                        <>
+                          <TableRow>
+                            <TableCell>{selectedFacturacion?.consumo?.lectura_actual?.lectura}</TableCell>
+                            <TableCell>{ dayjs(selectedFacturacion?.consumo?.lectura_actual?.created_at).format('DD/MM/YYYY')}</TableCell>
+                            <TableCell><Input disabled defaultValue={selectedFacturacion?.consumo?.lectura_actual?.lectura}></Input></TableCell>
+                          </TableRow>
+                        </>
+                        :
+                        <></>
+                    }
+                    {
+                      selectedFacturacion?.consumo?.lectura_anterior != null ?
+                        <>
+                           <TableRow>
+                            <TableCell>{selectedFacturacion?.consumo?.lectura_anterior?.lectura}</TableCell>
+                            <TableCell>{ dayjs(selectedFacturacion?.consumo?.lectura_anterior?.created_at).format('DD/MM/YYYY')}</TableCell>
+                            <TableCell><Input disabled defaultValue={selectedFacturacion?.consumo?.lectura_anterior?.lectura}></Input></TableCell>
+                          </TableRow>
+                        </>
+                        :
+                        <></>
+                    }
                   </TableBody>
                 </Table>
               </div>

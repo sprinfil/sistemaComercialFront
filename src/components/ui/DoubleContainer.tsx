@@ -1,10 +1,11 @@
 "use client"
 import { ArrowLeftIcon } from '@radix-ui/react-icons';
 import React, { useState } from 'react'
+import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 
 const DoubleContainer = ({ children }) => {
   return (
-    <div className='h-full flex-grow px-1'>
+    <div className='h-full flex-grow px-1 w-full'>
       <div className='h-full flex w-full'>
         {children}
       </div>
@@ -12,10 +13,10 @@ const DoubleContainer = ({ children }) => {
   );
 };
 
-const Seccion1 = ({ children, size = "md" }) => {
+const Seccion1 = ({ children, size = null }) => {
 
   const [isIconOpen, setIsIconOpen] = useState(false);
-  let styles = "";
+  let styles = `data-[state=open]:md:w-[25%]`;
   const toggleTableContainer = () => {
     setIsIconOpen(!isIconOpen);
     let containers = document.getElementsByClassName('tableContainer');
@@ -31,7 +32,7 @@ const Seccion1 = ({ children, size = "md" }) => {
       }
     });
   }
-  
+
   if (size == "sm") {
     styles = `data-[state=open]:md:w-[15%]`;
   }
@@ -51,7 +52,7 @@ const Seccion1 = ({ children, size = "md" }) => {
       <div className='w-[25px] border cursor-pointer bg-muted transition-all duration-100 flex items-center mr-3 justify-center'
         onClick={() => { toggleTableContainer() }}
       >
-        <ArrowLeftIcon
+        <ChevronLeftIcon
           className={`${isIconOpen ? "transition-all rotate-180" : "transition-all "}`}
         />
       </div>
