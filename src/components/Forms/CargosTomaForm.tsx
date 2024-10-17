@@ -11,6 +11,7 @@ import ModalConvenioDetalle from "../ui/ModalDetalleConvenio.tsx";
 import { EyeOpenIcon } from "@radix-ui/react-icons";
 import {PlusCircledIcon} from "@radix-ui/react-icons";
 import { CargosTomaDataTable } from "../ui/CargosTomaDataTable.tsx";
+import { AjusteTomaDataTable } from "../ui/AjusteTomaDataTable.tsx";
 
 const CargosTomaForm = () => {
   const { usuariosEncontrados } = ZustandGeneralUsuario();
@@ -164,6 +165,8 @@ const CargosTomaForm = () => {
           )}
         </div>
         <div className="mt-4 flex justify-end gap-2 p-4" style={{ marginTop: "auto" }}>
+
+          
             <ModalConvenio
               trigger={
                 <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center">
@@ -178,19 +181,27 @@ const CargosTomaForm = () => {
       </TabsContent>
 
       <TabsContent value="Ajustes">
-        <ConvenioTipoTomaForm />
-        <div className="mt-4 flex justify-end gap-2 p-4" style={{ marginTop: "auto" }}>
-          <ModalAjuste
-                trigger={
-                  <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center">
-                    Ajustes
-                    <PlusCircledIcon className="ml-2 mt-1" />
-                  </button>
-                }
-                title="Ajustes"
-              />
-            </div>
-      </TabsContent>
+  <div className="mt-4 p-4">
+    {loading ? (
+      <Loader /> // Mostrar un loader si está cargando
+    ) : (
+      <AjusteTomaDataTable /> // Aquí se llama a la tabla
+    )}
+  </div>
+  
+  <div className="flex justify-end gap-2 p-4" style={{ marginTop: "auto" }}>
+    <ModalAjuste
+      trigger={
+        <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 flex items-center">
+          Ajustes
+          <PlusCircledIcon className="ml-2 mt-1" />
+        </button>
+      }
+      title="Ajustes"
+    />
+  </div>
+</TabsContent>
+
     </Tabs>
   );
 
