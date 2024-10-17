@@ -21,17 +21,18 @@ import {
 import { loadRutas } from "../../lib/Services/PeriodosFacturacionService"
 import Loader from "./Loader"
 
-export function ComboboxRutas({ setSelectedRuta}) {
+export function ComboboxRutas({ setSelectedRuta }) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
   const [frameworks, setFrameworks] = React.useState([]);
   const [framework, setFramework] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     setSelectedRuta(framework);
   }, [framework])
 
-  loadRutas(setFrameworks);
+  loadRutas(setFrameworks, setLoading);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,35 +45,50 @@ export function ComboboxRutas({ setSelectedRuta}) {
         >
           {value
             ? frameworks.find((framework) => framework.id === value)?.nombre
-            : "Select framework..."}
+            : "Selecciona una ruta ..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[95vw] p-0 h-[500px] overflow-auto">
         <Command className="w-full">
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Buscar Ruta ..." />
           <CommandList>
-            <CommandEmpty><Loader /></CommandEmpty>
+            <CommandEmpty>
+              {
+                !loading &&
+                <>
+                  No hay rutas...
+                </>
+              }
+            </CommandEmpty>
             <CommandGroup>
-              {frameworks?.map((framework) => (
-                <CommandItem
-                  key={framework.id}
-                  value={framework.id}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : framework.id)
-                    setOpen(false)
-                    setFramework(framework)
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === framework.id ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {framework.nombre}
-                </CommandItem>
-              ))}
+              {
+                !loading ?
+                  <>
+                    {frameworks?.map((framework) => (
+                      <CommandItem
+                        key={framework.id}
+                        value={framework.id}
+                        onSelect={(currentValue) => {
+                          setValue(currentValue === value ? "" : framework.id)
+                          setOpen(false)
+                          setFramework(framework)
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            value === framework.id ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {framework.nombre}
+                      </CommandItem>
+                    ))}
+                  </>
+                  :
+                  <><Loader /></>
+              }
+
             </CommandGroup>
           </CommandList>
         </Command>

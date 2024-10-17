@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../../axios-client";
 
-export function loadRutas(setData) {
+export function loadRutas(setData, setLoading) {
   const [loadingRutas, setLoadingRutas] = useState(true);
 
   useEffect(() => {
@@ -15,6 +15,7 @@ export function loadRutas(setData) {
       }
       finally {
         setLoadingRutas(false);
+        setLoading(false);
       }
     }
     load();

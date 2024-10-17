@@ -50,26 +50,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { getTomasPorPeriodo } from "../../lib/Services/MonitorAnomaliaService";
 
-const data: Anomalia[] = [
-  {
-    id: "m5gr84i9",
-    toma: "0101001",
-    libro: "R01L01",
-    tipoAnomalia: "Alto Consumo",
-    consumo: 200,
-  },
-]
-
-export type Anomalia = {
-  id: string,
-  toma: string,
-  libro: string,
-  tipoAnomalia: string,
-  consumo: number,
-}
-
-export const columns: ColumnDef<Anomalia>[] = [
+export const columns = [
   {
     id: "select",
     header: ({ table }) => (
@@ -100,11 +83,15 @@ export const columns: ColumnDef<Anomalia>[] = [
           variant="ghost"
         >
           Toma
-
         </Button>
       )
     },
-    cell: ({ row }) => <div className="text-center">{row.getValue("toma")}</div>,
+    cell: ({ row }) => {
+      const data = row.original;
+      return (
+        <div className="text-center">{data?.toma?.codigo_toma}</div>
+      )
+    },
   },
   {
     accessorKey: "libro",
@@ -115,11 +102,11 @@ export const columns: ColumnDef<Anomalia>[] = [
 
         >
           Libro
-     
+
         </Button>
       )
     },
-    cell: ({ row }) => <div className="text-center">{row.getValue("libro")}</div>,
+    cell: ({ row }) => <div className="text-center">{}</div>,
   },
   {
     accessorKey: "tipoAnomalia",
@@ -134,7 +121,7 @@ export const columns: ColumnDef<Anomalia>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="text-center">{row.getValue("tipoAnomalia")}</div>,
+    cell: ({ row }) => <div className="text-center">{}</div>,
   },
   {
     accessorKey: "consumo",
@@ -149,7 +136,7 @@ export const columns: ColumnDef<Anomalia>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="text-center">{row.getValue("consumo")} m3</div>,
+    cell: ({ row }) => <div className="text-center">{} m3</div>,
   },
   {
     id: "actions",
@@ -176,7 +163,7 @@ export const columns: ColumnDef<Anomalia>[] = [
   },
 ]
 
-export function DataTableMonitorAnomalias() {
+export function DataTableMonitorAnomalias({data}) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
