@@ -10,6 +10,7 @@ import IconButton from "../ui/IconButton.tsx";
 import ModalConvenioDetalle from "../ui/ModalDetalleConvenio.tsx";
 import { EyeOpenIcon } from "@radix-ui/react-icons";
 import {PlusCircledIcon} from "@radix-ui/react-icons";
+import { CargosTomaDataTable } from "../ui/CargosTomaDataTable.tsx";
 
 const CargosTomaForm = () => {
   const { usuariosEncontrados } = ZustandGeneralUsuario();
@@ -129,20 +130,12 @@ const CargosTomaForm = () => {
       </TabsList>
 
       <TabsContent value="Cargos">
-        <div className="p-4">
-          <h3 className="pl-1">Cargos</h3>
-          {cargos.length > 0 ? (
-            cargos.map((cargo) => (
-              <div key={cargo.id}  className="border p-4 my-2 rounded-lg shadow-md">
-                <p>Concepto: {cargo.concepto}</p>
-                <p>Monto: {cargo.monto}</p>
-                <p>Estado: {cargo.estado}</p>
-              </div>
-            ))
+      {loading ? (
+            <Loader />  // Mostrar un loader si está cargando
           ) : (
-            <p>No hay cargos disponibles.</p>
+            <CargosTomaDataTable/> // Aquí se llama a la tabla
           )}
-        </div>
+        
       </TabsContent>
 
       <TabsContent value="Convenios">
