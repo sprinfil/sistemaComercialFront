@@ -78,7 +78,7 @@ export function useFormatCoords(coords) {
   let newCoords: any = [];
   console.log(coords)
 
-  coords[0]?.map(coord => {
+  coords[0].map(coord => {
     newCoords.push({
       lat: parseFloat(coord[1]),
       lng: parseFloat(coord[0])
@@ -106,16 +106,16 @@ export async function updateSecuencia(secuenciaTemp, secuenciaOrden, setLoading,
     secuencia: secuencia,
     secuencia_ordenes: secuencia_ordenes
   }
-  const secuenciaOrdenada = secuenciaOrden?.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
+  const secuenciaOrdenada = secuenciaOrden.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
   console.log(secuenciaOrdenada)
   try {
 
     let response = await axiosClient.post("secuencia/crear", data);
     setRutas(prev => {
-      return prev?.map(ruta => {
+      return prev.map(ruta => {
         return {
           ...ruta,
-          libros: ruta?.libros?.map(libro => {
+          libros: ruta.libros.map(libro => {
             if (libro.id === secuenciaTemp?.id_libro) {
               return {
                 ...libro,
@@ -177,13 +177,13 @@ export async function moverPosicionLibro(nuevaPosicion, secuencia, setSecuencia,
     });
   }
 
-  const secuenciaOrdenada = nuevaSecuencia?.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
+  const secuenciaOrdenada = nuevaSecuencia.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
 
   setRutas(prev => {
-    return prev?.map(ruta => {
+    return prev.map(ruta => {
       return {
         ...ruta,
-        libros: ruta?.libros?.map(libro => {
+        libros: ruta.libros.map(libro => {
           if (libro.id === libroId) {
             return {
               ...libro,
@@ -227,9 +227,9 @@ export function initMapa(libroCoords, center, tomas) {
     map: map
   });
 
-  tomas?.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
+  tomas.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
 
-  tomas?.map((secuencia, index) => {
+  tomas.map((secuencia, index) => {
     let urlTemp = "";
     if (tomas.length == 1) {
       urlTemp = grifo;
@@ -290,7 +290,7 @@ export function initMapaIndicaciones(libroCoords, center, tomas) {
     map: map
   });
 
-  tomas?.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
+  tomas.sort((a, b) => a.numero_secuencia - b.numero_secuencia);
 
   // Usar DirectionsService y DirectionsRenderer
   const directionsService = new google.maps.DirectionsService();

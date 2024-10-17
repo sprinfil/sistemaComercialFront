@@ -70,6 +70,7 @@ export async function newPeriodo(data, setError, setPeriodos, setOpen, setLoadin
 
 export async function editPeriodo(data, setPeriodos, setDetalle, setLoadingEditPeriodo, setEditar, cerrarPeriodo = false, setError) {
 
+
   if (cerrarPeriodo) {
     const id = data?.periodos?.id;
     data = {
@@ -98,6 +99,7 @@ export async function editPeriodo(data, setPeriodos, setDetalle, setLoadingEditP
     })
     setDetalle(response.data.periodos);
     setEditar(false);
+   
   }
   catch (e) {
     console.log(e.response.data.error);
@@ -105,21 +107,5 @@ export async function editPeriodo(data, setPeriodos, setDetalle, setLoadingEditP
   }
   finally {
     setLoadingEditPeriodo(false);
-  }
-}
-
-export async function IniciarProcesoFacturacion(periodo) {
-  try {
-    const response = await axiosClient.post(`/factura/create/periodo`, {
-      periodos: [
-        {
-          id: periodo?.id
-        },
-      ]
-    });
-    console.log(response);
-  }
-  catch (e) {
-    console.log(e);
   }
 }

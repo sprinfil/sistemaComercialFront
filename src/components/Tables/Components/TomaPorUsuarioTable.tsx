@@ -57,17 +57,11 @@ export default function TomaPorUsuarioTable() {
   const handleRowClick = (tomaPorUsuario: TomaPorUsuario) => {
     setToma(tomaPorUsuario);
     setTomasRuta(true);
-    let usuariosEncontradosTemp = usuariosEncontrados;
-    usuariosEncontradosTemp[0].tomas[0] = tomaPorUsuario;
-    setUsuariosEncontrados(usuariosEncontradosTemp);
-
     setMostrarSiguiente(true)
     console.log("se debió abrir la ruta");
     navigate('/usuario/toma');
     setAccion("ver");
   };
-
-  console.log(toma);
 
 
   if (loadingTable) {

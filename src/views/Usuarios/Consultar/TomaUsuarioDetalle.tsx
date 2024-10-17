@@ -20,8 +20,7 @@ import { GestionDescuentos } from "./VistasDetalleUsuario/GestionDescuentos.tsx"
 import { GestionConstancias } from "./VistasDetalleUsuario/GestionConstancias.tsx";
 
 import { MultasUsuario } from "./VistasDetalleUsuario/MultasUsuario.tsx";
-import { FacturacionesToma } from "./VistasDetalleUsuario/FacturacionesToma.tsx";
-import { DoubleContainer, Seccion1, Seccion2 } from "../../../components/ui/DoubleContainer.tsx";
+import { GestionLecturasToma } from "./VistasDetalleUsuario/GestionLecturasToma.tsx";
 export const TomaUsuarioDetalle = () => {
   const {
     toma,
@@ -88,7 +87,7 @@ export const TomaUsuarioDetalle = () => {
         },
         {
           nombre: "Facturaciones",
-          pantalla: <FacturacionesToma />,
+          pantalla: <GestionLecturasToma />,
         },
       ],
     },
@@ -97,20 +96,23 @@ export const TomaUsuarioDetalle = () => {
   return (
     <>
       <ContextProvider>
-        <div className="h-full">
+        <div>
           {/* Breadcrumb en la parte superior */}
           <div className="">
             <BreadCrumbDetalleUsuario />
           </div>
 
-          <DoubleContainer>
-            <Seccion1 size={"sm"}>
-              <MenuLateral options={options} context={useStateContext} />
-            </Seccion1>
-            <Seccion2>
+          {/* Contenido principal */}
+          <div className="flex gap-2 px-2">
+            <div className="flex-shrink-0">
+              <OcultarTableDetalleUsuario accion={accion}>
+                <MenuLateral options={options} context={useStateContext} />
+              </OcultarTableDetalleUsuario>
+            </div>
+            <div className="w-full">
               <PantallaDetalleUsuario />
-            </Seccion2>
-          </DoubleContainer>
+            </div>
+          </div>
         </div>
       </ContextProvider>
     </>

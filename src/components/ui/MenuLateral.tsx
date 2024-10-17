@@ -24,7 +24,7 @@ const MenuLateral = ({ options, context}) => {
   }
 
   return (
-    <div className=" rounded-md h-full w-full">
+    <div className="border border-border rounded-md h-[75vh]">
       <Command>
         <CommandInput placeholder="Buscar..." />
         {options.map((option, index) => {

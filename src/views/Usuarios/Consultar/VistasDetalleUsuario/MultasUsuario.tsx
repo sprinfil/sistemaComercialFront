@@ -5,52 +5,35 @@ import ModalAgregarMulta from '../../../../components/ui/ModalAgregarMulta';
 import { DataTableMultas } from '../../../../components/ui/DataTableMultas';
 import { Multas, columns } from '../../../../components/Tables/Columns/MultasColumns';
 import axiosClient from '../../../../axios-client';
-import { ZustandGeneralUsuario } from '../../../../contexts/ZustandGeneralUsuario';
-import { ZustandMultas } from '../../../../contexts/ZustandMultas';
 export const MultasUsuario = () => {
 
-
-  const {usuariosEncontrados} =  ZustandGeneralUsuario();
-
-  const {setMultasTablaToma, multasTablaToma,setLoadingTable} = ZustandMultas();
-
-  console.log(usuariosEncontrados[0]?.tomas[0]?.codigo_toma);
-
     const [abrirModal, setAbrirModal] = useState(false);
-//console.log( usuariosEncontrados[0].tomas[0].codigo_toma);
+
     const [data, setData] = useState([]);
     const handleAbrirModal = () => {
         setAbrirModal(true);
     }
 
     useEffect(() => {
-      getMultas();
+        getAnomalias();
       }, []);
     
-      const getMultas = async () => {
-        setLoadingTable(true);
+      const getAnomalias = async () => {
+        //setLoadingTable(true);
         try {
-          const response = await axiosClient.get("/multa/consultarmultas", {
-            params:{
-              codigo_toma : usuariosEncontrados[0]?.tomas[0]?.codigo_toma,
-              modelo_multado: "toma"
-            }
-          });
-         setLoadingTable(false);
-         setMultasTablaToma(response?.data);
-          console.log(response?.data);
+          const response = await axiosClient.get("/AnomaliasCatalogo");
+         // setLoadingTable(false);
+          setData(response.data.data);
+          console.log(response.data.data);
         } catch (error) {
           //setLoadingTable(false);
-          console.error("Failed to fetch multas:", error);
+          console.error("Failed to fetch anomalias:", error);
         }
       };
     
 
   return (
     <div>
-        <div className='text-[20px] font-medium p-1'>
-          Multas
-        </div>
 
         <div className='flex justify-end p-5'>
             <Button onClick={handleAbrirModal}>
@@ -60,7 +43,7 @@ export const MultasUsuario = () => {
         </div>
 
         <div>
-            <DataTableMultas data={multasTablaToma} />
+            <DataTableMultas columns={columns} data={data} />
         </div>
 
         <ModalAgregarMulta open={abrirModal} setIsOpen={setAbrirModal}/>

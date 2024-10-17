@@ -59,7 +59,6 @@ const ModalVerDescuento: React.FC<ModalProps> = ({ trigger, open, setOpen, selec
       });
     }
   }
-  console.log(import.meta.env.VITE_BASE_URL)
 
   return (
     <div>
@@ -94,18 +93,6 @@ const ModalVerDescuento: React.FC<ModalProps> = ({ trigger, open, setOpen, selec
                   </div>
                 </TableCell>
               </TableRow>
-              <TableRow>
-                <TableCell>Archivos</TableCell>
-                <TableCell>
-                  <div className='flex gap-4 items-center'>
-                    {selectedDescuento?.archivos?.map(archivo => (
-                      <a key={archivo?.id} href={import.meta.env.VITE_BASE_URL + "/storage/evidencia/" + archivo?.url} target="_blank" rel="noopener noreferrer">
-                        <p>{archivo?.url}</p>
-                      </a>
-                    ))}
-                  </div>
-                </TableCell>
-              </TableRow>
             </TableBody>
           </Table>
           <AlertDialogFooter>
@@ -118,7 +105,7 @@ const ModalVerDescuento: React.FC<ModalProps> = ({ trigger, open, setOpen, selec
                 />
                 :
                 <>
-
+                
                 </>
             }
             <AlertDialogAction onClick={() => { setOpen(false) }}>Aceptar</AlertDialogAction>

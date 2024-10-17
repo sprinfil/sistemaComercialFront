@@ -16,11 +16,11 @@ export default function Descuentos() {
         <div className='flex gap-2 '>
 
           {/*Datatable*/}
-
-          <MostrarTable />
+         
+         <MostrarTable/>
           {/*Formulario*/}
-          <DescuentoFormEdit />
-
+            <DescuentoFormEdit />
+          
 
         </div>
       </div>
@@ -36,12 +36,12 @@ const DescuentoFormEdit = () => {
 
   return (
     <>
-      {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR G*/}
+        {/*AQUI SE MANDA A LLAMAR EL FORMULARIO PERO CON LA VALIDACION SI ES EDITAR SE CAMBIE DE COLOR G*/}
       {accion == "editar" ? (<div className='w-full rounded-md border border-primary h-[77vh] p-4 overflow-auto'>
-        <DescuentoForm />
-      </div>) : (<div className='w-full rounded-md border border-border h-[77vh] p-4 overflow-auto'>
-        <DescuentoForm />
-      </div>)}
+            <DescuentoForm />
+          </div>) : (<div className='w-full rounded-md border border-border h-[77vh] p-4 overflow-auto'>
+            <DescuentoForm />
+          </div>)}
     </>
   );
 };
@@ -50,14 +50,14 @@ const MostrarTable = () => {
 
   const { accion } = useStateContext();
 
-  return (
+  return(
     <>
-      {/*Datatable*/}
+        {/*Datatable*/}
 
       <OcultarTable accion={accion}>
-        <DescuentoTable />
+      <DescuentoTable />
       </OcultarTable>
-
+      
     </>
   )
 

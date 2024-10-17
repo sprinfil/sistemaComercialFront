@@ -42,7 +42,7 @@ import { EyeOpenIcon } from "@radix-ui/react-icons"
 import { ImCancelCircle } from "react-icons/im"
 import ModalEstasSeguroMulta2 from "./ModalEstasSeguroMulta2"
 import ModalDetalleMulta from "./ModalDetalleMulta"
-import Loader from "./Loader"
+
 export type Multas = {
   id: number;
   nombre: string;
@@ -77,20 +77,19 @@ export const columns: ColumnDef<Multas>[] = [
     cell: ({ row }) => row?.original?.nombre_multa || 'Sin nombre', 
   },
   {
-    accessorKey: 'motivo',
-    header: 'Motivo', 
-    cell: ({ row }) => row?.original?.motivo || 'Sin nombre', 
+    accessorKey: 'estado',
+    header: 'Estado', 
+    cell: ({ row }) => row?.original?.estado, 
   },
-
   {
     accessorKey: 'monto',
     header: 'Monto', 
     cell: ({ row }) => row?.original?.monto, 
   },
   {
-    accessorKey: 'estado',
-    header: 'Estado', 
-    cell: ({ row }) => row?.original?.estado, 
+    accessorKey: 'comentario',
+    header: 'Comentario', 
+    cell: ({ row }) => row?.original?.monto, 
   },
 
  
@@ -114,13 +113,17 @@ export const columns: ColumnDef<Multas>[] = [
       return (
         <>
         <div className="flex space-x-2">
-        <div onClick={()=>{handleAbrirModal2;setAbrirModal(true)}} title="Ver detalles"> 
-              <Button className="hover:bg-green-800"><EyeOpenIcon className=""/></Button>
+        <div onClick={()=>{handleAbrirModal2;setAbrirModal(true)}} title="Ver detalles">
+          <IconButton title="Ver detalle">
+            <EyeOpenIcon className="w-[3vh] h-[3vh]"/>
+          </IconButton>
         </div>
           <div onClick={()=>{handleAbrirModal;setAbrirModalDetalle(true)}} title="Cancelar multa">
-            <Button className="bg-red-500 hover:bg-red-800"><ImCancelCircle/></Button>
+          <IconButton title="Cancelar multa">
+            <ImCancelCircle className="w-[2.2vh] h-[2.2vh] mt-[2px]"/>
+          </IconButton>
         </div>
-        </div> 
+        </div>
         <ModalEstasSeguroMulta2 open={abrirModalDetalle} setIsOpen={setAbrirModalDetalle} selected_multa={row?.original}/>
         <ModalDetalleMulta open={abrirModal} setIsOpen={setAbrirModal} selected_multa={row?.original}/>
         </>
@@ -139,7 +142,7 @@ export function DataTableMultas({ data }) {
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
   const {setMultas, setAccionMulta} = ZustandMultas();
- const {loadingTable} = ZustandMultas();
+
 
 
   const table = useReactTable({
@@ -178,17 +181,16 @@ export function DataTableMultas({ data }) {
       <div className="flex items-center mb-2 mt-2 w-full justify-center">
         <Input
           placeholder="Filtrar multas..."
-          value={(table.getColumn("nombre_multa")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("nombre_multa_catalogo")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("nombre_multa")?.setFilterValue(event.target.value)
+            table.getColumn("nombre_multa_catalogo")?.setFilterValue(event.target.value)
           }
           className="w-full"
         />
         
       </div>
       <div className="rounded-md border">
-     
-          <Table>
+        <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -240,8 +242,6 @@ export function DataTableMultas({ data }) {
             )}
           </TableBody>
         </Table>
-        
-    
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">

@@ -54,7 +54,7 @@ export const columns: ColumnDef<Multas>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "nombre_multa",
+    accessorKey: "nombre",
     header: ({ column }) => {
       return (
         <Button

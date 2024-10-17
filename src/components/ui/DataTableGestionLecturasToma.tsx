@@ -116,7 +116,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-export function DataTableFacturacionesToma<TData, TValue>({
+export function DataTableGestionLecturasToma<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
