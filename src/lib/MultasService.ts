@@ -8,12 +8,14 @@ export function getMultas(setMultas) {
   const [loadingMultas, setLoadingMultas] = useState(false);
 
   useEffect(() => {
+    
     const fetchData = async ()  => {
       try {
         setLoadingMultas(true);
-        const response = await axiosClient.get("/multas/monitormultas");
+        const response = await axiosClient.get("/catalogomulta");
         console.log(response.data);
         setMultas(response.data);
+        setLoadingMultas(false);
       } catch (e) {
         console.log(e)
       }

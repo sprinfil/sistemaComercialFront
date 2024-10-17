@@ -59,7 +59,7 @@ type CajaOperadores = z.infer<typeof CajaOperadoresSchema>;
 
 const CajaOperadoresForm = () => {
     const { toast } = useToast();
-    const { caja, setCaja, loadingTable, setLoadingTable, setCajas, setAccion, accion } = useStateContext();
+    const { caja, setCaja, loadingTable, setLoadingTable, setCajas, setAccion, accion, cajas } = useStateContext();
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
@@ -77,6 +77,7 @@ const CajaOperadoresForm = () => {
     const [control, setControl] = useState(false);
     const [nombreOperador, setNombreOperador] = useState([]);
 
+    const [cajasFront, setCajasFront] = useState([]);
 
 
     const handleAddComponent = () => {
@@ -149,6 +150,10 @@ const CajaOperadoresForm = () => {
     }
 
 
+    useEffect(()=>
+    {
+        setCajasFront(cajas);
+    },[cajas])
    
 
     
@@ -217,10 +222,15 @@ const CajaOperadoresForm = () => {
                 } else {
                     setLoading(false);
 
-                    console.log(response);
+                    console.log(response.data.data);
                    
                     setAccionGeneradaEntreTabs("ver");
                     successToastCreado();
+                    setCajasFront((prev) => {
+                        console.log(prev);
+                        
+                    })
+                    setCajas(cajasFront);
                 }
             } catch (response) {
                 errorToast();
@@ -273,7 +283,7 @@ const CajaOperadoresForm = () => {
     
     
     useEffect(() => {
-
+        console.log(caja);
         const verOperadores = Array.isArray(caja.operadorAsignado)
         ? caja?.operadorAsignado?.map(item => ({
             id: item.id,
