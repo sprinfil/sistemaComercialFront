@@ -11,6 +11,7 @@ import MultasForm from '../../../components/Forms/MultasForm.tsx';
 import { DataTableMultas } from '../../../components/ui/DataTableMultas.tsx';
 import { getMultas } from '../../../lib/MultasService.ts';
 import { ZustandMultas } from '../../../contexts/ZustandMultas.tsx';
+import { DataTableMultasCatalogo } from '../../../components/ui/DataTableMultasCatalogo.tsx';
 
 export default function Multas() {
 
@@ -65,7 +66,7 @@ const MostrarTable = () => {
       {/*Datatable*/}
 
       <OcultarTable accion={accionMulta}>
-        <DataTableMultas data={multasTabla}/>
+        <DataTableMultasCatalogo data={multasTabla}/>
       </OcultarTable>
 
     </>

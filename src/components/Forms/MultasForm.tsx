@@ -166,6 +166,7 @@ const MultasForm = () => {
                     let prevTemp = multasTabla;
 
                     prevTemp = [multaFormateada, ...prevTemp];
+                    setMultas(multaFormateada);
 
                     setMultasTabla(prevTemp);
 
@@ -235,11 +236,13 @@ const MultasForm = () => {
                     }
                     
                     // Actualiza el estado con la tabla modificada
-                    setMultasTabla(prevTemp);
 
                     
                     successToastEditado();
-                    setAccionMulta("verIndividual");
+                    setAccionMulta("ver");
+                    setAccionMulta("creado");
+                    setMultasTabla(prevTemp);
+                    setMultas(prevTemp);
 
                     
 
@@ -353,33 +356,37 @@ const MultasForm = () => {
             })
         }
         console.log({ accion });
-        if (accionMulta == "ver") {
-            console.log("entro");
-            setAbrirInput(false);
-            setControl(false);
-            setErrors({});
-            setAccionMulta("");
-
-
-            form.reset({
-                id: multas.id || 0,
-                nombre: multas?.nombre || "",
-                UMAS_min: multas?.UMAS_min || "",
-                UMAS_max: multas?.UMAS_max || "",
-                estatus: multas?.estatus || false,
-            });
-
-        }
+       
       
     }, [accion]);
 
     useEffect(() => {
 
         if (accionMulta === "ver") {
-            console.log("entro");
-            console.log(multas); // Verifica qué se está imprimiendo aquí
+            //console.log("entro");
 
-            const estadoConvertido = multas?.estatus == "activo" ? true : false;
+
+            console.log(multas); 
+            let estadoConvertido;// Verifica qué se está imprimiendo aquí
+         
+                if(multas?.estatus === "activo" || multas?.estatus == true)
+                {
+                    estadoConvertido = true;
+
+                }
+                else
+                {
+                    estadoConvertido = false;
+
+                }
+           
+                
+            
+           
+           //console.log(estadoConvertido);
+            //console.log(multasTabla);
+
+            const estadoConvertidoMultasTabla = multasTabla.estatus == "activo" ? true : false
             setControl(false);
             if (multas) {
                 form.reset({
@@ -388,7 +395,7 @@ const MultasForm = () => {
                     descripcion: multas?.descripcion ||  multasTabla?.descripcion,
                     UMAS_min: multas?.UMAS_min ||  multasTabla?.UMAS_min,
                     UMAS_max: multas?.UMAS_max ||  multasTabla?.UMAS_max,
-                    estatus: estadoConvertido ||  multasTabla?.estatus,
+                    estatus: estadoConvertido,
                 });
                 
             }
