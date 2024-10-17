@@ -11,7 +11,7 @@ export const MonitorAnomalias = () => {
     <>
       <div className='flex flex-col flex-grow h-full relative'>
         <DoubleContainer>
-          <Seccion1 width={"35%"}>
+          <Seccion1 size={"md"}>
             <div className='w-full px-2 overflow-auto h-[80vh] no-scrollbar'>
               <DataTableMonitorAnomalias columns={columns} />
             </div>

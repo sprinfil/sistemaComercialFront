@@ -194,7 +194,7 @@ export function LecturaMonitorDataTable<TData, TValue>({
 
           <div className=" flex items-center justify-between space-x-2 py-4">
           <div className="flex space-x-2">
-              <Button className="w-full">Exportar PDF ?</Button>
+              {/* <Button className="w-full">Exportar PDF ?</Button> */}
               <Button onClick={handleAbrirModal}>Importar Excel</Button> {/* Botón para iniciar la importación */}
                 
             </div>

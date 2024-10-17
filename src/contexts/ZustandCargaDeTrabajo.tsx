@@ -47,5 +47,9 @@ export const ZustandCargaDeTrabajo= create<ZustandCargaDeTrabajo>((set) => ({
   loadingTable: false,
   setLoadingTable: (loadingTable) => set({loadingTable}),
 
+
+  
+
+ 
 }));
 

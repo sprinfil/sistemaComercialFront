@@ -62,7 +62,6 @@ export const columns: ColumnDef<Multas>[] = [
    
     cell: ({ row }) => (
       <Checkbox
-      className="w-[3vh] h-[3vh]"
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
@@ -72,32 +71,13 @@ export const columns: ColumnDef<Multas>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'nombre_multa',
+    accessorKey: 'nombre',
     header: 'Nombre', 
-    cell: ({ row }) => row?.original?.nombre_multa || 'Sin nombre', 
+    cell: ({ row }) => row?.original?.nombre || 'Sin nombre', 
   },
-  {
-    accessorKey: 'motivo',
-    header: 'Motivo', 
-    cell: ({ row }) => row?.original?.motivo || 'Sin nombre', 
-  },
-
-  {
-    accessorKey: 'monto',
-    header: 'Monto', 
-    cell: ({ row }) => row?.original?.monto, 
-  },
-  {
-    accessorKey: 'estado',
-    header: 'Estado', 
-    cell: ({ row }) => row?.original?.estado, 
-  },
-
- 
- 
   {
     id: "actions",
-    header: 'Acciones', 
+    header: '', 
     cell: ({ row }) => {
       const anomalia = row.original
       const {abrirModalCancelacion, setAbrirModalCancelacion} = ZustandMultas();
@@ -113,16 +93,11 @@ export const columns: ColumnDef<Multas>[] = [
     
       return (
         <>
-        <div className="flex space-x-2">
-        <div onClick={()=>{handleAbrirModal2;setAbrirModal(true)}} title="Ver detalles"> 
-              <Button className="hover:bg-green-800"><EyeOpenIcon className=""/></Button>
+        <div className="">
+           <IconButton><EyeOpenIcon className="w-[20px] h-[20px]"/></IconButton>
         </div>
-          <div onClick={()=>{handleAbrirModal;setAbrirModalDetalle(true)}} title="Cancelar multa">
-            <Button className="bg-red-500 hover:bg-red-800"><ImCancelCircle/></Button>
-        </div>
-        </div> 
-        <ModalEstasSeguroMulta2 open={abrirModalDetalle} setIsOpen={setAbrirModalDetalle} selected_multa={row?.original}/>
-        <ModalDetalleMulta open={abrirModal} setIsOpen={setAbrirModal} selected_multa={row?.original}/>
+         
+      
         </>
    
       )
@@ -130,7 +105,7 @@ export const columns: ColumnDef<Multas>[] = [
   },
 ]
 
-export function DataTableMultas({ data }) {
+export function DataTableMultasCatalogo({ data }) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -173,14 +148,21 @@ export function DataTableMultas({ data }) {
   }
 
   return (
-    <div className="w-full p-2">
-      
-      <div className="flex items-center mb-2 mt-2 w-full justify-center">
+    <div className="">
+       <IconButton onClick={handleCrearNuevaMulta}>
+          <div className='flex gap-2 items-center'> 
+            Agregar nueva multa
+            
+            <PlusCircleIcon className='w-[20px] h-[20px]'/>
+          
+          </div>
+        </IconButton>
+      <div className="flex items-center mb-2 mt-2 justify-center">
         <Input
           placeholder="Filtrar multas..."
-          value={(table.getColumn("nombre_multa")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("nombre_multa")?.setFilterValue(event.target.value)
+            table.getColumn("nombre")?.setFilterValue(event.target.value)
           }
           className="w-full"
         />
@@ -188,7 +170,7 @@ export function DataTableMultas({ data }) {
       </div>
       <div className="rounded-md border">
      
-          <Table>
+          <Table className="p-2">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -243,12 +225,12 @@ export function DataTableMultas({ data }) {
         
     
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-end  ">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} filas(s) seleccionadas.
         </div>
-        <div className="space-x-2">
+        <div className="space-x-2 mt-5 mb-5">
           <Button
             variant="outline"
             size="sm"

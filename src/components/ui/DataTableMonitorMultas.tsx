@@ -38,10 +38,9 @@ import {
 import axiosClient from "../../axios-client"
 import IconButton from "./IconButton"
 import { getMultas } from "../../lib/MultasService"
+import ModalModificarMulta from "./ModalModificarMulta"
 import { EyeOpenIcon } from "@radix-ui/react-icons"
-import { ImCancelCircle } from "react-icons/im"
-import ModalEstasSeguroMulta2 from "./ModalEstasSeguroMulta2"
-import ModalDetalleMulta from "./ModalDetalleMulta"
+import ModalMonitorMultas from "./ModalMonitorMultas"
 import Loader from "./Loader"
 export type Multas = {
   id: number;
@@ -50,7 +49,16 @@ export type Multas = {
   UMAS_min: string;
   UMAS_max: string;
   estatus: boolean;
-
+  codigo_toma: number;
+  nombre_multa: string;
+  operador_levanto_multa: string;
+  nombre_operador_revisor: string; 
+  monto: string; 
+  estado: string;
+  fecha_solicitud: string;
+  fecha_revision: string;
+  motivo: string;
+  nombre_multado: string;
 }
 
 
@@ -58,34 +66,24 @@ export type Multas = {
 export const columns: ColumnDef<Multas>[] = [
   
   {
-    id: "select",
-   
-    cell: ({ row }) => (
-      <Checkbox
-      className="w-[3vh] h-[3vh]"
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
+    accessorKey: 'codigo_toma',
+    header: 'Código de toma', 
+    cell: ({ row }) => row?.original?.codigo_toma, 
+  },
+  {
+    accessorKey: 'nombre_multado',
+    header: 'Nombre del usuario', 
+    cell: ({ row }) => row?.original?.nombre_multado, 
   },
   {
     accessorKey: 'nombre_multa',
-    header: 'Nombre', 
-    cell: ({ row }) => row?.original?.nombre_multa || 'Sin nombre', 
+    header: 'Multa', 
+    cell: ({ row }) => row?.original?.nombre_multa, 
   },
   {
     accessorKey: 'motivo',
     header: 'Motivo', 
-    cell: ({ row }) => row?.original?.motivo || 'Sin nombre', 
-  },
-
-  {
-    accessorKey: 'monto',
-    header: 'Monto', 
-    cell: ({ row }) => row?.original?.monto, 
+    cell: ({ row }) => row?.original?.motivo, 
   },
   {
     accessorKey: 'estado',
@@ -94,43 +92,31 @@ export const columns: ColumnDef<Multas>[] = [
   },
 
  
- 
   {
     id: "actions",
-    header: 'Acciones', 
+    enableHiding: false,
     cell: ({ row }) => {
-      const anomalia = row.original
-      const {abrirModalCancelacion, setAbrirModalCancelacion} = ZustandMultas();
+      console.log(row?.original);
       const [abrirModal, setAbrirModal] = React.useState(false);
-      const [abrirModalDetalle, setAbrirModalDetalle] = React.useState(false);
-
-      const handleAbrirModal = () => {
+      const handleVerDetalles = () => 
+      {
         setAbrirModal(true);
-    }
-    const handleAbrirModal2 = () => {
-      setAbrirModalDetalle(true);
-  }
-    
+
+      }
       return (
         <>
-        <div className="flex space-x-2">
-        <div onClick={()=>{handleAbrirModal2;setAbrirModal(true)}} title="Ver detalles"> 
-              <Button className="hover:bg-green-800"><EyeOpenIcon className=""/></Button>
-        </div>
-          <div onClick={()=>{handleAbrirModal;setAbrirModalDetalle(true)}} title="Cancelar multa">
-            <Button className="bg-red-500 hover:bg-red-800"><ImCancelCircle/></Button>
-        </div>
-        </div> 
-        <ModalEstasSeguroMulta2 open={abrirModalDetalle} setIsOpen={setAbrirModalDetalle} selected_multa={row?.original}/>
-        <ModalDetalleMulta open={abrirModal} setIsOpen={setAbrirModal} selected_multa={row?.original}/>
+        <ModalMonitorMultas isOpen={abrirModal} setIsOpen={setAbrirModal} idMulta={row?.original}/>
+
+         <IconButton onClick={handleVerDetalles}>
+         <EyeOpenIcon className="w-[20px] h-[20px]"/>
+         </IconButton>
         </>
-   
       )
     },
   },
 ]
 
-export function DataTableMultas({ data }) {
+export function DataTableMonitorMultas({ data }) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -139,7 +125,7 @@ export function DataTableMultas({ data }) {
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
   const {setMultas, setAccionMulta} = ZustandMultas();
- const {loadingTable} = ZustandMultas();
+
 
 
   const table = useReactTable({
@@ -172,22 +158,26 @@ export function DataTableMultas({ data }) {
 
   }
 
+  const {loadingTableMonitor} = ZustandMultas();
+
   return (
     <div className="w-full p-2">
       
       <div className="flex items-center mb-2 mt-2 w-full justify-center">
         <Input
           placeholder="Filtrar multas..."
-          value={(table.getColumn("nombre_multa")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("nombre")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("nombre_multa")?.setFilterValue(event.target.value)
+            table.getColumn("nombre")?.setFilterValue(event.target.value)
           }
           className="w-full"
         />
         
       </div>
       <div className="rounded-md border">
-     
+        {
+          loadingTableMonitor ? <Loader/>
+          :
           <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -217,6 +207,7 @@ export function DataTableMultas({ data }) {
                   className={row.getIsSelected() ? 'bg-gray-100' : ''} // Estilo condicional
                 >
                  {row.getVisibleCells().map((cell) => {
+              console.log("Datos de la celda:", cell.getValue()); // Verifica los valores de la celda
               return (
                   <TableCell key={cell.id}>
                       {flexRender(
@@ -240,8 +231,8 @@ export function DataTableMultas({ data }) {
             )}
           </TableBody>
         </Table>
-        
-    
+        }
+       
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">

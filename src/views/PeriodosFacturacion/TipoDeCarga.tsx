@@ -42,7 +42,7 @@ export const tipoCargaSchema = z.object({
   operadores: z.number().min(1, "El operador es requerido"),
 })
 
-export const TipoDeCarga = ({booleanMostrar}) => {
+export const TipoDeCarga = ({ booleanMostrar }) => {
 
   const [operadorSeleccionado, setOperadorSeleccionado] = useState("");
 
@@ -54,8 +54,8 @@ export const TipoDeCarga = ({booleanMostrar}) => {
 
 
   const { toast } = useToast()
-  const { filasSeleccionadaCargaTrabajo, cargasDeTrabajoAEnviar, setCargasDeTrabajoAEnviar, setFilasSeleccionadaCargaTrabaj, dataArrayColumns, 
-    setDataArrayColumns,setDataInfoCargaTrabajo, dataInfoCargaTrabajo, setCargasDeTrabajoAEnviarFrontAPI} = ZustandCargaDeTrabajo();
+  const { filasSeleccionadaCargaTrabajo, cargasDeTrabajoAEnviar, setCargasDeTrabajoAEnviar, setFilasSeleccionadaCargaTrabaj, dataArrayColumns,
+    setDataArrayColumns, setDataInfoCargaTrabajo, dataInfoCargaTrabajo, setCargasDeTrabajoAEnviarFrontAPI } = ZustandCargaDeTrabajo();
   console.log(filasSeleccionadaCargaTrabajo);
 
   const [tipoCargaSeleccionada, setTipoCargaSeleccionada] = useState("");
@@ -67,7 +67,7 @@ export const TipoDeCarga = ({booleanMostrar}) => {
   useEffect(() => {
     setDataArray(cargasDeTrabajoAEnviar);
     setDataArrayFront(cargasDeTrabajoAEnviar);
-  },[cargasDeTrabajoAEnviar])
+  }, [cargasDeTrabajoAEnviar])
   const form = useForm<z.infer<typeof tipoCargaSchema>>({
     resolver: zodResolver(tipoCargaSchema),
     defaultValues: {
@@ -88,10 +88,10 @@ export const TipoDeCarga = ({booleanMostrar}) => {
         title: "Oh, no. Error",
         description: "No haz seleccionado ninguna fila.",
         action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
-    })
+      })
       return; // Salir de la función si no hay selección
     }
-    
+
     setCargaAsignadaValorFront(true);
     console.log(filasSeleccionadaCargaTrabajo);
 
@@ -118,17 +118,17 @@ export const TipoDeCarga = ({booleanMostrar}) => {
 
 
 
-   
+
 
     setDataArrayColumns(newData);
-  
+
     // Actualizamos el estado del array de datos
     setDataArray(prevDataArray => {
       // Verificamos si ya existe un objeto con el mismo ID
       const existingIndex = prevDataArray.findIndex(item => item.id === filasSeleccionadaCargaTrabajo.id);
-  
+
       let updatedArray;
-  
+
       if (existingIndex !== -1) {
         // Si el ID existe, actualizamos el objeto
         updatedArray = [...prevDataArray];
@@ -146,13 +146,13 @@ export const TipoDeCarga = ({booleanMostrar}) => {
       }
 
 
-      
+
 
 
       //ESTO ES PARA MOSTRAR LOS VALORES EN EL FRONT
-  
-      
-  
+
+
+
       //setCargasDeTrabajoAEnviar(updatedArray);
 
       setDataInfoCargaTrabajo(updatedArray); //FALTA ACTUALIZAR ESTA VARIABLE CORRECTAMENTE PARA QUE SE VEAN LOS CAMBIOS EN EL FRONT Y DESPUES
@@ -165,9 +165,9 @@ export const TipoDeCarga = ({booleanMostrar}) => {
     setDataArrayFront(prevDataArrayFront => {
       // Verificamos si ya existe un objeto con el mismo ID
       const existingIndex = prevDataArrayFront.findIndex(item => item.id === filasSeleccionadaCargaTrabajo.id);
-  
+
       let updatedArrayFront;
-  
+
       if (existingIndex !== -1) {
         // Si el ID existe, actualizamos el objeto
         updatedArrayFront = [...prevDataArrayFront];
@@ -176,8 +176,8 @@ export const TipoDeCarga = ({booleanMostrar}) => {
           nombre_libro: newDataFront?.libro?.nombre,
           tiene_encargado:
           {
-            nombre:operadorSeleccionado,
-          } 
+            nombre: operadorSeleccionado,
+          }
         };
       } else {
         // Si no existe, agregamos el nuevo objeto
@@ -201,7 +201,7 @@ export const TipoDeCarga = ({booleanMostrar}) => {
       ),
     })
     console.log(dataArray);
-  
+
   };
   console.log(operadorSeleccionado);
 
@@ -212,8 +212,7 @@ export const TipoDeCarga = ({booleanMostrar}) => {
   console.log(cargasDeTrabajoAEnviar);
   console.log(cargasDeTrabajoAEnviar[0]?.nombre_operador_encargado);
 
-  useEffect(() => 
-  {
+  useEffect(() => {
 
     //ESTOS SON LOS DATOS QUE VOY A ENVIAR AL BACKEND
     if (dataArray && dataArray.length > 0) {
@@ -228,66 +227,62 @@ export const TipoDeCarga = ({booleanMostrar}) => {
       }));
 
       console.log(updatedCargas);
-  
+
       // Actualiza el estado
       setCargasDeTrabajoAEnviarFrontAPI(updatedCargas);
 
 
-        //ESTO CONTROLA EL FRONT PARA MOSTRAR NOMBRE Y LIBRO
-        const updatedCargas2 = dataArrayFront.map(item => {
-          if (item.id === filasSeleccionadaCargaTrabajo?.id) {
-            return {
-              ...item, // Incluye todos los campos originales
-              libro: {
-                ...item.libro, // Mantén el resto de las propiedades de 'libro' si existen
-                nombre: item.libro ? item.libro.nombre : 'Nombre no disponible', // Valor predeterminado para libro
-              },
-              tiene_encargado: {
-                ...item.tiene_encargado, // Mantén las propiedades de tiene_encargado si existen
-                nombre: item.tiene_encargado?.nombre ? item.tiene_encargado.nombre : 'Operador no disponible', // Valor predeterminado para nombre del encargado
-              },
-            };
+      //ESTO CONTROLA EL FRONT PARA MOSTRAR NOMBRE Y LIBRO
+      const updatedCargas2 = dataArrayFront.map(item => {
+        if (item.id === filasSeleccionadaCargaTrabajo?.id) {
+          return {
+            ...item, // Incluye todos los campos originales
+            libro: {
+              ...item.libro, // Mantén el resto de las propiedades de 'libro' si existen
+              nombre: item.libro ? item.libro.nombre : 'Nombre no disponible', // Valor predeterminado para libro
+            },
+            tiene_encargado: {
+              ...item.tiene_encargado, // Mantén las propiedades de tiene_encargado si existen
+              nombre: item.tiene_encargado?.nombre ? item.tiene_encargado.nombre : 'Operador no disponible', // Valor predeterminado para nombre del encargado
+            },
+          };
+        }
+        return item; // Si no coincide, devuelve el item original
+      });
+
+      console.log(updatedCargas2);
+      // Actualiza las variables de estado
+      setDataInfoCargaTrabajo(updatedCargas2); // Esto debería reflejar los cambios en el front
+
+
+    }
+  }, [dataArray])
+
+
+  useEffect(() => {
+    if (filasSeleccionadaCargaTrabajo) {
+      if (filasSeleccionadaCargaTrabajo?.id_operador_encargado) {
+        setExisteCargaAsignada(true);
+        setNombreOperadorVer(filasSeleccionadaCargaTrabajo?.tiene_encargado?.nombre);
+        form.reset(
+          {
+            tipo_carga: filasSeleccionadaCargaTrabajo.tipo_carga,
+            operadores: filasSeleccionadaCargaTrabajo.id_operador_encargado
           }
-          return item; // Si no coincide, devuelve el item original
-        });
-        
-        console.log(updatedCargas2);
-        // Actualiza las variables de estado
-        setDataInfoCargaTrabajo(updatedCargas2); // Esto debería reflejar los cambios en el front
-
- 
-    }
-  },[dataArray])
-
-
-  useEffect(()=>
-  {
-    if(filasSeleccionadaCargaTrabajo)
-    {
-      if(filasSeleccionadaCargaTrabajo?.id_operador_encargado)
-        {
-          setExisteCargaAsignada(true);
-          setNombreOperadorVer(filasSeleccionadaCargaTrabajo?.tiene_encargado?.nombre);
-            form.reset(
-              {
-                tipo_carga: filasSeleccionadaCargaTrabajo.tipo_carga,
-                operadores: filasSeleccionadaCargaTrabajo.id_operador_encargado
-              }
-            )
-            console.log(filasSeleccionadaCargaTrabajo);
-        }
-        else
-        {
-          setExisteCargaAsignada(false);
-          form.setValue("tipo_carga", ""),
+        )
+        console.log(filasSeleccionadaCargaTrabajo);
+      }
+      else {
+        setExisteCargaAsignada(false);
+        form.setValue("tipo_carga", ""),
           form.setValue("operadores", 0);
-          console.log(filasSeleccionadaCargaTrabajo);
-    
-        }
-    }
-   
+        console.log(filasSeleccionadaCargaTrabajo);
 
-  },[filasSeleccionadaCargaTrabajo])
+      }
+    }
+
+
+  }, [filasSeleccionadaCargaTrabajo])
 
 
 
@@ -300,21 +295,21 @@ export const TipoDeCarga = ({booleanMostrar}) => {
 
 
   return (
-    <div className='bg-muted h-full overflow-auto'>
+    <div className=' h-full overflow-auto'>
       <div className='text-2xl p-5 text-black'>
         {filasSeleccionadaCargaTrabajo?.libro?.nombre}
         <div>
-     
-      {/** SI EXISTE LA CARGA ASIGNADA VA A ENTRAR EN ACCIÓN VER, Y VERA LOS VALORES QUE EXISTEN EN LA BD*/}
-        {existenCargaAsignada &&
-        <div>Operador asignado: {nombreOperadorVer}</div>
-        }
 
-   
+          {/** SI EXISTE LA CARGA ASIGNADA VA A ENTRAR EN ACCIÓN VER, Y VERA LOS VALORES QUE EXISTEN EN LA BD*/}
+          {existenCargaAsignada &&
+            <div>Operador asignado: {nombreOperadorVer}</div>
+          }
 
-          </div>
+
+
+        </div>
       </div>
-    
+
 
       <div className='p-6'>
         <div className='text-xl '>
@@ -323,22 +318,9 @@ export const TipoDeCarga = ({booleanMostrar}) => {
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 
-          
-                  <div className={`flex justify-end ${!booleanMostrar ? 'pointer-events-none opacity-50' : ''}`}>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button type="submit" className={`h-[5vh] bg-[#0d751d] ${booleanMostrar ? '' : ''}`} title=''>
-                  <IoMdAddCircleOutline className='w-[3.5vh] h-[3.5vh] mr-2' /> Agregar
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Asignar carga de trabajo</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-                
+
+
+
 
 
                 <FormField
@@ -350,44 +332,44 @@ export const TipoDeCarga = ({booleanMostrar}) => {
                       <div>
                         {
                           !booleanMostrar ?
-                          <Select
-                          onValueChange={(value) => field.onChange(value)}
-                          value={field.value}
-                          disabled
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Tipo de carga" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="mt-5">
-                            <SelectItem value="lectura">Lectura</SelectItem>
-                            <SelectItem value="facturacion">Facturacion</SelectItem>
-                            <SelectItem value="facturacion en sitio">Facturacion en sitio</SelectItem>
+                            <Select
+                              onValueChange={(value) => field.onChange(value)}
+                              value={field.value}
+                              disabled
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Tipo de carga" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="mt-5">
+                                <SelectItem value="lectura">Lectura</SelectItem>
+                                <SelectItem value="facturacion">Facturacion</SelectItem>
+                                <SelectItem value="facturacion en sitio">Facturacion en sitio</SelectItem>
 
-                          </SelectContent>
-                        </Select>
+                              </SelectContent>
+                            </Select>
 
-                          :
+                            :
 
-                          <Select
-                          onValueChange={(value) => field.onChange(value)}
-                          value={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Tipo de carga" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent className="mt-5">
-                            <SelectItem value="lectura">Lectura</SelectItem>
-                            <SelectItem value="facturacion">Facturacion</SelectItem>
-                            <SelectItem value="facturacion en sitio">Facturacion en sitio</SelectItem>
+                            <Select
+                              onValueChange={(value) => field.onChange(value)}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Tipo de carga" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent className="mt-5">
+                                <SelectItem value="lectura">Lectura</SelectItem>
+                                <SelectItem value="facturacion">Facturacion</SelectItem>
+                                <SelectItem value="facturacion en sitio">Facturacion en sitio</SelectItem>
 
-                          </SelectContent>
-                        </Select>
+                              </SelectContent>
+                            </Select>
                         }
-                      
+
 
                       </div>
 
@@ -416,7 +398,20 @@ export const TipoDeCarga = ({booleanMostrar}) => {
                     </FormItem>
                   )}
                 />
-
+                <div className={`flex justify-end ${!booleanMostrar ? 'pointer-events-none opacity-50' : ''}`}>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button type="submit" className={`h-[5vh] bg-[#0d751d] ${booleanMostrar ? '' : ''}`} title=''>
+                          <IoMdAddCircleOutline className='w-[3.5vh] h-[3.5vh] mr-2' /> Agregar
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Asignar carga de trabajo</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
               </form>
             </Form>
 

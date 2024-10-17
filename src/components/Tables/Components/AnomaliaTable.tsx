@@ -38,12 +38,12 @@ export default function AnomaliaTable() {
 
 
   if (loadingTable) {
-    return <div><Loader /></div>;
+    return <div className='w-full'><Loader /></div>;
   }
 
   return (
 
-    <div>
+    <div className='w-full h-[80vh] overflow-auto'>
       <div onClick={()=>{setAccion("crear")}}>
 
 

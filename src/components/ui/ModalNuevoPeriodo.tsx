@@ -23,6 +23,7 @@ const ModalNuevoPeriodo = ({ trigger, selectedRuta, setPeriodos, open, setOpen }
   const [data, setData] = useState([]);
   const [error, setError] = useState("");
   const [loadingNewPeriodo, setLoadingNewPeriodo] = useState(false);
+  const [vigenciaRecibo, setVigenciaRecibo] = useState("");
 
   useEffect(() => {
     setData(
@@ -40,11 +41,12 @@ const ModalNuevoPeriodo = ({ trigger, selectedRuta, setPeriodos, open, setOpen }
               recibo_final: datesEntrega?.to?.toISOString().split('T')[0],
               validacion_inicio: datesValidacion?.from?.toISOString().split('T')[0],
               validacion_final: datesValidacion?.to?.toISOString().split('T')[0],
+              vigencia_recibo: vigenciaRecibo
             }
           ]
       }
     )
-  }, [datesLectura, datesValidacion, datesFacturacion, datesEntrega])
+  }, [datesLectura, datesValidacion, datesFacturacion, datesEntrega, vigenciaRecibo])
 
   useEffect(() => {
     if (error != "") {
@@ -85,7 +87,15 @@ const ModalNuevoPeriodo = ({ trigger, selectedRuta, setPeriodos, open, setOpen }
               </div>
               <div className="mt-[20px]">
                 <p>Vencimiento de recibos</p>
-                <input type="date" name="fecha_nacimiento" className="border border-border  w-full  rounded-md p-[4px] bg-background" />
+                <input type="date"
+                  name="fecha_nacimiento"
+                  className="border border-border  w-full  rounded-md p-[4px] bg-background"
+                  onChange={(e) => {
+                    const value = e.currentTarget.value;
+                    setVigenciaRecibo(value);
+                  }
+                  }
+                />
               </div>
             </div>
           </AlertDialogHeader>
