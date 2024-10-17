@@ -68,7 +68,7 @@ export const OperadoresOtIndividualComboBox = ({ field, form, name = "id_concept
     const [open, setOpen] = React.useState(false)
 
     return (
-        <div>
+        <div  className="w-full">
             <Popover>
                 <PopoverTrigger asChild>
                     <FormControl>

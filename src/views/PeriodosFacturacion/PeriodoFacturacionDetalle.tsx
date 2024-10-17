@@ -5,8 +5,10 @@ import { Card } from '../../components/ui/card';
 import { CargasTrabajo } from './CargasTrabajo';
 import { MonitorAnomalias } from './MonitorAnomalias';
 import { InformacionGeneral } from './InformacionGeneral';
+import { Facturacion } from './Facturacion';
+import { Recorridos } from './Recorridos';
 
-const PeriodoFacturacionDetalle = ({ setDetalle }) => {
+const PeriodoFacturacionDetalle = ({ setDetalle, selectedRutaDetalle, setPeriodos }) => {
   return (
     <>
       <div className='h-full flex flex-col relative'>
@@ -16,30 +18,27 @@ const PeriodoFacturacionDetalle = ({ setDetalle }) => {
             <p >Volver</p>
           </div>
           <div className='h-full flex items-center mt-[2px]'>
-            <p className='text-[14px] font-medium'>R01 Enero 2024</p>
+            <p className='text-[14px] font-medium'>{selectedRutaDetalle?.nombre}</p>
           </div>
         </div>
-        <div className='rounded-md border flex-grow overflow-auto no-scrollbar'>
-          <div className='w-full'>
-            <Tabs defaultValue="cargasTrabajo" className="">
-              <TabsList>
-                <TabsTrigger value="cargasTrabajo">Cargas de trabajo</TabsTrigger>
-                <TabsTrigger value="anomalias">Anomalías</TabsTrigger>
-                <TabsTrigger value="recorridos">Recorridos</TabsTrigger>
-                <TabsTrigger value="facturacion">Facturación</TabsTrigger>
-              </TabsList>
-              <TabsContent value="cargasTrabajo"><CargasTrabajo /></TabsContent>
-              <TabsContent value="anomalias">Anomalías</TabsContent>
-              <TabsContent value="recorridos">Recorridos account here.</TabsContent>
-              <TabsContent value="facturacion">Facturación</TabsContent>
-            </Tabs>
-
-          </div>
+        <div className='rounded-md flex-grow flex flex-col overflow-auto no-scrollbar'>
+          <Tabs defaultValue="informacionGeneral" className="w-full flex-grow flex flex-col ">
+            <TabsList>
+              <TabsTrigger value="informacionGeneral">Información General</TabsTrigger>
+              <TabsTrigger value="cargasTrabajo">Cargas de trabajo</TabsTrigger>
+              <TabsTrigger value="anomalias">Anomalías</TabsTrigger>
+              <TabsTrigger value="recorridos">Recorridos</TabsTrigger>
+              <TabsTrigger value="facturacion">Facturación</TabsTrigger>
+            </TabsList>
+            <TabsContent value="informacionGeneral" className="flex-grow"><InformacionGeneral setPeriodos={setPeriodos} selectedRutaDetalle = {selectedRutaDetalle} setDetalle={setDetalle}/></TabsContent>
+            <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo detalle={selectedRutaDetalle}/></TabsContent>
+            <TabsContent value="anomalias" className="flex-grow"><MonitorAnomalias /></TabsContent>
+            <TabsContent value="recorridos" className="flex-grow"><Recorridos/></TabsContent>
+            <TabsContent value="facturacion" className="flex-grow"><Facturacion setPeriodos={setPeriodos} selectedRutaDetalle = {selectedRutaDetalle} setDetalle={setDetalle}/></TabsContent>
+          </Tabs>
         </div>
       </div>
-
     </>
-
   )
 }
 

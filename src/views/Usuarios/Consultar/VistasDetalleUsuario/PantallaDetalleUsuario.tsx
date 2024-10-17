@@ -12,7 +12,7 @@ const PantallaDetalleUsuario = () => {
     },[pantalla])
 
     return (
-        <div className='w-full rounded-md border border-border h-[77vh] p-4 overflow-auto'>{mostrarPantalla}</div>
+        <div className='w-full rounded-md h-[77vh] p-4 overflow-auto'>{mostrarPantalla}</div>
     )
 }
 

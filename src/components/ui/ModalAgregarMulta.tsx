@@ -37,116 +37,163 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { cerrarOtSchema } from "../Forms/validaciones.ts";
 import ModalRegistroOT from "./ModalRegistroOT.tsx";
-
+import { MultasComboBox } from "./MultasComboBox.tsx";
+import { OperadorParaHacerLaMulta } from "./OperadorParaHacerLaMulta.tsx";
+import { ZustandMultas } from "../../contexts/ZustandMultas.tsx";
 const ModalAgregarMulta = ({open, setIsOpen}) => {
 
   const { toast } = useToast();
-  const {
-    arregloCrearOrdenesDeTrabajo,
-    setDataOrdenesDeTrabajoHistorialToma,
-    detalleOrdenDeTrabajoTomaMonitor2, setLoadingTable, setDataOrdenDeTrabajoMonitor, dataRegistroMedidorModalCerrarOT, setDataRegistroMedidorModalCerrarOT, setIsOpenHijoFormularioModalDetalleMonitorOT,
-    isOpenHijoFormularioModalDetalleMonitorOT, isOpenHijoFormularioModalMonitorOT, setIsOpenHijoFormularioModalMonitorOT
-  } = ZustandFiltrosOrdenTrabajo();
+  const [seleccionado, setSeleccionado] = useState("");
+  const [operadorSeleccionado, setOperadorSeleccionado] = useState("");
 
-  const {
-    usuariosEncontrados,
-    setUsuariosEncontrados,
-    idSeleccionadoGenerarOrdenDETrabajoToma,
-  } = ZustandGeneralUsuario();
+  const [comentarioMulta, setComentarioMulta] = useState("");
+  const [informacionTablaFront, setInformacionTablaFront] = useState([]);
+  const [boolMostrarEnFront, setBoolMostrarEnFront] = useState("");
 
-  const action = () => {
-    method();
-    setIsOpen(false);
-  };
-
-  const [consultaIdToma, setConsultaIdToma] = useState<Usuario | null>(null);
-  const [idDeLaTomaParametro, setIdDeLaTomaParametro] = useState(0);
-
-  type Usuario = {
-    id: number;
-    nombre: string;
-    apellido_paterno: string;
-    apellido_materno: string;
-    telefono: string;
-    correo: string;
-    curp: string;
-    tomas?: tomas;
-  };
-
-  type tomas = {
-    id: number;
-    codigo_toma: string;
-  };
-
-  useEffect(() => {
-    setConsultaIdToma(usuariosEncontrados[0]);
-  }, [usuariosEncontrados]);
-
-  const getOrdenDeTrabajoMonitor = async () => {
-    setLoadingTable(true);
-    try {
-      const response = await axiosClient.get("OrdenTrabajo/NoAsignada");
-      setLoadingTable(false);
-      setDataOrdenDeTrabajoMonitor(response.data.data);
-      console.log(response);
-    } catch (error) {
-      setLoadingTable(false);
-      console.error("Failed to fetch orden:", error);
-    }
-  };
+  const {multasTablaToma, setMultasTablaToma} = ZustandMultas();
 
 
+  useEffect(() => {setInformacionTablaFront(multasTablaToma)},[multasTablaToma])
 
-  function onSubmit(values: z.infer<typeof cerrarOtSchema>) {
-    console.log("valores ingresados", values);
-
-    setDataRegistroMedidorModalCerrarOT(values);
-    setIsOpenHijoFormularioModalMonitorOT(true);
-    setTimeout(() => 
-    {    setIsOpenHijoFormularioModalDetalleMonitorOT(true);
-
-
-    }, 200)
-   
-  }
-  console.log(dataRegistroMedidorModalCerrarOT);
-
-  const form = useForm<z.infer<typeof cerrarOtSchema>>({
-    resolver: zodResolver(cerrarOtSchema),
-    defaultValues: {
-      id: 0,
-      obervaciones: "",
-      material_utilizado: "",
-    },
-  });
-
-  const handleca = () =>
+  useEffect(() => 
   {
+    if(boolMostrarEnFront)
+    {
+      setMultasTablaToma(informacionTablaFront);
+    }
+  },[informacionTablaFront])
+
+  //console.log(operadorSeleccionado.id);
+const {usuariosEncontrados} = ZustandGeneralUsuario();
+//console.log(informacionTablaFront);
+
+  const crearMulta =  async () => 
+  {
+
+    if(!operadorSeleccionado) 
+    {
+      toast({
+        variant: "destructive",
+        title: "Oh, no. Error",
+        description: "Debes seleccionar un operador",
+        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+    })
+    return;
+    }
+
+    if(!seleccionado) 
+      {
+        toast({
+          variant: "destructive",
+          title: "Oh, no. Error",
+          description: "Debes seleccionar una multa",
+          action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+      })
+      return;
+      }
+      if(!comentarioMulta) 
+        {
+          toast({
+            variant: "destructive",
+            title: "Oh, no. Error",
+            description: "Debes ingresar un motivo",
+            action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+        })
+        return;
+        }
+  
+
+
+    const values = {
+      codigo_toma: usuariosEncontrados[0]?.tomas[0]?.codigo_toma,
+      id_catalogo_multa: seleccionado?.id,
+      modelo_multado:"toma",
+      motivo:comentarioMulta,
+      id_revisor:operadorSeleccionado?.id
+    }
+    //console.log(values);
+    try
+    {
+      const response = await axiosClient.post("multa/store", values);
+      console.log(response.data.data);
+      setInformacionTablaFront((prev) => 
+      {
+        //console.log(prev);
+        return ([response.data.data, ...prev]);
+      })
+      setBoolMostrarEnFront(true);
+
+      toast({
+        title: "¡Éxito!",
+        description: "La multa se ha creado correctamente",
+        variant: "success",
+
+    })
     setIsOpen(false);
-
+    setOperadorSeleccionado("");
+    setSeleccionado("");
+    setComentarioMulta("");
+    }
+    catch(response)
+    {
+      console.log(response);
+      const mesaage = response.response.data.message
+      toast({
+        variant: "destructive",
+        title: "Oh, no. Error",
+        description: mesaage,
+        action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
+    })
+    }
   }
-  const [abrirModal, setAbrirModal] = useState(false);
- const abrirModalGG = () => {
-    //setAnomalia(anomalia);
-    //setAccion("ver");
-    setAbrirModal(true);
-  };
 
+  const handleValorMotivoMulta = (event) =>
+  {
+    setComentarioMulta(event.target.value);
+  }
+
+  const handleCerrarModal = (event) =>
+    {
+      setIsOpen(false);
+      setOperadorSeleccionado("");
+      setSeleccionado("");
+      setComentarioMulta("");
+    }
+  
+
+  //console.log(comentarioMulta);
 
   return (
     <AlertDialog open={open} onOpenChange={setIsOpen}>
-    <AlertDialogContent className="max-w-[65vh]">
+    <AlertDialogContent className="max-w-[95vh] max-h-[95vh]">
       <AlertDialogHeader>
         <AlertDialogTitle>
          Asignar multa
         </AlertDialogTitle>
 
         <AlertDialogDescription>
-              asddsasd
-              <div className="flex justify-end">
+              <div className="text-xl mt-5">
+                Selecciona una multa
+              </div>
+              <div className="mt-5 mb-10">
+              <MultasComboBox onSelect={setSeleccionado}/>
+              </div>
+              <div className="text-xl mt-5">
+                Selecciona un operador
+              </div>
+              <div className="mt-5 mb-10">
+              <OperadorParaHacerLaMulta onSelect={setOperadorSeleccionado}/>
+              </div>
+              <div className="text-xl mt-5 mb-5">
+                Motivo de la multa
+              </div>
+              <Input
+              value={comentarioMulta}
+              onChange={handleValorMotivoMulta}/>
+              <div className="flex justify-end mt-10">
                   <div className="flex space-x-2">
-                <AlertDialogCancel onClick={() => setIsOpen(false)}>Cancelar </AlertDialogCancel>
-                <Button type="submit">Multar</Button>
+                <AlertDialogCancel onClick={handleCerrarModal}>Cancelar </AlertDialogCancel>
+                <Button onClick={crearMulta}>Aceptar</Button>
                 </div>
        
               </div>
