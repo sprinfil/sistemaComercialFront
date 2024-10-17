@@ -32,7 +32,7 @@ const PeriodoFacturacionDetalle = ({ setDetalle, selectedRutaDetalle, setPeriodo
             </TabsList>
             <TabsContent value="informacionGeneral" className="flex-grow"><InformacionGeneral setPeriodos={setPeriodos} selectedRutaDetalle = {selectedRutaDetalle} setDetalle={setDetalle}/></TabsContent>
             <TabsContent value="cargasTrabajo" className="flex-grow"><CargasTrabajo detalle={selectedRutaDetalle}/></TabsContent>
-            <TabsContent value="anomalias" className="flex-grow"><MonitorAnomalias /></TabsContent>
+            <TabsContent value="anomalias" className="flex-grow"><MonitorAnomalias detalle={selectedRutaDetalle}/></TabsContent>
             <TabsContent value="recorridos" className="flex-grow"><Recorridos/></TabsContent>
             <TabsContent value="facturacion" className="flex-grow"><Facturacion setPeriodos={setPeriodos} selectedRutaDetalle = {selectedRutaDetalle} setDetalle={setDetalle}/></TabsContent>
           </Tabs>
