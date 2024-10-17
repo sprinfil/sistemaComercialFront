@@ -24,30 +24,88 @@ export function loadRutas(setData) {
 
 }
 
-export function loadPeriodosRuta(selectedRuta) {
-  const [periodos, setPeriodos] = useState([]);
+export function loadPeriodosRuta(selectedRuta, setPeriodos) {
+
   const [loadingPeriodos, setLoadingPeridos] = useState(false);
 
-  useEffect(() => {
-    const fectchPeriodos = async () => {
-      try {
-        setLoadingPeridos(true);
-        const response = await axiosClient.get(`/periodos/show/${selectedRuta?.id}`);
-        console.log(response.data.periodos)
-        setPeriodos(response.data.periodos)
-      } catch (e) {
-        console.log(e);
-      }
-      finally{
-        setLoadingPeridos(false);
-      }
+  const fectchPeriodos = async () => {
+    try {
+      setLoadingPeridos(true);
+      const response = await axiosClient.get(`/periodos/show/${selectedRuta?.id}`);
+      setPeriodos(response.data.periodos)
+    } catch (e) {
+      console.log(e);
     }
-    fectchPeriodos();
+    finally {
+      setLoadingPeridos(false);
+    }
+  }
+
+  useEffect(() => {
+    if (selectedRuta?.nombre) {
+      fectchPeriodos();
+    }
   }, [selectedRuta])
 
-  return {periodos, loadingPeriodos};
+  return { loadingPeriodos };
 }
 
-export function newPeriodo(data) {
-  console.log(data)
+export async function newPeriodo(data, setError, setPeriodos, setOpen, setLoadingNewPeriodo) {
+  try {
+    setLoadingNewPeriodo(true);
+    const response = await axiosClient.post("periodos/create", data);
+
+    setPeriodos(prev => {
+      return [response.data.periodos[0], ...prev];
+    })
+    setOpen(false);
+
+  } catch (e) {
+    setError(e.response.data.error);
+  }
+  finally {
+    setLoadingNewPeriodo(false);
+  }
+}
+
+export async function editPeriodo(data, setPeriodos, setDetalle, setLoadingEditPeriodo, setEditar, cerrarPeriodo = false, setError) {
+
+
+  if (cerrarPeriodo) {
+    const id = data?.periodos?.id;
+    data = {
+      periodos: {
+        id: id,
+        estatus: "cerrado"
+      }
+    }
+  }
+
+  console.log(data);
+
+  try {
+    setLoadingEditPeriodo(true);
+    const response = await axiosClient.put(`periodos/update/${data?.periodos?.id}`, data);
+    console.log(response.data.periodos);
+
+    setPeriodos((prev) => {
+      return prev.map(periodo => {
+        if (periodo.id == data?.periodos?.id) {
+          return response.data.periodos
+        } else {
+          return periodo;
+        }
+      })
+    })
+    setDetalle(response.data.periodos);
+    setEditar(false);
+   
+  }
+  catch (e) {
+    console.log(e.response.data.error);
+    setError(e.response.data.error);
+  }
+  finally {
+    setLoadingEditPeriodo(false);
+  }
 }

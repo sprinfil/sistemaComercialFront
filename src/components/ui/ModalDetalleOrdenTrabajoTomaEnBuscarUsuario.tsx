@@ -312,13 +312,13 @@ console.log(usuariosEncontrados[0]?.tomas[0]?.codigo_toma)
             <MarcoFormDetalleOtMonitor title="Operadores">
                 <div className="grid grid-cols-1 gap-y-4 m2">
                     <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">La creo:</p>
+                        <p className="text-lg font-semibold w-1/3">La creó:</p>
                         <div className="mt-1 md:mt-0 w-2/3">
                             {informacionModalDetalleEnToma?.empleado_genero?.nombre_completo}
                         </div>
                     </div>
                     <div className="flex flex-col md:flex-row md:items-center">
-                        <p className="text-lg font-semibold w-1/3">La asigno:</p>
+                        <p className="text-lg font-semibold w-1/3">La asignó:</p>
                         <div className="mt-1 md:mt-0 w-2/3">
                             {informacionModalDetalleEnToma?.empleadoAsigno?.nombre_completo}
                         </div>

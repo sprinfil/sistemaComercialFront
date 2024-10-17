@@ -90,7 +90,7 @@ const ModalMonitorContratacion = ({ selected_contrato, open, set_open}) => {
         componente: <DetalleContrato selected_contrato={selected_contrato}/>
       },
       {
-        titulo: "Cotizacion",
+        titulo: "Cotización",
         componente: <CotizacionContrato  selected_contrato={selected_contrato}/>
       },
       {

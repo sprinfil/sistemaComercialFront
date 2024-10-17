@@ -26,7 +26,7 @@ export const SelectConceptosAbonable = ({value, onChange}) => {
     <SelectContent>
       <SelectGroup>
         <SelectLabel>¿Es abonable?</SelectLabel>
-        <SelectItem value="si">Si</SelectItem>
+        <SelectItem value="si">Sí</SelectItem>
         <SelectItem value="no">No</SelectItem>
       </SelectGroup>
     </SelectContent>

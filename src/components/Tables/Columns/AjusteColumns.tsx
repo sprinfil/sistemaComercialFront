@@ -61,6 +61,7 @@ export const columns: ColumnDef<Ajuste>[] = [
         </Button>
       )
     },
+
   },
   {
     id: "actions",

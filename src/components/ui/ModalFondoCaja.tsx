@@ -80,7 +80,7 @@ export const ModalFondoCaja = ({ open, onRegister, iniciar_session_cancelada }) 
                 <div className="border p-4 rounded-md">
                   <p className='mb-3'>Iniciar nueva sesión</p>
                   <label htmlFor="amount" className="block text-sm font-medium ">
-                    Fondo Inicial:
+                    Fondo inicial:
                   </label>
                   <input
                     type="number"
@@ -116,7 +116,7 @@ export const ModalFondoCaja = ({ open, onRegister, iniciar_session_cancelada }) 
               </>
               :
               <>
-                <p>Este usuario no Tiene ninguna caja asignada.</p>
+                <p>Este usuario no tiene ninguna caja asignada.</p>
               </>
           }
 
@@ -135,7 +135,7 @@ export const ModalFondoCaja = ({ open, onRegister, iniciar_session_cancelada }) 
           <AlertDialog open={isSecondModalOpen}>
             <AlertDialogContent className="max-w-[30rem]">
               <AlertDialogHeader>
-                <AlertDialogTitle>¿La cantidad {amount} es correcta?</AlertDialogTitle>
+                <AlertDialogTitle>¿La cantidad $ {amount} es correcta?</AlertDialogTitle>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel onClick={handleCancel}>Cancelar</AlertDialogCancel>

@@ -95,7 +95,7 @@ export const DetalleContrato = ({ selected_contrato }) => {
           <TableHead className="text-lg">Código del usuario</TableHead>
             <TableHead className="text-lg">Nombre del usuario</TableHead>
             <TableHead className="text-lg">Nombre del contrato</TableHead>
-            <TableHead className="text-lg">Telefono</TableHead>
+            <TableHead className="text-lg">Teléfono</TableHead>
             <TableHead className="text-lg">Correo</TableHead>
 
           </TableRow>
@@ -127,7 +127,7 @@ export const DetalleContrato = ({ selected_contrato }) => {
             <TableHead className="text-lg">Código de toma</TableHead>
             <TableHead className="text-lg">Clave catastral</TableHead>
             <TableHead className="text-lg">Tipo de toma</TableHead>
-            <TableHead className="text-lg">Diametro de la toma</TableHead>
+            <TableHead className="text-lg">Diámetro de la toma</TableHead>
             <TableHead className="text-lg">Servicio contratado</TableHead>
 
           </TableRow>
@@ -178,14 +178,6 @@ export const DetalleContrato = ({ selected_contrato }) => {
 
           </TableFooter>
         </Table>
-
-
-
-
-
-
-
-
 
 
 

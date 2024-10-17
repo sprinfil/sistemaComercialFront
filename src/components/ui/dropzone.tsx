@@ -36,7 +36,7 @@ const MyDropzone = ({ set }) => {
         {isDragActive ? (
           <p>Suelta los archivos aquí ...</p>
         ) : (
-          <p>Arrastra y suelta algunos archivos aquí, o haz clic para seleccionar archivos</p>
+          <p>Arrastra y suelta los archivos aquí, o haz clic para seleccionar archivos</p>
         )}
       </div>
       {

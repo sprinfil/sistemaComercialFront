@@ -105,7 +105,7 @@ const SheetRuta = ({ trigger, updateData, ruta}) => {
                     <SheetHeader>
                         <SheetTitle>{ruta == null ? "Crear Ruta" : "Editar " + ruta.nombre}</SheetTitle>
                         <SheetDescription>
-                            Llena toda la información correspondiente
+                            Ingresa toda la información correspondiente
                         </SheetDescription>
                         <>
                             <Form {...form}>

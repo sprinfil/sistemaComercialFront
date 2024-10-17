@@ -97,9 +97,9 @@ const onSubmit = (values: z.infer<typeof crearTomaSchema>) => {
                                 name="numero_casa"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Numero de casa</FormLabel>
+                                        <FormLabel>Número de casa</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Escribe el numero de casa" {...field} />
+                                            <Input placeholder="Escribe el número de casa" {...field} />
                                         </FormControl>
                                         <FormDescription />
                                         <FormMessage />

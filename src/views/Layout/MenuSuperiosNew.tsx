@@ -97,18 +97,18 @@ export const MenuSuperiosNew = () => {
             opciones: [
                 {
                     titulo: "Consulta Usuario",
-                    descripcion: "Mira los detalles de los usuarios, consulta por número de toma o nombre de usuario",
+                    descripcion: "Consulta los detalles de los usuarios, consulta por número de toma o nombre de usuario.",
                     route: "/Buscar/Usuario",
                     permission: ""
                 },
                 {
                     titulo: "Contratos",
-                    descripcion: "Genera un nuevo contrato",
+                    descripcion: "Genera un contrato nuevo.",
                     permission: "",
                     route: "/Contratacion"
                 },
                 {
-                    titulo: "Crear Nuevo Usuario",
+                    titulo: "Crear nuevo usuario",
                     descripcion: "Registra un nuevo usuario.",
                     route: "/CrearUsuario",
                     permission: ""
@@ -122,8 +122,8 @@ export const MenuSuperiosNew = () => {
             icon: <GlobeIcon />,
             opciones: [
                 {
-                    titulo: "Ver poligonos",
-                    descripcion: "Administra las posiciones geograficas de las rutas y libros.",
+                    titulo: "Ver polígonos",
+                    descripcion: "Administra las posiciones geográficas de las rutas y libros.",
                     route: "/poligonos",
                     permission: ""
                 },
@@ -135,8 +135,8 @@ export const MenuSuperiosNew = () => {
             icon: <ClipboardCopyIcon />,
             opciones: [
                 {
-                    titulo: "Generar Ordenes de Trabajo",
-                    descripcion: "Genera ordenes para operadores de campo",
+                    titulo: "Generar ordenes de trabajo",
+                    descripcion: "Genera ordenes de trabajo para operadores de campo.",
                     route: "/crear/orden/masiva",
                     permission: ""
                 },
@@ -200,7 +200,7 @@ export const MenuSuperiosNew = () => {
                 },
                 {
                     titulo: "Operadores del Sistema",
-                    descripcion: "Gestiona Operadores de sistema, También sus roles y permisos.",
+                    descripcion: "Gestiona los operadores del sistema (roles y permisos).",
                     route: "/operadores"
                     ,
                     permission: "VerOperadoresSistema"
@@ -213,7 +213,7 @@ export const MenuSuperiosNew = () => {
                 },
                 {
                     titulo: "Configuraciones Generales",
-                    descripcion: "Opciones Adicionales.",
+                    descripcion: "Opciones adicionales.",
                     route: "/proximamente",
                     permission: ""
                 },
@@ -252,7 +252,7 @@ export const MenuSuperiosNew = () => {
 
                                         <MenubarMenu>
                                             <MenubarTrigger
-                                                className={`h-full transition-all duration-200 hover:p-4 cursor-pointer ${localStorage.getItem("selectedMenuOption") == opcionPadre.titulo || selectedOption == opcionPadre.titulo  ? "bg-primary text-white  ": " hover:bg-muted"}`}
+                                                className={`h-full  transition-all duration-200 hover:p-4 cursor-pointer ${localStorage.getItem("selectedMenuOption") == opcionPadre.titulo || selectedOption == opcionPadre.titulo  ? "bg-primary text-white  ": " hover:bg-muted"}`}
                                                 onClick={() => { }}>
                                                 <div className='flex gap-2 items-center'> <span className={`${localStorage.getItem("selectedMenuOption") == opcionPadre.titulo || selectedOption == opcionPadre.titulo  ? " text-white  ": "text-primary"}`}> {opcionPadre.icon}</span>{opcionPadre.titulo}</div>
                                             </MenubarTrigger>
