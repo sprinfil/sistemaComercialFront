@@ -203,14 +203,15 @@ export const TipoDeCarga = ({ booleanMostrar }) => {
     console.log(dataArray);
 
   };
-  console.log(operadorSeleccionado);
+  
+  // console.log(operadorSeleccionado);
 
-  console.log(dataArrayFront);
-  console.log(dataInfoCargaTrabajo);
-  console.log(dataArray);
-  console.log(dataInfoCargaTrabajo);
-  console.log(cargasDeTrabajoAEnviar);
-  console.log(cargasDeTrabajoAEnviar[0]?.nombre_operador_encargado);
+  // console.log(dataArrayFront);
+  // console.log(dataInfoCargaTrabajo);
+  // console.log(dataArray);
+  // console.log(dataInfoCargaTrabajo);
+  // console.log(cargasDeTrabajoAEnviar);
+  // console.log(cargasDeTrabajoAEnviar[0]?.nombre_operador_encargado);
 
   useEffect(() => {
 
@@ -296,7 +297,7 @@ export const TipoDeCarga = ({ booleanMostrar }) => {
 
   return (
     <div className=' h-full overflow-auto'>
-      <div className='text-2xl p-5 text-black'>
+      <div className='text-2xl p-5 '>
         {filasSeleccionadaCargaTrabajo?.libro?.nombre}
         <div>
 

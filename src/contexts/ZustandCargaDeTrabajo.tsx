@@ -1,55 +1,50 @@
-import {create} from 'zustand';
+import { create } from 'zustand';
 
 
-export interface FilaCargaTrabajo 
-{
+export interface FilaCargaTrabajo {
   tipo_carga: string;
-  operadores:string;
+  operadores: string;
 }
 
 interface ZustandCargaDeTrabajo {
   filasSeleccionadaCargaTrabajo: [];
-  setFilasSeleccionadasCargaTrabajo: (filasSeleccionadaCargaTrabajo:[]) => void;
+  setFilasSeleccionadasCargaTrabajo: (filasSeleccionadaCargaTrabajo: []) => void;
 
   cargasDeTrabajoAEnviar: FilaCargaTrabajo[];
-  setCargasDeTrabajoAEnviar:(filasSeleccionadaCargaTrabajo: FilaCargaTrabajo[]) => void;
+  setCargasDeTrabajoAEnviar: (filasSeleccionadaCargaTrabajo: FilaCargaTrabajo[]) => void;
 
   cargasDeTrabajoAEnviarAPI: FilaCargaTrabajo[];
-  setCargasDeTrabajoAEnviarFrontAPI:(cargasDeTrabajoAEnviarAPI: FilaCargaTrabajo[]) => void;
+  setCargasDeTrabajoAEnviarFrontAPI: (cargasDeTrabajoAEnviarAPI: FilaCargaTrabajo[]) => void;
 
   dataArrayColumns: FilaCargaTrabajo[];
-  setDataArrayColumns:(dataArrayColumns: FilaCargaTrabajo[]) => void;
+  setDataArrayColumns: (dataArrayColumns: FilaCargaTrabajo[]) => void;
 
   dataInfoCargaTrabajo: [];
-  setDataInfoCargaTrabajo: (dataInfoCargaTrabajo:[]) => void;
+  setDataInfoCargaTrabajo: (dataInfoCargaTrabajo: []) => void;
 
   loadingTable: boolean;
-  setLoadingTable:(loadingTable:boolean) => void;
-  
+  setLoadingTable: (loadingTable: boolean) => void;
+
 }
 
-export const ZustandCargaDeTrabajo= create<ZustandCargaDeTrabajo>((set) => ({
+export const ZustandCargaDeTrabajo = create<ZustandCargaDeTrabajo>((set) => ({
   filasSeleccionadaCargaTrabajo: [],
-  setFilasSeleccionadasCargaTrabajo: (filasSeleccionadaCargaTrabajo) => set({filasSeleccionadaCargaTrabajo}),
+  setFilasSeleccionadasCargaTrabajo: (filasSeleccionadaCargaTrabajo) => set({ filasSeleccionadaCargaTrabajo }),
 
   cargasDeTrabajoAEnviar: [],
-  setCargasDeTrabajoAEnviar: (cargasDeTrabajoAEnviar) => set({cargasDeTrabajoAEnviar}),
+  setCargasDeTrabajoAEnviar: (cargasDeTrabajoAEnviar) => set({ cargasDeTrabajoAEnviar }),
 
   cargasDeTrabajoAEnviarAPI: [],
-  setCargasDeTrabajoAEnviarFrontAPI: (cargasDeTrabajoAEnviarAPI) => set({cargasDeTrabajoAEnviarAPI}),
+  setCargasDeTrabajoAEnviarFrontAPI: (cargasDeTrabajoAEnviarAPI) => set({ cargasDeTrabajoAEnviarAPI }),
 
 
   dataArrayColumns: [],
-  setDataArrayColumns: (dataArrayColumns) => set({dataArrayColumns}),
+  setDataArrayColumns: (dataArrayColumns) => set({ dataArrayColumns }),
   dataInfoCargaTrabajo: [],
-  setDataInfoCargaTrabajo: (dataInfoCargaTrabajo) => set({dataInfoCargaTrabajo}),
+  setDataInfoCargaTrabajo: (dataInfoCargaTrabajo) => set({ dataInfoCargaTrabajo }),
 
   loadingTable: false,
-  setLoadingTable: (loadingTable) => set({loadingTable}),
+  setLoadingTable: (loadingTable) => set({ loadingTable }),
 
-
-  
-
- 
 }));
 

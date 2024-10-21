@@ -83,7 +83,7 @@ export const columns: ColumnDef<CargaTrabajo>[] = [
     id: "libro.nombre",
     header: ({ column }) => (
       <Button
-        className="text-2xl text-black"
+        className=" "
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
@@ -91,44 +91,49 @@ export const columns: ColumnDef<CargaTrabajo>[] = [
       </Button>
     ),
   },
+
   {
     cell: ({ row }) => {
-      const nombre = row?.original?.tiene_encargado?.nombre; 
+      const nombre = row?.original?.tiene_encargado?.nombre;
 
       return (
-          
+
         <div className="flex items-center w-full justify-between">
-          { 
-           
+          {
+
             <span>{nombre} {!nombre && <div className="text-red-500">No asignado</div>}</span>
 
           }
-        
-        <div className="flex items-center">
-          <span
-          >
-          </span>
+
+          <div className="flex items-center">
+            <span
+            >
+            </span>
+          </div>
         </div>
-      </div>
       );
     },
     accessorFn: (row) => {
       return row?.tiene_encargado?.nombre;
     },
-   
+
     id: "tiene_encargado.nombre",
     header: ({ column }) => (
       <Button
-        className="text-2xl text-black"
+        className=" "
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Encargado
       </Button>
     ),
-   
+
   },
-  
+  {
+    accessorKey: "tipo_carga",
+    header: "Tipo Carga"
+  },
+
   {
     id: "actions",
     enableHiding: false,
@@ -152,7 +157,7 @@ export function CargaLecturaDataTable({ data }) {
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
   const [booleanAbrir, setBooleanAbrir] = React.useState(false)
-  const {setLoadingTable, loadingTable} = ZustandCargaDeTrabajo();
+  const { setLoadingTable, loadingTable } = ZustandCargaDeTrabajo();
   const table = useReactTable({
     data,
     columns,
@@ -185,64 +190,65 @@ export function CargaLecturaDataTable({ data }) {
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
-      <div className="flex flex-col w-full">
-
-      <Accordion type="single" collapsible className="w-full">
-      <AccordionItem value="item-1">
-        <AccordionTrigger>
-          <div className="flex space-x-1">
-            <div>
-            <TbFilterPlus className="w-[3vh] h-[3vh]" />
-
-            </div>
-          <div className="text-xl">Filtros</div>
-          </div>
-
-          </AccordionTrigger>
-        <AccordionContent>
         <div className="flex flex-col w-full">
-              <div className="flex-1">
-                <Input
-                  placeholder="Filtrar por libros..."
-                  value={(table.getColumn("libro.nombre")?.getFilterValue() as string) ?? ""}
-                  onChange={(event) =>
-                    table.getColumn("libro.nombre")?.setFilterValue(event.target.value)
-                  }
-                  className="flex-1 mt-5"
-                />
+
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="item-1">
+              <AccordionTrigger>
+                <div className="flex space-x-1">
+                  <div>
+                    <TbFilterPlus className="w-[3vh] h-[3vh]" />
+
+                  </div>
+                  <div className="text-xl">Filtros</div>
+                </div>
+
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-col w-full">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="Filtrar por libros..."
+                      value={(table.getColumn("libro.nombre")?.getFilterValue() as string) ?? ""}
+                      onChange={(event) =>
+                        table.getColumn("libro.nombre")?.setFilterValue(event.target.value)
+                      }
+                      className="flex-1 mt-5"
+                    />
+
+
+                  </div>
+
+                  <div className="flex-1">
+                    <Input
+                      placeholder="Filtrar por encargado..."
+                      value={(table.getColumn("tiene_encargado.nombre")?.getFilterValue() as string) ?? ""}
+                      onChange={(event) =>
+                        table.getColumn("tiene_encargado.nombre")?.setFilterValue(event.target.value)
+                      }
+                      className="flex-1 mt-5"
+                    />
+                  </div>
+
+
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <IconButton onClick={handleAbrirCerrarFiltros}>
+
+          </IconButton>
+
+          {booleanAbrir &&
+
+            <>
+
+              <div>
+
 
 
               </div>
 
-              <div className="flex-1">
-                <Input
-                  placeholder="Filtrar por encargado..."
-                  value={(table.getColumn("tiene_encargado.nombre")?.getFilterValue() as string) ?? ""}
-                  onChange={(event) =>
-                    table.getColumn("tiene_encargado.nombre")?.setFilterValue(event.target.value)
-                  }
-                  className="flex-1 mt-5"
-                />
-              </div>
-
-
-            </div>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
-      <IconButton onClick={handleAbrirCerrarFiltros}>
-
-        </IconButton>
-
-        {booleanAbrir &&
-
-          <>
-
-            <div>
-
-
-
-            </div>
 
 
 
@@ -253,73 +259,72 @@ export function CargaLecturaDataTable({ data }) {
 
 
 
+            </>
 
-          </>
-
-        }
-      </div>
+          }
+        </div>
 
 
       </div>
       <div className="rounded-md border">
-        {loadingTable ? <Loader/> :
-        
-        <Table className="w-[50vh]">
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                  </TableHead>
-                )
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-              className={`text-xl cursor-pointer ${row.getIsSelected() ? 'bg-gray-900' : ''}`} 
-              key={row.id}
-              data-state={row.getIsSelected() && "selected"}
-              onClick={() => { table.getRowModel().rows.forEach(r => r.toggleSelected(false)); row.toggleSelected(); setFilasSeleccionadasCargaTrabajo(row.original); } }  // Selecciona/deselecciona al hacer clic en la fila
+        {loadingTable ? <div className="w-[50vh]"><Loader /></div> :
 
-            >
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(
-                    cell.column.columnDef.cell,
-                    cell.getContext()
-                  )}
-                </TableCell>
+          <Table className="w-[50vh]">
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                      </TableHead>
+                    )
+                  })}
+                </TableRow>
               ))}
-            </TableRow>
-          ))
-        ) : (
-          <TableRow>
-            <TableCell
-              colSpan={columns.length}
-              className="h-24 text-center"
-            >
-              No resultados.
-            </TableCell>
-          </TableRow>
-        )}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    className={`text-xl cursor-pointer ${row.getIsSelected() ? 'bg-gray-900' : ''}`}
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    onClick={() => { table.getRowModel().rows.forEach(r => r.toggleSelected(false)); row.toggleSelected(); setFilasSeleccionadasCargaTrabajo(row.original); }}  // Selecciona/deselecciona al hacer clic en la fila
+
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No resultados.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         }
-     
+
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+        <div className="flex-1 text-sm ">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} filas(s) seleccionadas.
         </div>

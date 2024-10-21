@@ -94,48 +94,9 @@ export const CargasTrabajo = ({ detalle }) => {
 
   return (
     <div className='h-full'>
-      {/* <div className='ml-5 text-2xl mt-2'>
-        Cargas de trabajo
-      </div>
-      <div className='flex space-x-2'>
-
-        <div className='p-2 '>
-          <CargaLecturaDataTable data={dataInfoCargaTrabajo} />
-        </div>
-
-        <div className='w-full mt-6'>
-          <div className="flex space-x-1">
-            <div className="flex-1 bg-[#008f6f] hover:bg-green-700  ">
-              <IconButtonCargaTrabajo><IoMdPrint className='mr-1 w-[3.0vh] h-[3.0vh] text-white' /> <div className='text-white'>Imprimir</div></IconButtonCargaTrabajo>
-            </div>
-            <div className="flex-1 bg-green-800 hover:bg-green-700 ">
-              {!editar
-                ?
-                <IconButtonCargaTrabajo onClick={handleEditar}><Pencil1Icon className='mr-1 w-[2.5vh] h-[2.5vh] text-white' /> <div className='text-white'>Editar</div></IconButtonCargaTrabajo>
-                :
-                <div className={`text-white' ${loading ? 'text-white pointer-events-none opacity-50' : 'text-white'}`}>
-                  <IconButtonCargaTrabajo onClick={handleEnviarCargaDeTrabajo}>{!loading && <FaSave className='mr-1 w-[2.5vh] h-[2.5vh] text-white' />}
-                    <div className='flex space-x-2'>
-                      <div className={'text-white'}>
-                        Guardar
-                      </div>
-                      <div>
-                        {loading && <LoaderChico />}
-                      </div>
-                    </div>
-                  </IconButtonCargaTrabajo>
-                </div>
-              }
-            </div>
-          </div>
-          <TipoDeCarga booleanMostrar={editar} />
-        </div>
-
-      </div> */}
-
       <DoubleContainer>
         <Seccion1>
-          <div className='p-2 '>
+          <div className='p-2 h-[80vh] overflow-auto'>
             <CargaLecturaDataTable data={dataInfoCargaTrabajo} />
           </div>
         </Seccion1>
