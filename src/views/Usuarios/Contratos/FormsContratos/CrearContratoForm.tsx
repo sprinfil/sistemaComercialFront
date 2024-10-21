@@ -235,7 +235,7 @@ export const CrearContratoForm = () => {
                     nombre_contrato: values.nombre_contrato,
                     clave_catastral: values.clave_catastral,
                     tipo_toma: tipoToma || 0,
-                    servicio_contratados: servicios,
+                    servicio_contratados: ["agua","alcantarillado y saneamiento"],
                     //diametro_toma: values.diametro_de_la_toma, // Usar el campo correcto aquí
                     num_casa: values.num_casa,
                     colonia: values.colonia || 0,
@@ -281,6 +281,8 @@ export const CrearContratoForm = () => {
             ...(values.c_alc != null && !isAlcActive ? { c_alc: values.c_alc } : {}),
             ...(values.c_san != null && !isSanActive ? { c_san: values.c_san } : {}),
         };
+
+        console.log(datosFiltrados);
 
         if(!contratoLocalStorage)
         {

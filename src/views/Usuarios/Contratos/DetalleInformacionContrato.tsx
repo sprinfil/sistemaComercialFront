@@ -409,7 +409,7 @@ console.log(verMapa);
 
         </div>
 
-            { !mostrarBoton &&
+            {/* { !mostrarBoton &&
               <div className='flex space-x-2 mt-[3vh]'>
               <div className='text-xl'>
                 Ver ubicación de la toma:
@@ -420,7 +420,7 @@ console.log(verMapa);
                     onCheckedChange={(checked) => setVerMapa(checked === true)}/>
                   </div>
 
-            </div>}
+            </div>} */}
      
 
           {/**AQUI MUESTRA EL MAPA */}
