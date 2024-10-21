@@ -75,16 +75,16 @@ const ModalVerAjusteMonitor: React.FC<ModalVerAjusteMonitorProps> = ({
         <AlertDialogHeader>
           <AlertDialogTitle>Ver Ajuste</AlertDialogTitle>
           <AlertDialogDescription>
-            Revisa los detalles del ajuste y agrega un comentario si es necesario.
+            Revisa los detalles del ajuste y agrega un comentario si es necesario eliminarlo.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <div>
           <p><strong>Folio:</strong> {selected_ajuste?.id}</p>
           <p><strong>Estado:</strong> {selected_ajuste?.estado}</p>
-          <p><strong>Monto total:</strong> {selected_ajuste?.monto_total}</p>
-          <p><strong>Monto bonificado:</strong> {selected_ajuste?.monto_ajustado}</p>
-          <p><strong>Monto total ajustado:</strong> {mta.toFixed(2)}</p>
+          <p><strong>Monto inicial:</strong> {selected_ajuste?.monto_total}</p>
+          <p><strong>Monto ajustado:</strong> {selected_ajuste?.monto_ajustado}</p>
+          <p><strong>Monto final:</strong> {mta.toFixed(2)}</p>
         </div>
 
         <div className="mt-4">

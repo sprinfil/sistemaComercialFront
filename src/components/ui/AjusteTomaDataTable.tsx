@@ -138,6 +138,7 @@ export function AjusteTomaDataTable() {
         })
         .then(({ data }) => {
           setAjustes(data);
+          console.log(data)
         })
         .catch((err) => {
           console.error("Error al obtener los ajustes:", err);
