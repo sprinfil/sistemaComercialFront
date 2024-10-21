@@ -5,8 +5,10 @@ import { ModalFondoCaja } from '../../components/ui/ModalFondoCaja';
 import axiosClient from '../../axios-client'; // Importa la instancia configurada de axiosClient
 import { useStateContext } from '../../contexts/ContextProvider'; // Importa el hook personalizado
 import ZustandPuntoVenta from '../../contexts/ZustandPuntoVenta';
+import { useToast } from "@/components/ui/use-toast"; 
 
 export default function PuntoVenta() {
+  const { toast } = useToast()
   const { user } = useStateContext(); // Accede al contexto para obtener el usuario
   const [isFondoCajaRegistered, setIsFondoCajaRegistered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,19 +23,19 @@ export default function PuntoVenta() {
     // Hacer una solicitud a la API para verificar el estado de la caja
     const fetchCajaStatus = async () => {
       try {
-        const response = await axiosClient.get('/cajas/estadoSesionCobro?id_sesion_caja',{
+        const response = await axiosClient.get('/cajas/estadoSesionCobro?id_sesion_caja', {
           params: {
             id_sesion_caja: null
           },
         });
         const { fondo_inicial } = response.data;
-    
-          if (fondo_inicial) {
-            setIsFondoCajaRegistered(true);
-            setInitialFund(parseFloat(fondo_inicial) || 0);
-          } else {
-            setIsModalOpen(true);
-          }
+
+        if (fondo_inicial) {
+          setIsFondoCajaRegistered(true);
+          setInitialFund(parseFloat(fondo_inicial) || 0);
+        } else {
+          setIsModalOpen(true);
+        }
 
       } catch (error) {
         console.error('Error al consultar el estado de la caja:', error.message || error);
@@ -53,19 +55,28 @@ export default function PuntoVenta() {
     const formattedAmount = parseFloat(amount).toFixed(2);
 
     const data = {
-      id_caja_catalogo: cajaCatalogoId,
+      id_caja_catalogo: user.caja.id_caja_catalogo,
       fondo_inicial: formattedAmount,
-      estado:"activo"
+      estado: "activo"
     };
 
     try {
       const response = await axiosClient.post('/cajas/store', data);
       console.log('Caja abierta con éxito:', response.data);
       //fetch_session_status();
-      setIsFondoCajaRegistered(true);
-      setInitialFund(formattedAmount || 0);
-      setIsModalOpen(false);
-      set_session_caja(response.data);
+      if (!response?.data?.error) {
+        setIsFondoCajaRegistered(true);
+        setInitialFund(formattedAmount || 0);
+        setIsModalOpen(false);
+        set_session_caja(response.data);
+      } else {
+
+        toast({
+          title: "¡Error!",
+          description: response?.data?.error,
+          variant: "destructive",
+        })
+      }
     } catch (error) {
       if (error.response && error.response.status === 422) {
         console.error('Error en los datos enviados:', error.response.data);
@@ -91,12 +102,12 @@ export default function PuntoVenta() {
 
   return (
     <div>
-      {!isFondoCajaRegistered ? (
+      {!initialFund ? (
         <ModalFondoCaja
           open={isModalOpen}
           onRegister={handleRegister}
           onCancel={handleModalClose}
-          iniciar_session_cancelada = {iniciar_session_cancelada}
+          iniciar_session_cancelada={iniciar_session_cancelada}
         />
       ) : (
         <PuntoVentaForm />

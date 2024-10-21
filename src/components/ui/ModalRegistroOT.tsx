@@ -116,13 +116,14 @@ const ModalRegistroOT = () => {
     }
   };
 
-
+  console.log(detalleOrdenDeTrabajoTomaMonitor2);
   function onSubmit(values: z.infer<typeof registroMedidotOtSchema>) {
     console.log("valores ingresados", values);
     setLoadingTableFiltrarOrdenDeTrabajoMasivas(true);
     const values2 = {
-      orden_trabajo: {
+      ordenes_trabajo: [{
         id: detalleOrdenDeTrabajoTomaMonitor2?.id,
+        id_toma: detalleOrdenDeTrabajoTomaMonitor2?.id_toma,
         id_empleado_asigno:
           detalleOrdenDeTrabajoTomaMonitor2?.id_empleado_asigno,
         id_orden_trabajo_catalogo:
@@ -131,7 +132,7 @@ const ModalRegistroOT = () => {
         material_utilizado:
           dataRegistroMedidorModalCerrarOT?.material_utilizado,
         genera_OT_encadenadas: false,
-      },
+      }],
       modelos: {
         medidores: {
           numero_serie: values.numero_serie,
@@ -194,13 +195,13 @@ const ModalRegistroOT = () => {
   const cerrar = () => {
     setIsOpenHijoFormularioModalDetalleMonitorOT(false);
   };
-
+console.log(isOpenHijoFormularioModalMonitorOT);
   return (
     <AlertDialog
       open={isOpenHijoFormularioModalMonitorOT}
       onOpenChange={setIsOpenHijoFormularioModalMonitorOT}
     >
-      <AlertDialogContent className="max-w-[120vh]">
+      <AlertDialogContent className="max-w-[150vh] max-h-[90vh] overflow-auto p-16">
         <AlertDialogHeader>
           <AlertDialogTitle>
             <div className="flex space-x-2">Registro de medidor</div>
@@ -209,25 +210,29 @@ const ModalRegistroOT = () => {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8 mt-2"
+                className="space-y-5 mt-2"
               >
+                <div className="mt-5">
                 <FormField
                   control={form.control}
                   name="numero_serie"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Numero de serie</FormLabel>
+                      <FormLabel>Número de serie</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Escribe el numero de serie"
+                          placeholder="Escribe el número de serie"
                           {...field}
+                          type="number"
                         />
                       </FormControl>
-                      <FormDescription>Numero de serie</FormDescription>
+                      <FormDescription>Número de serie</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                </div>
+               
                 <FormField
                   control={form.control}
                   name="marca"
@@ -252,7 +257,7 @@ const ModalRegistroOT = () => {
                   name="diametro"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Diametro de la toma</FormLabel>
+                      <FormLabel>Diámetro de la toma</FormLabel>
                       <FormControl>
                       <Select
                           onValueChange={(value) => field.onChange(value)}
@@ -260,7 +265,7 @@ const ModalRegistroOT = () => {
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Selecciona el diametro de la toma" />
+                              <SelectValue placeholder="Selecciona el diámetro de la toma" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -364,9 +369,9 @@ const ModalRegistroOT = () => {
                 />
 
                 <div className="flex justify-end space-x-5">
-                <Button onClick={cerrar}>
+                <AlertDialogCancel onClick={cerrar}>
                     Cancelar
-                  </Button>
+                  </AlertDialogCancel>
                   <Button type="submit">
                     Guardar
                   </Button>

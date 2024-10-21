@@ -59,7 +59,7 @@ export function ComboBoxActivoInactivo({placeholder, form, name, currentValue, r
         <Command>
           <CommandInput placeholder="Buscar estado..." className="h-9" />
           <CommandList>
-            <CommandEmpty>No estado found.</CommandEmpty>
+            <CommandEmpty>No estado encontrado.</CommandEmpty>
             <CommandGroup>
               {estados.map((estado) => (
                 <CommandItem

@@ -8,6 +8,8 @@ import IconButton from "../../ui/IconButton";
 import { useState } from "react"
 import ModalVerFactibilidadMonitor from "../../ui/ModalVerFactibilidadMonitor";
 import { EyeIcon } from 'lucide-react';
+import ModalVerFactibilidadMonitorAgua from "../../ui/ModalVerFactibilidadMonitorAgua"
+import ModalVerFactibilidadMonitorAlc from "../../ui/ModalVerFactibilidadMonitorAlc"
 
 export type Factibilidad = {
   id: number
@@ -56,7 +58,7 @@ export const FactiblidadMonitorColumns: ColumnDef<Factibilidad>[] = [
   {
     id: "codigo_toma", // Este es el ID de la columna
     accessorFn: (row) => row.toma.codigo_toma,
-    header: "Codigo de toma",
+    header: "Código de toma",
   }, 
   {
     accessorKey: "fecha_solicitud",
@@ -76,13 +78,25 @@ export const FactiblidadMonitorColumns: ColumnDef<Factibilidad>[] = [
           <IconButton  onClick={() => { set_modal_ver_fact(true) }} >
             <EyeIcon className='w-[15px] h-[15px]' />
           </IconButton>
-          <ModalVerFactibilidadMonitor
+          {console.log(row?.original?.servicio)}
+          {
+            row?.original?.servicio == "AGUA" &&
+            <ModalVerFactibilidadMonitorAgua
             selected_fact={row?.original}
             open={modal_ver_fact}
             set_open={set_modal_ver_fact}
-           
-            
           />
+          }
+
+          {
+            row?.original?.servicio == "ALCANTARILLADO Y SANEAMIENTO" &&
+            <ModalVerFactibilidadMonitorAlc
+            selected_fact={row?.original}
+            open={modal_ver_fact}
+            set_open={set_modal_ver_fact}
+          />
+          }
+         
         </>
 
       )

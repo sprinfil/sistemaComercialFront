@@ -11,7 +11,7 @@ export default function CrearUsuarioNuevo() {
 
   const opciones = [
     {
-      titulo: "Fisica",
+      titulo: "Física",
       componente: <CrearUsuarioFisicaForm/>
     },
     {
@@ -21,7 +21,7 @@ export default function CrearUsuarioNuevo() {
   ]
 
   return (
-    <div className='w-full max-h-[50vh] mt-[15px]'>
+    <div className='w-full max-h-[50vh] '>
     {/*Contenedor principal*/}
     <div className='flex gap-2 '>
 

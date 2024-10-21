@@ -26,6 +26,7 @@ export type tomas = {
   calle: string
   entre_calle_1: string
   entre_calle_2: string
+  direccion_completa: string
   codigo_postal: string
   localidad: string
 }
@@ -33,7 +34,7 @@ export type tomas = {
 // Configuración de las columnas
 export const columns: ColumnDef<BuscarUsuario>[] = [
   {
-    accessorKey: "nombre",
+    accessorKey: "nombre_completo",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -43,28 +44,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
       </Button>
     ),
   },
-  {
-    accessorKey: "apellido_paterno",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Apellido paterno
-      </Button>
-    ),
-  },
-  {
-    accessorKey: "apellido_materno",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Apellido materno
-      </Button>
-    ),
-  },
+  
   {
     accessorKey: "nombre_contacto",
     header: ({ column }) => (
@@ -83,7 +63,7 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Telefono
+        Teléfono
       </Button>
     ),
   },
@@ -138,90 +118,15 @@ export const columns: ColumnDef<BuscarUsuario>[] = [
   {
     accessorFn: (row) => {
       // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0]?.calle;
+      return row.tomas?.[0]?.direccion_completa;
     },
-    id: "tomas.calle",
+    id: "tomas.direccion_completa",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Calle
-      </Button>
-    ),
-  },
-  {
-    accessorFn: (row) => {
-      // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0]?.numero_casa;
-    },
-    id: "tomas.numero_casa",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        #
-      </Button>
-    ),
-  },
-  {
-    accessorFn: (row) => {
-      // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0]?.colonia;
-    },
-    id: "tomas.colonia",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Colonia
-      </Button>
-    ),
-  },
-  {
-    accessorFn: (row) => {
-      // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0]?.entre_calle_1;
-    },
-    id: "tomas.entre_calle_1",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Entre_calle_1
-      </Button>
-    ),
-  },
-  {
-    accessorFn: (row) => {
-      // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0]?.entre_calle_2;
-    },
-    id: "tomas.entre_calle_2",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Entre_calle_1
-      </Button>
-    ),
-  },
-  {
-    accessorFn: (row) => {
-      // Verifica la estructura de los datos en la consola
-      return row.tomas?.[0]?.codigo_postal;
-    },
-    id: "tomas.codigo_postal",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Codigo postal
+        Dirección
       </Button>
     ),
   },

@@ -69,7 +69,7 @@ export default function TarifaConceptosNewTable({ tipoToma, tarifa }) {
                             <AgregarTarifaConceptoNew trigger={
                                 <IconButton>
                                     <div className='flex gap-5 items-center '>
-                                        <div className=''>Agregar Concepto</div>
+                                        <div className=''>Agregar concepto</div>
                                         <PlusCircledIcon className='w-[20px] h-[20px]' />
                                     </div>
                                 </IconButton>

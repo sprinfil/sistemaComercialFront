@@ -1,184 +1,309 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { OcultarTable } from '../../../components/Tables/Components/OcultarTable';
-import FiltrosContratacionMonitor from '../../OrdenesDeTrabajo/FiltrosContratacionMonitor';
-import { GoogleMap, LoadScript, Marker, Polygon } from '@react-google-maps/api';
-import axiosClient from '../../../axios-client';
-import { Button } from '../../../components/ui/button';
-import FiltrosContratacionPuntoToma from '../../OrdenesDeTrabajo/FiltrosContratacionPuntoToma';
-import { FaSearch } from 'react-icons/fa';
-import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
-import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
-import { ZustandFiltrosContratacion } from '../../../contexts/ZustandFiltrosContratacion';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { OcultarTable } from "../../../components/Tables/Components/OcultarTable";
+import FiltrosContratacionPuntoToma from "../../OrdenesDeTrabajo/FiltrosContratacionPuntoToma";
+import {
+  GoogleMap,
+  Marker,
+  Polygon,
+  useJsApiLoader,
+  
+} from "@react-google-maps/api";
+import axiosClient from "../../../axios-client";
+import { Button } from "../../../components/ui/button";
+import { useToast } from "../../../components/ui/use-toast";
+import { ZustandFiltrosContratacion } from "../../../contexts/ZustandFiltrosContratacion";
+import { useNavigate } from "react-router-dom";
+import { OcultarTablePuntoTomaMapa } from "../../../components/Tables/Components/OcultarTablePuntoTomaMapa";
 
-
-
-const MostrarFiltros = () => {
-  return (
-    <OcultarTable accion={""}>
-      <FiltrosContratacionPuntoToma />
-    </OcultarTable>
-  );
+const mapContainerStyle = {
+  width: "100%",
+  height: "84vh",
 };
-const LIBRARIES = ['places'];
 
-export const PuntoTomaMapa = () => {
+const center = {
+  lat: 24.131,
+  lng: -110.3,
+};
 
-  const {setLatitudMapa, setLongitudMapa, setLibroToma, libroToma} = ZustandFiltrosContratacion();
-  const { toast } = useToast()
+const PuntoTomaMapa = () => {
+  const {
+    setLatitudMapa,
+    setLongitudMapa,
+    setLibroToma,
+    libroToma,
+    setMarcadorSeleccionado,
+    marcadorSeleccionado,
+    isCheckedPreContratada,
+    puntosFiltradosParaElMapa,
+    setTomaPreContratada,
+    setSeleccionoPuntoEnMapa,
+    selectedLocation,
+    setSelectedLocation,
+    setEsPreContratado,
+    setPuntoTomaLatitudLongitudAPI,
+    puntoTomaLatitudLongitudAPI,
+    setBoolPeticionContratacion, tomasFiltradas, setTomasFiltradas
+  } = ZustandFiltrosContratacion();
+
+  const { toast } = useToast();
   const [poligonos, setPoligonos] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const [mapaCargado, setMapaCargado] = useState(false);
-  console.log(JSON.stringify(libroToma));
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const markerRefs = useRef([]);
+  const [zoom, setZoom] = useState(18); // Establecer un valor inicial para el zoom
 
-  //CADA QUE SE RENDERICE EL COMPONENTE VA A MOSTRAR LOS POLIGONOS
+  const navigate = useNavigate();
+
+  //AQUI ESTA LA API KEY, SE LE METE UNA VARIABLE PARA USARLA Y QUE CARGUE MEDIANTE ESTA API KEY
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: "AIzaSyARlsiPBIt9Cv5EiSNKTZVENYMZwJo-KJ0",
+  });
+
+  //AQUI HACE UNA PETICIÓN AL MONTAR EL COMPONENTE, GUARDA LOS POLIFONOS
   useEffect(() => {
-    const mostrarPoligonos = async () => {
-      setMapaCargado(false);
+    const fetchPoligonos = async () => {
       try {
-        const response = await axiosClient.get('/ruta');
-        console.log(response);
+        const response = await axiosClient.get("/ruta");
         setPoligonos(response.data.data);
-        setMapaCargado(true);
       } catch (error) {
-        console.error('Error fetching polygons:', error);
+        console.error("Error fetching polygons:", error);
       }
     };
-    mostrarPoligonos();
+    fetchPoligonos();
   }, []);
+//SE USA UNA PROMESA PARA AL USAR LOS FILTROS, PUEDA OBTENER LOS DATOS QUE SE HAN CONSULTADO
+  useEffect(() => {
+    if (puntosFiltradosParaElMapa instanceof Promise) {
+      puntosFiltradosParaElMapa
+        .then((data) => setTomasFiltradas(data.data.tomas))
+        .catch((e) => console.log(e));
+    } else {
+      setTomasFiltradas(puntosFiltradosParaElMapa.data?.tomas || []);
+    }
+  }, [puntosFiltradosParaElMapa]);
 
 
-  //ESTILOS DEL MAPA
-  const mapContainerStyle = {
-    width: '100%',
-    height: '84vh',
-  };
+//CUANDO SE DESMONTA EL COMPONENTE SE CONVIERTE EN FALSE, ES DECIR YA NO HAY PUNTO
+  useEffect(() => {
+    return () => setSeleccionoPuntoEnMapa(false);
+  }, [setSeleccionoPuntoEnMapa]);
 
-  const center = {
-    lat: 24.131,
-    lng: -110.3,
-  };
 
-  const googleMapsApiKey = 'AIzaSyARlsiPBIt9Cv5EiSNKTZVENYMZwJo-KJ0'; // API KEY 
+  //ESTE METODO ES LO QUE SE EJECUTA CUANDO LE DAMOS CLICK AL MAPA
+  const handleMapClick = useCallback((event) => {
 
-  //METODO CLICK PARA EL MAPA
-  const handleMapClick = (event) => {
-    const lat = event.latLng.lat();
+
+    console.log("Map clicked", event);
+    const lat = event.latLng.lat(); //se obtiene la latitud y longidut
     const lng = event.latLng.lng();
+
+    if (selectedLocation) {
+      setSelectedLocation(null);
+      setPuntoTomaLatitudLongitudAPI([]);
+      setSeleccionoPuntoEnMapa(false);
+    }
+
+    //variable para obtener la locación clickeada
     const clickedLocation = new google.maps.LatLng(lat, lng);
+    setSelectedLocation({ lat, lng });
+    setPuntoTomaLatitudLongitudAPI([lat, lng]);
+    setSeleccionoPuntoEnMapa(true);
 
-    let isInsidePolygon = false; //para validar si estas dentro del polifono
+    let isInsidePolygon = false;
 
-    //iteracion de los poligonos
+    //VALIDAR LOS POLIGONOS y ver si hago click dentro del POLIGONO 
+    //PARA VER SI HAY FACTIBILIDAD O NO
     poligonos.forEach((polygon) => {
       polygon.libros.forEach((libro) => {
-        if (libro.polygon?.coordinates && libro.polygon.coordinates[0].length > 0) {
+        if (
+          libro.polygon?.coordinates &&
+          libro.polygon.coordinates[0].length > 0
+        ) {
+          const polygonCoordinates = libro.polygon.coordinates[0].map(
+            (coordinate) => ({
+              lat: coordinate[1],
+              lng: coordinate[0],
+            })
+          );
 
-          // Convertir las coordenadas del polígono a objetos LatLng
-          const polygonCoordinates = libro.polygon.coordinates[0].map(coordinate => ({
-            lat: coordinate[1],
-            lng: coordinate[0],
-          }));
-
-          // Crear el polígono de Google Maps
           const googlePolygon = new google.maps.Polygon({
-            paths: polygonCoordinates.map(coord => new google.maps.LatLng(coord.lat, coord.lng)),
+            paths: polygonCoordinates.map(
+              (coord) => new google.maps.LatLng(coord.lat, coord.lng)
+            ),
           });
 
-          // AQUI HACE LA VALIDACION SI EXISTE EN EL POLIGONO EL CLICK
-          if (google.maps.geometry.poly.containsLocation(clickedLocation, googlePolygon)) {
+          if (
+            google.maps.geometry.poly.containsLocation(
+              clickedLocation,
+              googlePolygon
+            )
+          ) {
             isInsidePolygon = true;
-            console.log("Clic dentro del polígono en:", { lat, lng });
-            setSelectedLocation({ lat, lng }); 
-      
+            setSelectedLocation({ lat, lng });
+            setPuntoTomaLatitudLongitudAPI([lat, lng]);
+            setSeleccionoPuntoEnMapa(true);
           }
         }
       });
     });
 
-    // SI NO ESTA DENTRO DEL POLIGONO(AQUI PUEDO METER LO DEL PROCESO DE FACTIBILIDAD(PARA QUE QUEDE COMO CONTRATO PENDIENTE))
     if (!isInsidePolygon) {
       toast({
         variant: "destructive",
-        title: "No puedes seguir con el proceso de contratación.",
-        description: "No hay factibilidad",
-        action: <ToastAction altText="Try again" >Intentar de nuevo</ToastAction>,
-      })
+        title: "No hay factibilidad",
+        description: "Puedes continuar el proceso de contratación si lo deseas.",
+      });
     }
-  };
+    setSeleccionoPuntoEnMapa(true);
+
+  }, [poligonos, setPuntoTomaLatitudLongitudAPI, setSeleccionoPuntoEnMapa, setSelectedLocation, toast]);
+
+console.log(selectedLocation);
+
+  const handleSiguienteContratacion = useCallback(() => {
+    navigate("/Contrato/Usuario");
+    setEsPreContratado(true);
+    setBoolPeticionContratacion(false);
+  }, [navigate, setEsPreContratado]);
+
+
+  //PARA QUE SE ACTUALICE EL MAPA SI ES QUE ESTOY FILTRANDO
+  useEffect(() => {
+    if (map) {
+      markerRefs.current.forEach(marker => marker.setMap(null));
+      markerRefs.current = [];
+      setSelectedLocation(null);
+
+      if(zoom >= 18)
+      {
+        tomasFiltradas.forEach(toma => {
+          if (toma.posicion?.coordinates) {
+            const markerPosition = {
+              lat: toma.posicion.coordinates[1],
+              lng: toma.posicion.coordinates[0],
+            };
+  
+            const marker = new google.maps.Marker({
+              position: markerPosition,
+              map: map,
+              title: `Toma: ${toma.codigo_toma}`,
+            });
+  
+            const infoWindow = new google.maps.InfoWindow({
+              content: `<div class="text-black">
+                        <strong>Código de Toma: ${toma.codigo_toma}</strong></br>
+                        <strong>Clave Catastral: ${toma.clave_catastral}</strong></br>
+                        <strong>Calle: ${toma.calle}</strong></br>
+                        <strong>Número de casa: ${toma.numero_casa}</strong></br>
+                        <strong>Colonia: ${toma.colonia}</strong></br>
+                        <strong>Código Postal: ${toma.codigo_postal}</strong></br>
+                        <br>
+                        <button id="view-details-btn" class="text-green-800 text-xl"><strong>Contratar esta toma</strong></button>
+                      </div>`,
+            });
+  
+            infoWindow.addListener('domready', () => {
+              document.getElementById('view-details-btn')?.addEventListener('click', handleSiguienteContratacion);
+              setTomaPreContratada(toma);
+            });
+  
+            marker.addListener('click', () => {
+              infoWindow.open(map, marker);
+            });
+  
+            markerRefs.current.push(marker);
+          }
+        });
+      }
+     
+    }
+  }, [map, tomasFiltradas, handleSiguienteContratacion, zoom]);
+
+  const onLoad = useCallback((mapInstance) => {
+    setMap(mapInstance);
+    google.maps.event.addListener(mapInstance, 'zoom_changed', () => {
+      const newZoom = mapInstance.getZoom();
+      setZoom(newZoom);
+    });
+  
+  }, []);
+
+  const onUnmount = useCallback(() => {
+    setMap(null);
+  }, []);
+
+  if (!isLoaded) {
+    return <div>Cargando mapa...</div>;
+  }
+  
 
   return (
-    <div>
-      <div className='flex space-x-2'>
-
-        <div className='mb-5'>
-          <MostrarFiltros />
-        </div>
+    <div className="mt-2">
+      <div className="flex space-x-2 ">
+          <OcultarTablePuntoTomaMapa accion={""}>
+            <FiltrosContratacionPuntoToma />
+          </OcultarTablePuntoTomaMapa>
 
         <div style={{ flex: 1 }}>
-          
-          <LoadScript
-            googleMapsApiKey={googleMapsApiKey}
-            libraries={['geometry']}
-            
+          <GoogleMap
+            mapContainerStyle={mapContainerStyle}
+            center={center}
+            zoom={13}
+            onClick={handleMapClick}
+            onLoad={onLoad}
+            onUnmount={onUnmount}
           >
-        
-            <GoogleMap
-              mapContainerStyle={mapContainerStyle}
-              center={center}
-              zoom={13}
-              onClick={handleMapClick}
-            >
-              {selectedLocation && (
-                <Marker
-                  position={selectedLocation}
-                />
-              )}
+            {selectedLocation && <Marker position={selectedLocation} />}
 
-
-              {
-          
-              poligonos.map((polygon, index) => (
-                polygon.libros.map((libro, libroIndex) => {
-                  if (libro.polygon?.coordinates && libro.polygon.coordinates[0].length > 0) {
-                    const polygonCoordinates = libro.polygon.coordinates[0].map(coordinate => ({
+            {poligonos.map((polygon, index) =>
+              polygon.libros.map((libro, libroIndex) => {
+                if (
+                  libro.polygon?.coordinates &&
+                  libro.polygon.coordinates[0].length > 0
+                ) {
+                  const polygonCoordinates = libro.polygon.coordinates[0].map(
+                    (coordinate) => ({
                       lat: coordinate[1],
                       lng: coordinate[0],
-                    }));
+                    })
+                  );
 
-                    return (
-                      <Polygon
-                        key={`${index}-${libroIndex}`}
-                        paths={polygonCoordinates}
-                        options={{
-                          fillColor: '#00913f ',
-                          fillOpacity: 0.4,
-                          strokeColor: '#00913f ',
-                          strokeOpacity: 1,
-                          strokeWeight: 2,
-                          clickable: true, // Permitir clics en el polígono
-                        }}
-                        onClick={(event) => {
-                          const lat = event.latLng.lat();
-                          const lng = event.latLng.lng();
-                          setLongitudMapa(lat); //VARIABLES DEL ZUSTAND PARA LATITUD Y LONGITUD SELECCIONADA DENTRO DEL MAPA
-                          setLatitudMapa(lng);
-                          console.log(lat, "     ", lng);
-                          // Actualizar el marcador en el centro del clic dentro del polígono
-                          setSelectedLocation({ lat, lng });
-                          console.log("Libro clickeado:", libro);
-                          setLibroToma(libro.id);
-                        }}
-                      />
-                    );
-                  }
-                  return null;
-                })
-              ))}
-            </GoogleMap>
-          </LoadScript>
+                  return (
+                    <Polygon
+                      key={`polygon-${index}-${libroIndex}`}
+                      paths={polygonCoordinates}
+                      options={{
+                        fillColor: '#00913f',
+                        fillOpacity: 0.4,
+                        strokeColor: '#00913f',
+                        strokeOpacity: 1,
+                        strokeWeight: 2,
+                        clickable: true,
+                      }}
+                      onClick={(event) => {
+                        const lat = event.latLng.lat();
+                        const lng = event.latLng.lng();
+                        const clickedLocation = new google.maps.LatLng(lat, lng);
+                        setLatitudMapa(lat);
+                        setLongitudMapa(lng);
+                        setLibroToma(libro.id);
+                        localStorage.setItem("libro", libro.id); 
+                        setSelectedLocation({ lat, lng });
+                        setMarcadorSeleccionado(true);
+                        setSeleccionoPuntoEnMapa(true);
+                        setPuntoTomaLatitudLongitudAPI([lat, lng ]);
+
+                      }}
+                    />
+                  );
+                }
+                return null;
+              })
+            )}
+          </GoogleMap>
         </div>
       </div>
-
     </div>
   );
 };
+
+export default PuntoTomaMapa;

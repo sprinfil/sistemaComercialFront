@@ -133,7 +133,7 @@ const cancelarMasivamente = async () => {
 
                     <AlertDialogTitle>
 
-                   ¿Estas seguro que deseas cancelar las ordenes de trabajo seleccionadas?
+                   ¿Estás seguro de que deseas cancelar las ordenes de trabajo seleccionadas?
     
 
                     </AlertDialogTitle>

@@ -22,80 +22,194 @@ import { FaSearch } from 'react-icons/fa';
 import { FaArrowRight } from "react-icons/fa6";
 import { LuFilterX } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { ZustandFiltrosContratacion } from "../../contexts/ZustandFiltrosContratacion";
+import axiosClient from "../../axios-client";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { ZustandGeneralUsuario } from "../../contexts/ZustandGeneralUsuario";
+import { MdOutlineNavigateNext } from "react-icons/md";
+import IconButtonContratos from "../../components/ui/IconButtonContratos";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu"
+import { FaChevronCircleRight } from "react-icons/fa";
+
 const FiltrosContratacionPuntoToma = () => {
 
   const navigate = useNavigate();
 
   const handleSiguienteContratacion = () => {
     navigate("/Contrato/Usuario");
+    setTomaPreContratada([]);
+    setBoolPeticionContratacion(true);
+    setEsPreContratado(false);
+    setTomaPreContratada([]);
   }
 
 
 
+  const { setIsCheckedPreContratadas, isCheckedPreContratadas, setPuntosFiltradosParaElMapa,
+    tomaPreContratada, setTomaPreContratada,
+    setBoolPeticionContratacion, seleccionoPuntoEnMapa,
+    codigoToma, setCodigoToma,
+    setEsPreContratado, setSeleccionoPuntoEnMapa,
+    setSelectedLocation, setTomasFiltradas, boolCrearUsuarioProcesoContratacion, obtenerNombreUsuario } = ZustandFiltrosContratacion();
 
+  const { usuariosEncontrados } = ZustandGeneralUsuario();
+  //console.log(isCheckedPreContratadas);
 
+  const handleLimpiarFiltros = () => {
+    setCodigoToma("");
+    setIsCheckedPreContratadas(false);
+    setEsPreContratado(false);
+    setSeleccionoPuntoEnMapa(false);
+    setSelectedLocation(null);
+    setTomasFiltradas([]);
+  }
 
+  const handleBuscarTomas = () => {
 
+    // Verifica si el checkbox está marcado
+    const contratadas = isCheckedPreContratadas ? "pre-contrato" : null;
 
+    const values = {
+      filtros: {
+        ...(contratadas && { tipo_contratacion: [contratadas] }),
+        codigo_toma: codigoToma,
+      },
+    };
+
+    console.log(values);
+
+    try {
+      const response = axiosClient.post("contratos/filtros", values);
+      console.log(response);
+      setPuntosFiltradosParaElMapa(response);
+    }
+    catch (response) {
+      console.log(response);
+
+    }
+
+  }
+  console.log(usuariosEncontrados);
+  const handleChangeCodigoToma = (e) => {
+    setCodigoToma(e.target.value);
+  };
+
+  console.log(codigoToma);
   return (
-    <div className="overflow-auto min-h-[20vh]">
-      <div className="ml-5 mb-[20vh] mt-[1vh] h-full p-3">
-        <div className="flex space-x-[34vh]">
-          <div>
-            <FiFilter className="w-[3vh] h-[3vh]" />
-            
-          </div>
-         Filtros
-      
-         
-          <div className="rounded-xl" title="Continuar proceso">
-           <IconButton onClick={handleSiguienteContratacion}>
-            <FaArrowRight/>
-            </IconButton>
+    <ContextMenu>
+      <ContextMenuTrigger className="">
+        <div className="">
+
+          <div className="overflow-auto min-h-[80vh]">
+
+            <div>
+              <div className='w-full p-4 bg-muted shadow-md mb-2 flex justify-between items-center'>
+                <div className="text-lg mr-1">
+                  Usuario:
+                </div>
+                {
+                  boolCrearUsuarioProcesoContratacion ?
+                    <div className="text-lg truncate flex-grow min-w-[20vh]">
+                      {obtenerNombreUsuario || "No hay usuario seleccionado"}
+                    </div>
+                    :
+                    <div className="text-lg truncate flex-grow min-w-[20vh]">
+                      {usuariosEncontrados[0]?.nombre_completo || "No hay usuario seleccionado"}
+                    </div>
+                }
+
+                <div className="flex justify-end">
+                  {seleccionoPuntoEnMapa ? (
+                    <div className="]" title="Iniciar proceso">
+                      <IconButtonContratos onClick={handleSiguienteContratacion}>
+                        <FaChevronCircleRight className="w-[3.5vh] h-[3.5vh]" />
+                      </IconButtonContratos>
+                    </div>
+                  )
+                    :
+                    <div className="w-[4vh] h-[4vh] flex justify-end">
+                      <IconButton onClick={handleBuscarTomas} title="Buscar tomas">
+                        <FaSearch className="w-[2.5vh] h-[2.5vh]" />
+                      </IconButton>
+                    </div>
+                  }
+                </div>
+
+              </div>
+
+
+              <div className='p-4'>
+                <Accordion collapsible className="w-full" type="multiple" defaultValue={["item-1", "item-2"]}>
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger>Tipo de toma</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <div className="text-sm font-medium mb-2 mt-2">Desarrolladora</div>
+                        <div className="ml-2">
+                          <Checkbox
+                            className="w-[2.8vh] h-[2.8vh]"
+                            checked={isCheckedPreContratadas}
+                            onCheckedChange={setIsCheckedPreContratadas}
+                          />
+                        </div>
+
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger>Código de toma</AccordionTrigger>
+                    <AccordionContent>
+                      <Input
+                        placeholder="Ingresa el código de toma"
+                        value={codigoToma}
+                        onChange={handleChangeCodigoToma}
+                      />
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
             </div>
+
+            <ContextMenuContent className="w-64">
+              <ContextMenuItem onClick={handleBuscarTomas}>
+                <IconButton>Buscar</IconButton>
+
+              </ContextMenuItem>
+              <ContextMenuItem onClick={handleLimpiarFiltros}>
+                <IconButton >Limpiar</IconButton>
+
+              </ContextMenuItem>
+
+            </ContextMenuContent>
+          </div>
         </div>
-
-        <div className="flex flex-col mt-6 w-full">
-          <div className="flex space-x-[16vh] text-lg font-semibold mt-4">
-            Estado de contratación
-            <div className="" title="Limpiar filtros">
-            <IconButton onClick={""}>
-              <LuFilterX />
-            </IconButton>
-          </div>
-          <div title="Buscar">
-            <IconButton>            
-              <FaSearch/>
-            </IconButton>
-            </div>
-          </div>
-          <hr className="border-t border-border my-1" />
-
-          <div className="grid grid-cols-2 gap-x-[10vh] mb-2">
-            <div className="flex items-center space-x-2">
-              <div className="text-sm font-medium mb-2 mt-2">Asignada</div>
-              <div className="ml-2">
-                <Checkbox className="w-[2.3vh] h-[2.3vh]"/>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <div className="text-sm font-medium mb-2 mt-2">No asignada</div>
-              <div className="ml-2">
-              <Checkbox className="w-[2.3vh] h-[2.3vh]"/>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <div className="text-sm font-medium mb-2 mt-2">Concluida</div>
-              <div className="ml-2">
-              <Checkbox className="w-[2.3vh] h-[2.3vh]"/>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </ContextMenuTrigger>
+    </ContextMenu>
   );
 };
 

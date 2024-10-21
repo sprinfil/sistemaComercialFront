@@ -15,7 +15,8 @@ import ZustandPuntoVenta from '../../contexts/ZustandPuntoVenta';
 function App() {
     const { user } = useStateContext();
     const [activeTab, setActiveTab] = useState("Punto de Venta");
-    const [cajaNombre, setCajaNombre] = useState(""); // Estado para almacenar el nombre de la caja
+    const [cajaNombre, setCajaNombre] = useState("");
+    const [nombreOperador, setNombreOperador] = useState(""); // Estado para almacenar el nombre de la caja
     const navigate = useNavigate();
     const { set_session_caja, session_caja } = ZustandPuntoVenta();
 
@@ -41,6 +42,11 @@ function App() {
         fetchCajaNombre(); // Llamada a la función para obtener el nombre de la caja
     }, []);
 
+    useEffect(() => {
+        setNombreOperador(session_caja.nombre_operador);
+        setCajaNombre(session_caja.caja_nombre)
+    }, [session_caja])
+
     const handleExitClick = () => {
         navigate("/dashboard");
     };
@@ -59,7 +65,7 @@ function App() {
     return (
         <div>
             <div className='bg-muted w-full h-[7vh] flex items-center px-2 relative border-b border-border'>
-                <a title='Modulo Principal' onClick={handleExitClick}>
+                <a title='Módulo Principal' onClick={handleExitClick}>
                     <Link to={"/dashboard"}>
                         <IconButton>
                             <ExitIcon className='w-[20px] h-[20px] rotate-180' />
@@ -72,7 +78,7 @@ function App() {
                         <FechaHora />
                     </nav>
                     <p>{cajaNombre}</p> {/* Mostrar el nombre de la caja */}
-                    <p>{user.name}</p>
+                    <p>{nombreOperador}</p>
                     <Avatar>
                         <AvatarImage src="https://github.com/shadcn.png" />
                         <AvatarFallback>CN</AvatarFallback>

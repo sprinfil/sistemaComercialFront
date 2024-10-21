@@ -58,11 +58,11 @@ export const columns: ColumnDef<Pago>[] = [
   },
   {
     accessorKey: "timbro",
-    header: "Timbro",
+    header: "Timbró",
   },
   {
     accessorKey: "metodo",
-    header: "Metodo",
+    header: "Método",
   },
   {
     accessorKey: "fecha_solicitud",
@@ -70,7 +70,7 @@ export const columns: ColumnDef<Pago>[] = [
   },
   {
     accessorKey: "fecha_actualizacion",
-    header: "Fecha Actualizacion",
+    header: "Fecha Actualización",
   },
   {
     accessorKey: "estado",

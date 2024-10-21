@@ -31,13 +31,13 @@ export const FiltrosMonitorCFDI = () => {
           <AccordionItem value="item-1">
             <AccordionTrigger>Información del timbre</AccordionTrigger>
             <AccordionContent>
-              Proximamente
+              Próximamente
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
             <AccordionTrigger>Información de Toma/Usuario</AccordionTrigger>
             <AccordionContent>
-              Proximamente
+              Próximamente
             </AccordionContent>
           </AccordionItem>
         </Accordion>

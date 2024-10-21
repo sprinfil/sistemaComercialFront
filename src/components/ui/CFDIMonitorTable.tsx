@@ -87,7 +87,7 @@ export function CFDIMonitorTable<TData, TValue>({
           </div>
 
           <div className="px-2">
-            <p>Timbro</p>
+            <p>Timbró</p>
             <Input
               placeholder="Timbro"
               value={(table.getColumn("timbro")?.getFilterValue() as string) ?? ""}
@@ -188,8 +188,8 @@ export function CFDIMonitorTable<TData, TValue>({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Accion</SelectLabel>
-                  <SelectItem value="timbrar">Mandar Correo</SelectItem>
+                  <SelectLabel>Acción</SelectLabel>
+                  <SelectItem value="timbrar">Enviar Correo</SelectItem>
                   <SelectItem value="cancelacion">Imprimir Timbre</SelectItem>
                 </SelectGroup>
               </SelectContent>
@@ -205,7 +205,7 @@ export function CFDIMonitorTable<TData, TValue>({
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
-              Previous
+              Anterior
             </Button>
             <Button
               variant="outline"
@@ -213,7 +213,7 @@ export function CFDIMonitorTable<TData, TValue>({
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
-              Next
+              Siguiente
             </Button>
           </div>
         </div>

@@ -98,7 +98,7 @@ export function BreadCrumbDetalleUsuario() {
               <li>
                 <Link to="/usuario/toma">
                   <p className="transition-all hover:text-[18px] duration-200 ml-4">
-                    Toma: {consultaNombreToma?.tomas[0]?.codigo_toma|| 'Nombre no disponible'}
+                    Toma: {toma?.codigo_toma|| 'Nombre no disponible'}
                   </p>
                 </Link>
               </li>

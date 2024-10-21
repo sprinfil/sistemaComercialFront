@@ -68,7 +68,7 @@ export const OperadoresOtIndividualComboBox = ({ field, form, name = "id_concept
     const [open, setOpen] = React.useState(false)
 
     return (
-        <div>
+        <div  className="w-full">
             <Popover>
                 <PopoverTrigger asChild>
                     <FormControl>
@@ -89,7 +89,7 @@ export const OperadoresOtIndividualComboBox = ({ field, form, name = "id_concept
                         </Button>
                     </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0 h-[300px]">
+                <PopoverContent className="w-full p-0 h-[300px] overflow-auto">
                     <Command>
                         <CommandInput placeholder="Buscar operador... " />
                         <CommandList>

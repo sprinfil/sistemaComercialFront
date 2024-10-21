@@ -61,7 +61,7 @@ export default function RolTable({setActiveTab}) {
     <div>
       <div onClick={() => { setAccion("crear"); setDetallesTab(); }}>
         <IconButton>
-          <div className='flex gap-2 items-center'> Agregar nuevo Rol<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
+          <div className='flex gap-2 items-center'> Agregar nuevo rol<PlusCircledIcon className='w-[20px] h-[20px]' /></div>
         </IconButton>
       </div>
       <DataTable columns={columns} data={roles} sorter='name' onRowClick={handleRowClick} />

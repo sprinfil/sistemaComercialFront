@@ -50,10 +50,10 @@ const ConceptoForm = () => {
     const form = useForm<z.infer<typeof conveniosSchema>>({
         resolver: zodResolver(conveniosSchema),
         defaultValues: {
-            id: 0,
-            nombre: "",
-            descripcion: "",
-            estado: false
+            id: convenio?.id || 0,
+            nombre: convenio?.nombre || "",
+            descripcion: convenio?.descripcion || "",
+            estado: convenio?.estado ||  false
         },
     })
 
@@ -319,7 +319,7 @@ const ConceptoForm = () => {
     return (
 
         <div className="overflow-auto">
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
+            <div className='flex h-[40px] items-center mb-[10px] rounded-sm'>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
                         {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nuevo convenio</p>}

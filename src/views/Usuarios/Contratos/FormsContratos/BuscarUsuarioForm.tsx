@@ -29,7 +29,7 @@ import { Pencil2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { TbFilterPlus } from "react-icons/tb";
 import { TiUserAdd } from "react-icons/ti";
 import IconButton from "../../../../components/ui/IconButton.tsx";
-
+import { ZustandFiltrosContratacion } from "../../../../contexts/ZustandFiltrosContratacion.tsx";
 
 interface BuscarUsuarioProps {
     navegacion: string;
@@ -46,14 +46,15 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     const [mostrarTablaTomaUsuario, setMostrarTablaTomaUsuario] = useState(false);
 
     const [filtroSeleccionado, setFiltroSeleccionado] = useState("");
-
+    const {setContratoLocalStorage} = ZustandFiltrosContratacion();
     //variables globales del zustand
     const { nombreBuscado, setNombreBuscado,
         nombreSeleccionado, setNombreSeleccionado,
         usuariosEncontrados, setUsuariosEncontrados,
-        accion, setAccion, setFindUserOrToma, findUserOrToma, setToma, setBooleanCodigoDeToma, toma
+        accion, setAccion, setFindUserOrToma, findUserOrToma, setToma, setBooleanCodigoDeToma, toma, setBuscarTomaAgregarLecturaMonitor
+    } = ZustandGeneralUsuario(); 
 
-    } = ZustandGeneralUsuario(); //obtener la ruta del componente breadCrumb
+    const {setBoolCrearUsuarioProcesoContratacion} = ZustandFiltrosContratacion();
 
     console.log("este es la accion pare " + accion);
     const navigate = useNavigate();
@@ -94,9 +95,10 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
         console.log(values);
         setLoading(true);
         setUsuariosEncontrados([]);
-
+        setContratoLocalStorage(false);
+        setBoolCrearUsuarioProcesoContratacion(false);
         const criterio = values.nombre.trim();
-
+       
         let endpoint = "";
 
         switch (values.filtro) {
@@ -150,6 +152,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                             setNombreBuscado(values.nombre);
                             setUsuariosEncontrados(results);
                             if (results.length === 1) {
+                                setBuscarTomaAgregarLecturaMonitor(true);
                                 if (tipoAccion === "verUsuarioDetalle") {
                                     navigate("/usuario/toma", { state: { contratoBuscarUsuario: results[0] } });
                                 } else if (tipoAccion === "crearContratacionUsuario") {
@@ -279,6 +282,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
             setmostrarTablaUsuario(true);
         } else if (numObject === 1) {
             setmostrarTablaUsuario(false);
+
         } else {
             setmostrarTablaUsuario(false);
         }
@@ -290,6 +294,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
     function handleNavigationCrearUsuario() {
 
         navigate('/CrearUsuario');
+        setBoolCrearUsuarioProcesoContratacion(true);
     }
 
     return (
@@ -317,7 +322,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                         <form onSubmit={form.handleSubmit(onSubmit)} className="">
                             <div className="flex space-x-2">
                                 <div className="w-[50vh]">
-                                    <p className="ml-1 mb-3 text-[13px]">Filtrar Por</p>
+                                    <p className="ml-1 mb-3 text-[13px]">Filtrar por</p>
                                     <FormField
                                         control={form.control}
                                         name="filtro"

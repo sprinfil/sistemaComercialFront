@@ -52,7 +52,6 @@ type OrdenDeTrabajo = {
 const OrdenDeTrabajoEncadenadasSchema = z.object({
     orden_trabajo_encadenadas: z.array(
         z.object({
-            id: z.number(),
             id_OT_Catalogo_encadenada: z.number().min(1, "La OT es requerida"),
         })
     ),
@@ -79,25 +78,20 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     const { idSeleccionadoConfiguracionOrdenDeTrabajo, accionGeneradaEntreTabs, setAccionGeneradaEntreTabs} = ZustandGeneralUsuario();
     const [control, setControl] = useState(false);
 
+    const [nombreConcepto, setNombreConcepto] = useState([]);
 
 
     console.log(control);
-
-
-
-
-
-
-
 
     const handleAddComponent = () => {
         const newId = totalAccionesComponente.length > 0 
             ? Math.max(...totalAccionesComponente.map(({ id }) => id)) + 1 
             : 1;
     
+        // Asegúrate de que el nuevo objeto tenga la estructura adecuada
         setTotalAccionesComponente(prevAcciones => [
             ...prevAcciones,
-            { id: newId, id_OT_Catalogo_encadenada: 0 }
+            { id: newId, id_OT_Catalogo_encadenada: '' } // Usa '' si necesitas un string vacío
         ]);
     };
 
@@ -164,7 +158,6 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
     resolver: zodResolver(OrdenDeTrabajoEncadenadasSchema),
     defaultValues: {
         orden_trabajo_encadenadas: totalAccionesComponente.map(item => ({
-        id: item.id,
         id_OT_Catalogo_encadenada: 0,
       })),
     },
@@ -172,15 +165,23 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
 
   useEffect(() => {
     if (accionGeneradaEntreTabs === "editar") {
-        form.reset({
-            orden_trabajo_encadenadas: totalAccionesComponente.map(item => ({
-                id: item.id,
-                id_OT_Catalogo_encadenada: 0, // O el valor predeterminado adecuado
-            })),
-        });
-    }
-}, [totalAccionesComponente, accion]);
+        const valoresActuales = form.getValues('orden_trabajo_encadenadas');
 
+        
+        const nuevosValores = totalAccionesComponente.map(item => ({
+            id_OT_Catalogo_encadenada: 0, 
+        }));
+
+        const todosLosValores = [...valoresActuales, ...nuevosValores];
+
+        const valoresFiltrados = todosLosValores.filter(cargo => cargo.id_OT_Catalogo_encadenada !== 0);
+
+        form.reset({ orden_trabajo_encadenadas: valoresFiltrados });
+    }
+}, [totalAccionesComponente, accionGeneradaEntreTabs]);
+
+
+console.log(form.getValues());
     const onSubmit = async (values: OrdenDeTrabajoEncadenadas) => {
         console.log(values);
 
@@ -298,8 +299,14 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                 ordenDeTrabajo.ordenes_trabajo_encadenadas.map(item => ({
                     id: item.id,
                     id_OT_Catalogo_encadenada: item.id_OT_Catalogo_encadenada,
+                    OT_Encadenada: item.OT_Encadenada.nombre
                 })) : [];
     
+              // Obtener nombres de conceptos
+                    const nombresConceptos = ordenTrabajoEncadenadas.map(encadenada => encadenada.OT_Encadenada || 'Nombre no disponible');
+
+                    setNombreConcepto(nombresConceptos);
+
             // Manejo de la acción "ver"
             if (accionGeneradaEntreTabs === "ver") {
                 setControl(true);
@@ -395,21 +402,49 @@ const DisparaOtraOrdenDeTrabajoForm = () => {
                                     <div className="flex items-center space-x-2">
                                         <div className="w-full">
                                          
+                                          
+
+                                        {
+                                            accionGeneradaEntreTabs == "editar" ? 
                                             <Controller
-                                                name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`}
-                                                control={form.control}
-                                                render={({ field }) => (
+                                            name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`}
+                                            control={form.control}
+                                            render={({ field }) => (
+                                                <DisparaOtraOTComboBox form={form} field={field} name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`} 
+                                                setCargoSeleccionado={setConceptoSeleccionado} 
+                                                disabled={control}
+                                                defaultValue={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`} />
 
-                                                    
-                                                    <DisparaOtraOTComboBox form={form} field={field} name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`} setCargoSeleccionado={setConceptoSeleccionado} disabled={control}/>
+                                            )}
+                                        />
 
-                                                )}
-                                            />
+                                            :
+
+                                            <Controller
+                                            name={`orden_trabajo_encadenadas.${index}.id_OT_Catalogo_encadenada`}
+                                            control={form.control}
+                                            render={({ field: { value, ...rest } }) => ( // Desestructuramos field
+                                                <Input
+                                                readOnly
+                                                placeholder=""
+                                                value={nombreConcepto[index] || ""} // Usa el nombre del concepto aquí
+                                                {...rest} // Pasa el resto de las props sin incluir value
+                                              />
+                                            )}
+                                        />
+                                            
+
+                                        }
+
+
+
+
                                         </div>
                                         <FormMessage />
-                                        <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
+                                        {accionGeneradaEntreTabs == "editar" &&  <Button type="button" onClick={() => handleRemoveComponent(accion.id)} variant="outline">
                                             <TrashIcon className="w-4 h-4" />
-                                        </Button>
+                                        </Button>}
+                                       
                                     </div>
                                 </div>
                             )

@@ -13,11 +13,13 @@ import { BreadCrumbDetalleUsuario } from '../../../components/ui/breadCrumbDetal
 import { useBreadcrumbStore } from '../../../contexts/ZustandGeneralUsuario';
 import { ZustandGeneralUsuario } from '../../../contexts/ZustandGeneralUsuario';
 import Loader from '../../../components/ui/Loader';
+import { MultasUsuario } from './VistasDetalleUsuario/MultasUsuario';
+import { DoubleContainer, Seccion1, Seccion2 } from '../../../components/ui/DoubleContainer';
 
 const DetalleUsuario: React.FC = () => {
   const { pantalla } = useStateContext();
   const location = useLocation();
-  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, tomasRuta, usuariosRecuperado} = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
+  const { usuarioObtenido, setUsuarioObtenido, setUsuariosEncontrados, usuariosEncontrados, tomasRuta, usuariosRecuperado } = ZustandGeneralUsuario(); // obtener la ruta del componente breadCrumb
   const { mostrarSiguiente, setMostrarSiguiente } = useBreadcrumbStore();
 
 
@@ -28,7 +30,7 @@ const DetalleUsuario: React.FC = () => {
     setMostrarSiguiente(false);
   }, [usuariosRecuperado, usuariosEncontrados]);
 
-  
+
 
   const [mostrarPantalla, setMostrarPantalla] = useState(pantalla);
   const [accion, setAccion] = useState<string | undefined>();
@@ -48,21 +50,25 @@ const DetalleUsuario: React.FC = () => {
         },
         {
           nombre: "Fiscal",
-          pantalla: <InformacionFiscal/>
+          pantalla: <InformacionFiscal />
         },
         {
           nombre: "Ordenes de trabajo",
-          pantalla: <CrearOrdenDeTrabajo/>
+          pantalla: <CrearOrdenDeTrabajo />
         },
         {
           nombre: "Tomas",
-          pantalla: <TomasUsuario/>
+          pantalla: <TomasUsuario />
         },
         {
-          nombre: "convenio",
-          pantalla: <Convenio/>
+          nombre: "Convenio",
+          pantalla: <Convenio />
         },
-        
+        {
+          nombre: "Multas",
+          pantalla: <MultasUsuario />
+        },
+
       ]
     }
   ];
@@ -70,14 +76,13 @@ const DetalleUsuario: React.FC = () => {
   return (
     <>
       <ContextProvider>
-        <div className='max-h-[70vh]'>
+        <div className='h-full'>
           {/* Breadcrumb en la parte superior */}
           <div className=''>
             <BreadCrumbDetalleUsuario />
           </div>
 
-          {/* Contenido principal */}
-          <div className='flex gap-2 px-2'>
+          {/* <div className='flex gap-2 px-2'>
             <div className='flex-shrink-0'>
               <OcultarTableDetalleUsuario accion={accion}>
                 <MenuLateral options={options} context={useStateContext} />
@@ -86,7 +91,16 @@ const DetalleUsuario: React.FC = () => {
             <div className='w-full'>
               <PantallaDetalleUsuario />
             </div>
-          </div>
+          </div> */}
+
+          <DoubleContainer>
+            <Seccion1 size={"sm"}>
+              <MenuLateral options={options} context={useStateContext} />
+            </Seccion1>
+            <Seccion2>
+              <PantallaDetalleUsuario />
+            </Seccion2>
+          </DoubleContainer>
         </div>
       </ContextProvider>
     </>

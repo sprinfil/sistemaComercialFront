@@ -27,11 +27,27 @@ import { ComboBoxActivoInactivo } from "../ui/ComboBox.tsx";
 import Modal from "../ui/Modal.tsx";
 import { useToast } from "@/components/ui/use-toast"; //IMPORTACIONES TOAST
 import { ToastAction } from "@/components/ui/toast"; //IMPORTACIONES TOAST
+import { ZustandFiltrosContratacion } from "../../contexts/ZustandFiltrosContratacion.tsx";
+import { useNavigate } from "react-router-dom";
+
+
 const CrearUsuarioMoralForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [abrirInput, setAbrirInput] = useState(false);
     const { toast } = useToast()
+
+    const {boolCrearUsuarioProcesoContratacion, setObtenerIdUsuarioRecienCreado, setObtenerNombreUsuario, setBoolCrearUsuarioProcesoContratacion} =  ZustandFiltrosContratacion();
+
+    function successToastCreado() {
+        toast({
+            title: "¡Éxito!",
+            description: "El usuario se ha creado correctamente",
+            variant: "success",
+    
+        })
+    }
+    const navigate = useNavigate();
 
     const form = useForm<z.infer<typeof crearUsuarioMoralSchema>>({
         resolver: zodResolver(crearUsuarioMoralSchema),
@@ -39,27 +55,50 @@ const CrearUsuarioMoralForm = () => {
             id: 0,
             nombre: "",
             nombre_contacto: "",
-            telefono:"",
+            telefono: "",
             rfc: "",
             correo: "",
         },
     });
 
+    
+    const handleNavegarProcesoContratacion = () => 
+        {
+            navigate("/Crear/Contrato/Usuario");
+        }
+
+        console.log(boolCrearUsuarioProcesoContratacion);
+
+
     async function onSubmit(values: z.infer<typeof crearUsuarioMoralSchema>) {
         setLoading(true);
         setErrors({});
         console.log('Valores enviados:', values);
-    
+
         try {
             const response = await axiosClient.post('/usuarios/createmoral', values);
             console.log('Usuario creado:', response.data);
             form.reset(); // Limpiar el formulario
+            console.log('Usuario creado:', response);
+            const idUsuario = response.data.id
+            const nombre = response.data.nombre;
+           if(boolCrearUsuarioProcesoContratacion)
+            {
+                setObtenerIdUsuarioRecienCreado(idUsuario);
+                setObtenerNombreUsuario(nombre);
+                successToastCreado();
+                handleNavegarProcesoContratacion();
+            }
+            else
+            {
+                successToastCreado();
+
+            }
             // Aquí puedes realizar alguna acción adicional, como redirigir al usuario o mostrar un mensaje de éxito
         } catch (response) {
             console.log(response.response.data.message);
-            
-            if(response.response.data.message == "The rfc has already been taken.")
-            {
+
+            if (response.response.data.message == "The rfc has already been taken.") {
                 toast({
                     title: "Error",
                     description: "La RFC ya existe.",
@@ -67,35 +106,40 @@ const CrearUsuarioMoralForm = () => {
                     action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                 })
             }
-            if(response.response.data.message === "The correo has already been taken.")
+            if (response.response.data.message === "The correo has already been taken.")
                 toast({
                     title: "Error",
                     description: "El correo ya existe.",
                     variant: "destructive",
                     action: <ToastAction altText="Try again">Aceptar</ToastAction>,
                 })
-           
+
         } finally {
             setLoading(false);
         }
+        setBoolCrearUsuarioProcesoContratacion(false);
+
     }
 
     return (
-        
+
         <div className="overflow-auto">
-            <div className='flex h-[40px] items-center mb-[10px] bg-card rounded-sm'>
-                <div className='h-[20px] w-full flex items-center justify-end '>
-                    <div className="mb-[10px] h-full w-full mx-4">
-                        <p className="text-[20px] font-medium">Crear nuevo usuario moral</p>
-                    </div>
+            <div className=''>
+                <div className=''>
+                  
                 </div>
             </div>
             <div className="py-[20px] px-[10px] ">
                 {errors.general && <Error errors={errors.general} />}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                        <div className="py-[40px] px-[10px]  w-full mb-5 rounded-md border border-border  relative">
-                            <div className="w-full p-5">
+                        
+                    <div className="border p-9 overflow-auto">
+                    <h1 className="text-3xl mb-[7vh]">
+                                Crear nuevo usuario moral
+                            </h1>
+                            <div className="w-full">
+                                <div className="">
                                 <FormField
                                     control={form.control}
                                     name="nombre"
@@ -106,12 +150,14 @@ const CrearUsuarioMoralForm = () => {
                                                 <Input placeholder="Escribe el nombre del usuario" {...field} />
                                             </FormControl>
                                             <FormDescription>
-                                                
+
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
+                                </div>
+                                <div className="mt-5">
                                 <FormField
                                     control={form.control}
                                     name="nombre_contacto"
@@ -122,15 +168,16 @@ const CrearUsuarioMoralForm = () => {
                                                 <Input placeholder="Escribe el nombre de contacto" {...field} />
                                             </FormControl>
                                             <FormDescription>
-                                                
+
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                            
-                               
-                               
+                                </div>
+                          
+
+                                <div className="mt-5">
                                 <FormField
                                     control={form.control}
                                     name="rfc"
@@ -138,16 +185,19 @@ const CrearUsuarioMoralForm = () => {
                                         <FormItem>
                                             <FormLabel>RFC</FormLabel>
                                             <FormControl>
-                                                <Input  placeholder="Escribe el RFC" {...field} />
+                                                <Input placeholder="Escribe el RFC" {...field} />
                                             </FormControl>
                                             <FormDescription>
-                                                
+
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                 <FormField
+                                </div>
+
+                               <div className="mt-5">
+                               <FormField
                                     control={form.control}
                                     name="telefono"
                                     render={({ field }) => (
@@ -157,37 +207,44 @@ const CrearUsuarioMoralForm = () => {
                                                 <Input placeholder="Escribe telefono del usuario" {...field} type='number' />
                                             </FormControl>
                                             <FormDescription>
-                                                
+
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
+                               </div>
+                          <div className="mt-5">
+                          <FormField
                                     control={form.control}
                                     name="correo"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Correo electronico</FormLabel>
                                             <FormControl>
-                                                <Input  placeholder="Escribe el correo electronico" {...field} type='email'/>
+                                                <Input placeholder="Escribe el correo electronico" {...field} type='email' />
                                             </FormControl>
                                             <FormDescription>
-                                               
+
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
+                          </div>
+                          
 
-                         </div>
+                            </div>
 
                             {loading && <Loader />}
-                            <Button type="submit" className="ml-[187vh] w-[20vh]">Guardar</Button>
+                            <div className="flex justify-end mt-10">
+                            <Button type="submit" className="w-[20vh]">Guardar</Button>
+
+                                </div>
 
                         </div>
                         <div className=" w-full flex justify-normal mt-4">
-                        </div>   
+                        </div>
                     </form>
                 </Form>
             </div>

@@ -35,7 +35,7 @@ const ModalGenerarOrdenDeTrabajo = ({
   const {
     usuariosEncontrados,
     setUsuariosEncontrados,
-    idSeleccionadoGenerarOrdenDETrabajoToma,
+    idSeleccionadoGenerarOrdenDETrabajoToma,setIdSeleccionadoGenerarOrdenDETrabajoToma
   } = ZustandGeneralUsuario();
 
   // console.log(JSON.stringify(usuariosEncontrados));
@@ -143,6 +143,7 @@ const ModalGenerarOrdenDeTrabajo = ({
     }
   };
 
+  console.log(idSeleccionadoGenerarOrdenDETrabajoToma);
   const GenerarOrdenDeTrabajoMasivaToma = async () => {
     setLoadingTableMonitor(true);
     // Mapea el arreglo para crear el objeto con id_toma y id_orden_trabajo_catalogo
@@ -197,7 +198,7 @@ const ModalGenerarOrdenDeTrabajo = ({
           )}
 
           <AlertDialogTitle>
-            <div className="text-xs text-gray-600">
+            <div className="text-lg text-gray-600">
               Selecciona una orden de trabajo para la toma.
             </div>
           </AlertDialogTitle>
@@ -207,18 +208,26 @@ const ModalGenerarOrdenDeTrabajo = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setIsOpen(false)}>
+          <AlertDialogCancel onClick={() => {setIsOpen(false); setIdSeleccionadoGenerarOrdenDETrabajoToma(0)}}>
             Cancelar
           </AlertDialogCancel>
-          {tipoOperacion == "masiva" ? (
-            <AlertDialogAction onClick={GenerarOrdenDeTrabajoMasivaToma}>
-              Crear orden de trabajo masiva
-            </AlertDialogAction>
-          ) : (
-            <AlertDialogAction onClick={GenerarOrdenDeTrabajoToma}>
-              Crear orden de trabajo
-            </AlertDialogAction>
-          )}
+          {
+            idSeleccionadoGenerarOrdenDETrabajoToma == 0 ?
+
+            <div className="text-lg"></div>
+            :
+            tipoOperacion == "masiva" ? (
+              <AlertDialogAction onClick={GenerarOrdenDeTrabajoMasivaToma}>
+                Crear orden de trabajo masiva
+              </AlertDialogAction>
+            ) : (
+              <AlertDialogAction onClick={GenerarOrdenDeTrabajoToma}>
+                Crear orden de trabajo
+              </AlertDialogAction>
+            )
+            
+          }
+          
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

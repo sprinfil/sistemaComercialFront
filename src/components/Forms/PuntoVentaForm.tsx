@@ -198,8 +198,6 @@ const PuntoVentaForm = () => {
   };
 
   const handleCargoSelect = (cargo, entidad = null, busqueda = false, tipo = "") => {
-
-
     setSelectedCargos(prevSelectedCargos => {
       let newCargo = {};
       let entidad_temp;
@@ -346,7 +344,6 @@ const PuntoVentaForm = () => {
         }
       }
     });
-
   };
 
   function quitarElementos(arreglo, elementosAQuitar) {
@@ -453,6 +450,7 @@ const PuntoVentaForm = () => {
             setdataUser={setDataToma}
             cerrarForm={booleanCerrarModalFiltros}
           />
+
           <ModalCorteCaja
             trigger={
               <IconButton title="Corte de caja">
@@ -592,9 +590,9 @@ const PuntoVentaForm = () => {
                                 <div className="mb-2">{dataToma?.clave_catastral}</div>
                                 <div className="mb-2">{dataToma?.estatus}</div>
                                 <div className="mb-2">{dataToma?.calle?.nombre}</div>
-                                <div className="mb-2">{dataToma?.entre_calle_1}</div>
-                                <div className="mb-2">{dataToma?.entre_calle_2}</div>
-                                <div className="mb-2">{dataToma?.colonia.nombre}</div>
+                                <div className="mb-2">{dataToma?.entre_calle_1?.nombre}</div>
+                                <div className="mb-2">{dataToma?.entre_calle_2?.nombre}</div>
+                                <div className="mb-2">{dataToma?.colonia?.nombre}</div>
                                 <div className="mb-2">{dataToma?.codigo_postal}</div>
                                 <div className="mb-2">{dataToma?.localidad}</div>
                                 <div className="mb-2">{dataToma?.tipo_servicio}</div>
@@ -620,56 +618,56 @@ const PuntoVentaForm = () => {
                         <div className="grid grid-cols-2 gap-2 text-sm leading-tight">
                           <div className="font-semibold">Usuario:</div>
                           <div> {dataCajaUser && dataCajaUser.length > 0 ? (
-                            <div>{dataCajaUser[0].nombre}</div>
+                            <div>{dataCajaUser[0]?.nombre}</div>
                           ) : (
                             <div></div>
                           )}
                           </div>
                           <div className="font-semibold">Apellido paterno:</div>
                           <div> {dataCajaUser && dataCajaUser.length > 0 ? (
-                            <div>{dataCajaUser[0].apellido_paterno}</div>
+                            <div>{dataCajaUser[0]?.apellido_paterno}</div>
                           ) : (
                             <div></div>
                           )}
                           </div>
                           <div className="font-semibold">Apellido materno:</div>
                           <div> {dataCajaUser && dataCajaUser.length > 0 ? (
-                            <div>{dataCajaUser[0].apellido_materno}</div>
+                            <div>{dataCajaUser[0]?.apellido_materno}</div>
                           ) : (
                             <div></div>
                           )}
                           </div>
                           <div className="font-semibold">CURP:</div>
                           <div> {dataCajaUser && dataCajaUser.length > 0 ? (
-                            <div>{dataCajaUser[0].curp}</div>
+                            <div>{dataCajaUser[0]?.curp}</div>
                           ) : (
                             <div></div>
                           )}
                           </div>
                           <div className="font-semibold">RFC:</div>
                           <div> {dataCajaUser && dataCajaUser.length > 0 ? (
-                            <div>{dataCajaUser[0].rfc}</div>
+                            <div>{dataCajaUser[0]?.rfc}</div>
                           ) : (
                             <div></div>
                           )}
                           </div>
                           <div className="font-semibold">Nombre de contacto:</div>
                           <div> {dataCajaUser && dataCajaUser.length > 0 ? (
-                            <div>{dataCajaUser[0].nombre_contacto}</div>
+                            <div>{dataCajaUser[0]?.nombre_contacto}</div>
                           ) : (
                             <div></div>
                           )}
                           </div>
                           <div className="font-semibold">Correo:</div>
                           <div> {dataCajaUser && dataCajaUser.length > 0 ? (
-                            <div>{dataCajaUser[0].correo}</div>
+                            <div>{dataCajaUser[0]?.correo}</div>
                           ) : (
                             <div></div>
                           )}
                           </div>
                           <div className="font-semibold">Telefono:</div>
                           <div> {dataCajaUser && dataCajaUser.length > 0 ? (
-                            <div>{dataCajaUser[0].telefono}</div>
+                            <div>{dataCajaUser[0]?.telefono}</div>
                           ) : (
                             <div></div>
                           )}
@@ -738,7 +736,7 @@ const PuntoVentaForm = () => {
                                 <div className="mb-2">{dataCajaUser[0]?.calle?.nombre}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.entre_calle_1}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.entre_calle_2}</div>
-                                <div className="mb-2">{dataCajaUser[0]?.colonia.nombre}</div>
+                                <div className="mb-2">{dataCajaUser[0]?.colonia?.nombre}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.codigo_postal}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.localidad}</div>
                                 <div className="mb-2">{dataCajaUser[0]?.tipo_servicio}</div>
@@ -812,7 +810,7 @@ const PuntoVentaForm = () => {
                                   <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} className="w-[30px] h-[30px]" />
                                 </td>
                                 <td className="px-2 py-4 whitespace-normal text-sm  break-words">
-                                  {cargo.nombre}
+                                  {cargo?.nombre}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                   ${(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -841,7 +839,7 @@ const PuntoVentaForm = () => {
                   {cargos_usuario && <>
                     <Accordion type="single" collapsible className="w-full" defaultValue="">
                       <AccordionItem value="item-1">
-                        <AccordionTrigger>Cargos {dataCajaUser[0].nombre}</AccordionTrigger>
+                        <AccordionTrigger>Cargos {dataCajaUser[0]?.nombre}</AccordionTrigger>
                         <AccordionContent>
                           <>
                             <div className="relative">
@@ -891,7 +889,7 @@ const PuntoVentaForm = () => {
                                           <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} className="w-[30px] h-[30px]" />
                                         </td>
                                         <td className="px-2 py-4 whitespace-normal text-sm  break-words">
-                                          {cargo.nombre}
+                                          {cargo?.nombre}
                                         </td>
                                         <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                           ${parseFloat(cargo.monto)}
@@ -972,7 +970,7 @@ const PuntoVentaForm = () => {
                                                 <input type="checkbox" checked={selectedCargos.some(c => c.id === cargo.id)} className="w-[30px] h-[30px]" />
                                               </td>
                                               <td className="px-2 py-4 whitespace-normal text-sm  break-words">
-                                                {cargo.nombre}
+                                                {cargo?.nombre}
                                               </td>
                                               <td className="px-2 py-4 whitespace-nowrap text-sm ">
                                                 ${parseFloat(cargo.monto)}
@@ -1155,13 +1153,13 @@ const PuntoVentaForm = () => {
                   {selectedCargos.map((cargo, index) => (
                     <tr key={index}>
                       <td className="px-2 py-4 whitespace-normal text-sm  break-words">
-                        {cargo.nombre}
+                        {cargo?.nombre}
                       </td>
                       <td>
                         {cargo?.entidad}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap text-sm ">
-                        ${(parseFloat(cargo.monto_pendiente)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        ${(parseFloat(cargo?.monto_pendiente || cargo?.monto)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                       <td className="px-2 py-4 whitespace-nowrap text-sm ">
                         {cargo.concepto.prioridad_abono}
