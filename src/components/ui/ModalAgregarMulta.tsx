@@ -179,7 +179,7 @@ const {usuariosEncontrados} = ZustandGeneralUsuario();
               <MultasComboBox onSelect={setSeleccionado}/>
               </div>
               <div className="text-xl mt-5">
-                Selecciona un operador
+                Selecciona un inspector
               </div>
               <div className="mt-5 mb-10">
               <OperadorParaHacerLaMulta onSelect={setOperadorSeleccionado}/>
