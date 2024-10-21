@@ -49,6 +49,8 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const [montoConveniado, setMontoConveniado] = useState<number>(0);
   const [valorAnteriorPagoInicial, setValorAnteriorPagoInicial] = useState(pagoInicialPesos);
   const [pagoInicialValido, setPagoInicialValido] = useState(true); 
+  const [errorMensaje, setErrorMensaje] = useState('');
+
 
 
   const { toast } = useToast()
@@ -64,29 +66,40 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
     })
 }
 
-  useEffect(() => {
+useEffect(() => {
+  const fetchConvenios = async () => {
     setLoading(true);
-    axiosClient.get('/Convenio')
-      .then(({ data }) => {
-        console.log(data.data)
-        setConvenios(data.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError('Error al obtener los convenios.');
-        console.error('API Error:', err);
-        setLoading(false);
+    try {
+      // Usa params en la URL
+      const { data } = await axiosClient.get('/Convenio/buscarConveniosAplicablesTipoToma', {
+        params: {
+          id_toma: usuariosEncontrados[0].tomas[0].id // Aquí obtienes dinámicamente el id_toma
+        }
       });
-  }, []);
+      console.log(data);
+      setConvenios(data);
+    } catch (err) {
+      setError('Error al obtener los convenios aplicables.');
+      console.log(usuariosEncontrados[0].tomas[0].id); // para depurar
+      console.error('API Error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchConvenios();
+}, [usuariosEncontrados]); // Asegúrate de pasar usuariosEncontrados como dependencia si es necesario
+
+
 
   const handleRowClick = (convenio: any) => {
     setSelectedConvenio(convenio);
-    setPagoInicial(convenio.pago_inicial);
+    setPagoInicial(convenio.origen.pago_inicial);
 
     axiosClient.post("/Convenio/BuscarConceptosConveniables", {
       tipo: "toma", 
       id: usuariosEncontrados[0].tomas[0].id, 
-      id_convenio_catalogo: convenio.id 
+      id_convenio_catalogo: convenio.origen.id 
     })
       .then(({ data }) => {
         const filteredCargos = data.filter((cargo: any) => ({
@@ -94,6 +107,8 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
           aplicable: cargo.aplicable,
           id: cargo.id,
           monto: cargo.monto_pendiente,
+          rango_minimo: cargo.rango_minimo,
+          rango_maximo: cargo.rango_maximo,
         }));
         setCargosConveniables(filteredCargos);
         setCargosSeleccionados(filteredCargos)
@@ -136,7 +151,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
 
         // Calcular el pago inicial en pesos basado en el convenio
         const totalSeleccionados = calcularTotalSeleccionados();
-        const pagoInicialCalculado = (totalSeleccionados * (selectedConvenio?.pago_inicial || 0)) / 100;
+        const pagoInicialCalculado = (totalSeleccionados * (selectedConvenio?.origen.pago_inicial || 0)) / 100;
         setPagoInicialCalculado(pagoInicialCalculado); // Guardar el monto calculado del pago inicial
     }
 };
@@ -161,7 +176,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
       setPorcentajeConveniado(pagoFormateado); // Guardar el porcentaje
 
       // Validar si el pago inicial es menor que el porcentaje requerido del convenio
-      if (pagoFormateado < (selectedConvenio?.pago_inicial || 0)) {
+      if (pagoFormateado < (selectedConvenio?.oreigen.pago_inicial || 0)) {
         setPagoInicialValido(false); // Mostrar advertencia si es menor
       } else {
         setPagoInicialValido(true); // Ocultar advertencia si es válido
@@ -325,7 +340,7 @@ return (
             {selectedConvenio && (
               <div className="mt-4 ">
                 <h3 className="font-medium">Resumen:</h3>
-                <p><strong>Convenio: </strong>{selectedConvenio.nombre}</p>
+                <p><strong>Convenio: </strong>{selectedConvenio.origen.nombre}</p>
                 <div>
                 {/* Mostrar mensaje de advertencia si el pago inicial no es válido */}
                 {!pagoInicialValido && (
@@ -334,7 +349,7 @@ return (
                   </p>
                 )}
               </div>
-                <p>Pago inicial minimo: {selectedConvenio.pago_inicial ? `%${selectedConvenio.pago_inicial}` : 'No requiere'} = ${Math.round(pagoInicialPesos)}</p>
+                <p>Pago inicial minimo: {selectedConvenio.origen.pago_inicial ? `%${selectedConvenio.origen.pago_inicial}` : 'No requiere'} = ${Math.round(pagoInicialPesos)}</p>
                 <p><strong>Cargos Conveniados:</strong></p>
                 <ul>
                   
@@ -379,8 +394,12 @@ return (
                 <AccordionContent className="max-h-[70vh] overflow-y-auto">
                 {convenios.length > 0 ? (
                   convenios.map((convenio: any) => {
+                    // Verifica que el objeto `origen` exista
+                    const origen = convenio.origen || {};
+
                     console.log(convenio); // Para verificar los convenios y su estructura
-                    console.log('Pago inicial:', convenio.pago_inicial); 
+                    console.log('Pago inicial:', origen.pago_inicial); // Accede al pago_inicial dentro de origen
+
                     return (
                       <div
                         key={convenio.id}
@@ -390,15 +409,16 @@ return (
                         onClick={() => handleRowClick(convenio)}
                       >
                         {/* Mostrar el nombre del convenio */}
-                        <p>{convenio.nombre}</p>
+                        <p>{origen.nombre || 'Nombre no disponible'}</p>
                         {/* Mostrar el pago inicial del convenio */}
-                        <p><strong>Pago Inicial:</strong> {convenio.pago_inicial ? `%${convenio.pago_inicial}` : 'No requiere'}</p>
+                        <p><strong>Pago Inicial:</strong> {origen.pago_inicial ? `$${origen.pago_inicial}` : 'No requiere'}</p>
                       </div>
                     );
                   })
                 ) : (
                   <p className="text-center">No hay convenios disponibles.</p>
                 )}
+
 
 
                 </AccordionContent>
@@ -447,15 +467,36 @@ return (
                           <td className="px-4 py-2">
                             <Input
                               type="number"
-                              
                               onChange={(e) => {
                                 const value = e.target.value;
                                 setmontoBonificado(value === '' ? 0 : Number(value));
+
+                                // Verifica si el convenio seleccionado tiene rango_minimo y rango_maximo
+                                if (selectedConvenio?.rango_minimo && selectedConvenio?.rango_maximo) {
+                                  const fueraDeRango =
+                                    Number(value) < Number(selectedConvenio.rango_minimo) ||
+                                    Number(value) > Number(selectedConvenio.rango_maximo);
+
+                                  // Si el valor está fuera de rango, se muestra un mensaje de error
+                                  setErrorMensaje(fueraDeRango ? 'El monto está fuera del rango permitido.' : '');
+                                } else {
+                                  // Si no hay rango_minimo o rango_maximo, no muestra mensaje de error
+                                  setErrorMensaje('');
+                                }
                               }}
                               className="border p-1"
                               disabled={tipoMonto !== '$'}
                             />
+
+                            {/* Mostrar mensaje en rojo si está fuera de rango */}
+                            {errorMensaje && (
+                              <p className="text-red-500 text-xs mt-1">
+                                {errorMensaje}
+                              </p>
+                            )}
                           </td>
+
+
                           <td className="px-4 py-2">
                             <Input
                               type="number"
