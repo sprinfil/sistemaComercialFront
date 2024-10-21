@@ -48,15 +48,15 @@ export function OperadorParaHacerLaMulta({ onSelect }) {
         >
           {value
             ? multas.find((multa) => multa.id === value)?.nombre 
-            : "Selecciona un operador..."}
+            : "Selecciona un inspector..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0 max-h-[40vh] overflow-y-auto">
         <Command className="">
-          <CommandInput placeholder="Buscar operador..." />
+          <CommandInput placeholder="Buscar inspector..." />
           <CommandList>
-            <CommandEmpty>Operador no encontrado.</CommandEmpty>
+            <CommandEmpty>Inspector no encontrado.</CommandEmpty>
             <CommandGroup>
               {multas.map((multa) => (
                 <CommandItem

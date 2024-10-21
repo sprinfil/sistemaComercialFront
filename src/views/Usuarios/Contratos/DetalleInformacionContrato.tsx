@@ -157,10 +157,10 @@ export const DetalleInformacionContrato = () => {
 };
 
 //PARA PODER MOSTRAR EL MAPA
-const apiKey = 'AIzaSyAnqFPxn8eq_QFwi9HES_LbnyuNmnhf2rA'; //API KEY
-const lat = contratacionConvertido?.coordenada[0]; //LATITUD
-const lng = contratacionConvertido?.coordenada[1];  //LONGITUD
-const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&zoom=19&q=${lat},${lng}`;
+// const apiKey = 'AIzaSyAnqFPxn8eq_QFwi9HES_LbnyuNmnhf2rA'; //API KEY
+// const lat = contratacionConvertido?.coordenada[0]; //LATITUD
+// const lng = contratacionConvertido?.coordenada[1];  //LONGITUD
+// const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&zoom=19&q=${lat},${lng}`;
 
 console.log(verMapa);
   return (
@@ -425,7 +425,7 @@ console.log(verMapa);
 
           {/**AQUI MUESTRA EL MAPA */}
 
-            {
+            {/* {
               verMapa && !mostrarBoton &&
               <div>
                 <iframe
@@ -439,7 +439,7 @@ console.log(verMapa);
 
                   </div>
 
-            }
+            } */}
      
 
 
