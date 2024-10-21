@@ -54,7 +54,7 @@ const ModalDetalleMulta = ({open, setIsOpen, selected_multa}) => {
 
   return (
     <AlertDialog open={open} onOpenChange={setIsOpen}>
-    <AlertDialogContent className="max-w-[190vh] h-[40vh]">
+    <AlertDialogContent className="max-w-[190vh] overflow-auto">
       <AlertDialogHeader>
         <AlertDialogTitle>
          Detalle de la multa
