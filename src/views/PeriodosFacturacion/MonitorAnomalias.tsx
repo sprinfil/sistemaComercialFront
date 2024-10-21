@@ -10,22 +10,11 @@ import Loader from '../../components/ui/Loader.tsx';
 import { Skeleton } from '../../components/ui/skeleton.tsx';
 
 export const MonitorAnomalias = ({ detalle }) => {
-  const [data, setData] = useState();
-  const [loading, setLoading] = useState(true);
+  
+  const [data, setData] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
   getTomasPorPeriodo(setData, setLoading, detalle?.id);
-
-  // if (loading) {
-  //   return (
-  //     <>
-  //       {/* <p><Loader/></p> */}
-  //       <div className='flex flex-grow gap-4 h-full relative'>
-  //         <div className="w-[30%] h-full "><Skeleton className='w-full h-full'></Skeleton></div>
-  //         <div className="w-[70%] h-full "><Skeleton className='w-full h-full'></Skeleton></div>
-  //       </div>
-  //     </>
-  //   )
-
-  // }
 
   return (
     <>

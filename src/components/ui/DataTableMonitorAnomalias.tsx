@@ -51,6 +51,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getTomasPorPeriodo } from "../../lib/Services/MonitorAnomaliaService";
+import { EyeOpenIcon } from "@radix-ui/react-icons";
 
 export const columns = [
   {
@@ -106,7 +107,7 @@ export const columns = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="text-center">{}</div>,
+    cell: ({ row }) => <div className="text-center">{ }</div>,
   },
   {
     accessorKey: "tipoAnomalia",
@@ -121,7 +122,7 @@ export const columns = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="text-center">{}</div>,
+    cell: ({ row }) => <div className="text-center">{ }</div>,
   },
   {
     accessorKey: "consumo",
@@ -136,7 +137,20 @@ export const columns = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="text-center">{} m3</div>,
+    cell: ({ row }) => {
+      console.log(row);
+      const data: Object = row.original;
+      let formatted: String = "";
+      if (data?.consumo != null) {
+        formatted = data?.consumo?.consumo + " m3";
+      } else {
+        formatted = "SIN CONSUMO";
+      }
+
+      return (
+        <div className="text-center">{formatted}</div>
+      )
+    },
   },
   {
     id: "actions",
@@ -145,25 +159,15 @@ export const columns = [
       const payment = row.original
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Opciones</DropdownMenuLabel>
-            <DropdownMenuItem>Marcar como resulta</DropdownMenuItem>
-            <DropdownMenuItem>Promediar Consumo</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <Button variant="outline"><EyeOpenIcon/></Button>
+        </>
       )
     },
   },
 ]
 
-export function DataTableMonitorAnomalias({data}) {
+export function DataTableMonitorAnomalias({ data }) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
