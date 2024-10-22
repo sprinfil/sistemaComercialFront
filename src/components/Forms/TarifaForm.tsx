@@ -348,11 +348,11 @@ const TarifaForm = () => {
 
     return (
         <div className="overflow-auto">
-            <div className='flex h-[40px] items-center mb-[10px] bg-muted rounded-sm'>
+            <div className='flex h-[40px] items-center mb-[10px] bg-muted '>
                 <div className='h-[20px] w-full flex items-center justify-end'>
                     <div className="mb-[10px] h-full w-full mx-4">
-                        {accion == "crear" && <p className="text-muted-foreground text-[20px]">Creando nueva tarifa</p>}
-                        {tarifa.nombre != "" && <p className="text-muted-foreground text-[20px]">{tarifa.nombre}</p>}
+                        {accion == "crear" && <p className=" text-[20px]">Creando nueva tarifa</p>}
+                        {tarifa.nombre != "" && <p className=" text-[20px]">{tarifa.nombre}</p>}
                     </div>
                     {(tarifa.nombre != null && tarifa.nombre != "") &&
                         <>

@@ -76,8 +76,7 @@ export default function TarifaServicioNewTable({ tipoToma, tarifa }) {
               />
             </div>
           </div>
-
-          <DataTableTarifaServicioNew columns={columns} data={newData}  sorter="rango" onRowClick={handleRowClick} updateData={getDetalleServicios} />
+          <DataTableTarifaServicioNew columns={columns} data={newData} sorter="rango" onRowClick={handleRowClick} updateData={getDetalleServicios} />
         </div>
       }
 

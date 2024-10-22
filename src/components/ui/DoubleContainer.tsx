@@ -62,7 +62,7 @@ const Seccion1 = ({ children, size = null }) => {
 
 const Seccion2 = ({ children }) => {
   return (
-    <div data-state="open" className='overflow-hidden md:flex-grow data-[state=closed]:flex-grow data-[state=open]:w-0 h-full border tableContainer'>
+    <div data-state="open" className='overflow-auto md:flex-grow data-[state=closed]:flex-grow data-[state=open]:w-0 h-full border tableContainer'>
       {children}
     </div>
   );

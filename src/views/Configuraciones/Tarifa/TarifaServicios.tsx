@@ -13,6 +13,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { DataTableTarifaServicio } from '../../../components/ui/DataTableTarifaServicio.tsx';
 
 export const TarifaServicios = () => {
 
@@ -42,12 +43,10 @@ export const TarifaServicios = () => {
   }
 
   return (
-
-
     <div className=' w-full  flex justify-center'>
       <ContextProvider>
         {
-          tarifa.nombre == null ||  tarifa.nombre == ""  &&
+          tarifa.nombre == null || tarifa.nombre == "" &&
           <>
             <div className=''>
               <p>Selecciona una tarifa</p>
@@ -55,26 +54,25 @@ export const TarifaServicios = () => {
           </>
         }
         {
-          tarifa.nombre != null &&  tarifa.nombre != "" &&
+          tarifa.nombre != null && tarifa.nombre != "" ?
           <>
-            <Accordion type="single" collapsible className="w-full">
-            <p className='text-primary'>{tarifa.nombre}</p>
+            <Accordion type="multiple" collapsible className="w-full">
+              <p className='text-primary'>{tarifa.nombre}</p>
               {tipoTomas.map((tipoToma, index) =>
                 <AccordionItem key={index} value={`item-${index}`}>
                   <AccordionTrigger>{tipoToma.nombre}</AccordionTrigger>
                   <AccordionContent>
-                    <TarifaServicioNewTable tipoToma={tipoToma.id} tarifa={tarifa} />
+                    {/* <TarifaServicioNewTable tipoToma={tipoToma.id} tarifa={tarifa} /> */}
+                    <DataTableTarifaServicio tipoToma={tipoToma.id} tarifa={tarifa} />
                   </AccordionContent>
                 </AccordionItem>
               )}
             </Accordion>
           </>
+          :
+          <>Selcciona una tarifa</>
         }
       </ContextProvider>
-
     </div>
-
-
-
   )
 }

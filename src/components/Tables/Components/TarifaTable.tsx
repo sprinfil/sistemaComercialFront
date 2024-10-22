@@ -1,4 +1,4 @@
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { DataTable } from '../../../components/ui/DataTable';
 import { columns, Tarifa } from "../Columns/Tarifa-Columns/TarifaColumns.tsx";
 import axiosClient from '../../../axios-client.ts';
@@ -16,7 +16,7 @@ export default function TarifaTable() {
     getTarifa();
   }, []);
 
- 
+
 
   const getTarifa = async () => {
     setLoadingTable(true);
@@ -30,27 +30,30 @@ export default function TarifaTable() {
       console.error("Failed to fetch anomalias:", error);
     }
   };
-  
-  
-  
+
+
+
 
   //Metodo para seleccionar las filas
   const handleRowClick = (tarifa: Tarifa) => {
     setTarifa(tarifa);
-    console.log(tarifa.estado); 
+    console.log(tarifa.estado);
     setAccion("ver");
   };
 
   if (loadingTable) {
-    return <div><Loader /></div>;
+    return <div className='w-full'><Loader /></div>;
   }
 
 
   return (
-    <div>
-      <div onClick={() => { setAccion("crear") }}>
+    <div className='w-full px-3'>
+      <div onClick={() => { setAccion("crear") }} className='mt-5'>
         <IconButton>
-          <div className='flex gap-2 items-center mt-5'> Agregar nueva tarifa <PlusCircledIcon className='w-[20px] h-[20px]' /></div>
+          <div className='flex gap-2 items-center'>
+            <p>Nueva</p>
+            <PlusCircledIcon className='w-[20px] h-[20px]' />
+          </div>
         </IconButton>
       </div>
       <DataTable columns={columns} data={tarifas} sorter='nombre' onRowClick={handleRowClick} />
