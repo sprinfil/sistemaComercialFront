@@ -50,12 +50,7 @@ const ModalConvenio: React.FC<ModalConvenioProps> = ({ trigger, title, onConfirm
   const [valorAnteriorPagoInicial, setValorAnteriorPagoInicial] = useState(pagoInicialPesos);
   const [pagoInicialValido, setPagoInicialValido] = useState(true); 
   const [errorMensaje, setErrorMensaje] = useState('');
-
-
-
   const { toast } = useToast()
-  
-  
 
   function successToastCreado() {
     toast({
@@ -156,9 +151,6 @@ useEffect(() => {
     }
 };
 
-
-
-
   useEffect(() => {
     console.log(cargosSeleccionados)
    }, [cargosSeleccionados]);
@@ -192,8 +184,6 @@ useEffect(() => {
     calcularTotalSeleccionados(); // Llama a la función para que actualice el total
   }, [cargosSeleccionados]); // Dependencia en cargosSeleccionados
   
-  
-
   useEffect(() => {
     const totalSeleccionados = calcularTotalSeleccionados();
     
@@ -228,8 +218,6 @@ const handleMontoBonificadoChange = (monto: number) => {
   }
 };
 
-
-
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
         const nuevosCargosSeleccionados = cargosConveniables.map((cargo) => {
@@ -244,9 +232,6 @@ const handleMontoBonificadoChange = (monto: number) => {
     }
     setSelectAll(checked);
 };
-
-
-
 
 const handleConfirmar = () => {
   const payload = {
@@ -300,8 +285,6 @@ useEffect(() => {
   console.log(pagoInicialCalculado)
 }, [pagoInicial, cargosSeleccionados, pagoInicialPesos,porcentajeConveniado]); // Agregar cargosSeleccionados como dependencia
 
-
-
 useEffect(() => {
   const totalSeleccionados = calcularTotalMontos();
   console.log(pagoInicial)
@@ -320,12 +303,6 @@ const resultadoResta = totalMontos - totalBonificadoConveniado;
 const resultadoDivision = cantidadLetras > 0 ? resultadoResta / cantidadLetras : 0;
 console.log(resultadoDivision)
 
-
-
-
-
-
-
 return (
   <AlertDialog>
     <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
@@ -341,34 +318,27 @@ return (
               <div className="mt-4 ">
                 <h3 className="font-medium">Resumen:</h3>
                 <p><strong>Convenio: </strong>{selectedConvenio.origen.nombre}</p>
-                <div>
-                {/* Mostrar mensaje de advertencia si el pago inicial no es válido */}
-                {!pagoInicialValido && (
-                  <p className="text-red-500">
-                    El pago inicial debe ser mayor o igual al porcentaje requerido del convenio.
-                  </p>
-                )}
-              </div>
-                <p>Pago inicial minimo: {selectedConvenio.origen.pago_inicial ? `%${selectedConvenio.origen.pago_inicial}` : 'No requiere'} = ${Math.round(pagoInicialPesos)}</p>
+                  <div>
+                    {/* Mostrar mensaje de advertencia si el pago inicial no es válido */}
+                    {!pagoInicialValido && (
+                      <p className="text-red-500">
+                        El pago inicial debe ser mayor o igual al porcentaje requerido del convenio.
+                      </p>
+                    )}
+                  </div>
+                <p> <strong>Pago inicial minimo: </strong> {selectedConvenio.origen.pago_inicial ? `%${selectedConvenio.origen.pago_inicial}` : 'No requiere'} = ${Math.round(pagoInicialPesos)}</p>
                 <p><strong>Cargos Conveniados:</strong></p>
                 <ul>
-                  
                     {cargosSeleccionados.map((cargo: any) => (
                       <div className='bg-slate-300 me-8 my-1 rounded-md'>
                         <li className=' ml-2' key={cargo.id}>{cargo.nombre}</li>
                       </div>
                     ))}
-                  
                 </ul>
-                
-                  
                     <p><strong>Monto total: </strong>${calcularTotalMontos().toFixed(2)}</p>
                     <p><strong>Monto bonificado: </strong>${calcularTotalmontoBonificado().toFixed(2)}</p>
                     <p><strong>Monto conveniado: </strong>${resultadoResta.toFixed(2)}</p>
                     <p><strong>Cantidad por letra: </strong>${resultadoDivision.toFixed(2)}</p>
-                  
-                
-
               </div>
             )}
           </AlertDialogHeader>
@@ -419,8 +389,6 @@ return (
                   <p className="text-center">No hay convenios disponibles.</p>
                 )}
 
-
-
                 </AccordionContent>
               </AccordionItem>
 
@@ -470,30 +438,10 @@ return (
                               onChange={(e) => {
                                 const value = e.target.value;
                                 setmontoBonificado(value === '' ? 0 : Number(value));
-
-                                // Verifica si el convenio seleccionado tiene rango_minimo y rango_maximo
-                                if (selectedConvenio?.rango_minimo && selectedConvenio?.rango_maximo) {
-                                  const fueraDeRango =
-                                    Number(value) < Number(selectedConvenio.rango_minimo) ||
-                                    Number(value) > Number(selectedConvenio.rango_maximo);
-
-                                  // Si el valor está fuera de rango, se muestra un mensaje de error
-                                  setErrorMensaje(fueraDeRango ? 'El monto está fuera del rango permitido.' : '');
-                                } else {
-                                  // Si no hay rango_minimo o rango_maximo, no muestra mensaje de error
-                                  setErrorMensaje('');
-                                }
                               }}
                               className="border p-1"
                               disabled={tipoMonto !== '$'}
                             />
-
-                            {/* Mostrar mensaje en rojo si está fuera de rango */}
-                            {errorMensaje && (
-                              <p className="text-red-500 text-xs mt-1">
-                                {errorMensaje}
-                              </p>
-                            )}
                           </td>
 
 
@@ -522,6 +470,7 @@ return (
                           <th className="px-4 py-2 text-left">Monto total</th>
                           <th className="px-4 py-2 text-left">Monto bonificado</th>
                           <th className="px-4 py-2 text-left">Monto conveniado</th>
+                          <th className="px-4 py-2 text-left">Rango de bonificacion</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -543,6 +492,16 @@ return (
                               ${ 
                                 (cargo.monto_pendiente - (cargosSeleccionados.find((c: any) => c.id === cargo.id)?.montoBonificado ?? 0)).toFixed(2)
                               }
+                            </td>
+                            <td>
+                            {cargosSeleccionados.map((cargo: any) => (
+                              <div className='justify-center mt-1'>
+                              <Input
+                                placeholder={`Min % ${cargo.rango_minimo}, Max % ${cargo.rango_maximo}`}
+                                className='w-[24vh]'
+                              />
+                              </div>
+                              ))}
                             </td>
                           </tr>
                         ))}
