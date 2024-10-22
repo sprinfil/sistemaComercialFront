@@ -247,6 +247,9 @@ interface FiltrosContratacion {
 
   obtenerNombreUsuario: string;
   setObtenerNombreUsuario:(obtenerNombreUsuario: string) => void;
+
+  tomaPreContratadaLatLon: []
+  setTomaPreContratadaLatLog:(tomaPreContratadaLatLon:[]) => void;
 }
 
 export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => ({
@@ -505,6 +508,9 @@ export const ZustandFiltrosContratacion = create<FiltrosContratacion>((set) => (
 
   obtenerNombreUsuario: "",
   setObtenerNombreUsuario:(obtenerNombreUsuario) => set({ obtenerNombreUsuario }),
+
+  tomaPreContratadaLatLon:[],
+  setTomaPreContratadaLatLog:(tomaPreContratadaLatLon) => set({ tomaPreContratadaLatLon }),
  
 }));
 

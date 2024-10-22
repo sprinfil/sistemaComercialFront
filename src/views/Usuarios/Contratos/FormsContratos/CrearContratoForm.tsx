@@ -52,6 +52,7 @@ export const CrearContratoForm = () => {
     const [openModal, setOpenModal] = useState(false);
     const [items, setItems] = useState([]);
     const [servicioAContratar, setServicioAContratar] = useState([]);
+    const [entroLocalStorage, setEntroLocalStorage] = useState(false);
 
     const { latitudMapa, longitudMapa, libroToma, contrato, setContrato, setIdGiroComercial,
         setIdLibro, setCalleSeleccionada, setColoniaSeleccionada, setEntreCalle1Seleccionada, setEntreCalle2Seleccionada,
@@ -60,15 +61,35 @@ export const CrearContratoForm = () => {
         puntoTomaLatitudLongitudAPI,contratoLocalStorage,
         nombreCalle, setNombreCalle, nombreEntreCalle1, setNombreEntreCalle1, nombreEntreCalle2, setNombreEntreCalle2, nombreColonia, setNombreColonia
         ,setNombreGiroComercial, nombreGiroComercial, setNombreGiroComercial2, seTipoTomaNombre, setServicioAlcSan, setServicioAguaNombre,
-        boolCrearUsuarioProcesoContratacion, obtenerNombreUsuario, obtenerIdUsuarioRecienCreado
+        boolCrearUsuarioProcesoContratacion, obtenerNombreUsuario, obtenerIdUsuarioRecienCreado,setTomaPreContratadaLatLog
     } = ZustandFiltrosContratacion();
 
 
     const { usuariosEncontrados,setUsuariosEncontrados} = ZustandGeneralUsuario();
   
     console.log(localStorage.getItem("contrato"));
+    const [contratoConversionLocalStorage, setContratoConversionLocalStorage] = useState([])
+    const [tipoDeTomaLocalStorage, setTipoDeTomaLocalStorage] = useState("");
+    const [tipoDeContratacion, setTipoDeContratacion] = useState("");
 
 
+    //PARA OPTENER AL USUARIO SELECCIONADO
+    const userEscogidoStr = localStorage.getItem("elUsuarioBuscado");
+    const userEscogido = JSON.parse(userEscogidoStr); // Convertir la cadena a objeto
+    console.log(userEscogido?.id); // Debe mostrar el objeto correctamente
+    //console.log(localStorage.getItem("userEscogido"));
+        //console.log(usuario.id);
+
+
+
+    useEffect(() => 
+    {
+        if(tomaPreContratada)
+        {
+            localStorage.setItem("ubicacionPreContrato", tomaPreContratada?.posicion?.coordinates); 
+
+        }
+    },[tomaPreContratada])
 
     const form = useForm<z.infer<typeof crearContratoSchema>>({
         resolver: zodResolver(crearContratoSchema),
@@ -102,6 +123,11 @@ export const CrearContratoForm = () => {
         navigate("/direccion/toma");
     };
 
+    const handleCerrarModal = () => {
+        setOpenModal(true);
+
+    };
+
     const detalleContratacion = () => {
         navigate("/contrato/detalle");
     };
@@ -111,7 +137,10 @@ export const CrearContratoForm = () => {
     };
 
 
+    console.log(localStorage.getItem("contrato"));
+    console.log(localStorage.getItem("ubicacionPuntoToma"));
 
+    
 
     //ID CONVERTIDOS A NOMBRE PARA CARGARLOS EN LOS INPUTS
     const [nombreCompletoUsuario, setNombreCompletoUsuario] = useState('');
@@ -131,10 +160,22 @@ export const CrearContratoForm = () => {
 
     console.log(tomaPreContratada);
 
+
+
     const onSubmit = (values: z.infer<typeof crearContratoSchema>) => {
 
+        console.log(puntoTomaLatitudLongitudAPI);
         const coordenadasComoCadenas = puntoTomaLatitudLongitudAPI.map(coord => coord.toString());
+        console.log(coordenadasComoCadenas);
+        //PARA NO PERDER LAS COORDENADAS
+        let coordenadasLocalStorage = localStorage.getItem("ubicacionPuntoToma"); 
+        let coordenadasArreglo = [coordenadasLocalStorage]
+        console.log(coordenadasArreglo);
+        const coordenadasAEnviarCorrectasXD = puntoTomaLatitudLongitudAPI.map(coord => coord.toString());
+        console.log(coordenadasAEnviarCorrectasXD);
 
+        //PARA NO PERDER AL USUARIO 
+    
         const agua = values.c_agua ? "agua" : null;
         const alcantarillado = values.c_alc ? "alcantarillado" : null;
         const saneamiento = values.c_san ? "saneamiento" : null;
@@ -182,7 +223,7 @@ export const CrearContratoForm = () => {
             {
                        // Estos datos son para enviar
                 datos = {
-                    id_usuario: obtenerIdUsuarioRecienCreado,
+                    id_usuario:userEscogido?.id,
                     nombre_contrato: values.nombre_contrato,
                     clave_catastral: values.clave_catastral,
                     tipo_toma: tipoToma,
@@ -197,7 +238,7 @@ export const CrearContratoForm = () => {
                     localidad: values.localidad,
                     municipio: values.municipio || "La Paz",
                     tipo_contratacion: values.tipo_contratacion,
-                    coordenada: coordenadasComoCadenas,
+                    coordenada: coordenadasAEnviarCorrectasXD,
 
                 };
             }
@@ -205,7 +246,7 @@ export const CrearContratoForm = () => {
             {
                 // Estos datos son para enviar
                 datos = {
-                    id_usuario: usuariosEncontrados[0]?.id,
+                    id_usuario: userEscogido?.id,
                     nombre_contrato: values.nombre_contrato,
                     clave_catastral: values.clave_catastral,
                     tipo_toma: tipoToma,
@@ -220,22 +261,36 @@ export const CrearContratoForm = () => {
                     localidad: values.localidad,
                     municipio: values.municipio || "La Paz",
                     tipo_contratacion: values.tipo_contratacion,
-                    coordenada: coordenadasComoCadenas,
+                    coordenada: coordenadasAEnviarCorrectasXD,
 
                 };
+                console.log(datos);
+
             }
           
         } else {
-            if(tomaPreContratada?.tipo_contratacion == "pre-contrato")
+            if(tomaPreContratada?.tipo_contratacion == "pre-contrato") //CUANDO EL TIPO DE CONTRATACIÓN ES PRE CONTRATO.(SE MANEJA COMO 0)
                 {
+                    let servicioContratados = [];
+
+                    if (tomaPreContratada.c_agua === 0) {
+                        servicioContratados.push("agua");
+                      }
+                      // Verifica si el servicio de alcantarillado está contratado
+                    if (tomaPreContratada.c_alc === 0) {
+                        servicioContratados.push("alcantarillado y saneamiento");
+                    }
+
+                   // console.log(servicioContratados);
+                    
                 // Estos datos son para enviar
                 datos = {
                     id_toma: tomaId,
-                    id_usuario: usuariosEncontrados[0]?.id,
+                    id_usuario:userEscogido?.id,
                     nombre_contrato: values.nombre_contrato,
                     clave_catastral: values.clave_catastral,
                     tipo_toma: tipoToma || 0,
-                    servicio_contratados: ["agua","alcantarillado y saneamiento"],
+                    servicio_contratados: servicioContratados,
                     //diametro_toma: values.diametro_de_la_toma, // Usar el campo correcto aquí
                     num_casa: values.num_casa,
                     colonia: values.colonia || 0,
@@ -254,7 +309,7 @@ export const CrearContratoForm = () => {
                  // Estos datos son para enviar
                  datos = {
                     id_toma: tomaId,
-                    id_usuario: usuariosEncontrados[0]?.id,
+                    id_usuario: userEscogido?.id,
                     nombre_contrato: values.nombre_contrato,
                     clave_catastral: values.clave_catastral,
                     tipo_toma: tipoToma || 0,
@@ -270,6 +325,7 @@ export const CrearContratoForm = () => {
                     municipio: values.municipio,
                     tipo_contratacion: values.tipo_contratacion,
                 };
+                console.log(datos);
             }
             
         }
@@ -295,6 +351,13 @@ export const CrearContratoForm = () => {
             
             //AQUI SE GUARDA CONTRATO STRING QUE GUARDA EN EL LOCALSTORAGE EL OBJETO.
             localStorage.setItem("contrato", contratoString); 
+
+            
+
+          
+
+
+
         }
         const contratoString = JSON.stringify(datos);
         localStorage.setItem("contrato", contratoString); 
@@ -422,10 +485,16 @@ export const CrearContratoForm = () => {
         console.log(localStorage.getItem('contrato'));
         // Obtener los datos de localStorage
         const contratoConversionLocalStorage = JSON.parse(localStorage.getItem('contrato') || '{}');
+        setContratoConversionLocalStorage(contratoConversionLocalStorage);
+        console.log(contratoConversionLocalStorage);
+      
+            setTipoDeTomaLocalStorage(contratoConversionLocalStorage?.tipo_toma);
+            setTipoDeContratacion(contratoConversionLocalStorage?.tipo_contratacion);
+        
         let agua = false;
         if (contratoLocalStorage) {
       
-            
+            setEntroLocalStorage(true);
             //PARA QUE ME JALE LO SELECCIONADO YA QUE SE GUARDA TEXTO, SE CONVIERTE A BOOL
             let agua = false;
             let alc = false;
@@ -460,13 +529,21 @@ export const CrearContratoForm = () => {
               c_agua: agua || false,
               c_alc: alc || false,
               c_san: alc|| false,
-              tipo_contratacion: contratoConversionLocalStorage?.tipo_contratacion || '',
+              tipo_contratacion: contratoConversionLocalStorage?.tipo_contratacion || 'pre-contrato',
               id_giro_comercial: contratoConversionLocalStorage?.id_giro_comercial || 0,
             });
           
-      
+            console.log(form.getValues()); 
         }
-      }, [form]); 
+
+        return () => {
+            setEntroLocalStorage(false);
+            setTipoDeTomaLocalStorage("");
+            setTipoDeContratacion("");
+        };
+
+     
+      }, [form, contratoLocalStorage]); 
 
     useEffect(() => {
         const nombreCompletoUsuario = usuariosEncontrados[0]?.nombre_completo;
@@ -494,6 +571,23 @@ export const CrearContratoForm = () => {
           setNombreGiroComercial2("");
         }
       }, [form.getValues('tipo_toma')]); 
+
+      console.log(tipoDeTomaLocalStorage);
+
+
+
+
+      useEffect(() => {
+        const tipoToma = form.getValues('tipo_toma');
+        if (tipoToma !== '') {
+            //console.log('Valor actualizado de tipoToma:', tipoToma);
+            setTipoDeTomaLocalStorage(tipoToma);
+        }
+    }, [form.getValues('tipo_toma')]); // este useeffect si es localstorage, hace cambiar si muestra o no el combobox de giro comercial
+    
+console.log(entroLocalStorage);
+console.log(tomaPreContratada);
+console.log(tipoDeContratacion);
 
 
     return (
@@ -1074,22 +1168,21 @@ export const CrearContratoForm = () => {
                                                 <FormLabel>Tipo de contratación</FormLabel>
                                                 <FormControl>
                                                     {
-                                                        tomaPreContratada?.tipo_contratacion == "pre-contrato" ?
-                                                        <Select
-                                                        disabled={true} // Ajusta esto según si el campo debe estar deshabilitado o no
-                                                        onValueChange={(value) => {
-                                                            field.onChange(value); // Actualiza el valor en react-hook-form
-                                                        }}
-                                                        value={field.value || ''} // Valor controlado por react-hook-form
-                                                    >
+                                                       entroLocalStorage && tomaPreContratada.length > 0  ||  tomaPreContratada.tipo_contratacion == "pre-contrato"  || tipoDeContratacion == "pre-contrato" ?
+                                                       <Select
+                                                       disabled={true} // Ajusta esto según si el campo debe estar deshabilitado o no
+                                                       onValueChange={(value) => {
+                                                           field.onChange(value); // Actualiza el valor en react-hook-form
+                                                       }}
+                                                       value={field.value || 'pre-contrato'} // Valor controlado por react-hook-form
+                                                   >
                                                         <FormControl>
                                                             <SelectTrigger>
-                                                                <SelectValue placeholder="Selecciona el tipo de contratación" />
+                                                                <SelectValue placeholder="Pre-contrato" />
                                                             </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
                                                         <SelectItem value="pre-contrato">Pre-contrato</SelectItem>
-                                                          
                                                         </SelectContent>
                                                     </Select>
                                                         :
@@ -1108,7 +1201,7 @@ export const CrearContratoForm = () => {
                                                         <SelectContent>
                                                         <SelectItem value="normal">Normal</SelectItem>
                                                         <SelectItem value="condicionado">Condicionado</SelectItem>
-                                                       
+
                                                         </SelectContent>
                                                     </Select>
 
@@ -1124,7 +1217,7 @@ export const CrearContratoForm = () => {
 
                                 </div>
                                 {
-                                tipoDeToma != "Domestica" &&
+                                tipoDeToma != "Domestica"  &&   tipoDeTomaLocalStorage != "Domestica" &&   tipoDeTomaLocalStorage != "1" &&
                                     <div className='mt-4 w-full'>
                                     <FormField
                                         control={form.control}
@@ -1141,12 +1234,12 @@ export const CrearContratoForm = () => {
                                         )}
                                     />
                                 </div>
-                                        
-                                    
+                                         
                                      
                                 }
+                                     
                                 {
-                                   !tomaPreContratada && tomaPreContratada?.id_tipo_toma != 1 && 
+                                   !tomaPreContratada && tomaPreContratada?.id_tipo_toma != 1  &&
                                     <div className='mt-4 w-full'>
                                         <FormField
                                             control={form.control}
@@ -1184,7 +1277,8 @@ export const CrearContratoForm = () => {
                                         setIsOpen={setOpenModal}
                                         isOpen={openModal}
                                         method1={detalleContratacion}
-                                        method2={navegarDireccionToma} />
+                                        method2={navegarDireccionToma} 
+                                        method3={handleCerrarModal}/>
                                 }
                             </div>
                         </div>

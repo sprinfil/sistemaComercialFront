@@ -35,7 +35,7 @@ export const DetalleInformacionContrato = () => {
     isCheckInspeccion, setBooleanModalSubirArchivosContratacion, idContrato, setIdContrato,nombreGiroComercial, esPreContratado,puntoTomaLatitudLongitudAPI,
     getCoordenadaString2, setTomaPreContratada, setBoolPeticionContratacion,contratoLocalStorage,
     nombreCalle, nombreEntreCalle1,nombreEntreCalle2,nombreColonia, nombreGiroComercial2, tipoTomaNombre
-  ,servicioAguaNombre, servicioAlcSan, setContratoLocalStorage, setNombreGiroComercial, setNombreGiroComercial2} = ZustandFiltrosContratacion();
+  ,servicioAguaNombre, servicioAlcSan, setContratoLocalStorage, setNombreGiroComercial, setNombreGiroComercial2,tomaPreContratadaLatLon } = ZustandFiltrosContratacion();
 
     console.log(servicioAguaNombre);
 
@@ -43,10 +43,17 @@ export const DetalleInformacionContrato = () => {
     console.log(localStorage.getItem("contrato"));
     console.log(localStorage.getItem("libro"));
     console.log(localStorage.getItem("notificaciones"));
+    console.log(localStorage.getItem("ubicacionPreContrato"));
+    let ubicacionString = localStorage.getItem("ubicacionPreContrato");
+    let ubicacionArray = ubicacionString.split(',').map(Number);
+    console.log(ubicacionArray);
+
+    //const ubicacionPreContratoConvertido = JSON.parse(localStorage.getItem("ubicacionPreContrato"));
     const contratoConvertido = JSON.parse(localStorage.getItem("contrato"));
+    //console.log(ubicacionPreContratoConvertido);
     console.log(contratoConvertido);
     console.log(giroComercial);
-
+    console.log(tomaPreContratadaLatLon);
       //contratacion obtenemos y despues lo parseamos 
       const contratacionLocalStorage = localStorage.getItem("contrato");
       const contratacionConvertido = JSON.parse(contratacionLocalStorage); 
@@ -58,6 +65,11 @@ export const DetalleInformacionContrato = () => {
     const NotificacionesLocalStorage = localStorage.getItem("notificaciones");
 
 
+    let usuario = localStorage.getItem("userEscogido");
+    console.log(usuario);
+
+    let coordenadasLocalStorage = localStorage.getItem("coordenadasSeleccionadas");
+    console.log(coordenadasLocalStorage);
 
 
   const generarSolicitud = async () => {
@@ -129,11 +141,12 @@ export const DetalleInformacionContrato = () => {
       catch(response)
       {
         console.log(response);
+        const message = response.response.data.message;
         
         toast({
           variant: "destructive",
           title: "Oh, no. Error",
-          description: "Algo salio mal",
+          description: message,
           action: <ToastAction altText="Try again">Intentar de nuevo</ToastAction>,
       })
       }
@@ -143,6 +156,7 @@ export const DetalleInformacionContrato = () => {
     localStorage.removeItem("contrato");
     localStorage.removeItem("libro");
     localStorage.removeItem("notificaciones");
+    localStorage.removeItem("usuarioEscogido"); 
 
   }
 
@@ -157,10 +171,24 @@ export const DetalleInformacionContrato = () => {
 };
 
 //PARA PODER MOSTRAR EL MAPA
-// const apiKey = 'AIzaSyAnqFPxn8eq_QFwi9HES_LbnyuNmnhf2rA'; //API KEY
-// const lat = contratacionConvertido?.coordenada[0]; //LATITUD
-// const lng = contratacionConvertido?.coordenada[1];  //LONGITUD
-// const mapSrc = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&zoom=19&q=${lat},${lng}`;
+
+let mapSrc;
+const apiKey = 'AIzaSyAnqFPxn8eq_QFwi9HES_LbnyuNmnhf2rA'; //API KEY
+console.log(contratacionConvertido);
+console.log(esPreContratado);
+ if(!esPreContratado)
+ {
+  const lat = contratacionConvertido?.coordenada[0]; //LATITUD
+  const lng = contratacionConvertido?.coordenada[1];  //LONGITUD
+   mapSrc = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&zoom=19&q=${lat},${lng}`;
+
+ }
+ else
+ { 
+   mapSrc = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&zoom=19&q=${ubicacionArray[1]},${ubicacionArray[0]}`;
+
+ }
+ 
 
 console.log(verMapa);
   return (
@@ -409,7 +437,7 @@ console.log(verMapa);
 
         </div>
 
-            {/* { !mostrarBoton &&
+            { !mostrarBoton &&
               <div className='flex space-x-2 mt-[3vh]'>
               <div className='text-xl'>
                 Ver ubicación de la toma:
@@ -420,12 +448,12 @@ console.log(verMapa);
                     onCheckedChange={(checked) => setVerMapa(checked === true)}/>
                   </div>
 
-            </div>} */}
+            </div>}
      
 
           {/**AQUI MUESTRA EL MAPA */}
 
-            {/* {
+            {
               verMapa && !mostrarBoton &&
               <div>
                 <iframe
@@ -439,7 +467,7 @@ console.log(verMapa);
 
                   </div>
 
-            } */}
+            }
      
 
 

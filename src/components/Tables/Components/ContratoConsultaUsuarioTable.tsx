@@ -83,7 +83,8 @@ export default function ContratoConsultaUsuarioTable({ nombreBuscado, accion2, f
     setMostrarUsuarioCambioPropietario(true);
     setBuscarTomaAgregarLecturaMonitor(true);
     console.log("ESTO RECIBIRA CAJAAA DESDE SELECCION DE FILA" + JSON.stringify(dataCajaUser)); 
-  
+    localStorage.setItem("elUsuarioBuscado", JSON.stringify(contratobuscarUsuario));
+
     
     if(accion2 == "verUsuarioDetalle")
     {

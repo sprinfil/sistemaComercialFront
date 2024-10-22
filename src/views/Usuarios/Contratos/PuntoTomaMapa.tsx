@@ -288,9 +288,12 @@ console.log(selectedLocation);
                         setLibroToma(libro.id);
                         localStorage.setItem("libro", libro.id); 
                         setSelectedLocation({ lat, lng });
+
                         setMarcadorSeleccionado(true);
                         setSeleccionoPuntoEnMapa(true);
                         setPuntoTomaLatitudLongitudAPI([lat, lng ]);
+                        localStorage.setItem("ubicacionPuntoToma", [lat, lng ]); 
+
 
                       }}
                     />

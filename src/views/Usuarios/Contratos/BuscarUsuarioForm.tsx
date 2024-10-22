@@ -98,6 +98,8 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
         localStorage.removeItem("contrato");
         localStorage.removeItem("libro");
         localStorage.removeItem("notificaciones");
+        localStorage.removeItem("elUsuarioBuscado"); 
+        
         const criterio = values.nombre.trim();
 
         let endpoint = "";
@@ -152,6 +154,7 @@ export const BuscarUsuarioForm = ({ navegacion, botonCrearUsuario = true, tipoAc
                         if (results.length > 0) {
                             setNombreBuscado(values.nombre);
                             setUsuariosEncontrados(results);
+                            localStorage.setItem("elUsuarioBuscado", JSON.stringify(results));
                             if (results.length === 1) {
                                 setMostrarUsuarioCambioPropietario(true);
                                 if (tipoAccion === "verUsuarioDetalle") {
