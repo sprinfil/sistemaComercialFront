@@ -48,13 +48,7 @@ import ModalEstablecerConsumo from "./ModalEstablecerConsumo";
 import ModalPromediarConsumo from "./ModalPromediarConsumo";
 import ModalVerLectura from "./ModalVerLectura";
 
-const data: Consumo[] = [
-  {
-    id: "m5gr84i9",
-    consumo: 20,
-    periodo: "ENERO 2024",
-  },
-]
+
 
 export type Consumo = {
   id: string
@@ -121,7 +115,7 @@ export const columns: ColumnDef<Consumo>[] = [
   },
 ]
 
-export function DataTableConsumos() {
+export function DataTableConsumos({selectedToma, detalle}) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -129,6 +123,11 @@ export function DataTableConsumos() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const [data, setData] = React.useState([]);
+  React.useEffect(()=>{
+    setData(selectedToma?.consumos)
+    console.log(selectedToma?.consumos)
+  },[selectedToma])
 
   const table = useReactTable({
     data,
@@ -180,11 +179,12 @@ export function DataTableConsumos() {
           </Select>
         </div>
 
-
-
         <div className="ml-auto">
           <ModalEstablecerConsumo
             trigger={<Button className="ml-auto">Establecer Consumo</Button>}
+            selectedToma={selectedToma}
+            detalle={detalle}
+            setData={setData}
           >
           </ModalEstablecerConsumo>
         </div>

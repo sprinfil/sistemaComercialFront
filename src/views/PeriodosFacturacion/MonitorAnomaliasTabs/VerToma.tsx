@@ -12,11 +12,12 @@ import {
 import { Button } from '../../../components/ui/button'
 import { FaUser } from "react-icons/fa";
 
-export const VerToma = () => {
+export const VerToma = ({ selectedToma }) => {
+
   return (
     <div className='h-[75vh] overflow-auto w-full relative'>
       <div className='w-full flex mt-1 sticky top-0 z-20'>
-        <Button className='ml-auto'>Ir al perfil de la toma<FaUser className='ml-2'/></Button>
+        <Button className='ml-auto'>Ir al perfil de la toma<FaUser className='ml-2' /></Button>
       </div>
       <p className='font-medium ml-3'>Usuario</p>
       <Table>
@@ -29,23 +30,23 @@ export const VerToma = () => {
         <TableBody>
           <TableRow>
             <TableCell>Nombre</TableCell>
-            <TableCell>Jeremy</TableCell>
+            <TableCell>{`${selectedToma?.toma?.usuario?.nombre || "N/A"} ${selectedToma?.toma?.usuario?.apellido_paterno || ""} ${selectedToma?.toma?.usuario?.apellido_materno || ""}`}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Teléfono</TableCell>
-            <TableCell>6241204731</TableCell>
+            <TableCell>{selectedToma?.toma?.usuario?.telefono || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>RFC</TableCell>
-            <TableCell>12312423423</TableCell>
+            <TableCell>{selectedToma?.toma?.usuario?.rfc || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>CURP</TableCell>
-            <TableCell>SFASDFASDF</TableCell>
+            <TableCell>{selectedToma?.toma?.usuario?.curp || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Correo</TableCell>
-            <TableCell>Jeremy.ojeda@hotmail.com</TableCell>
+            <TableCell>{selectedToma?.toma?.usuario?.correo || "N/A"}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
@@ -60,59 +61,59 @@ export const VerToma = () => {
         <TableBody>
           <TableRow>
             <TableCell>Toma</TableCell>
-            <TableCell>0101001</TableCell>
+            <TableCell>{selectedToma?.toma?.codigo_toma || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Clave Catastral</TableCell>
-            <TableCell>DZ91-D6KR-96H4</TableCell>
+            <TableCell>{selectedToma?.toma?.clave_catastral || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Estatus</TableCell>
-            <TableCell>Baja definitiva</TableCell>
+            <TableCell>{selectedToma?.toma?.estatus || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Calle</TableCell>
-            <TableCell>Esperanza Lights</TableCell>
+            <TableCell>{selectedToma?.toma?.calle || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Entre Calle 1</TableCell>
-            <TableCell>Eloisa Spurs</TableCell>
+            <TableCell>{selectedToma?.toma?.entre_calle_1 || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Entre Calle 2</TableCell>
-            <TableCell>Caleigh Island</TableCell>
+            <TableCell>{selectedToma?.toma?.entre_calle_2 || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Colonia</TableCell>
-            <TableCell>Donnelly Station</TableCell>
+            <TableCell>{selectedToma?.toma?.colonia || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Código Postal</TableCell>
-            <TableCell>72068-2746</TableCell>
+            <TableCell>{selectedToma?.toma?.codigo_postal || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Localidad</TableCell>
-            <TableCell>San Bartolo</TableCell>
+            <TableCell>{selectedToma?.toma?.localidad || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Tipo Servicio</TableCell>
-            <TableCell>Lectura</TableCell>
+            <TableCell>{selectedToma?.toma?.tipo_servicio || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Tipo Toma</TableCell>
-            <TableCell>Normal</TableCell>
+            <TableCell>{selectedToma?.toma?.id_tipo_toma ? "Normal" : "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Tipo Contratación</TableCell>
-            <TableCell>Sí</TableCell>
+            <TableCell>{selectedToma?.toma?.tipo_contratacion || "N/A"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Servicio de agua</TableCell>
-            <TableCell>No</TableCell>
+            <TableCell>{selectedToma?.toma?.c_agua ? "Sí" : "No"}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Servicio de agua y alcantarillado</TableCell>
-            <TableCell>No</TableCell>
+            <TableCell>{selectedToma?.toma?.c_alc ? "Sí" : "No"}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

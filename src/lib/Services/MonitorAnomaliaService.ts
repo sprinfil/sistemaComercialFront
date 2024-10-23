@@ -24,5 +24,43 @@ export function getTomasPorPeriodo
     }
     fetch();
   }, [])
+}
 
+export async function establecerConsumo(
+  consumo: number,
+  idToma: number,
+  idPeriodo: number,
+  setError: Function,
+  setLoading: Function,
+  setConsumo: Function,
+  setData: Function,
+  cancelButtonRef: any
+) {
+  try {
+    setLoading(true);
+    const response = await axiosClient.post("/validacion/consumo/registrarconsumo",
+      {
+        id_toma: idToma,
+        id_periodo: idPeriodo,
+        consumo: consumo
+      }
+    );
+    //console.log(response);
+    setData(prev => {
+      return [
+        {
+          ...response?.data?.consumo
+        },
+        ...prev,
+      ];
+    })
+    cancelButtonRef.current.click();
+    setConsumo(0);
+
+  } catch (e) {
+    setError(e.response.data.message);
+  }
+  finally {
+    setLoading(false);
+  }
 }

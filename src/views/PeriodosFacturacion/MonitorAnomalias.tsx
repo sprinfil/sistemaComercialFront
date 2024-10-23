@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DoubleContainer, Seccion2, Seccion1 } from '../../components/ui/DoubleContainer'
 import { DataTableMonitorAnomalias, columns } from '../../components/ui/DataTableMonitorAnomalias.tsx';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -10,10 +10,10 @@ import Loader from '../../components/ui/Loader.tsx';
 import { Skeleton } from '../../components/ui/skeleton.tsx';
 
 export const MonitorAnomalias = ({ detalle }) => {
-  
+
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
+  const [selectedToma, setSelectedToma] = useState({});
   getTomasPorPeriodo(setData, setLoading, detalle?.id);
 
   return (
@@ -27,13 +27,13 @@ export const MonitorAnomalias = ({ detalle }) => {
                   <>
                     {
                       data?.length > 0 ?
-                        < DataTableMonitorAnomalias data={data} columns={columns} />
+                        < DataTableMonitorAnomalias data={data} setSelectedToma = {setSelectedToma} />
                         : <></>
                     }
                   </>
                   :
                   <>
-                    <Loader/>
+                    <Loader />
                   </>
               }
             </div>
@@ -47,8 +47,8 @@ export const MonitorAnomalias = ({ detalle }) => {
                 <TabsTrigger value="ordenes">Ordenes de trabajo</TabsTrigger>
               </TabsList>
               <TabsContent value="imagen" className="h-full"><VerImagen /></TabsContent>
-              <TabsContent value="toma" className="h-full"><VerToma /></TabsContent>
-              <TabsContent value="consumos" className="h-full"><Consumos /></TabsContent>
+              <TabsContent value="toma" className="h-full"><VerToma selectedToma ={selectedToma}/></TabsContent>
+              <TabsContent value="consumos" className="h-full"><Consumos selectedToma ={selectedToma} detalle={detalle}/></TabsContent>
               <TabsContent value="ordenes" className="h-full">Change your password here.</TabsContent>
             </Tabs>
           </Seccion2>

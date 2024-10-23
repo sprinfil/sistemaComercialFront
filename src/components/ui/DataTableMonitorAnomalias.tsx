@@ -53,121 +53,136 @@ import {
 import { getTomasPorPeriodo } from "../../lib/Services/MonitorAnomaliaService";
 import { EyeOpenIcon } from "@radix-ui/react-icons";
 
-export const columns = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+
+export function DataTableMonitorAnomalias({ data, setSelectedToma}) {
+  const [selectedId, setSelectedId] = React.useState(0);
+  const columns = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      id: "toma",
+      accessorKey: "toma.codigo_toma",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+          >
+            Toma
+          </Button>
+        )
+      },
+      // cell: ({ row }) => {
+      //   const data = row.original;
+      //   return (
+      //     <div className="text-center">{data?.toma?.codigo_toma}</div>
+      //   )
+      // },
+    },
+    {
+      accessorKey: "libro",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+
+          >
+            Libro
+
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const data = row?.original;
+
+        return (
+          <div className="text-center">{data?.toma?.nombre_libro}</div>
+        )
+      },
+    },
+    {
+      accessorKey: "tipoAnomalia",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+
+          >
+            Anomalia
+
+          </Button>
+        )
+      },
+      cell: ({ row }) => <div className="text-center">{ }</div>,
+    },
+    {
+      accessorKey: "consumo",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Consumo
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        //console.log(row);
+        const data: Object = row.original;
+        let formatted: String = "";
+        if (data?.consumos[0]?.consumo != null) {
+          formatted = data?.consumos[0]?.consumo + " m3";
+        } else {
+          formatted = "SIN CONSUMO";
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "toma",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-        >
-          Toma
-        </Button>
-      )
-    },
-    cell: ({ row }) => {
-      const data = row.original;
-      return (
-        <div className="text-center">{data?.toma?.codigo_toma}</div>
-      )
-    },
-  },
-  {
-    accessorKey: "libro",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
 
-        >
-          Libro
-
-        </Button>
-      )
+        return (
+          <div className="text-center">{formatted}</div>
+        )
+      },
     },
-    cell: ({ row }) => <div className="text-center">{ }</div>,
-  },
-  {
-    accessorKey: "tipoAnomalia",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const toma = row.original
 
-        >
-          Anomalia
+        return (
+          <>
+            <Button variant="outline"
+              onClick={() => {
+                setSelectedToma(toma);
+                setSelectedId(toma?.toma?.id);
 
-        </Button>
-      )
+              }}
+            ><EyeOpenIcon className="text-black dark:text-white" /></Button>
+          </>
+        )
+      },
     },
-    cell: ({ row }) => <div className="text-center">{ }</div>,
-  },
-  {
-    accessorKey: "consumo",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Consumo
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => {
-      console.log(row);
-      const data: Object = row.original;
-      let formatted: String = "";
-      if (data?.consumo != null) {
-        formatted = data?.consumo?.consumo + " m3";
-      } else {
-        formatted = "SIN CONSUMO";
-      }
+  ]
 
-      return (
-        <div className="text-center">{formatted}</div>
-      )
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original
-
-      return (
-        <>
-          <Button variant="outline"><EyeOpenIcon/></Button>
-        </>
-      )
-    },
-  },
-]
-
-export function DataTableMonitorAnomalias({ data }) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -203,12 +218,12 @@ export function DataTableMonitorAnomalias({ data }) {
           <AccordionContent>
             <div className="flex flex-wrap items-center py-4 gap-2 gap-y-4 px-3 shadow-md border">
               <div className="w-[48%]">
-                <p>Consumo</p>
+                <p>Toma</p>
                 <Input
-                  placeholder="Consumo"
-                  value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+                  placeholder="Toma"
+                  value={(table.getColumn("toma")?.getFilterValue() as string) ?? ""}
                   onChange={(event) =>
-                    table.getColumn("email")?.setFilterValue(event.target.value)
+                    table.getColumn("toma")?.setFilterValue(event.target.value)
                   }
                   className="max-w-sm"
                 />
@@ -232,49 +247,16 @@ export function DataTableMonitorAnomalias({ data }) {
                 </Select>
               </div>
               <div className="w-[48%]">
-                <p>Tipo de Anomalía</p>
+                <p>Consumo</p>
                 <Select>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Tipo de Anomalia" />
+                    <SelectValue placeholder="Consumo" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Anomalia</SelectLabel>
-                      <SelectItem value="apple">Perro Bravo</SelectItem>
-                      <SelectItem value="banana">Sin Medidor</SelectItem>
-                      <SelectItem value="blueberry">Sin Acceso</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="w-[48%]">
-                <p>Tipo de Anomalía</p>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Tipo de Anomalia" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Anomalia</SelectLabel>
-                      <SelectItem value="apple">Perro Bravo</SelectItem>
-                      <SelectItem value="banana">Sin Medidor</SelectItem>
-                      <SelectItem value="blueberry">Sin Acceso</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="w-[48%]">
-                <p>Tipo de Anomalía</p>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Tipo de Anomalia" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Anomalia</SelectLabel>
-                      <SelectItem value="apple">Perro Bravo</SelectItem>
-                      <SelectItem value="banana">Sin Medidor</SelectItem>
-                      <SelectItem value="blueberry">Sin Acceso</SelectItem>
+                      <SelectLabel>Consumo</SelectLabel>
+                      <SelectItem value="apple">Con consumo</SelectItem>
+                      <SelectItem value="banana">Sin consumo</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -310,9 +292,12 @@ export function DataTableMonitorAnomalias({ data }) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  className={`${row.original?.toma?.id == selectedId ? "bg-green-800 text-white hover:bg-green-800" : ""}`}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
