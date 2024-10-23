@@ -74,9 +74,9 @@ export function DataTableTarifa<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -86,21 +86,16 @@ export function DataTableTarifa<TData, TValue>({
           <TableBody className=" ">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-          
-              
-                  <TableRow
-                    
-                    onClick={() => handleRowClick(row.id, row.original)}
-                    className={`flex cursor-pointer ${selectedRow === row.id ? "bg-border" : ""}`}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                  
-                  
+                <TableRow
+                  onClick={() => handleRowClick(row.id, row.original)}
+                  className={`flex cursor-pointer ${selectedRow === row.id ? "bg-border" : ""}`}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))
             ) : (
               <TableRow>

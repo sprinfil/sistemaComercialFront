@@ -37,7 +37,8 @@ import {
 } from "@/components/ui/table"
 import { TarifaServicios, TarifaServicio, TarifaServicioDetalle } from "../../lib/Services/TarifaService"
 import IconButton from "./IconButton"
-import { Pencil2Icon } from "@radix-ui/react-icons"
+import { Pencil2Icon, PlusCircledIcon } from "@radix-ui/react-icons"
+import ModalCrearRangoTarifa from "./ModalCrearRangoTarifa"
 
 
 export const columns: ColumnDef<TarifaServicioDetalle>[] = [
@@ -171,6 +172,17 @@ export function DataTableTarifaServicio({ tipoToma, Tarifa }: DataTableTarifaSer
           }
           className="max-w-sm"
         />
+        <div className="ml-auto">
+          <ModalCrearRangoTarifa trigger={
+            <Button>
+              <div className="flex items-center justify-center gap-3">
+                <PlusCircledIcon />
+                <p>Agregar Rango</p>
+              </div>
+            </Button>
+          } />
+        </div>
+
       </div>
       <div className="rounded-md border">
         <Table>
