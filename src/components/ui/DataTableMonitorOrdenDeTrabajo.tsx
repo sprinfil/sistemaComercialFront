@@ -137,7 +137,7 @@ const handleSeleccionarOperador = () =>
         <IconButton title="Ver más filtros" onClick={handleControl}>
           <TbFilterPlus className="w-[3.5vh] h-[3.5vh] ml-2" />
         </IconButton>
-        {informacionCerrarOtMasivamente.length > 1 && 
+        {informacionCerrarOtMasivamente.length > 0 && 
          <IconButton title="Seleccionar operador" onClick={handleSeleccionarOperador}
           >       
          <RiUserSearchLine  className="ml-2 w-[3.5vh] h-[3.5vh]"/>
@@ -149,7 +149,7 @@ const handleSeleccionarOperador = () =>
 
       }
         {
-          informacionCerrarOtMasivamente.length > 1 && 
+          informacionCerrarOtMasivamente.length > 0 && 
           <div className='flex justify-end ' title='Cerrar ordenes de trabajo'>
           <IconButton onClick={abrirModalGG}>
             <FaCheckCircle className="ml-2 w-[3.0vh] h-[3.0vh]"/>
